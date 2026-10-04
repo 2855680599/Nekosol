@@ -14,7 +14,33 @@
 
 这里是使用教程。聊天要在电脑上的程序或你自己的 Telegram 机器人里进行。
 
-### 照着这条路线安装
+### 一条命令引导安装
+
+Windows 用户先按 [Windows 安装](https://nyairo.com/#windows) 打开 WSL / Ubuntu；Linux 用户打开终端。用自己的普通账号，在这个窗口运行：
+
+```bash
+curl -fsSL https://www.nyairo.com/install.sh | bash
+```
+
+不需要先下载 Git 仓库，也不用自己装 uv 或 Python。安装器会下载固定的 `v0.1.0-rc5`，核对文件，准备运行环境，再创建独立的个人配置，开启记忆与生活状态，并允许当前 Linux 账号通过本地命令行使用。
+
+看到 `[5/5] 程序安装完成` 后，会自动进入 Hermes 模型设置。选择自己的服务和模型，填写 API Key；自定义服务还要填写 Base URL。设置结束后进入聊天，先发一句话检查能否收到回复。账号与密钥仍需你自己提供。
+
+如果提示找不到 `curl`，Ubuntu / Debian 用户先运行 `sudo apt update && sudo apt install -y curl`，再粘贴安装命令。首次下载可能需要几分钟，请保持网络连接。
+
+以后重新打开 Ubuntu / Linux 终端，输入 `nyairo` 就能继续；重新选择模型用 `nyairo setup model`。刚装完若当前窗口找不到命令，打开新终端，或直接运行 `~/.local/bin/nyairo`。
+
+程序保存在 `~/.local/share/nyairo/releases/v0.1.0-rc5`，个人数据保存在 `~/.nyairo`。名字与人格改 `~/.nyairo/SOUL.md`；聊天、记忆和模型配置也在这套个人目录里。重复运行安装命令会核对程序并保留已有个人数据，再打开模型向导；它不会自动升级到别的版本。
+
+这条路线已完成 Linux 和 Windows WSL / Ubuntu 的普通账号首次安装复核。Windows 用户仍需先装好 WSL。Telegram、认知、World/Body 和资源服务仍按对应章节另外配置。
+
+### 继续阅读手动教程时，用对目录
+
+后面的 Git / ZIP 手动路线使用 `~/apps/chiyo-v0.1` 和 `~/.chiyo-v1`；一条命令安装使用上述新目录。已经完成引导安装，就跳过手动下载和创建配置，不要再建立第二套个人数据。
+
+阅读后面的模块、更新或备份示例时，将程序路径 `~/apps/chiyo-v0.1` 换成 `~/.local/share/nyairo/releases/v0.1.0-rc5`，将个人路径 `~/.chiyo-v1` 换成 `~/.nyairo`。`bash scripts/hermes.sh` 可直接换成 `nyairo`；需要在程序目录执行的其他脚本仍先进入实际程序目录。
+
+### 手动安装的路线（可选）
 
 1. Windows 用户先看 [在 Windows 上安装](https://nyairo.com/#windows)，把 Ubuntu 打开。
 2. 在 [下载与安装](https://nyairo.com/#linux) 中完成工具准备，再选择 Git 或 ZIP，**两种下载方法选一种就够了**。
@@ -75,9 +101,11 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 - **Linux 电脑或服务器**：直接按 [下载与安装](https://nyairo.com/#linux) 操作。工具安装命令以 Ubuntu / Debian 为例，其他系统需要使用自己的安装方式。
 - **macOS**：还没有单独完成整套安装检查，暂时不把它列为已验证的完整方案。
 
-目前提供的是源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 nyairo 已提供完整容器安装方案。
+目前提供 Linux / WSL 引导安装脚本，以及源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 nyairo 已提供完整容器安装方案。
 
-### 下载方法选一种就好
+### 引导安装与手动下载，选一种就好
+
+第一次使用推荐上面的“一条命令引导安装”。想先保存源码或检查每一步时，选下面的 Git / ZIP 手动路线。
 
 **Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
@@ -126,7 +154,7 @@ wsl --list --verbose
 
 ### 第三步：后面的命令都在 Ubuntu 里运行
 
-接下来打开 [下载与安装](https://nyairo.com/#linux)，从准备工具开始做。里面的 `sudo`、`bash`、`export` 等命令，全部复制到 **Ubuntu 终端**，不要复制到 PowerShell。
+接下来回到 [第一次使用](https://nyairo.com/#quickstart)，运行引导安装命令。希望手动下载时，再按 [下载与安装](https://nyairo.com/#linux) 操作。里面的 `sudo`、`bash`、`export` 等命令，全部复制到 **Ubuntu 终端**，不要复制到 PowerShell。
 
 本文把程序放在 Ubuntu 的用户目录里，把聊天数据放在另一个独立文件夹里；这样以后换程序版本时，个人记录仍有自己的保存位置。关于两个系统的文件位置，可看 [微软的 WSL 环境说明](https://learn.microsoft.com/windows/wsl/setup/environment)。
 
@@ -152,6 +180,8 @@ cd "$HOME/apps/chiyo-v0.1"
 
 
 ## 04 下载与安装
+
+本章是可选的手动路线。已经用一条命令完成安装时，直接用 `nyairo` 开始聊天；无需再执行本章步骤。
 
 ### 第一步：准备安装工具
 
@@ -248,6 +278,8 @@ ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；�
 
 ## 05 设置并开始聊天
 
+引导安装已创建个人配置并打开模型向导。再次聊天用 `nyairo`，重新设置模型用 `nyairo setup model`，修改人设用 `nano "$HOME/.nyairo/SOUL.md"`。下列创建配置步骤只用于 Git / ZIP 手动安装；不要在引导安装后再执行。
+
 ### 第一步：进入刚才安装的程序文件夹
 
 下面仍然在 Ubuntu / Linux 终端里操作。保持使用自己的普通 Linux 账号，进入刚才下载或解压的位置：
@@ -318,7 +350,7 @@ bash scripts/hermes.sh
 
 ### 给自己的个体改名字和设定
 
-公开候选在没有现有 `SOUL.md` 时，仍会生成“你是千代”的默认文字。nyairo 是框架，千代是作者的私人个体；你可以给自己的个体另外取名。
+rc5 在没有现有 `SOUL.md` 时会创建中性模板。nyairo 是框架，千代是作者的私人个体；你可以给自己的个体取名和设置人格。
 
 第一次建立数据文件夹后，可以在开始聊天前打开它：
 
@@ -341,6 +373,8 @@ nano "$HOME/.chiyo-v1/SOUL.md"
 
 
 ## 06 接入 Telegram
+
+引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的 `.chiyo-v1` 请换成 `.nyairo`，启动命令可换成 `nyairo`。
 
 ### 第一步：准备自己的机器人
 
@@ -617,6 +651,8 @@ cp -a plugins/chiyo/. "$HERMES_HOME/plugins/chiyo/"
 服务地址、授权、身份属于自己的配置，不随公共源码发布。确认路径时不要输出全部 `.env` 来排错，以免把凭据贴到日志或公开 issue。
 
 ### 一份可执行的停机备份例子
+
+引导安装用户先退出聊天和网关，再运行 `tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo`。下面的 `.chiyo-v1` 例子用于手动安装。
 
 先停止自己的进程或 systemd 服务，确认没有同目录写入者。以下只备份手册中的基础个人目录；如果还启用了 World 与 Supply，也必须分别备份它们的真实目录。
 

@@ -23,23 +23,17 @@ nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态�
 - [GitHub Releases：v0.1.0-rc5](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc5)
 - [仓库内的中文使用教程](docs/USER_GUIDE.zh-CN.md)
 
-Windows 用户先按教程打开 WSL 2 / Ubuntu；Linux 用户准备好 Git、uv 等工具。第一次安装可选 Git 或 ZIP，两种方法选一种。推荐跟着教程完成工具准备，再在 Ubuntu / Linux 终端运行：
+Windows 用户先打开 WSL / Ubuntu；Linux 用户打开终端。在普通账号下运行这一行：
 
 ```bash
-mkdir -p "$HOME/apps"
-git clone --branch v0.1.0-rc5 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
-cd "$HOME/apps/chiyo-v0.1"
-bash scripts/install.sh
-vendor/hermes/.venv/bin/python scripts/verify_manifest.py
-vendor/hermes/.venv/bin/python scripts/setup_profile.py --home "$HOME/.chiyo-v1" --owner local-owner --memory --life --allow-local-owner
-export HERMES_HOME="$HOME/.chiyo-v1"
-bash scripts/hermes.sh setup
-bash scripts/hermes.sh
+curl -fsSL https://www.nyairo.com/install.sh | bash
 ```
 
-`--allow-local-owner` 表示明确允许这个 Linux 账号通过本地命令行使用个人模块；不写它就不会自动把本地入口当成主人。启用记忆后，模型工具默认受限，避免从文件或终端读回被遗忘的历史；详见 [隐私修复与升级](PRIVACY_REVIEW.md)。
+安装器自动准备 uv / Python、下载并校验 rc5、安装依赖和创建个人配置，再打开模型设置向导。选择模型并填写自己的连接信息后进入聊天；以后打开新终端运行 `nyairo` 即可。基础配置启用记忆与生活状态，并授权当前本地账号；模型工具默认受限，详见 [隐私修复与升级](PRIVACY_REVIEW.md)。
 
-个人设置创建成功时会显示 `Profile ready`。选择模型、填好自己的密钥，收到真实回复后，再输入 `/chiyo_status` 检查模块。模型、程序依赖和附加服务的详细设置见 [安装说明](INSTALL.md)。已有安装目录或个人设置时，请按教程继续使用，不要为重做上述步骤而删除旧记录。
+个人数据在 `~/.nyairo`，程序在 `~/.local/share/nyairo/releases/v0.1.0-rc5`。重复安装保留已有设置和记录，不自动升级发行版本。模型密钥仍需自己提供，其他模块与机器人按教程另外配置。
+
+手动 Git / ZIP 安装、无人值守参数及平台准备见 [安装说明](INSTALL.md) 和 [中文教程](docs/USER_GUIDE.zh-CN.md)。原来的 `bash scripts/install.sh` 保留为源码目录内的依赖安装命令。
 
 ## 第一版的实际范围
 

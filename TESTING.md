@@ -44,3 +44,15 @@ bash scripts/run_tests.sh -j 8 --file-timeout 900 --file-retries 0
 本次源码修复的实际命令、结果和日志摘要记录在 `PRIVACY_TEST_EVIDENCE.json`，修复范围与保留边界见 `PRIVACY_REVIEW.md`。历史 45,071 记录不会被改写成本次新运行的结果；本次完成 534 项计数测试（504 项组件/边界 unittest、1 项认知故障测试、29 项官方宿主接线测试），另有真实 Life 装配检查；Alpha 五个脚本通过，N8 相关脚本保留 PARTIAL。完整宿主复跑因可选依赖和测试机资源压力没有完成，不宣称新一轮全量通过，也未发送真实 Telegram 测试消息。
 
 测试中仍观察到旧记忆组件的 SQLite ResourceWarning、Supply 的 fork 警告，以及认知故障注入预期的线程异常警告；通过数量不等于零警告或所有技术债已清除。四项负对照在旧代码下失败，新代码下通过；普通账号实际安装与公开下载复核分开记录。
+
+## 2026-10-04 引导安装器复核
+
+新增 `scripts/bootstrap.sh`，网站 `/install.sh` 发布相同内容。安装器固定下载 `v0.1.0-rc5` 的公开源码归档，SHA256 为 `58d4272f4bb61fea8785789b181471e0826096562955dd1bee26401a776834b8`；不修改已有标签和 ZIP。
+
+- Linux 普通账号、空 HOME、PATH 仅系统工具，无预装 uv：自动下载 uv、Python 3.13.16、rc5 和依赖，创建个人配置及 `nyairo` 入口，退出码 0。安装前后清单均 valid，12,195 个发行文件无变更或缺失。
+- Windows WSL / Ubuntu 普通账号、独立空 HOME、无预装 uv：实际完成首次下载和安装；最终脚本再次运行退出码 0，`nyairo --version` 正常。个人配置权限 600，入口权限 700，本地授权 UID 与安装账号一致。
+- Linux PTY 中通过 `curl | bash` 入口打开原生模型设置，输入本地测试服务的地址、占位密钥与模型并保存。安装出的 `nyairo -z` 经实际 HTTP 模型路由收到 `INSTALLER_CHAT_OK`；这验证入口与配置接线，测试服务不是真实外部模型。
+- 重复安装前后对人设、模型配置、占位密钥、个人模块配置及额外个人文件进行哈希比较，五个文件保持一致；PATH 条目只有一份，安装锁与临时下载目录已清理。
+- `bash -n scripts/bootstrap.sh` 通过；`python3 -m unittest discover -s tests -p test_bootstrap_installer.py -v` 七项通过，覆盖无终端拒绝、无副作用帮助、拒绝覆盖无关入口/个人目录、目录分离、工具失败后清理，以及两个发布脚本一致。
+
+首次安装测试使用 `--no-setup --no-launch` 独立检查环境准备；交互模型设置及聊天接线另行检查。此处不宣称所有模型服务、消息平台或附加模块都已配置或重新验收。引导安装的个人目录是 `~/.nyairo`，手动教程的旧目录仍保留兼容。

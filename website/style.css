@@ -298,6 +298,8 @@ body {
 /* Hero 居中主视觉 */
 .home-hero {
   text-align: center;
+  width: 100%;
+  min-width: 0;
   max-width: 860px;
   margin: 0 auto 56px;
 }
@@ -534,6 +536,7 @@ body {
 .hero-cmd-pill {
   display: inline-flex;
   align-items: center;
+  max-width: 100%;
   gap: 12px;
   padding: 7px 16px 7px 18px;
   background: var(--c-bg-card);
@@ -558,11 +561,15 @@ body {
 }
 
 .cmd-text {
+  min-width: 0;
+  white-space: nowrap;
+  overflow-x: auto;
   color: var(--c-text-1);
   font-family: inherit;
 }
 
 .cmd-copy-btn {
+  flex-shrink: 0;
   background: transparent;
   border: none;
   color: var(--c-text-3);
