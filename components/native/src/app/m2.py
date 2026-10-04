@@ -556,7 +556,7 @@ class M2ProposalProvider(Protocol):
 
 class DirectM2ProposalProvider:
     EPISODE_SYSTEM = (
-        "You are the Chiyo Native M2 understanding proposer. Return JSON only. "
+        "You are the Native M2 understanding proposer. Return JSON only. "
         "You may propose derived interpretations of the supplied M1 episode and its M0 evidence. "
         "An utterance proves that a speaker said or expressed something; it does not prove that "
         "the described world event happened. Use only UTTERANCE_AS_EVENT or "
@@ -567,7 +567,7 @@ class DirectM2ProposalProvider:
         "statement, understanding_kind, epistemic_basis, supporting_evidence_refs."
     )
     CROSS_SYSTEM = (
-        "You are the Chiyo Native M2 cross-episode consolidation proposer. Return JSON only. "
+        "You are the Native M2 cross-episode consolidation proposer. Return JSON only. "
         "Use only the supplied M1 episodes and referenced M0 evidence. A pattern or contradiction "
         "must cite at least two distinct episode ids and must preserve the episode details. "
         "Do not select a true Self, relationship, preference, world fact, body fact, or future behavior. "

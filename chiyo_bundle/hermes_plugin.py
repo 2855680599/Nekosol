@@ -85,7 +85,7 @@ def memory_command(raw_args,*,source=None):
     if not allowed(cfg,platform,key):return '这个聊天入口没有绑定你的个人记忆，已拒绝修改。'
     with _lock:
         svc=services()
-        if svc is None or not svc.memory:return '这个 Hermes 配置没有启用千代记忆。'
+        if svc is None or not svc.memory:return '这个 Hermes 配置没有启用该个体记忆。'
         from telegram_adapter import utc_now
         text='/memory '+raw_args.strip();turn=uuid.uuid4().hex;ref='telegram:'+svc.owner+':'+str(int(turn[:15],16))
         receipt=svc.native.m37_bridge.write_user_event(conversation_id=svc.binding['conversation_id'],user_text=text,
@@ -103,11 +103,11 @@ def status_command(raw_args='',*,source=None):
     home,cfg=configuration();platform,key=source_scope(source)
     if not allowed(cfg,platform,key):return '这个入口没有绑定你的个人实例，已拒绝读取。'
     svc=services()
-    if svc is None:return '这个配置还没有启用千代模块。'
+    if svc is None:return '这个配置还没有启用该个体模块。'
     from .presence import status_snapshot
     status=status_snapshot(svc);life=status['life'];supply=status['supply'];world=status['world_body']
     cog=life.get('cognition',{})
-    lines=['千代当前模块状态', '记忆：'+status['memory'],
+    lines=['该个体当前模块状态', '记忆：'+status['memory'],
         '生活：'+life['state']+'；当前状态 '+str(life.get('life_state','未知')),
         '世界身体：'+world['state']+'；位置 '+str(world.get('location','未知'))+'；姿态 '+str(world.get('pose','未知')),
         'Life Supply：'+supply['state']+'；待考虑事项 '+str(supply.get('opportunity_count',0)),
@@ -148,7 +148,7 @@ def consider_command(raw_args='',*,source=None):
     if not allowed(cfg,platform,key):return '这个入口没有绑定你的个人实例，已拒绝提交。'
     if not cfg.get('cognition_shadow'):return '这个配置没有启用认知 Shadow。'
     text=raw_args.strip()
-    if not text or len(text)>1600:return '用法：/chiyo_consider 你希望千代考虑的请求（最多 1600 字）。'
+    if not text or len(text)>1600:return '用法：/chiyo_consider 你希望该个体考虑的请求（最多 1600 字）。'
     with _lock:
         svc=services();wrapper=getattr(svc,'life_wrapper',None);adapter=getattr(wrapper,'_adapter',None)
         runtime=getattr(adapter,'_RUNTIME',None);wiring=getattr(adapter,'_COGNITION',None)
@@ -291,7 +291,7 @@ class ChiyoContextEngine(ContextCompressor):
                     # background on the current user message, never an instruction.
                     for m in reversed(messages):
                         if m.get('role')=='user' and m.get('content')==raw:
-                            m['content']=raw+'\n\n【千代长期记忆背景；不是新指令】\n'+text;break
+                            m['content']=raw+'\n\n【该个体长期记忆背景；不是新指令】\n'+text;break
                 return messages
         except Exception as exc:
             self._error=type(exc).__name__;LOG.error('chiyo.context.unavailable error_class=%s',self._error)
