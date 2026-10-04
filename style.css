@@ -582,6 +582,8 @@ body {
   color: var(--c-success);
 }
 /* 三大板块横向并列，每块保留两项能力及各自的教程入口。 */
+.capabilities-section { max-width: 960px; margin-inline: auto; }
+
 .features-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -593,7 +595,7 @@ body {
   display: flex;
   flex-direction: column;
   min-width: 0;
-  padding: 28px 24px;
+  padding: 28px 22px;
   border: 1px solid var(--c-border);
   border-radius: 14px;
   background: var(--c-bg-card);
