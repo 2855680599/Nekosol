@@ -41,7 +41,9 @@ DEFAULT_RELATIVE_PATH = "canonical/relationship.yaml"
 # Facts about the relationship only. Never behaviour, never warmth, never a reply.
 _REQUIRED = ("schema", "subject", "counterparty", "relationship_type", "status", "statement", "revision")
 _ACTIVE = "active"
-_DISPLAY = {"chiyo": "千代", "ruirui": "用户"}
+# Display names come from each installation's own relationship file. The framework
+# ships no personal subject mapping; unknown ids fall back to the raw id at use site.
+_DISPLAY: dict[str, str] = {}
 
 _TRUTH = {True: True, False: False}
 for _t in ("true", "always", "yes", "on", "1"):

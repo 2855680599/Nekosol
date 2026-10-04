@@ -27,7 +27,7 @@ class CanonicalPersonaProvider:
     def load_system_prompt(self) -> str:
         blocks = []
         # Base identity
-        blocks.append("你是千代，18岁。")
+        blocks.append("你是这个实例的数字个体。")
         
         # Canonical Relationship
         rel_file = self.hermes_home / "canonical" / "relationship.yaml"

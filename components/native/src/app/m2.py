@@ -612,8 +612,8 @@ REALITY_RE = re.compile(
     r"昨天|今天|前天|刚刚|现在在|去过|去了|吃过|吃了|海边|夕阳|窗外|冰箱|家里|额头|发烧|体温|摸|测|床上|厨房|昨天|today|yesterday|went to|ate|forehead|fever|fridge|home",
     re.IGNORECASE,
 )
-IMPERATIVE_RE = re.compile(r"应该|必须|下次|以后|建议|请|不要|对用户|对千代|need to|should|must|next time|in the future", re.IGNORECASE)
-SELF_RELATION_RE = re.compile(r"千代就是|千代是一个|她本质|我是一个|用户和千代是|你们是|关系是|intimate|girlfriend|lover|恋人", re.IGNORECASE)
+IMPERATIVE_RE = re.compile(r"应该|必须|下次|以后|建议|请|不要|对用户|need to|should|must|next time|in the future", re.IGNORECASE)
+SELF_RELATION_RE = re.compile(r"我是一个|你是一个|我们是|你们是|关系是|intimate|girlfriend|lover|恋人", re.IGNORECASE)
 
 
 def _parse_json_object(raw: str) -> dict[str, Any]:
