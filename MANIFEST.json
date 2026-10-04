@@ -12282,13 +12282,13 @@
     "vendor/hermes/website/tsconfig.json": "1bbddecc170d6739308972751b01e2761e1e8d1cf7f6d43bfc4e5589a9b6e059",
     "website/.nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
     "website/README.md": "0ff430dc505be7f44e137177e3fd08fc27ad563dbe81e1433da54f4b333d9bd2",
-    "website/USER_GUIDE.zh-CN.md": "e76b5202f54408112bc186e1f5ec0c28b68f3774f639eb2809047a75f8cc27f4",
+    "website/USER_GUIDE.zh-CN.md": "5c416f3a2a71b5f4ed4b0ab4cddfd0c1c4c54aa3b3b0959dbee9cd01b7bb6cc2",
     "website/app.js": "08db4836b8f2d2b9c36e5422a7fe153c716d23d4a48cedfd46101d7cff0d702e",
-    "website/docs-data.js": "4288c5db36d3a186a4709e8737a8b074c830b5a45ed0bd4f7a9eb44c2a9f47c7",
-    "website/index.html": "ec915f5b18b0a6160c8f5225686791db41685c8e98dffc75c6366dd553d09111",
-    "website/style.css": "3099f1c6d2618b30de8293c335cccc68d1959e96a6c26af07cb6a322eda874da"
+    "website/docs-data.js": "e031a23aa606af7f24374ad0581d17b66b66f6675d0ab7b7d00852e6c651b65e",
+    "website/index.html": "a3a7531468f7093173d6a308187b40b9badb10d6823661d7981864b37def0fd5",
+    "website/style.css": "6e18e9c2e9ffca29598c0eb0427b59e6a7d99363bde621a2abe50f32874a6af1"
   },
-  "tree_sha256": "b0219b24db55382fd38753c0bb98ae9d4e5573ebaf019d1530b127be3c25efcf",
+  "tree_sha256": "5996fb5729bd0bad2e045766c1ffc1b3059a3de285d103e8f38c355fca028876",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "Nekosol",

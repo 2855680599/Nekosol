@@ -394,13 +394,57 @@ body {
 }
 
 .title-keyword {
+  position: relative;
   display: inline-block;
-  margin: 0 6px;
+  margin: 0 0.08em;
   color: var(--c-text-1);
-  text-decoration: underline;
-  text-decoration-color: var(--c-border-hover);
-  text-underline-offset: 0.16em;
-  text-decoration-thickness: 2px;
+  white-space: nowrap;
+  vertical-align: baseline;
+}
+
+.hero-title-line { display: block; }
+.hero-title-line + .hero-title-line { margin-top: 0.06em; }
+.title-continuity { color: #e8d0f5; }
+.title-memory {
+  font-family: "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
+  font-weight: 700;
+  color: #f1ddc4;
+  -webkit-text-stroke: 0.35px rgba(255, 245, 229, 0.45);
+  text-shadow: 2px 3px 0 rgba(173, 126, 90, 0.22);
+}
+.title-memory::after {
+  content: "";
+  position: absolute;
+  left: 3%;
+  bottom: -0.07em;
+  width: 94%;
+  height: 0.12em;
+  border-bottom: 2px solid currentColor;
+  border-radius: 0 0 60% 40%;
+  transform: rotate(-4deg);
+  opacity: 0.6;
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .title-continuity {
+    background-image: linear-gradient(110deg, #f4c7e3 10%, #faf7ff 36%, #c7bbef 58%, #f4c7e3 86%);
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: title-pearl 8s ease-in-out infinite;
+  }
+  [data-theme="light"] .title-continuity {
+    background-image: linear-gradient(110deg, #99557d 10%, #6d5089 36%, #615ca0 58%, #99557d 86%);
+  }
+}
+[data-theme="light"] .title-memory {
+  color: #795637;
+  -webkit-text-stroke-color: rgba(121, 86, 55, 0.18);
+  text-shadow: 2px 3px 0 rgba(163, 114, 68, 0.14);
+}
+@keyframes title-pearl {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .hero-desc {
@@ -1207,3 +1251,9 @@ a:focus-visible, button:focus-visible {
 
 .cmd-copy-btn.copied .copy-icon-default { display: none; }
 .cmd-copy-btn.copied .copy-icon-success { display: inline-block !important; }
+
+/* Decorative title stays readable without motion or author colors. */
+@media (prefers-reduced-motion: reduce) { .title-continuity { animation: none; } }
+@media (forced-colors: active) {
+  [data-theme] .title-keyword { background: none !important; color: CanvasText !important; -webkit-text-stroke: 0; text-shadow: none; animation: none; }
+}
