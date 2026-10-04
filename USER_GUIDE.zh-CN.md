@@ -828,7 +828,7 @@ Hermes 自身继续保留 MIT；候选包保留 nyairo 已有 Apache-2.0 根许�
 
 1. 在 `main` 分支的 `website/` 文件夹修改网站。正文放在 `docs-data.js`，Markdown 手册也同步修改。
 2. 把更新后的网页文件放到 `gh-pages` 分支的最外层；不要再套一层 `website` 文件夹。**只改 main，线上网站不会自动跟着更新。**
-3. 保留 `index.html`、`docs-data.js`、`app.js`、`style.css`、`.nojekyll` 和 `CNAME`。CNAME 里面只写域名 `nyairo.929711.xyz`；发布分支的 LICENSE 也保留。
+3. 保留 `index.html`、`docs-data.js`、`app.js`、`style.css`、`.nojekyll` 和 `CNAME`。CNAME 里面只写域名 `nyairo.com`，写成别的域名会让线上站点失效；发布分支的 LICENSE 也保留。
 4. 改了正文、脚本或样式，同时更新 index.html 里资源地址的 `?v=` 版本号，让浏览器重新取到新文件。
 5. 提交发布分支后，在 GitHub 的 Actions 页面等 **pages build and deployment** 完成。成功后打开 [文档网站](https://nyairo.com/)，实际检查首页、搜索、复制按钮和文档链接；手机上也检查导航。
 
