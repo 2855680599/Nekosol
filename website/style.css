@@ -1258,6 +1258,9 @@ a:focus-visible, button:focus-visible {
   [data-theme] .title-keyword { background: none !important; color: CanvasText !important; -webkit-text-stroke: 0; text-shadow: none; animation: none; }
 }
 
-/* Preserve the supplied icon while fitting its existing white margins in the header. */
-.brand-logo { overflow:hidden; background:#fff; }
-.brand-logo img { display:block; width:52px; height:52px; max-width:none; flex-shrink:0; object-fit:cover; }
+/* Transparent, theme-aware brand art. The source images had a white background removed. */
+.brand-logo img { display:block; width:22px; height:22px; max-width:none; flex-shrink:0; object-fit:contain; }
+.footer-logo { display:block; height:24px; width:auto; }
+.brand-logo .brand-icon-on-light, .footer-logo.footer-logo-on-light { display:none; }
+[data-theme="light"] .brand-logo .brand-icon-on-dark, [data-theme="light"] .footer-logo.footer-logo-on-dark { display:none; }
+[data-theme="light"] .brand-logo .brand-icon-on-light, [data-theme="light"] .footer-logo.footer-logo-on-light { display:block; }
