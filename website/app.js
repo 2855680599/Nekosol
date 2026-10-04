@@ -1,5 +1,5 @@
 /**
- * CHIYO DOCS - Clean Minimalist Application Controller
+ * Nekosol DOCS - Clean Minimalist Application Controller
  * Handles Home / Docs View Switching, SPA Routing, Spotlight Cards, Command Copy Bar, Dynamic TOC, Search Modal
  */
 
@@ -365,7 +365,7 @@ function routeHash() {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
-    document.title = 'CHIYO · 持久化数字个体运行时';
+    document.title = 'Nekosol · 持久化数字个体运行时';
     window.scrollTo({ top: 0, behavior: 'instant' });
     return;
   }
@@ -388,7 +388,7 @@ function loadDoc(docId) {
   const doc = DOCS_CONTENT[docId] || DOCS_CONTENT['intro'];
   const targetId = DOCS_CONTENT[docId] ? docId : 'intro';
 
-  document.title = `${doc.title} · CHIYO Docs`;
+  document.title = `${doc.title} · Nekosol Docs`;
 
   document.querySelectorAll('.sidebar-link').forEach(link => {
     if (link.getAttribute('data-id') === targetId) {
