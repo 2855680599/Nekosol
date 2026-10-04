@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 数字个体框架</title>
   <meta name="description" content="nyairo 是基于 Hermes 的数字个体框架，探索长期记忆、生活状态、世界与身体观察、认知判断和个人文档的协作。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261004-nyairo-capabilities-list">
+  <link rel="stylesheet" href="style.css?v=20261004-nyairo-three-pillars">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -161,59 +161,63 @@
       <section class="capabilities-section" aria-labelledby="capabilities-title">
         <div class="section-intro"><h2 id="capabilities-title">几种能力，一起构成数字个体</h2><p>从记住经历，到观察生活、理解请求和保存资料。下面分别说明第一版能做什么，以及需要怎样配置。</p></div>
         <div class="features-grid">
-        <a href="#cli-reference" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-5 2 4 4 0 0 0-1 7 4 4 0 0 0 6 6V4z"/><path d="M15 4a3 3 0 0 1 5 2 4 4 0 0 1 1 7 4 4 0 0 1-6 6V4z"/></svg></div>
-          <div class="card-tag">MEMORY</div>
-          <h3 class="card-title">长期记忆</h3>
-          <p class="card-desc">从过去的个人经历中召回相关内容，查看、纠正或停止采用某条记忆。</p>
-          <p class="card-state">基础配置可启用 · 原始记录另行管理</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
-
-        <a href="#configuration-section-3" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-          <div class="card-tag">LIFE</div>
-          <h3 class="card-title">生活状态</h3>
-          <p class="card-desc">保存收到的事件、生活状态和审计记录，重启后继续读取，向聊天提供状态观察。</p>
-          <p class="card-state">基础配置可启用 · 活动不自主执行</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
-
-        <a href="#modules-section-1" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a17 17 0 0 1 0 18 17 17 0 0 1 0-18"/></svg></div>
-          <div class="card-tag">WORLD / BODY</div>
-          <h3 class="card-title">世界与身体</h3>
-          <p class="card-desc">从独立服务读取有限世界中的位置、姿态与身体信号，为对话提供观察信息。</p>
-          <p class="card-state">需要连接服务 · 当前为只读观察</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
-
-        <a href="#modules-section-0" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M8 15a6 6 0 1 1 8 0c-1 1-1 2-1 3H9c0-1 0-2-1-3z"/></svg></div>
-          <div class="card-tag">COGNITION</div>
-          <h3 class="card-title">认知观察</h3>
-          <p class="card-desc">针对明确提出的请求，使用模型给出有限的判断和原因，保留预算与故障保护。</p>
-          <p class="card-state">可选开启 · 判断不直接执行动作</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
-
-        <a href="#modules-section-2" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
-          <div class="card-tag">WORKSPACE / SUPPLY</div>
-          <h3 class="card-title">个人文档与资源</h3>
-          <p class="card-desc">在个人工作空间中保存、读取独立文档，让资料拥有自己的位置与使用授权。</p>
-          <p class="card-state">需要资源服务与授权 · 装配限制见教程</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
-
-        <a href="#privacy" class="feature-card spotlight-card">
-          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div class="card-tag">IDENTITY / DATA</div>
-          <h3 class="card-title">身份与数据边界</h3>
-          <p class="card-desc">显式绑定个人会话，分别管理记忆、文档与聊天记录。个人数据保存在自己的目录。</p>
-          <p class="card-state">模型与平台按设置处理所需内容</p>
-          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
-        </a>
+          <article class="feature-card">
+            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-5 2 4 4 0 0 0-1 7 4 4 0 0 0 6 6V4z"/><path d="M15 4a3 3 0 0 1 5 2 4 4 0 0 1 1 7 4 4 0 0 1-6 6V4z"/></svg></div>
+            <div class="card-tag">MEMORY / COGNITION</div>
+            <h3 class="card-title">记忆与认知</h3>
+            <div class="capability-details">
+              <a class="capability-detail" href="#cli-reference">
+                <h4>长期记忆</h4>
+                <p class="card-desc">从过去的个人经历中召回相关内容，查看、纠正或停止采用某条记忆。</p>
+                <p class="card-state">基础配置可启用 · 原始记录另行管理</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+              <a class="capability-detail" href="#modules-section-0">
+                <h4>认知观察</h4>
+                <p class="card-desc">针对明确提出的请求，使用模型给出有限的判断和原因，保留预算与故障保护。</p>
+                <p class="card-state">可选开启 · 判断不直接执行动作</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+            <div class="card-tag">LIFE / WORLD / BODY</div>
+            <h3 class="card-title">生活与世界</h3>
+            <div class="capability-details">
+              <a class="capability-detail" href="#configuration-section-3">
+                <h4>生活状态</h4>
+                <p class="card-desc">保存收到的事件、生活状态和审计记录，重启后继续读取，向聊天提供状态观察。</p>
+                <p class="card-state">基础配置可启用 · 活动不自主执行</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+              <a class="capability-detail" href="#modules-section-1">
+                <h4>世界与身体</h4>
+                <p class="card-desc">从独立服务读取有限世界中的位置、姿态与身体信号，为对话提供观察信息。</p>
+                <p class="card-state">需要连接服务 · 当前为只读观察</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+            </div>
+          </article>
+          <article class="feature-card">
+            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+            <div class="card-tag">WORKSPACE / IDENTITY</div>
+            <h3 class="card-title">个人空间与身份</h3>
+            <div class="capability-details">
+              <a class="capability-detail" href="#modules-section-2">
+                <h4>个人文档与资源</h4>
+                <p class="card-desc">在个人工作空间中保存、读取独立文档，让资料拥有自己的位置与使用授权。</p>
+                <p class="card-state">需要资源服务与授权 · 装配限制见教程</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+              <a class="capability-detail" href="#privacy">
+                <h4>身份与数据边界</h4>
+                <p class="card-desc">显式绑定个人会话，分别管理记忆、文档与聊天记录。个人数据保存在自己的目录。</p>
+                <p class="card-state">模型与平台按设置处理所需内容</p>
+                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
+              </a>
+            </div>
+          </article>
         </div>
         <p class="capabilities-note">安装后的实际状态，可用 <code>/chiyo_status</code> 查看。自主活动与主动联系仍属于后续建设；查看<a href="#status-matrix">第一版功能与已知问题</a>。</p>
       </section>
