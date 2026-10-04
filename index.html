@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>nyairo · 持久化数字个体运行时</title>
-  <meta name="description" content="nyairo Persistent Digital Individual 官方文档与架构指南。">
-  <link rel="stylesheet" href="style.css?v=20261004-nyairo-logo">
+  <title>nyairo · 数字个体框架</title>
+  <meta name="description" content="nyairo 是基于 Hermes 的数字个体框架，探索长期记忆、生活状态、世界与身体观察、认知判断和个人文档的协作。第一版能力与使用教程。">
+  <link rel="stylesheet" href="style.css?v=20261004-nyairo-blue-framework-r2">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="nyairo">
-  <meta property="og:title" content="nyairo · 持久化数字个体运行时">
-  <meta property="og:description" content="nyairo Persistent Digital Individual 官方文档与架构指南。">
+  <meta property="og:title" content="nyairo · 数字个体框架">
+  <meta property="og:description" content="nyairo 是基于 Hermes 的数字个体框架，探索长期记忆、生活状态、世界与身体观察、认知判断和个人文档的协作。第一版能力与使用教程。">
   <meta property="og:url" content="https://nyairo.com/">
   <meta property="og:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
 </head>
@@ -24,7 +24,7 @@
   <header class="site-header">
     <div class="header-container">
       <div class="header-left">
-        <button id="mobile-toggle" class="mobile-toggle" aria-label="打开侧边栏">
+        <button id="mobile-toggle" class="mobile-toggle" aria-label="打开教程目录" aria-controls="docs-sidebar" aria-expanded="false">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="6" x2="21" y2="6"></line>
@@ -104,7 +104,7 @@
               <span class="beacon-core"></span>
             </span>
             <span class="banner-chip font-mono">v0.1.0-rc4</span>
-            <span class="banner-title">Persistent Digital Individual Runtime</span>
+            <span class="banner-title">数字个体框架</span>
             <span class="banner-arrow">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -114,15 +114,12 @@
           </a>
         </div>
 
-        <!-- 两行主标题：连续性用珠光文字，记忆用书写感；尊重减少动画设置。 -->
-        <h1 class="hero-title" aria-label="让聊天拥有连续性与可管理的记忆">
-          <span class="hero-title-line"><span class="title-text">让聊天拥有</span><span class="title-keyword title-continuity">连续性</span></span>
-          <span class="hero-title-line"><span class="title-text">与可管理的</span><span class="title-keyword title-memory">记忆</span></span>
+        <!-- 蓝色连续性与书写感记忆，标题表达框架的探索方向。 -->
+        <h1 class="hero-title" aria-label="探索个体的连续性，从记忆到生活与观察">
+          <span class="hero-title-line"><span class="title-text">探索个体的</span><span class="title-keyword title-continuity">连续性</span></span>
+          <span class="hero-title-line"><span class="title-text">从</span><span class="title-keyword title-memory">记忆</span><span class="title-text">到生活与观察</span></span>
         </h1>
-
-        <p class="hero-desc">
-          基于完整 Hermes，增加长期记忆、生活状态、世界身体观察和个人文档。记忆可以跨会话使用、查看和纠正；第一版通过命令行或消息机器人聊天，认知判断只给建议，不自动行动。
-        </p>
+        <p class="hero-desc">长期记忆、生活状态、世界与身体观察、认知判断、个人文档，在同一个框架中配合。基于 Hermes，第一版通过命令行或消息机器人使用，各项能力按需配置。</p>
 
         <!-- 行动按钮组 -->
         <div class="hero-actions">
@@ -142,7 +139,8 @@
           </a>
         </div>
 
-        <!-- 极简命令行一键复制栏 -->
+        <p class="hero-install-note">先按<a href="#quickstart">上手指南</a>下载程序；进入程序文件夹后，运行安装命令。</p>
+        <!-- 安装命令复制栏 -->
         <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
           <span class="cmd-prefix">$</span>
           <code class="cmd-text">bash scripts/install.sh</code>
@@ -160,58 +158,69 @@
 
       </div>
 
-      <!-- 核心三大支柱卡片 (通透质感，自然三列) -->
-      <div class="features-grid">
-        <!-- 支柱 1 -->
-        <a href="#modules" class="feature-card spotlight-card">
-          <div class="card-icon-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-            </svg>
-          </div>
-          <div class="card-tag">MEMORY / LIFE</div>
-          <h3 class="card-title">记忆与生活连续性</h3>
-          <p class="card-desc">记忆可跨会话召回、纠正及停止使用；生活状态与入站审计持续保存。READY 表示装配可用，IDLE 不代表已在自主执行。</p>
-          <div class="card-footer-link">
-            <span>查阅规范</span>
-            <span>→</span>
-          </div>
+      <section class="capabilities-section" aria-labelledby="capabilities-title">
+        <div class="section-intro"><h2 id="capabilities-title">几种能力，一起构成数字个体</h2><p>从记住经历，到观察生活、理解请求和保存资料。下面分别说明第一版能做什么，以及需要怎样配置。</p></div>
+        <div class="features-grid">
+        <a href="#cli-reference" class="feature-card spotlight-card">
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-5 2 4 4 0 0 0-1 7 4 4 0 0 0 6 6V4z"/><path d="M15 4a3 3 0 0 1 5 2 4 4 0 0 1 1 7 4 4 0 0 1-6 6V4z"/></svg></div>
+          <div class="card-tag">MEMORY</div>
+          <h3 class="card-title">长期记忆</h3>
+          <p class="card-desc">从过去的个人经历中召回相关内容，查看、纠正或停止采用某条记忆。</p>
+          <p class="card-state">基础配置可启用 · 原始记录另行管理</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
         </a>
 
-        <!-- 支柱 2 -->
+        <a href="#configuration-section-3" class="feature-card spotlight-card">
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <div class="card-tag">LIFE</div>
+          <h3 class="card-title">生活状态</h3>
+          <p class="card-desc">保存收到的事件、生活状态和审计记录，重启后继续读取，向聊天提供状态观察。</p>
+          <p class="card-state">基础配置可启用 · 活动不自主执行</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
+        </a>
+
+        <a href="#modules-section-1" class="feature-card spotlight-card">
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a17 17 0 0 1 0 18 17 17 0 0 1 0-18"/></svg></div>
+          <div class="card-tag">WORLD / BODY</div>
+          <h3 class="card-title">世界与身体</h3>
+          <p class="card-desc">从独立服务读取有限世界中的位置、姿态与身体信号，为对话提供观察信息。</p>
+          <p class="card-state">需要连接服务 · 当前为只读观察</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
+        </a>
+
+        <a href="#modules-section-0" class="feature-card spotlight-card">
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M8 15a6 6 0 1 1 8 0c-1 1-1 2-1 3H9c0-1 0-2-1-3z"/></svg></div>
+          <div class="card-tag">COGNITION</div>
+          <h3 class="card-title">认知观察</h3>
+          <p class="card-desc">针对明确提出的请求，使用模型给出有限的判断和原因，保留预算与故障保护。</p>
+          <p class="card-state">可选开启 · 判断不直接执行动作</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
+        </a>
+
+        <a href="#modules-section-2" class="feature-card spotlight-card">
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
+          <div class="card-tag">WORKSPACE / SUPPLY</div>
+          <h3 class="card-title">个人文档与资源</h3>
+          <p class="card-desc">在个人工作空间中保存、读取独立文档，让资料拥有自己的位置与使用授权。</p>
+          <p class="card-state">需要资源服务与授权 · 装配限制见教程</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
+        </a>
+
         <a href="#privacy" class="feature-card spotlight-card">
-          <div class="card-icon-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-          </div>
-          <div class="card-tag">PRIVACY / DATA</div>
-          <h3 class="card-title">隐私与数据控制</h3>
-          <p class="card-desc">个人数据保存在自己的运行目录。远程模型与消息平台会处理所需内容；停止召回不等于擦除原始聊天或其他平台副本。</p>
-          <div class="card-footer-link">
-            <span>查阅规范</span>
-            <span>→</span>
-          </div>
+          <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <div class="card-tag">IDENTITY / DATA</div>
+          <h3 class="card-title">身份与数据边界</h3>
+          <p class="card-desc">显式绑定个人会话，分别管理记忆、文档与聊天记录。个人数据保存在自己的目录。</p>
+          <p class="card-state">模型与平台按设置处理所需内容</p>
+          <div class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></div>
         </a>
-
-        <!-- 支柱 3 -->
-        <a href="#status-matrix" class="feature-card spotlight-card">
-          <div class="card-icon-wrap">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="3"></circle>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-          </div>
-          <div class="card-tag">SHADOW / NOT EXECUTION</div>
-          <h3 class="card-title">Shadow 认知与边界</h3>
-          <p class="card-desc">真实模型可对明确请求作观察判断，受预算和故障保护。Shadow 不执行动作，也不主动联系；自主闭环仍是后续工程。</p>
-          <div class="card-footer-link">
-            <span>查阅规范</span>
-            <span>→</span>
-          </div>
-        </a>
-      </div>
-
+        </div>
+        <p class="capabilities-note">安装后的实际状态，可用 <code>/chiyo_status</code> 查看。自主活动与主动联系仍属于后续建设；查看<a href="#status-matrix">第一版功能与已知问题</a>。</p>
+      </section>
+      <section class="start-strip" aria-labelledby="start-title">
+        <div><h2 id="start-title">第一次使用，从一段对话开始</h2><p>下载程序 → 建立个人设置 → 收到第一句回复，再按需要连接其他模块。</p></div>
+        <a href="#quickstart" class="btn-secondary">跟着教程安装 <span aria-hidden="true">→</span></a>
+      </section>
 
       <!-- 极简固定页脚 (含 GitHub 与友情链接) -->
       <footer class="home-footer">
@@ -263,13 +272,13 @@
 
   <!-- 全局搜索模态弹窗 (Search Modal) -->
   <div id="search-modal" class="search-modal-backdrop">
-    <div class="search-modal-box">
+    <div class="search-modal-box" role="dialog" aria-modal="true" aria-label="搜索文档">
       <div class="search-modal-input-row">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--c-text-3);">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="search-input" class="search-modal-input" placeholder="搜索文档、概念、配置或命令..." autocomplete="off">
+        <input type="text" id="search-input" class="search-modal-input" aria-label="搜索文档、概念、配置或命令" placeholder="搜索文档、概念、配置或命令..." autocomplete="off">
         <kbd style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--c-text-3); background: var(--c-bg-subtle); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--c-border);">ESC</kbd>
       </div>
       <div id="search-results" class="search-modal-results">
@@ -279,7 +288,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261004-nyairo-domain"></script>
-  <script src="app.js?v=20261004-nyairo-domain"></script>
+  <script src="docs-data.js?v=20261004-nyairo-blue-framework-r2"></script>
+  <script src="app.js?v=20261004-nyairo-blue-framework-r2"></script>
 </body>
 </html>

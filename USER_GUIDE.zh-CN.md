@@ -9,18 +9,18 @@
 ### 先准备好这三样
 
 - 一台能上网的电脑。Windows 用户按下一章先装 Ubuntu；Linux 用户可以直接开始。
-- 一个可以使用的模型账号，以及它提供的密钥。模型负责生成回复，nyairo 负责记忆和生活状态。
+- 一个可以使用的模型账号，以及它提供的密钥。模型负责生成回复；nyairo 按配置提供记忆、生活状态，以及可选的观察、认知与文档能力。
 - 一点安装时间：第一次要下载程序需要的小工具，过程中保持网络连接。
 
 这里是使用教程。聊天要在电脑上的程序或你自己的 Telegram 机器人里进行。
 
 ### 照着这条路线安装
 
-1. Windows 用户先看 [在 Windows 上安装](#windows)，把 Ubuntu 打开。
-2. 在 [下载与安装](#linux) 中完成工具准备，再选择 Git 或 ZIP，**两种下载方法选一种就够了**。
-3. 接着 [设置并开始聊天](#configuration)，建立自己的数据文件夹，选择模型，再发一句话试试。
-4. 能正常聊天后，再按 [接入 Telegram](#telegram) 设置自己的机器人。
-5. 查看 [日常命令](#cli-reference)，试着查看、纠正和删除记忆。
+1. Windows 用户先看 [在 Windows 上安装](https://nyairo.com/#windows)，把 Ubuntu 打开。
+2. 在 [下载与安装](https://nyairo.com/#linux) 中完成工具准备，再选择 Git 或 ZIP，**两种下载方法选一种就够了**。
+3. 接着 [设置并开始聊天](https://nyairo.com/#configuration)，建立自己的数据文件夹，选择模型，再发一句话试试。
+4. 能正常聊天后，再按 [接入 Telegram](https://nyairo.com/#telegram) 设置自己的机器人。
+5. 查看 [日常命令](https://nyairo.com/#cli-reference)，试着查看、纠正和删除记忆。
 
 从 Git 和 ZIP 安装都使用同一个程序文件夹：`$HOME/apps/chiyo-v0.1`。后面的启动命令也使用它，跟着本文安装时无需改名字。
 
@@ -28,7 +28,7 @@
 
 安装完成只是第一步。能收到模型的真实回复，才说明聊天已经跑起来。
 
-输入 `/chiyo_status` 查看状态。记忆显示 READY 表示已准备好；生活显示 IDLE 表示当前没有正在进行的活动。其他功能显示 OFF 时，可以先继续聊天，之后按 [额外功能](#modules) 配置。
+输入 `/chiyo_status` 查看状态。记忆显示 READY 表示已准备好；生活显示 IDLE 表示当前没有正在进行的活动。其他功能显示 OFF 时，可以先继续聊天，之后按 [额外功能](https://nyairo.com/#modules) 配置。
 
 第一次先体验聊天、记忆和生活状态。世界身体、资源文档和“只给建议”的认知功能，需要另外设置。
 
@@ -44,7 +44,7 @@
 
 ### 第一版和 Hermes 的关系
 
-nyairo 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。nyairo 新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。
+nyairo 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。nyairo 探索的是持久数字个体：长期记忆、生活状态、世界与身体观察、认知判断和个人文档共同组成框架；各模块有自己的启用条件与边界。
 
 | 新增功能 | 用户能做什么 | 本版限制 |
 | --- | --- | --- |
@@ -71,8 +71,8 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 
 ### 先确认自己用哪种电脑
 
-- **Windows 电脑**：先安装 WSL 2。它相当于在 Windows 里准备一套能运行 Linux 程序的环境，本文使用 Ubuntu。具体步骤在 [Windows 安装](#windows)。
-- **Linux 电脑或服务器**：直接按 [下载与安装](#linux) 操作。工具安装命令以 Ubuntu / Debian 为例，其他系统需要使用自己的安装方式。
+- **Windows 电脑**：先安装 WSL 2。它相当于在 Windows 里准备一套能运行 Linux 程序的环境，本文使用 Ubuntu。具体步骤在 [Windows 安装](https://nyairo.com/#windows)。
+- **Linux 电脑或服务器**：直接按 [下载与安装](https://nyairo.com/#linux) 操作。工具安装命令以 Ubuntu / Debian 为例，其他系统需要使用自己的安装方式。
 - **macOS**：还没有单独完成整套安装检查，暂时不把它列为已验证的完整方案。
 
 目前提供的是源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 nyairo 已提供完整容器安装方案。
@@ -126,7 +126,7 @@ wsl --list --verbose
 
 ### 第三步：后面的命令都在 Ubuntu 里运行
 
-接下来打开 [下载与安装](#linux)，从准备工具开始做。里面的 `sudo`、`bash`、`export` 等命令，全部复制到 **Ubuntu 终端**，不要复制到 PowerShell。
+接下来打开 [下载与安装](https://nyairo.com/#linux)，从准备工具开始做。里面的 `sudo`、`bash`、`export` 等命令，全部复制到 **Ubuntu 终端**，不要复制到 PowerShell。
 
 本文把程序放在 Ubuntu 的用户目录里，把聊天数据放在另一个独立文件夹里；这样以后换程序版本时，个人记录仍有自己的保存位置。关于两个系统的文件位置，可看 [微软的 WSL 环境说明](https://learn.microsoft.com/windows/wsl/setup/environment)。
 
@@ -148,7 +148,7 @@ cd "$HOME/apps/chiyo-v0.1"
 
 第一次在窗口里启动程序时，请保持窗口和电脑运行。关闭正在运行聊天程序的终端，程序可能随之停止；Windows 关机、睡眠或执行 `wsl --shutdown`，也会让它离线。
 
-先把聊天跑通，再考虑长期开机或 [让程序在后台运行](#troubleshooting)。需要全天在线时，可以使用一直开机的 Linux 服务器，但仍要按自己的系统设置自动启动。
+先把聊天跑通，再考虑长期开机或 [让程序在后台运行](https://nyairo.com/#troubleshooting)。需要全天在线时，可以使用一直开机的 Linux 服务器，但仍要按自己的系统设置自动启动。
 
 
 ## 04 下载与安装
@@ -209,7 +209,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 如果提示目标文件夹已经存在，先确认那里是否有旧版本。不要为了重装就删除聊天数据；需要另用一个程序文件夹时，后面的 `cd` 路径也要相应改成它。
 
-接着打开 [设置并开始聊天](#configuration)。
+接着打开 [设置并开始聊天](https://nyairo.com/#configuration)。
 
 ### 方法 B：用 ZIP 下载并安装
 
@@ -235,7 +235,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；已经解压好了，就从 `cd` 这一行继续，不必重复解压。
 
-文件检查结果中的 `changed_or_missing` 应为 `[]`。如果不是，先重新核对下载来源和文件，不要删掉清单来跳过检查。随后打开 [设置并开始聊天](#configuration)。
+文件检查结果中的 `changed_or_missing` 应为 `[]`。如果不是，先重新核对下载来源和文件，不要删掉清单来跳过检查。随后打开 [设置并开始聊天](https://nyairo.com/#configuration)。
 
 程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
 
@@ -337,7 +337,7 @@ nano "$HOME/.chiyo-v1/SOUL.md"
 - `--memory`：打开长期记忆；安装器会关闭 Hermes 原本的自动记忆，避免两套记忆同时影响回复。
 - `--life`：保存生活状态和收到的事件，重启后继续读取。
 
-这些命令先准备聊天、记忆和生活状态。世界身体、资源文档和认知观察，按 [额外功能](#modules) 单独设置。
+这些命令先准备聊天、记忆和生活状态。世界身体、资源文档和认知观察，按 [额外功能](https://nyairo.com/#modules) 单独设置。
 
 
 ## 06 接入 Telegram
@@ -369,7 +369,7 @@ bash scripts/hermes.sh gateway setup
 仍在程序文件夹中复制运行：
 
 ```bash
-PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python -c &#x27;
+PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python -c '
 from gateway.config import Platform
 from gateway.session import SessionSource, build_session_key
 chat_id = input("Telegram DM chat ID: ").strip()
@@ -377,7 +377,7 @@ user_id = input("Telegram user ID: ").strip()
 source = SessionSource(platform=Platform.TELEGRAM, chat_type="dm",
                        chat_id=chat_id, user_id=user_id)
 print(build_session_key(source))
-&#x27;
+'
 ```
 
 复制最后打印的结果，再打开自己的配置文件：
@@ -644,7 +644,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 ### 提示 Unknown command：命令没认出来
 
-先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](#cli-reference) 的格式输入；nyairo 的命令使用 `/chiyo_*` 名称。
+先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](https://nyairo.com/#cli-reference) 的格式输入；nyairo 的命令使用 `/chiyo_*` 名称。
 
 旧 R16 版本存在下划线命令无法正确转交给插件的问题，R17 已修复；它不是用户输入错误。其他情况下，也可能是插件没加载、启动了另一个数据文件夹，或后台仍在运行旧版本。
 
@@ -652,7 +652,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 ### 提示没有绑定个人实例
 
-说明它认出了命令，但还不知道这个私聊是不是你自己的。按 [Telegram 第二步](#telegram) 核对个人绑定、所用数据文件夹和真实 ID，再重新启动连接程序。
+说明它认出了命令，但还不知道这个私聊是不是你自己的。按 [Telegram 第二步](https://nyairo.com/#telegram) 核对个人绑定、所用数据文件夹和真实 ID，再重新启动连接程序。
 
 不要把允许用户改成“所有人”来绕过个人记忆绑定。连接机器人和允许使用私人记忆，是两步不同的设置。
 
@@ -662,13 +662,13 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 确认两次启动使用同一个 `HERMES_HOME`，否则可能正在读另一套数据。当前图片、语音等多模态消息不会按这条文字入口形成长期记忆。
 
-不带参数输入 `/chiyo_memory` 时，公开候选可能给出错误的 `/memory` 帮助提示。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](#cli-reference) 中的 `/chiyo_memory`。
+不带参数输入 `/chiyo_memory` 时，公开候选可能给出错误的 `/memory` 帮助提示。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](https://nyairo.com/#cli-reference) 中的 `/chiyo_memory`。
 
 ### 世界或资源文档显示不可用
 
 先确认额外服务还在运行，配置里填的是连接文件的完整位置。世界服务与聊天程序要由同一个 Linux 账号启动；资源文档还需要单独批准权限。
 
-资源服务报 PermissionError 时，查看 [额外功能里的已知连接问题](#modules)。保存请求没有确认成功时，可用相同标题与正文重试，再按返回的文档 ID 读取核对。聊天里说“保存好了”，还不能代替实际读取结果。
+资源服务报 PermissionError 时，查看 [额外功能里的已知连接问题](https://nyairo.com/#modules)。保存请求没有确认成功时，可用相同标题与正文重试，再按返回的文档 ID 读取核对。聊天里说“保存好了”，还不能代替实际读取结果。
 
 ### 模型 401 或 Telegram 409
 
@@ -832,7 +832,7 @@ Hermes 自身继续保留 MIT；候选包保留 nyairo 已有 Apache-2.0 根许�
 4. 改了正文、脚本或样式，同时更新 index.html 里资源地址的 `?v=` 版本号，让浏览器重新取到新文件。
 5. 提交发布分支后，在 GitHub 的 Actions 页面等 **pages build and deployment** 完成。成功后打开 [文档网站](https://nyairo.com/)，实际检查首页、搜索、复制按钮和文档链接；手机上也检查导航。
 
-这叫“发布教程网站”。让聊天机器人长期开机，是另一个设置，按 [遇到问题怎么办](#troubleshooting) 中的后台运行说明处理。更多网站托管细节见 [GitHub Pages 官方说明](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)。
+这叫“发布教程网站”。让聊天机器人长期开机，是另一个设置，按 [遇到问题怎么办](https://nyairo.com/#troubleshooting) 中的后台运行说明处理。更多网站托管细节见 [GitHub Pages 官方说明](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)。
 
 
 ## 15 贡献、反馈与测试规则

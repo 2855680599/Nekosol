@@ -404,13 +404,14 @@ body {
 
 .hero-title-line { display: block; }
 .hero-title-line + .hero-title-line { margin-top: 0.06em; }
-.title-continuity { color: #e8d0f5; }
+.title-continuity { color: #91c5ff; }
+[data-theme="light"] .title-continuity { color: #245faf; }
 .title-memory {
   font-family: "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
   font-weight: 700;
-  color: #f1ddc4;
-  -webkit-text-stroke: 0.35px rgba(255, 245, 229, 0.45);
-  text-shadow: 2px 3px 0 rgba(173, 126, 90, 0.22);
+  color: #91c5ff;
+  -webkit-text-stroke: 0.35px rgba(185, 220, 255, 0.45);
+  text-shadow: 2px 3px 0 rgba(53, 110, 180, 0.22);
 }
 .title-memory::after {
   content: "";
@@ -426,7 +427,7 @@ body {
 }
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
   .title-continuity {
-    background-image: linear-gradient(110deg, #f4c7e3 10%, #faf7ff 36%, #c7bbef 58%, #f4c7e3 86%);
+    background-image: linear-gradient(110deg, #80baff 10%, #bddfff 36%, #6fa7f5 58%, #80baff 86%);
     background-size: 220% 100%;
     -webkit-background-clip: text;
     background-clip: text;
@@ -434,13 +435,13 @@ body {
     animation: title-pearl 8s ease-in-out infinite;
   }
   [data-theme="light"] .title-continuity {
-    background-image: linear-gradient(110deg, #99557d 10%, #6d5089 36%, #615ca0 58%, #99557d 86%);
+    background-image: linear-gradient(110deg, #1e5db3 10%, #276bc4 36%, #164d9b 58%, #1e5db3 86%);
   }
 }
 [data-theme="light"] .title-memory {
-  color: #795637;
-  -webkit-text-stroke-color: rgba(121, 86, 55, 0.18);
-  text-shadow: 2px 3px 0 rgba(163, 114, 68, 0.14);
+  color: #245faf;
+  -webkit-text-stroke-color: rgba(36, 95, 175, 0.18);
+  text-shadow: 2px 3px 0 rgba(36, 95, 175, 0.14);
 }
 @keyframes title-pearl {
   0%, 100% { background-position: 0% 50%; }
@@ -1111,6 +1112,7 @@ body {
    全局搜索弹窗 (Search Modal)
    ========================================================================== */
 .search-modal-backdrop {
+  visibility: hidden;
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
@@ -1127,6 +1129,7 @@ body {
 }
 
 .search-modal-backdrop.show {
+  visibility: visible;
   opacity: 1;
   pointer-events: auto;
 }
@@ -1264,3 +1267,27 @@ a:focus-visible, button:focus-visible {
 .brand-logo .brand-icon-on-light, .footer-logo.footer-logo-on-light { display:none; }
 [data-theme="light"] .brand-logo .brand-icon-on-dark, [data-theme="light"] .footer-logo.footer-logo-on-dark { display:none; }
 [data-theme="light"] .brand-logo .brand-icon-on-light, [data-theme="light"] .footer-logo.footer-logo-on-light { display:block; }
+
+/* 框架能力介绍：蓝色只用于标题，正文保持原有中性配色。 */
+.hero-install-note { color: var(--c-text-3); font-size: 0.8rem; margin-bottom: 12px; }
+.hero-install-note a, .capabilities-note a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.section-intro { margin-bottom: 24px; max-width: 720px; }
+.section-intro h2, .start-strip h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 8px; }
+.section-intro p, .start-strip p { color: var(--c-text-2); font-size: 0.92rem; line-height: 1.7; }
+.card-state { color: var(--c-text-3); font-size: 0.76rem; line-height: 1.6; border-top: 1px solid var(--c-divider); padding-top: 12px; margin-top: 16px; }
+.capabilities-note { color: var(--c-text-3); font-size: 0.84rem; line-height: 1.8; }
+.capabilities-note code { font-family: var(--font-mono); font-size: 0.8rem; }
+.start-strip { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px 0 8px; margin-top: 30px; border-top: 1px solid var(--c-divider); }
+.start-strip .btn-secondary { flex-shrink: 0; }
+.search-modal-input:focus-visible { outline: 2px solid #5e9de8; outline-offset: 4px; }
+.markdown-body h2[id], .markdown-body h3[id] { scroll-margin-top: calc(var(--header-height) + 24px); }
+@media (min-width: 769px) and (max-width: 1024px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 768px) {
+  .hero-title { font-size: clamp(27px, 7.5vw, 32px); }
+  .start-strip { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .footer-left, .footer-links { flex-wrap: wrap; justify-content: center; }
+  .pager-btn { min-width: 0; flex: 1 1 0; }
+  .page-pager { gap: 12px; }
+  .pager-title { overflow-wrap: anywhere; }
+  .search-modal-input { min-width: 0; }
+}

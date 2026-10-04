@@ -144,7 +144,7 @@ function routeHash() {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
-    document.title = 'nyairo · 持久化数字个体运行时';
+    document.title = 'nyairo · 数字个体框架';
     window.scrollTo({ top: 0, behavior: 'instant' });
     return;
   }
@@ -152,15 +152,19 @@ function routeHash() {
   if (homeView) homeView.style.display = 'none';
   if (docsView) docsView.style.display = 'flex';
 
-  if (rawHash === 'quickstart' && navQuickstart) {
+  const docId = docAnchorPage(rawHash);
+  if (docId === 'quickstart' && navQuickstart) {
     navQuickstart.classList.add('active');
-  } else if ((rawHash === 'status-matrix' || rawHash === 'current-status') && navStatus) {
+  } else if ((docId === 'status-matrix' || docId === 'current-status') && navStatus) {
     navStatus.classList.add('active');
   } else if (navDocs) {
     navDocs.classList.add('active');
   }
 
-  loadDoc(rawHash);
+  loadDoc(docId);
+  if (rawHash !== docId) {
+    document.getElementById(rawHash)?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }
 }
 
 function loadDoc(docId) {
@@ -219,6 +223,7 @@ function loadDoc(docId) {
 
   const sidebarEl = document.getElementById('docs-sidebar');
   if (sidebarEl) sidebarEl.classList.remove('open');
+  setMobileMenuState(false);
 
   window.scrollTo({ top: 0, behavior: 'instant' });
 }
@@ -328,6 +333,7 @@ function initSearch() {
 
   const closeSearch = () => {
     modalBackdrop.classList.remove('show');
+    searchBtn.focus();
   };
 
   searchBtn.addEventListener('click', openSearch);
@@ -341,10 +347,18 @@ function initSearch() {
       e.preventDefault();
       modalBackdrop.classList.contains('show') ? closeSearch() : openSearch();
     }
+    if (e.key === 'Tab' && modalBackdrop.classList.contains('show')) {
+      const focusable = [searchInput, ...resultsContainer.querySelectorAll('a')];
+      const first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
     if (e.key === 'Escape' && modalBackdrop.classList.contains('show')) {
       closeSearch();
     }
   });
+
+  resultsContainer.addEventListener('click', (e) => { if (e.target.closest('a')) closeSearch(); });
 
   searchInput.addEventListener('input', (e) => {
     renderSearchResults(e.target.value.trim().toLowerCase());
@@ -397,14 +411,33 @@ function initSearch() {
 /* ==========================================================================
    8. 移动端抽屉 (Mobile Drawer)
    ========================================================================== */
+function setMobileMenuState(open) {
+  const button = document.getElementById('mobile-toggle');
+  if (!button) return;
+  button.setAttribute('aria-expanded', String(open));
+  button.setAttribute('aria-label', open ? '关闭教程目录' : '打开教程目录');
+}
+
 function initMobileMenu() {
   const toggleBtn = document.getElementById('mobile-toggle');
   const sidebarEl = document.getElementById('docs-sidebar');
-
   if (!toggleBtn || !sidebarEl) return;
-
+  const close = () => { sidebarEl.classList.remove('open'); setMobileMenuState(false); };
   toggleBtn.addEventListener('click', () => {
-    sidebarEl.classList.toggle('open');
+    if (!location.hash || location.hash === '#home') {
+      window.addEventListener('hashchange', () => {
+        sidebarEl.classList.add('open');
+        setMobileMenuState(true);
+      }, { once: true });
+      location.hash = 'intro';
+      return;
+    }
+    const open = sidebarEl.classList.toggle('open');
+    setMobileMenuState(open);
+  });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebarEl.classList.contains('open')) { close(); toggleBtn.focus(); } });
+  document.addEventListener('click', (e) => {
+    if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target)) close();
   });
 }
 
