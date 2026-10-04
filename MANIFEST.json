@@ -12204,10 +12204,10 @@
     "website/assets/nyairo-icon-light.png": "038b12ff4e10657bbbae352734092f8d1c718b978d65efe407d3443485c6ae43",
     "website/assets/nyairo-icon.png": "d0acb1a43c2447a27259b1d4ff485674cfd97172f35c3b517248ace9be139a54",
     "website/docs-data.js": "b92e5b4967ca0d16fe1c9f95e6680368c4bbfef27458d82477fedb27a6c7fff2",
-    "website/index.html": "ac083657da7821cdab81747e700e0a2ff77c1a92c85fc2dff8987857d10aaeaf",
-    "website/style.css": "306f95a154cf980cbe39b6274edd6a820968ce8de9b3e1942b9b75791963160c"
+    "website/index.html": "a9160ac797dd06045b94f2cd322534559fa0ee02756866a0e91be42bb1a2cb5f",
+    "website/style.css": "8905b072b201b802d29b36a7af25e3f0bdbe872061c0ec5da7f63d457a6ed0ad"
   },
-  "tree_sha256": "617965f81c07d2efbb0eacadc64e8c489d0320d863634deaf4c462ce3f1e4654",
+  "tree_sha256": "c6d2cba525abf22ffc2605e4c147285efc32a09d862b37f174c0af026c024771",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",
