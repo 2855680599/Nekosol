@@ -100,7 +100,7 @@
     "components/alpha/tests/acceptance/b_core_demo.py": "97af9e06f6312a2ff670f47f55d23fcc4122da3dbb5861a2c7f443965806b334",
     "components/alpha/tests/acceptance/c_contact_demo.py": "c7aa233d543803dd4a2c78dce86a22a94c4f002773cbd5190b9b12c721cf540d",
     "components/alpha/tests/acceptance/d_semantics.py": "16955f78ff175c2d2fb46c339c66114b1fdc347a1b4d33d31731ef2867a4f403",
-    "components/alpha/tests/acceptance/e_safety.py": "3843a8797c0d19333e2a7e20e2ec8e15e7cf33e3da6b7ace72787cecf94bf020",
+    "components/alpha/tests/acceptance/e_safety.py": "d6412b06589579a7614acfb50910b00d2dbb299990fcc3202857407a8209996a",
     "components/alpha/tests/acceptance/f_regression.py": "ace00b245c5f3acf9e057d615aad25c057f6a3d2085c53d832b546fef275a63b",
     "components/alpha/tests/acceptance/run_all.py": "b832e3baeecbdd03e7b578a887d48960ea2f08f3823bb3a19fe30e7c2c159d6c",
     "components/alpha/third_party/hermes/gateway/channel_directory.py": "d8574cda2dcbe6750cbcecb1adf4f62d5cb4417893dea733a99c32142d9fd523",
@@ -12297,7 +12297,7 @@
     "website/style.css": "f9ce9a31bae04c9d602eae6fa575d573b9e26e1ccef1ed6d369695a17aa536fb",
     "website/USER_GUIDE.zh-CN.md": "de11eeef2e8d4c861cd5f389c8fbdc5f0c900839bbd64f888d858ed6b2053f5b"
   },
-  "tree_sha256": "77eb5704e4ad95aff70ff546001ff80347b98c87db32a08da882da92fde63e9f",
+  "tree_sha256": "a99b5c9454b1986d1ec382333b130b02f651dc50d8179552a1e5b7a9a627e734",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",

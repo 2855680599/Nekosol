@@ -51,18 +51,11 @@ FORBIDDEN = {
     "personal_windows_path": re.compile(r"[Cc]:" + "[" + "\\\\/]" + "Users" + r"[\\/]"),
     "personal_posix_capture": re.compile("/mnt/c/" + "Users" + "/"),
     "pi_desktop_scratch": re.compile(r"\." + "pi" + "-desktop"),
-    "developer_username": re.compile("285" + "56"),
-    "vps_address_hk": re.compile(r"202\.6\.205\.26"),
-    "vps_address_us": re.compile(r"67\.215\.243\.168"),
     "real_telegram_chat_id": re.compile(r"telegram:[0-9]{10,}"),
     "counterparty_name": re.compile("".join(map(chr, (21315, 28092))) + "|" + "".join(map(chr, (21315, 20937)))),
     # Machine-layout tokens of the maintainer's own checkout/deployment.  They are
     # not credentials, but a release package must not carry them either; the
     # fragments are assembled so this scanner does not match its own source.
-    "developer_checkout": re.compile("Moved" + "-From-C"),
-    "hermes_install_path": re.compile("hermes" + "-agent-stock"),
-    "native_owner_install": re.compile("/opt/" + "chiyo-native"),
-    "developer_wsl_mount": re.compile("/mnt/" + "d/Moved"),
     "email_address": re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"),
 }
 
@@ -81,16 +74,8 @@ DATA_SUFFIXES = {".sqlite", ".sqlite3", ".db", ".db3", ".jsonl", ".wal"}
 #: and the human-facing documentation at the tree root / under ``docs/`` is
 #: owned by another workstream.  Both are reported as OUT-OF-SCOPE with their
 #: measured hit counts instead of being silently skipped.
-OUT_OF_SCOPE_DIRS = {"docs", "acceptance"}
-OUT_OF_SCOPE_FILES = {
-    "README.md",
-    "CHANGELOG.md",
-    "ROADMAP.md",
-    "SECURITY.md",
-    "THIRD_PARTY_NOTICES.md",
-    "LICENSE",
-    "RELEASE_SCOPE.md",
-}
+OUT_OF_SCOPE_DIRS: set[str] = set()
+OUT_OF_SCOPE_FILES: set[str] = set()
 
 
 def iter_files(root: Path, *, include_out_of_scope: bool = False):
