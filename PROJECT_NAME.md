@@ -2,9 +2,9 @@
 
 2026-10-04，作者将开源框架正式名称从 Nekosol 改为 **nyairo**，英文品牌统一小写。千代是作者的私人数字个体，其人格、关系与私人数据不随框架发行。
 
-当前仓库：https://github.com/2855680599/nyairo
+当前仓库：https://github.com/L1AN929/nyairo
 
-当前教程：https://2855680599.github.io/nyairo/
+当前教程：https://nyairo.com/
 
 本次更新修改仓库名称、公开文档、网站和品牌图。Hermes、历史 CHIYO 技术接口、模块路径、命令、数据目录及版权来源记录保留兼容；不修改运行/测试源码，不迁移个人数据。
 

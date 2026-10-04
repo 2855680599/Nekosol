@@ -40,7 +40,7 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 | 方式 | 适合谁 | 目前情况 |
 | --- | --- | --- |
 | 发行 ZIP | 想使用一个固定、可校验的版本 | 当前已有候选 ZIP；发布后从 GitHub Releases 下载 |
-| Git 克隆 | 希望查看改动、贡献代码或切换版本 | 仓库 https://github.com/2855680599/nyairo；本次候选标签 v0.1.0-rc4 |
+| Git 克隆 | 希望查看改动、贡献代码或切换版本 | 仓库 https://github.com/L1AN929/nyairo；本次候选标签 v0.1.0-rc4 |
 
 Git 克隆不是再安装一份原生 Hermes。应克隆 nyairo 整个仓库，包括其中的 `vendor/hermes`、插件和组件，然后执行 nyairo 的安装脚本。
 
@@ -162,7 +162,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 使用本项目仓库与固定候选标签安装。若该候选尚未出现在公开发行页，先使用已交付 ZIP，不要换成上游仓库：
 
 ```bash
-CHIYO_REPOSITORY_URL="https://github.com/2855680599/nyairo.git"
+CHIYO_REPOSITORY_URL="https://github.com/L1AN929/nyairo.git"
 CHIYO_RELEASE="v0.1.0-rc4"
 git clone "$CHIYO_REPOSITORY_URL" "$HOME/apps/chiyo-source"
 cd "$HOME/apps/chiyo-source"
@@ -555,7 +555,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 开源前还要补什么
 
-本次发行拟使用仓库 https://github.com/2855680599/nyairo 与候选标签 v0.1.0-rc4。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。是否已公开，以仓库和发行页实际状态为准。公开后替换文档中的占位值，确认 Git 安装能从公开仓库运行，提供贡献与问题反馈说明，再让另一台电脑按文档完整安装。
+本次发行拟使用仓库 https://github.com/L1AN929/nyairo 与候选标签 v0.1.0-rc4。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。是否已公开，以仓库和发行页实际状态为准。公开后替换文档中的占位值，确认 Git 安装能从公开仓库运行，提供贡献与问题反馈说明，再让另一台电脑按文档完整安装。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。文档可以先详细准备好，公开发布仍以实际发行和验收为准。
 

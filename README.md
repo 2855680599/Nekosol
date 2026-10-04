@@ -40,10 +40,10 @@ bash scripts/hermes.sh
 
 R18 在已验收的 R17 上补齐作者确认的 Apache-2.0、Life Supply 正式许可、隐私说明和 17 篇教程网站；所有 Python、Shell、运行配置和 Hermes 源码与 R17 一致，没有声称重新运行过同一套全量测试。
 
-仓库：https://github.com/2855680599/nyairo 。发行候选标签：`v0.1.0-rc4`。公开状态以实际仓库和 Releases 为准。Git 方式与 ZIP 方式执行同一安装脚本：
+仓库：https://github.com/L1AN929/nyairo 。发行候选标签：`v0.1.0-rc4`。公开状态以实际仓库和 Releases 为准。Git 方式与 ZIP 方式执行同一安装脚本：
 
 ```bash
-git clone --branch v0.1.0-rc4 https://github.com/2855680599/nyairo.git chiyo-v0.1
+git clone --branch v0.1.0-rc4 https://github.com/L1AN929/nyairo.git chiyo-v0.1
 cd chiyo-v0.1
 bash scripts/install.sh
 ```

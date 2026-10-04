@@ -81,7 +81,7 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 
 **Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
-**ZIP 下载**：从 [GitHub Releases](https://github.com/2855680599/nyairo/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
+**ZIP 下载**：从 [GitHub Releases](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
 
 无论选哪种，都下载 nyairo 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
 
@@ -199,7 +199,7 @@ export UV_PYTHON=3.13
 ```bash
 mkdir -p "$HOME/apps"
 git clone --branch v0.1.0-rc4 --depth 1 \
-  https://github.com/2855680599/nyairo.git "$HOME/apps/chiyo-v0.1"
+  https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
 cd "$HOME/apps/chiyo-v0.1"
 bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
@@ -213,7 +213,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 ### 方法 B：用 ZIP 下载并安装
 
-如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/2855680599/nyairo/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
+如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
 
 先检查 ZIP 文件：
 
@@ -358,7 +358,7 @@ bash scripts/hermes.sh gateway setup
 
 选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
 
-如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/2855680599/nyairo/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
 
 ### 第二步：允许自己的私聊使用记忆
 
@@ -746,7 +746,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 公开后仍需验证什么
 
-公开仓库为 https://github.com/2855680599/nyairo ，已发布体验候选标签 `v0.1.0-rc4`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
+公开仓库为 https://github.com/L1AN929/nyairo ，已发布体验候选标签 `v0.1.0-rc4`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。本次网站维护同步了本页列出的定向复核结果；没有重新执行运行时全量测试，不把历史验收数字作为本次网站检查结果。
 
@@ -820,7 +820,7 @@ Hermes 自身继续保留 MIT；候选包保留 nyairo 已有 Apache-2.0 根许�
 5. 创建仓库、提交发行标签、上传可校验的源码与安装包；填上真实下载和仓库链接。
 6. 对公开地址再做一次克隆安装、链接检查与文档站发布检查，记录实际结果。
 
-公开下载以 https://github.com/2855680599/nyairo/releases 为准；已发布 `v0.1.0-rc4` 标签与资产保持原样。R18–R20 的许可证、教程与发布材料修订不代表重新运行了 R17 全量测试；公开地址克隆安装、CI 和长期自然使用的结果必须分别记录。
+公开下载以 https://github.com/L1AN929/nyairo/releases 为准；已发布 `v0.1.0-rc4` 标签与资产保持原样。R18–R20 的许可证、教程与发布材料修订不代表重新运行了 R17 全量测试；公开地址克隆安装、CI 和长期自然使用的结果必须分别记录。
 
 ### 怎样更新这个教程网站
 
