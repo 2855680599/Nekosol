@@ -1,0 +1,8 @@
+{
+  "name": "CHIYO_NATIVE_MEMORY_CONTEXT_ENABLED",
+  "missing": "OFF",
+  "invalid": "OFF",
+  "true_in_shadow": "provider still unchanged",
+  "live_injection": "OFF",
+  "pass": true
+}

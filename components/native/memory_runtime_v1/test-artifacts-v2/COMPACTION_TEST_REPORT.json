@@ -1,0 +1,7 @@
+{
+  "current_user_preserved": true,
+  "tool_chain_atomic": true,
+  "safe_truncation": true,
+  "failure_fallback": "bounded old-round truncation",
+  "pass": true
+}

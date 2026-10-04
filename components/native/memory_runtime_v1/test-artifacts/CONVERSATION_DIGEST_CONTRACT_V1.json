@@ -1,0 +1,7 @@
+{
+  "authority": "SUMMARY_OR_INTERPRETATION",
+  "history_role": "NONE",
+  "formation_eligible": false,
+  "source_lineage": "digest -> source rounds -> source events -> raw evidence",
+  "missing_source_behavior": "PARTIAL_OR_UNAVAILABLE"
+}

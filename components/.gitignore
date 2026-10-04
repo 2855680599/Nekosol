@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+*.env
+data/
+artifacts/
+*.sqlite*
+*.db
+*.jsonl
+*.log

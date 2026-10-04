@@ -1,0 +1,26 @@
+[Unit]
+Description=CHIYO World/Body service template
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=chiyo-world
+Group=chiyo-world
+WorkingDirectory=/opt/chiyo/world
+Environment="CHIYO_WORLD_RUNTIME=/opt/chiyo/world"
+Environment="CHIYO_WORLD_HOME=/var/lib/chiyo/world"
+Environment="HERMES_HOME=/var/lib/chiyo/world"
+Environment="BODY_RUNTIME_MODE=shadow"
+Environment="CHIYO_WORLD_BODY_AUTHORITY=shadow"
+Environment="CHIYO_BODY_READER_MODE=shadow"
+Environment="CHIYO_BODY_RUNTIME_ENABLED=0"
+Environment="CHIYO_WORLD_BODY_SUBSTRATE_ENABLED=0"
+Environment="CHIYO_WORLD_LIVING_SKELETON_ENABLED=0"
+ExecStart=/usr/bin/python3 /opt/chiyo/world/service/world_body_service.py run --tick-seconds 60
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=210
+
+[Install]
+WantedBy=multi-user.target

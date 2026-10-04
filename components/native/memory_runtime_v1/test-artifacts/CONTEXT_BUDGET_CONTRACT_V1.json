@@ -1,0 +1,14 @@
+{
+  "priority": [
+    "STABLE_SYSTEM",
+    "CURRENT_USER",
+    "TOOL_RESULT",
+    "RECENT_EXACT_HISTORY",
+    "EPHEMERAL_NATIVE_MEMORY",
+    "CONVERSATION_DIGEST",
+    "RUNTIME_STATE"
+  ],
+  "current_user_drop": false,
+  "tool_chain_split": false,
+  "safe_truncation_reason": "SAFE_TRUNCATION"
+}

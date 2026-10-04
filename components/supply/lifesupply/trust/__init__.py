@@ -1,0 +1,1 @@
+"""Trusted input boundary contracts."""

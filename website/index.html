@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>CHIYO · 持久化数字个体运行时</title>
+  <meta name="description" content="CHIYO (千代) Persistent Digital Individual 官方文档与架构指南。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 微弱背景网格与顶部柔光 -->
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+
+  <!-- 顶部导航栏 (Navbar) -->
+  <header class="site-header">
+    <div class="header-container">
+      <div class="header-left">
+        <button id="mobile-toggle" class="mobile-toggle" aria-label="打开侧边栏">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+        <a href="#home" class="site-brand" id="brand-link">
+          <div class="brand-logo">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-name">CHIYO</span>
+            <span class="brand-cn">千代</span>
+          </div>
+          <span class="brand-pill">DOCS</span>
+        </a>
+      </div>
+
+      <div class="header-right">
+        <!-- 搜索触发按钮 -->
+        <button id="search-trigger" class="search-trigger" title="搜索文档 (Ctrl+K)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <span>搜索文档...</span>
+          <kbd class="search-kbd">Ctrl K</kbd>
+        </button>
+
+        <nav class="nav-links">
+          <a href="#home" class="nav-link" id="nav-home">首页</a>
+          <a href="#intro" class="nav-link" id="nav-docs">使用教程</a>
+          <a href="#quickstart" class="nav-link" id="nav-quickstart">起步上手</a>
+          <a href="#status-matrix" class="nav-link" id="nav-status">功能状态</a>
+        </nav>
+
+        <div class="header-actions">
+          <!-- GitHub 链接 -->
+          <a href="https://github.com/2855680599/chiyo" target="_blank" rel="noopener noreferrer" class="icon-btn" title="查看 GitHub 仓库">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+            </svg>
+          </a>
+
+          <!-- 主题切换 -->
+          <button id="theme-toggle" class="icon-btn" title="切换模式">
+            <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="5"></circle>
+              <line x1="12" y1="1" x2="12" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="23"></line>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+              <line x1="1" y1="12" x2="3" y2="12"></line>
+              <line x1="21" y1="12" x2="23" y2="12"></line>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       视图 1: 首页视图 (Home View - 现代标准居中排版，呼吸感舒展)
+       ======================================================================== -->
+  <section id="view-home" class="home-view">
+    <div class="home-container">
+
+      <!-- Hero 主视觉区 -->
+      <div class="home-hero">
+        <!-- 顶部版本与架构通告栏 (现代开发者高光胶囊) -->
+        <div class="hero-banner-wrap">
+          <a href="#status-matrix" class="hero-status-banner" title="查看千代 v0.1 核心架构与门禁状态">
+            <span class="banner-beacon">
+              <span class="beacon-pulse"></span>
+              <span class="beacon-core"></span>
+            </span>
+            <span class="banner-chip font-mono">v0.1 · R19 候选</span>
+            <span class="banner-title">Persistent Digital Individual Runtime</span>
+            <span class="banner-arrow">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </a>
+        </div>
+
+        <!-- 核心大标题：挑字动态流光与立体质感 -->
+        <h1 class="hero-title">
+          <span class="title-text">让聊天拥有</span><span class="title-keyword">连续性</span><span class="title-text">与可管理的记忆</span>
+        </h1>
+
+        <p class="hero-desc">
+          基于完整 Hermes，增加个人长期记忆、生活连续性、只读世界身体、个人资源与 Shadow 认知。第一版沿用命令行和消息网关；自主活动与主动联系尚未开放。
+        </p>
+
+        <!-- 行动按钮组 -->
+        <div class="hero-actions">
+          <a href="#intro" class="btn-primary">
+            <span>查阅使用教程</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="#quickstart" class="btn-secondary">快速上手指南</a>
+          <a href="https://github.com/2855680599/chiyo" target="_blank" rel="noopener noreferrer" class="btn-ghost">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
+            </svg>
+            <span>GitHub</span>
+          </a>
+        </div>
+
+        <!-- 极简命令行一键复制栏 -->
+        <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
+          <span class="cmd-prefix">$</span>
+          <code class="cmd-text">bash scripts/install.sh</code>
+          <button class="cmd-copy-btn" id="hero-cmd-btn" aria-label="复制代码">
+            <svg class="copy-icon-default" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="copy-icon-success" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 千代时空晶核交互装置 (Chrono-Core 3D Engine) -->
+        <div class="chrono-stage" id="chrono-stage">
+          <div class="chrono-canvas-wrap">
+            <canvas id="chrono-canvas" class="chrono-canvas" width="600" height="260"></canvas>
+            <!-- 环绕微标 -->
+            <div class="chrono-badge-item badge-life">
+              <span class="c-dot"></span>
+              <span class="font-mono">LR // LIFE-RUNTIME</span>
+            </div>
+            <div class="chrono-badge-item badge-reality">
+              <span class="c-dot"></span>
+              <span class="font-mono">AR // ACTION-REALITY</span>
+            </div>
+            <div class="chrono-badge-item badge-agency">
+              <span class="c-dot"></span>
+              <span class="font-mono">AG // LEGAL-AGENCY</span>
+            </div>
+            <div class="chrono-hint font-mono">DRAG OR MOVE TO ROTATE · CLICK TO PULSE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 核心三大支柱卡片 (通透质感，自然三列) -->
+      <div class="features-grid">
+        <!-- 支柱 1 -->
+        <a href="#modules" class="feature-card spotlight-card">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+          </div>
+          <div class="card-tag">MEMORY / LIFE</div>
+          <h3 class="card-title">记忆与生活连续性</h3>
+          <p class="card-desc">记忆可跨会话召回、纠正及停止使用；生活状态与入站审计持续保存。READY 表示装配可用，IDLE 不代表已在自主执行。</p>
+          <div class="card-footer-link">
+            <span>查阅规范</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- 支柱 2 -->
+        <a href="#privacy" class="feature-card spotlight-card">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div class="card-tag">PRIVACY / DATA</div>
+          <h3 class="card-title">隐私与数据控制</h3>
+          <p class="card-desc">个人数据保存在自己的运行目录。远程模型与消息平台会处理所需内容；停止召回不等于擦除原始聊天或其他平台副本。</p>
+          <div class="card-footer-link">
+            <span>查阅规范</span>
+            <span>→</span>
+          </div>
+        </a>
+
+        <!-- 支柱 3 -->
+        <a href="#status-matrix" class="feature-card spotlight-card">
+          <div class="card-icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </div>
+          <div class="card-tag">SHADOW / NOT EXECUTION</div>
+          <h3 class="card-title">Shadow 认知与边界</h3>
+          <p class="card-desc">真实模型可对明确请求作观察判断，受预算和故障保护。Shadow 不执行动作，也不主动联系；自主闭环仍是后续工程。</p>
+          <div class="card-footer-link">
+            <span>查阅规范</span>
+            <span>→</span>
+          </div>
+        </a>
+      </div>
+
+
+      <!-- 极简固定页脚 (含 GitHub 与友情链接) -->
+      <footer class="home-footer">
+        <div class="footer-left">
+          <span class="footer-brand">CHIYO</span>
+          <span class="footer-copy">© 2026 Persistent Digital Individual. Hermes + CHIYO · 已验收范围见文档。</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/2855680599/chiyo" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+          <span class="footer-sep">/</span>
+          <a href="#intro">设计文档</a>
+          <span class="footer-sep">/</span>
+          <a href="#quickstart">快速开始</a>
+          <span class="footer-sep">/</span>
+          <a href="#status-matrix">规划路线</a>
+          <span class="footer-sep">/</span>
+          <a href="#privacy">隐私说明</a>
+        </div>
+      </footer>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       视图 2: 文档阅读视图 (Docs View - 三栏流式布局)
+       ======================================================================== -->
+  <div id="view-docs" class="docs-layout" style="display: none;">
+    <!-- 左侧边栏：文档目录树 -->
+    <aside id="docs-sidebar" class="docs-sidebar">
+      <!-- 由 app.js 动态渲染 DOCS_TREE -->
+    </aside>
+
+    <!-- 中间正文阅读区 -->
+    <main class="docs-content">
+      <div class="content-inner" id="doc-container">
+        <!-- 由 app.js 动态加载当前选中文档内容 -->
+      </div>
+    </main>
+
+    <!-- 右侧边栏：本页目录 (On This Page) -->
+    <aside class="docs-aside">
+      <div class="aside-title">本页目录</div>
+      <ul id="toc-list" class="toc-list">
+        <!-- 由 app.js 动态解析当前正文 h2/h3 -->
+      </ul>
+    </aside>
+  </div>
+
+  <!-- 全局搜索模态弹窗 (Search Modal) -->
+  <div id="search-modal" class="search-modal-backdrop">
+    <div class="search-modal-box">
+      <div class="search-modal-input-row">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 10px; color: var(--c-text-3);">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" class="search-modal-input" placeholder="搜索文档、概念、配置或命令..." autocomplete="off">
+        <kbd style="font-family: var(--font-mono); font-size: 0.65rem; color: var(--c-text-3); background: var(--c-bg-subtle); padding: 1px 5px; border-radius: 3px; border: 1px solid var(--c-border);">ESC</kbd>
+      </div>
+      <div id="search-results" class="search-modal-results">
+        <!-- 实时搜索结果列表 -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 引入文档数据与逻辑控制器 -->
+  <script src="docs-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

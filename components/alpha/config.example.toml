@@ -1,0 +1,71 @@
+# CHIYO configuration example (release candidate).
+#
+# This file documents every knob the alpha reads.  It contains NO real values:
+# there is no credential, no chat id, no host name and no path from any
+# deployment in it.  Copy it to `chiyo.toml` and edit only what you need.
+#
+# NOTHING IN THIS FILE CAN ENABLE A REAL OUTBOUND SEND.  The proactive Contact
+# pipeline in this alpha is ISOLATED ONLY: the Telegram boundary refuses the
+# production destination and the submission gate is closed unless a caller
+# explicitly constructs a declared test gate in-process.  No configuration key
+# can arm it.
+
+[chiyo]
+# Where stores are created.  Every store is created under this directory; the
+# demos create their own throw-away sub-directory inside it.
+# Environment override: CHIYO_DATA_DIR
+data_dir = "~/.chiyo"
+
+# ---------------------------------------------------------------------------
+# The four kill switches.
+#
+# The shipped default is ALL FALSE, and the runtime refuses to run the full
+# loop unless a switch is explicitly armed.  `chiyo doctor` FAILS if any of
+# these is ON in the environment, because the alpha must ship all-OFF.
+#
+# These are read from the ENVIRONMENT, never from this file, so that a config
+# file can never arm a running runtime by accident:
+#   LIFE_RUNTIME_ENABLED     - run the full Life Runtime loop
+#   AGENCY_ENABLED           - run AG-0 candidates / AG-1 decisions / adoption
+#   ACTION_EXECUTION_ENABLED - allow crossing an external Action submission fence
+#   PROACTIVE_ENABLED        - allow proactive outbound contact
+# ---------------------------------------------------------------------------
+[kill_switches]
+life_runtime_enabled = false
+agency_enabled = false
+action_execution_enabled = false
+proactive_enabled = false
+
+# ---------------------------------------------------------------------------
+# Isolated runtime roots.
+#
+# Left empty, the vendored tree is used (see chiyo/_vendor_paths.py): the
+# canonical owners live in `chiyo/life_runtime`, the frozen contact stack in
+# `chiyo/contact`.  Override only when you deliberately point the adapters at
+# another checkout of the same modules.
+# ---------------------------------------------------------------------------
+[runtime]
+# CHIYO_CANONICAL_RUNTIME_ROOT / CT0_10_RUNTIME (->
+# <root>/scripts must exist; the vendored tree satisfies this)
+runtime_root = ""
+# CT0_CONTACT_CONTRACT_ROOT (the frozen CT0-9 contact contracts)
+contact_contract_root = ""
+# CT0_10_ISO_ROOT: every store root must live under a non-production namespace
+# or the runtime refuses to open it (ProductionPathRefusedError)
+isolated_root = ""
+
+# ---------------------------------------------------------------------------
+# Action Reality / transport.
+#
+# In this alpha the ONLY message transport is the in-tree recording fake
+# (action_reality_ledger.FakeMessageProvider) reached through the in-tree
+# recording adapter.  There is no network transport to configure.
+# ---------------------------------------------------------------------------
+[action_reality]
+message_transport = "in_tree_recording_fake"
+allow_network = false
+
+[contact]
+# ISOLATED ONLY.  "production" is intentionally NOT an accepted value.
+profile = "ISOLATED_TEST_OPEN"
+allow_real_telegram_send = false

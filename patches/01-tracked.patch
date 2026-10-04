@@ -1,0 +1,1486 @@
+--- a/agent/agent_init.py
++++ b/agent/agent_init.py
+@@ -1973,6 +1973,7 @@
+                 platform=agent.platform or "cli", model=agent.model,
+                 context_length=getattr(agent.context_compressor, "context_length", 0),
+                 conversation_id=getattr(agent, "_gateway_session_key", None),
++                **({"parent_session_id": agent._parent_session_id} if getattr(agent, "_parent_session_id", None) else {}),
+             )
+         except Exception as _ce_err:
+             _ra().logger.debug("Context engine on_session_start: %s", _ce_err)
+--- a/gateway/run.py
++++ b/gateway/run.py
+@@ -4187,7 +4187,7 @@
+     _HONCHO_CACHE_BUSTING_KEYS = (
+         "honcho.peer_name", "honcho.ai_peer", "honcho.pin_peer_name", "honcho.runtime_peer_prefix",
+         "honcho.user_peer_aliases")
+-    _HONCHO_CACHE_BUSTING_MEMO: dict[tuple[str, int | None], dict[str, Any]] = {}
++    _HONCHO_CACHE_BUSTING_MEMO: dict[tuple[str, str | None], dict[str, Any]] = {}
+ 
+     @staticmethod
+     def _init_cached_agent_for_turn(agent: Any, interrupt_depth: int) -> None:
+--- a/gateway/run_agent_cache.py
++++ b/gateway/run_agent_cache.py
+@@ -5,6 +5,7 @@
+ from __future__ import annotations
+ 
+ import importlib
++import hashlib
+ import logging
+ import threading
+ import time
+@@ -48,11 +49,12 @@
+         try:
+             from plugins.memory.honcho.client import HonchoClientConfig, resolve_config_path
+             path = resolve_config_path()
++            # Identity edits must invalidate the agent even on coarse-mtime filesystems.
+             try:
+-                mtime_ns = path.stat().st_mtime_ns
++                content_key = hashlib.sha256(path.read_bytes()).hexdigest()
+             except OSError:
+-                mtime_ns = None
+-            memo_key = (str(path), mtime_ns)
++                content_key = None
++            memo_key = (str(path), content_key)
+             cached = cls._HONCHO_CACHE_BUSTING_MEMO.get(memo_key)
+             if cached is not None:
+                 return dict(cached)
+--- a/gateway/run_inbound.py
++++ b/gateway/run_inbound.py
+@@ -974,14 +974,17 @@
+                 return True, f"Quick command '/{command}' has no target defined.", command
+             command = new_command  # Fall through to normal command dispatch below
+ 
+-        # Plugin-registered slash commands. Underscores normalize to hyphens so Telegram's
+-        # underscored autocomplete form matches plugin commands registered with hyphens.
++        # Preserve exact plugin names; only fall back to Telegram's underscored
++        # spelling of a hyphenated command when no exact registration exists.
+         if command:
+             try:
+                 from hermes_cli.plugins import get_plugin_command_handler
+-                plugin_handler = get_plugin_command_handler(command.replace("_", "-"))
++                plugin_handler = get_plugin_command_handler(command)
++                if plugin_handler is None and "_" in command:
++                    plugin_handler = get_plugin_command_handler(command.replace("_", "-"))
+                 if plugin_handler:
+-                    result = plugin_handler(event.get_command_args().strip())
++                    from hermes_cli.plugins_dispatch import invoke_plugin_command
++                    result = invoke_plugin_command(plugin_handler, event.get_command_args().strip(), source=source)
+                     if asyncio.iscoroutine(result):
+                         result = await result
+                     return True, str(result) if result else None, command
+--- a/hermes_cli/config.py
++++ b/hermes_cli/config.py
+@@ -1933,6 +1933,14 @@
+         return data if want_deepcopy else cached_copy
+ 
+ 
++def invalidate_config_cache(config_path: Optional[Path] = None) -> None:
++    """Explicit reload must observe edits even when filesystem timestamps did not advance."""
++    with _CONFIG_LOCK:
++        key = str(config_path or get_config_path())
++        _RAW_CONFIG_CACHE.pop(key, None)
++        _LOAD_CONFIG_CACHE.pop(key, None)
++
++
+ def read_raw_config() -> Dict[str, Any]:
+     """Read config.yaml as-is (no defaults merged, no migration); ``{}`` if missing/unparseable.
+     Cached on (mtime_ns, size); returns a deepcopy since callers mutate before ``save_config()``."""
+--- a/hermes_cli/plugins_dispatch.py
++++ b/hermes_cli/plugins_dispatch.py
+@@ -19,6 +19,15 @@
+ from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Union
+ 
+ from hermes_cli.middleware import OBSERVER_SCHEMA_VERSION
++
++def invoke_plugin_command(callback, raw_args, **context):
++    """Pass trusted caller context to opt-in handlers; keep raw-args handlers compatible."""
++    params=inspect.signature(callback).parameters
++    accepts_kwargs=any(p.kind is inspect.Parameter.VAR_KEYWORD for p in params.values())
++    supported=context if accepts_kwargs else {k:v for k,v in context.items() if k in params and
++        params[k].kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD,inspect.Parameter.KEYWORD_ONLY)}
++    return callback(raw_args,**supported)
++
+ 
+ logger = logging.getLogger("hermes_cli.plugins")
+ 
+--- a/mcp_serve.py
++++ b/mcp_serve.py
+@@ -49,11 +49,18 @@
+     return _hermes_home() / "sessions"
+ 
+ 
+-def _read_state_db_mtime() -> float:
+-    try:
+-        return (_hermes_home() / "state.db").stat().st_mtime
+-    except OSError:  # missing file included
+-        return 0.0
++def _read_state_db_mtime() -> tuple:
++    """Cheap change token for both rollback-journal and WAL-backed profiles.
++    WAL commits do not update the main database until a checkpoint."""
++    database = _hermes_home() / "state.db"
++    signature = []
++    for path in (database, database.with_name(database.name + "-wal")):
++        try:
++            st = path.stat()
++            signature.append((st.st_ino, st.st_mtime_ns, st.st_size))
++        except OSError:
++            signature.append(None)
++    return tuple(signature)
+ 
+ 
+ def _read_json(path: Path):
+@@ -395,7 +402,7 @@
+     def _poll_once(self, db):
+         """Check for new messages across all sessions.
+ 
+-        One state.db mtime check gates all work, making 200ms polling nearly free.
++        One state.db/WAL change-token check gates all work, making 200ms polling nearly free.
+         The routing index lives in the same file as the messages, so a new
+         conversation and its first message land under a single mtime change (no
+         dual-file race that could drop brand-new conversations).
+--- a/scripts/run_tests_parallel.py
++++ b/scripts/run_tests_parallel.py
+@@ -399,7 +399,7 @@
+     # One root for each subprocess removes the shared directory that the race
+     # needs. The parent deletes the root after the attempt.
+     env = os.environ.copy()
+-    temproot = tempfile.mkdtemp(prefix="hermes-pytest-tmproot-")
++    temproot = tempfile.mkdtemp(prefix="hpt-")
+     env["PYTEST_DEBUG_TEMPROOT"] = temproot
+ 
+     subproc_start = time.monotonic()
+--- a/tests/agent/test_compression_worker_isolation_76354.py
++++ b/tests/agent/test_compression_worker_isolation_76354.py
+@@ -83,7 +83,7 @@
+     # Fast host timeout for the owned wrapper.
+     monkeypatch.setattr(
+         "agent.conversation_compression.resolve_context_compression_timeouts",
+-        lambda cfg=None: (0.6, 1.2),
++        lambda cfg=None: (0.6, 30.0),
+     )
+ 
+     engine_started = threading.Event()
+@@ -100,6 +100,21 @@
+ 
+     agent.context_compressor.compress.side_effect = _mutating_engine
+ 
++    # This test times out an engine that has actually begun mutating its
++    # snapshot. Cold checkpoint preparation must not consume that idle window.
++    from agent import conversation_compression as cc
++    executor = cc._get_compress_timeout_executor()
++    worker_futures = []
++
++    class _EngineReadyExecutor:
++        def submit(self, fn, fence):
++            future = executor.submit(fn, fence)
++            worker_futures.append(future)
++            assert engine_started.wait(timeout=5), "mutating engine never started"
++            fence.touch_progress()
++            return future
++
++    monkeypatch.setattr(cc, "_get_compress_timeout_executor", _EngineReadyExecutor)
+     live = [{"role": "user", "content": f"m{i}"} for i in range(20)]
+     baseline = copy.deepcopy(live)
+ 
+@@ -122,6 +137,9 @@
+         assert live == baseline
+     finally:
+         release_engine.set()
++        from concurrent.futures import wait
++        _done, pending = wait(worker_futures, timeout=5)
++        assert not pending, "mutating engine worker did not exit after release"
+     # After the late worker finishes, the live transcript must STILL be
+     # untouched (publication only on admitted commit — which was cancelled).
+     deadline = time.time() + 5
+@@ -159,7 +177,7 @@
+     agent._cached_system_prompt = "sys"
+     monkeypatch.setattr(
+         "agent.conversation_compression.resolve_context_compression_timeouts",
+-        lambda cfg=None: (0.05, 0.1),
++        lambda cfg=None: (0.05, 30.0),
+     )
+ 
+     provider_started = threading.Event()
+@@ -176,6 +194,21 @@
+ 
+     agent.context_compressor.compress.side_effect = _compress_with_protected_provider
+     live = [{"role": "user", "content": f"m{i}"} for i in range(20)]
++
++    # This scenario times out an ALREADY blocked provider, not cold plugin /
++    # SQLite setup. Start the real pool worker and use its provider-entry
++    # event as the readiness barrier before the host begins its idle wait.
++    # Keep the 50ms idle budget and real timeout/cancellation/admission path.
++    executor = cc._get_compress_timeout_executor()
++
++    class _ProviderReadyExecutor:
++        def submit(self, fn, fence):
++            future = executor.submit(fn, fence)
++            assert provider_started.wait(timeout=5)
++            fence.touch_progress()
++            return future
++
++    monkeypatch.setattr(cc, "_get_compress_timeout_executor", _ProviderReadyExecutor)
+ 
+     try:
+         returned, _sp = agent._compress_context(
+--- a/tests/agent/test_vision_routing_31179.py
++++ b/tests/agent/test_vision_routing_31179.py
+@@ -179,6 +179,12 @@
+   default: deepseek-v4-pro
+ """)
+         monkeypatch.setenv("DEEPSEEK_API_KEY", "sk-test")
++        from agent.models_dev import ModelCapabilities
++        # Model-capability fixture pins this text-only scenario independently
++        # of a changing external model catalog and offline cache availability.
++        monkeypatch.setattr("agent.models_dev.get_model_capabilities", lambda provider, model, **kw: (
++            ModelCapabilities(supports_vision=False) if provider == "deepseek" else None
++        ))
+         _fresh_modules()
+ 
+         from agent.auxiliary_client import resolve_vision_provider_client
+--- a/tests/computer_use/test_cua_no_overlay.py
++++ b/tests/computer_use/test_cua_no_overlay.py
+@@ -86,7 +86,8 @@
+         monkeypatch.setenv("DISPLAY", ":0")
+         monkeypatch.setenv("WAYLAND_DISPLAY", "wayland-0")
+         monkeypatch.setenv("XDG_SESSION_TYPE", "wayland")
+-        with patch("hermes_cli.config.load_config", return_value={}):
++        with patch("hermes_cli.config.load_config", return_value={}), \
++             patch("builtins.open", mock_open(read_data="Linux native kernel")):
+             assert cua_backend._cua_no_overlay() is False
+ 
+     @pytest.mark.linux_only
+--- a/tests/cron/test_parallel_pool.py
++++ b/tests/cron/test_parallel_pool.py
+@@ -6,7 +6,6 @@
+ 
+ import concurrent.futures
+ import threading
+-import time
+ from unittest.mock import patch
+ 
+ import pytest
+@@ -248,11 +247,17 @@
+             "deliver": "local",
+         }
+ 
+-        barrier = threading.Barrier(2, timeout=5)
++        started = threading.Event()
++        release = threading.Event()
++        finished = threading.Event()
+ 
+         def slow_run(j, *, defer_agent_teardown=None, **_kw):
+-            barrier.wait()  # blocks until test thread also waits
+-            return True, "out", "resp", None
++            started.set()
++            try:
++                assert release.wait(timeout=30), "test did not release blocked job"
++                return True, "out", "resp", None
++            finally:
++                finished.set()
+ 
+         monkeypatch.setattr(sched, "get_due_jobs", lambda: [job])
+         monkeypatch.setattr(sched, "claim_job_for_fire", lambda *_a, **_kw: True)
+@@ -261,17 +266,22 @@
+         monkeypatch.setattr(sched, "mark_job_run", lambda *_a, **_kw: None)
+         monkeypatch.setattr(sched, "_deliver_result", lambda *_a, **_kw: None)
+ 
+-        start = time.monotonic()
+-        n = sched.tick(verbose=False, sync=False)  # opt-in: non-blocking
+-        elapsed = time.monotonic() - start
+-
+-        assert n == 1  # optimistic count
+-        assert elapsed < 1.0  # returned immediately, didn't wait for slow_run
+-
+-        # Let the job finish so cleanup works.
+-        barrier.wait()
+-        time.sleep(0.1)
+-        sched._shutdown_parallel_pool()
++        try:
++            n = sched.tick(verbose=False, sync=False)
++            assert n == 1  # optimistic count
++            assert started.wait(timeout=30), "parallel worker never started"
++            assert not finished.is_set(), "tick waited for the blocked job"
++            assert "slow-job" in sched._running_job_ids
++        finally:
++            # Release even when an assertion fails, then join the real pool.
++            release.set()
++            pool = sched._parallel_pool
++            sched._shutdown_parallel_pool()
++            if pool is not None:
++                pool.shutdown(wait=True)
++        assert finished.is_set()
++        assert "slow-job" not in sched._running_job_ids
++
+ 
+ 
+ class TestWorkdirParallelPool:
+@@ -296,11 +306,17 @@
+             "workdir": str(tmp_path),
+         }
+ 
+-        barrier = threading.Barrier(2, timeout=5)
++        started = threading.Event()
++        release = threading.Event()
++        finished = threading.Event()
+ 
+         def slow_run(j, *, defer_agent_teardown=None, **_kw):
+-            barrier.wait()
+-            return True, "out", "resp", None
++            started.set()
++            try:
++                assert release.wait(timeout=30), "test did not release blocked job"
++                return True, "out", "resp", None
++            finally:
++                finished.set()
+ 
+         monkeypatch.setattr(sched, "get_due_jobs", lambda: [job])
+         monkeypatch.setattr(sched, "claim_job_for_fire", lambda *_a, **_kw: True)
+@@ -309,16 +325,20 @@
+         monkeypatch.setattr(sched, "mark_job_run", lambda *_a, **_kw: None)
+         monkeypatch.setattr(sched, "_deliver_result", lambda *_a, **_kw: None)
+ 
+-        start = time.monotonic()
+-        n = sched.tick(verbose=False, sync=False)
+-        elapsed = time.monotonic() - start
+-
+-        assert n == 1  # optimistic count
+-        assert elapsed < 1.0  # did NOT block on the slow workdir job
+-
+-        barrier.wait()
+-        time.sleep(0.1)
+-        sched._shutdown_parallel_pool()
++        try:
++            n = sched.tick(verbose=False, sync=False)
++            assert n == 1  # optimistic count
++            assert started.wait(timeout=30), "parallel workdir worker never started"
++            assert not finished.is_set(), "tick waited for the blocked workdir job"
++            assert "slow-workdir" in sched._running_job_ids
++        finally:
++            release.set()
++            pool = sched._parallel_pool
++            sched._shutdown_parallel_pool()
++            if pool is not None:
++                pool.shutdown(wait=True)
++        assert finished.is_set()
++        assert "slow-workdir" not in sched._running_job_ids
+ 
+     def test_workdir_running_guard_prevents_double_dispatch(self, tmp_path, monkeypatch):
+         """A workdir job already in _running_job_ids is skipped on next tick."""
+--- a/tests/gateway/test_browser_control_api.py
++++ b/tests/gateway/test_browser_control_api.py
+@@ -71,6 +71,17 @@
+         "/v1/browser-control/ws", adapter._handle_browser_control_ws
+     )
+     return app
++
++
++async def _connected_controller(client, *args, **kwargs):
++    """HTTP upgrade completes before the server's async broker attachment.
++    The protocol heartbeat proves attachment before issuing a command."""
++    ws = await client.ws_connect(*args, **kwargs)
++    nonce = "controller-fixture-ready"
++    await ws.send_json({"method": "browser.controller.heartbeat", "params": {"nonce": nonce}})
++    reply = await ws.receive_json(timeout=2.0)
++    assert reply == {"method": "browser.controller.heartbeat", "params": {"nonce": nonce, "ok": True}}
++    return ws
+ 
+ 
+ def _registration_body(**overrides):
+@@ -357,7 +368,7 @@
+         ticket = (await response.json())["ticket"]
+         monkeypatch.setattr(adapter, "_browser_control_enabled", lambda: False)
+         with pytest.raises(WSServerHandshakeError) as disabled:
+-            await client.ws_connect(
++            await _connected_controller(client, 
+                 "/v1/browser-control/ws",
+                 protocols=[CONTROL_PROTOCOL, _ticket_protocol(ticket)],
+             )
+@@ -367,9 +378,9 @@
+         # consume the one-shot credential.
+         monkeypatch.setattr(adapter, "_browser_control_enabled", lambda: True)
+         with pytest.raises(WSServerHandshakeError) as query_ticket:
+-            await client.ws_connect(f"/v1/browser-control/ws?ticket={ticket}")
++            await _connected_controller(client, f"/v1/browser-control/ws?ticket={ticket}")
+         assert query_ticket.value.status == 401
+-        ws = await client.ws_connect(
++        ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(ticket)],
+         )
+@@ -400,7 +411,7 @@
+             "browser_navigate",
+         }
+ 
+-        ws = await client.ws_connect(
++        ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(registration["ticket"])],
+         )
+@@ -474,7 +485,7 @@
+         await ws.close()
+ 
+         with pytest.raises(WSServerHandshakeError) as replay:
+-            await client.ws_connect(
++            await _connected_controller(client, 
+                 "/v1/browser-control/ws",
+                 protocols=[CONTROL_PROTOCOL, _ticket_protocol(registration["ticket"])],
+             )
+@@ -493,7 +504,7 @@
+         )
+         assert response.status == 201
+         registration = await response.json()
+-        ws = await client.ws_connect(
++        ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(registration["ticket"])],
+         )
+@@ -550,7 +561,7 @@
+             headers={"Authorization": f"Bearer {API_KEY}"},
+         )
+         first = await first_response.json()
+-        first_ws = await client.ws_connect(
++        first_ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(first["ticket"])],
+         )
+@@ -580,7 +591,7 @@
+             headers={"Authorization": f"Bearer {API_KEY}"},
+         )
+         second = await second_response.json()
+-        second_ws = await client.ws_connect(
++        second_ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(second["ticket"])],
+         )
+@@ -609,7 +620,7 @@
+             headers={"Authorization": f"Bearer {API_KEY}"},
+         )
+         first = await first_response.json()
+-        first_ws = await client.ws_connect(
++        first_ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(first["ticket"])],
+         )
+@@ -619,7 +630,7 @@
+             headers={"Authorization": f"Bearer {API_KEY}"},
+         )
+         second = await second_response.json()
+-        second_ws = await client.ws_connect(
++        second_ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(second["ticket"])],
+         )
+@@ -681,7 +692,7 @@
+         assert response.status == 201
+         assert registration["scope"]["transport_family"] == "remote-api"
+ 
+-        ws = await client.ws_connect(
++        ws = await _connected_controller(client, 
+             "/v1/browser-control/ws",
+             protocols=[CONTROL_PROTOCOL, _ticket_protocol(registration["ticket"])],
+         )
+--- a/tests/gateway/test_media_download_retry.py
++++ b/tests/gateway/test_media_download_retry.py
+@@ -386,6 +386,18 @@
+ # ---------------------------------------------------------------------------
+ 
+ class TestSlackDownloadSlackFile:
++
++    @pytest.fixture(autouse=True)
++    def _fixture_dns(self, monkeypatch):
++        import socket
++        real_dns = socket.getaddrinfo
++    
++        def fixture_dns(host, port, *args, **kwargs):
++            if host == "files.slack.com":
++                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", int(port or 443)))]
++            return real_dns(host, port, *args, **kwargs)
++    
++        monkeypatch.setattr(socket, "getaddrinfo", fixture_dns)
+     """Tests for SlackAdapter._download_slack_file"""
+ 
+     def test_success_on_first_attempt(self, tmp_path, monkeypatch):
+@@ -448,6 +460,18 @@
+ # ---------------------------------------------------------------------------
+ 
+ class TestSlackDownloadSlackFileBytes:
++
++    @pytest.fixture(autouse=True)
++    def _fixture_dns(self, monkeypatch):
++        import socket
++        real_dns = socket.getaddrinfo
++    
++        def fixture_dns(host, port, *args, **kwargs):
++            if host == "files.slack.com":
++                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", int(port or 443)))]
++            return real_dns(host, port, *args, **kwargs)
++    
++        monkeypatch.setattr(socket, "getaddrinfo", fixture_dns)
+     """Tests for SlackAdapter._download_slack_file_bytes"""
+ 
+     def test_success_returns_bytes(self):
+--- a/tests/gateway/test_multiplex_adapter_registry.py
++++ b/tests/gateway/test_multiplex_adapter_registry.py
+@@ -956,7 +956,7 @@
+ 
+     @pytest.mark.asyncio
+     async def test_failed_photon_connect_releases_listener_for_later_profile(
+-        self, monkeypatch
++        self, monkeypatch, tmp_path
+     ):
+         """A failed sidecar must not reserve an endpoint it never owned."""
+         from gateway.config import GatewayConfig, Platform, PlatformConfig
+@@ -1003,8 +1003,8 @@
+             runner, "_make_adapter_auth_check", lambda p, **kwargs: None
+         )
+ 
+-        first = await runner._start_one_profile_adapters("broken", "/tmp/x", claimed)
+-        second = await runner._start_one_profile_adapters("later", "/tmp/y", claimed)
++        first = await runner._start_one_profile_adapters("broken", str(tmp_path / "x"), claimed)
++        second = await runner._start_one_profile_adapters("later", str(tmp_path / "y"), claimed)
+ 
+         assert first == 0
+         assert failed.disconnected is True
+--- a/tests/gateway/test_session_hygiene.py
++++ b/tests/gateway/test_session_hygiene.py
+@@ -963,34 +963,44 @@
+         message_id="1",
+     )
+ 
+-    started = time.monotonic()
+-    result = await asyncio.wait_for(runner._handle_message(event), timeout=15)
+-    elapsed = time.monotonic() - started
+-
+-    # The turn proceeded on the uncompressed transcript after the idle
+-    # timeout fired (~0.1s).
+-    assert result == "ok"
+-    assert elapsed < 5.0
+-    assert worker_started.is_set()
+-    assert runner._run_agent.await_count == 1
+-
+-    # Behavior witness: idle timeout MUST send the "no output" message.
+-    sent_contents = [m["content"] for m in adapter.sent]
+-    assert any(
+-        "timed out" in c.lower() and "no output" in c.lower()
+-        for c in sent_contents
+-    ), f"idle timeout must send 'no output' message, got: {sent_contents}"
+-
+-    # Behavior witness: idle timeout MUST advance the failure cooldown.
+-    # The gateway calls _hygiene_cooldown_for_failure + _record_hygiene_cooldown.
+-    # We verify by checking the DB mock was asked to persist.
+-    # (The exact call depends on the SessionDB interface; we assert the
+-    # gateway attempted to record the failure.)
+-    assert fake_db.get_compression_failure_cooldown.called
+-
+-    # Cleanup: release the stalled worker so it can exit, then verify teardown.
+-    release_worker.set()
+-    await asyncio.wait_for(asyncio.to_thread(cleanup_done.wait), timeout=3)
++    # Real gateway startup warms tool schemas and context files before accepting
++    # turns. This skeleton must model that precondition outside the idle timer.
++    gateway_run._warm_turn_machinery_sync()
++
++    try:
++        started = time.monotonic()
++        result = await asyncio.wait_for(runner._handle_message(event), timeout=15)
++        elapsed = time.monotonic() - started
++
++        # The turn proceeded on the uncompressed transcript after the idle
++        # timeout fired (~0.1s).
++        assert result == "ok"
++        assert elapsed < 5.0
++        assert worker_started.is_set()
++        assert runner._run_agent.await_count == 1
++
++        # Behavior witness: idle timeout MUST send the "no output" message.
++        sent_contents = [m["content"] for m in adapter.sent]
++        assert any(
++            "timed out" in c.lower() and "no output" in c.lower()
++            for c in sent_contents
++        ), f"idle timeout must send 'no output' message, got: {sent_contents}"
++
++        # Behavior witness: idle timeout MUST advance the failure cooldown.
++        # The gateway calls _hygiene_cooldown_for_failure + _record_hygiene_cooldown.
++        # We verify by checking the DB mock was asked to persist.
++        # (The exact call depends on the SessionDB interface; we assert the
++        # gateway attempted to record the failure.)
++        assert fake_db.get_compression_failure_cooldown.called
++
++    finally:
++        # Always unblock the executor, including when a behavioral assertion fails.
++        # Bound the underlying Event.wait too: cancelling to_thread cannot stop it.
++        release_worker.set()
++        if worker_started.is_set():
++            assert await asyncio.wait_for(
++                asyncio.to_thread(cleanup_done.wait, 2.0), timeout=3
++            )
+     StalledCompressAgent.last_instance.close.assert_called_once()
+ 
+ @pytest.mark.asyncio
+--- a/tests/gateway/test_telegram_media_read_timeout.py
++++ b/tests/gateway/test_telegram_media_read_timeout.py
+@@ -24,7 +24,17 @@
+ 
+ 
+ @pytest.fixture
+-def adapter():
++def adapter(monkeypatch):
++    import socket
++    real_dns = socket.getaddrinfo
++
++    def fixture_dns(host, port, *args, **kwargs):
++        if host == "example.com":
++            return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", int(port or 443)))]
++        return real_dns(host, port, *args, **kwargs)
++
++    monkeypatch.setattr(socket, "getaddrinfo", fixture_dns)
++
+     a = TelegramAdapter(PlatformConfig(enabled=True, token="fake-token"))
+     a._bot = MagicMock()
+     a._metadata_thread_id = lambda metadata: None
+--- a/tests/gateway/test_unknown_command.py
++++ b/tests/gateway/test_unknown_command.py
+@@ -178,6 +178,38 @@
+ 
+ 
+ @pytest.mark.asyncio
++async def test_plugin_underscore_name_wins_over_hyphenated_collision(monkeypatch):
++    from hermes_cli import plugins
++
++    source_seen = []
++
++    def exact_handler(args, *, source=None):
++        source_seen.append(source)
++        return "exact " + args
++
++    commands = {"fixture_status": exact_handler, "fixture-status": lambda args: "wrong alias"}
++    monkeypatch.setattr(plugins, "get_plugin_command_handler", commands.get)
++    runner = _make_runner()
++    runner._run_agent = AsyncMock(side_effect=AssertionError("plugin command leaked to model"))
++    event = _make_event("/fixture_status details")
++    assert await runner._handle_message(event) == "exact details"
++    assert source_seen == [event.source]
++    runner._run_agent.assert_not_called()
++
++
++@pytest.mark.asyncio
++async def test_plugin_telegram_spelling_falls_back_to_hyphenated_registration(monkeypatch):
++    from hermes_cli import plugins
++
++    commands = {"fixture-report": lambda args: "report " + args}
++    monkeypatch.setattr(plugins, "get_plugin_command_handler", commands.get)
++    runner = _make_runner()
++    runner._run_agent = AsyncMock(side_effect=AssertionError("plugin alias leaked to model"))
++    assert await runner._handle_message(_make_event("/fixture_report day")) == "report day"
++    runner._run_agent.assert_not_called()
++
++
++@pytest.mark.asyncio
+ async def test_command_hook_rewrite_routes_to_plugin(monkeypatch):
+     """A rewrite decision should re-resolve the command and route to the new one."""
+     import gateway.run as gateway_run
+--- a/tests/hermes_cli/test_cmd_update.py
++++ b/tests/hermes_cli/test_cmd_update.py
+@@ -89,10 +89,20 @@
+     conftest live-system guard and turns into a spurious ``sys.exit(1)``.
+     Discovery returning nothing makes the phase a clean no-op for every test
+     in this module (none of them assert on gateway restarts).
++    Like test_update_autostash's fixture, keep module purge from evicting
++    these transport stubs and discovering unrelated live CI processes.
++    Runtime reload must not discard the explicit Node/OS scenario fixtures.
++    Purge/reload/fleet behavior has dedicated tests in separate modules.
+     """
+     with patch("hermes_cli.gateway.find_gateway_pids", return_value=[]), \
+          patch("hermes_cli.gateway.supports_systemd_services", return_value=False), \
+-         patch("hermes_cli.gateway.find_profile_gateway_processes", return_value=[]):
++         patch("hermes_cli.gateway.find_profile_gateway_processes", return_value=[]), \
++         patch("hermes_cli.update_inventory.collect_runtime_inventory", return_value=None), \
++         patch("hermes_cli.update_inventory.report_unaccounted_runtimes", return_value=False), \
++         patch("hermes_cli.main._fleet_probe_expected_runtimes", return_value=False), \
++         patch("hermes_cli.main._purge_stale_hermes_modules", return_value=None), \
++         patch("hermes_cli.main._reload_updated_runtime_modules", return_value=None), \
++         patch("hermes_cli.update_receipt.collect_fleet_versions", return_value=[]):
+         yield
+ 
+ 
+@@ -834,12 +844,13 @@
+ 
+     @patch("shutil.which", return_value=None)
+     @patch("subprocess.run")
+-    def test_branch_flag_pulls_against_named_branch(self, mock_run, _mock_which, capsys):
++    def test_branch_flag_pulls_against_named_branch(self, mock_run, _mock_which, capsys, monkeypatch):
+         """--branch bb/gui makes rev-list and pull target origin/bb/gui."""
+         mock_run.side_effect = self._branch_side_effect(
+             current_branch="bb/gui", target_branch="bb/gui", commit_count="3"
+         )
+         args = SimpleNamespace(branch="bb/gui")
++        monkeypatch.setattr("hermes_cli.gateway.find_gateway_pids", lambda *a, **k: [])
+ 
+         cmd_update(args)
+ 
+--- a/tests/hermes_cli/test_gateway_service.py
++++ b/tests/hermes_cli/test_gateway_service.py
+@@ -1249,10 +1249,10 @@
+         monkeypatch.setattr(gateway_cli, "get_hermes_home", lambda: root_hermes)
+         monkeypatch.setattr(gateway_cli, "_build_service_path_dirs", lambda: [])
+ 
+-        monkeypatch.setattr(gateway_cli.shutil, "which", lambda name: "/root/bin/node")
++        monkeypatch.setattr(gateway_cli.shutil, "which", lambda name: "/root/bin/node" if name == "node" else None)
+         root_unit = gateway_cli.generate_systemd_unit(system=True, run_as_user="alice")
+ 
+-        monkeypatch.setattr(gateway_cli.shutil, "which", lambda name: "/home/alice/.local/bin/node")
++        monkeypatch.setattr(gateway_cli.shutil, "which", lambda name: "/home/alice/.local/bin/node" if name == "node" else None)
+         user_unit = gateway_cli.generate_systemd_unit(system=True, run_as_user="alice")
+ 
+         assert root_unit == user_unit
+--- a/tests/hermes_cli/test_install_cua_driver.py
++++ b/tests/hermes_cli/test_install_cua_driver.py
+@@ -239,7 +239,12 @@
+ 
+         info.assert_not_called()
+ 
+-    def test_quiet_refresh_closes_stdin_and_honors_custom_timeout(self):
++    def test_quiet_refresh_closes_stdin_and_honors_custom_timeout(self, monkeypatch):
++        from hermes_cli import tools_config_cua as tools_config
++        # Installer orchestration assumes an available release and no live lock.
++        # Dedicated preflight tests retain their real refusal assertions.
++        monkeypatch.setattr(tools_config, "_cua_install_lock_held", lambda: False)
++        monkeypatch.setattr(tools_config, "_cua_release_endpoint_reachable", lambda: True)
+         """A background refresh must neither wait on a hidden prompt nor
+         inherit the explicit install command's 11-minute ceiling."""
+         import subprocess
+--- a/tests/hermes_cli/test_kanban_init_lock_bounded.py
++++ b/tests/hermes_cli/test_kanban_init_lock_bounded.py
+@@ -17,8 +17,8 @@
+ from __future__ import annotations
+ 
+ import threading
+-import time
+ from pathlib import Path
++from types import SimpleNamespace
+ 
+ import pytest
+ 
+@@ -54,7 +54,7 @@
+     return release, t
+ 
+ 
+-def test_initialized_path_connect_skips_init_lock(kanban_home):
++def test_initialized_path_connect_skips_init_lock(kanban_home, monkeypatch):
+     """A connect to an already-initialized path must not block on the init lock."""
+     db_path = kb.kanban_db_path(board="default")
+     # Initialize once.
+@@ -64,16 +64,19 @@
+     # Hold the init lock; a fast-path connect must return promptly anyway.
+     release, t = _hold_init_lock(db_path)
+     try:
+-        start = time.monotonic()
++        def unexpected_init_lock(path):
++            pytest.fail("initialized-path connect attempted the cross-process init lock")
++
++        monkeypatch.setattr(kbc, "_cross_process_init_lock", unexpected_init_lock)
+         kbc.connect().close()
+-        elapsed = time.monotonic() - start
+-        assert elapsed < 5.0, f"fast-path connect blocked on the init lock ({elapsed:.2f}s)"
++        assert t.is_alive(), "holder released before the fast-path check"
+     finally:
+         release.set()
+         t.join(timeout=5)
++        assert not t.is_alive(), "holder did not stop after release"
+ 
+ 
+-def test_first_init_connect_is_bounded_when_lock_held(kanban_home, monkeypatch):
++def test_first_init_connect_is_bounded_when_lock_held(kanban_home, monkeypatch, caplog):
+     """First-init connect must time out the cross-process lock and proceed,
+     not hang forever, when another holder owns it."""
+     monkeypatch.setattr(kbc, "_INIT_LOCK_TIMEOUT_SECONDS", 0.6)
+@@ -81,13 +84,40 @@
+ 
+     release, t = _hold_init_lock(db_path)
+     try:
+-        start = time.monotonic()
++        # Exercise the real non-blocking file lock and real schema initialization,
++        # but advance only the acquire deadline with a controlled clock. Timing
++        # connect() also measured filesystem syncs and made this fail under load.
++        clock = [100.0]
++        sleeps = []
++        attempts = []
++        real_try_lock = kbc._try_lock_nb
++
++        def advance(seconds):
++            sleeps.append(seconds)
++            clock[0] += seconds
++
++        def try_lock(handle):
++            acquired = real_try_lock(handle)
++            attempts.append(acquired)
++            return acquired
++
++        monkeypatch.setattr(kbc, "time", SimpleNamespace(
++            monotonic=lambda: clock[0], sleep=advance,
++        ))
++        monkeypatch.setattr(kbc, "_try_lock_nb", try_lock)
+         conn = kbc.connect()  # path NOT yet initialized — must take the bounded path
+-        conn.close()
+-        elapsed = time.monotonic() - start
+-        # Proceeded within roughly the timeout window (not unbounded).
+-        assert 0.4 <= elapsed < 8.0, f"expected bounded ~0.6s acquire, got {elapsed:.2f}s"
++        try:
++            assert conn.execute("SELECT count(*) FROM tasks").fetchone()[0] == 0
++        finally:
++            conn.close()
++        assert t.is_alive(), "holder released before the bounded-acquire check"
++        assert attempts and not any(attempts), "connect acquired the held lock"
++        assert sleeps and all(s == kbc._INIT_LOCK_POLL_SECONDS for s in sleeps)
++        elapsed = clock[0] - 100.0
++        assert 0.6 <= elapsed <= 0.6 + kbc._INIT_LOCK_POLL_SECONDS + 1e-9
++        assert "not acquired within" in caplog.text
+         assert str(db_path.resolve()) in kb._INITIALIZED_PATHS
+     finally:
+         release.set()
+         t.join(timeout=5)
++        assert not t.is_alive(), "holder did not stop after release"
+--- a/tests/hermes_cli/test_local_quickstart.py
++++ b/tests/hermes_cli/test_local_quickstart.py
+@@ -52,7 +52,7 @@
+     assert "Local Models" in r.json()["detail"]
+ 
+ 
+-def test_quickstart_runs_all_three_legs(client, monkeypatch, tmp_path):
++def test_quickstart_runs_all_three_legs(client, quickstart_ready, monkeypatch, tmp_path):
+     """Fresh machine: install runtime -> download recommended -> activate.
+     Each leg is asserted by its observable call, in order."""
+     calls: list[str] = []
+@@ -105,7 +105,7 @@
+     assert load_config()["local_runtime"]["enabled"] is True
+ 
+ 
+-def test_quickstart_skips_satisfied_legs(client, monkeypatch):
++def test_quickstart_skips_satisfied_legs(client, quickstart_ready, monkeypatch):
+     """Runtime present and model already staged: the response says so and
+     the job goes straight to activation."""
+     calls: list[str] = []
+--- a/tests/hermes_cli/test_model_switch_custom_providers.py
++++ b/tests/hermes_cli/test_model_switch_custom_providers.py
+@@ -19,6 +19,13 @@
+ from hermes_cli.model_switch_providers import _fetch_picker_live_models, _save_discovered_models_to_config
+ from hermes_cli.providers import resolve_provider_full
+ 
++
++
++@pytest.fixture(autouse=True)
++def _offline_catalog_leaves(monkeypatch):
++    """Picker/cache contracts use explicit catalogs, never changing public APIs."""
++    monkeypatch.setattr("agent.models_dev._fetch_models_dev_from_network", lambda **_kw: ({}, ""))
++    monkeypatch.setattr("hermes_cli.model_catalog._fetch_manifest", lambda *_a, **_kw: None)
+ 
+ _MOCK_VALIDATION = {
+     "accepted": True,
+--- a/tests/hermes_cli/test_picker_prewarm.py
++++ b/tests/hermes_cli/test_picker_prewarm.py
+@@ -10,6 +10,16 @@
+ from __future__ import annotations
+ 
+ from unittest.mock import patch
++
++import pytest
++
++
++@pytest.fixture(autouse=True)
++def _offline_catalog_leaves(monkeypatch):
++    """Picker/cache contracts use explicit catalogs, never changing public APIs."""
++    monkeypatch.setattr("agent.models_dev._fetch_models_dev_from_network", lambda **_kw: ({}, ""))
++    monkeypatch.setattr("hermes_cli.model_catalog._fetch_manifest", lambda *_a, **_kw: None)
++
+ 
+ import hermes_cli.model_switch as ms
+ from hermes_cli import model_switch_providers
+@@ -121,6 +131,7 @@
+     assert t is not None
+     t.join(timeout=10)
+ 
++    assert not t.is_alive(), "prewarm must finish before a sequential first open"
+     first_open = open_picker()
+     assert len(calls) == 1, (
+         "the endpoint must be live-probed at most once across boot prewarm "
+--- a/tests/hermes_cli/test_plugins.py
++++ b/tests/hermes_cli/test_plugins.py
+@@ -1228,7 +1228,7 @@
+         assert _PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE in result
+         hold.set()
+ 
+-    def test_force_reload_of_one_profile_does_not_orphan_another(self, monkeypatch):
++    def test_force_reload_of_one_profile_does_not_orphan_another(self, monkeypatch, tmp_path):
+         """Real two-manager regression: force-reloading profile A's plugin
+         manager must leave profile B's shell hook registered exactly once —
+         not duplicated, not dropped (#92682 review).
+@@ -1243,12 +1243,12 @@
+             PluginManager, "_discover_and_load_inner", lambda self_inner: None,
+         )
+ 
+-        monkeypatch.setenv("HERMES_HOME", "/tmp/profile-a")
++        monkeypatch.setenv("HERMES_HOME", str(tmp_path / "profile-a"))
+         mgr_a = PluginManager()
+         plugins_mod._plugin_manager = mgr_a
+         shell_hooks_mod.register_from_config(cfg, accept_hooks=True)
+ 
+-        monkeypatch.setenv("HERMES_HOME", "/tmp/profile-b")
++        monkeypatch.setenv("HERMES_HOME", str(tmp_path / "profile-b"))
+         mgr_b = PluginManager()
+         plugins_mod._plugin_manager = mgr_b
+         shell_hooks_mod.register_from_config(cfg, accept_hooks=True)
+@@ -1266,7 +1266,7 @@
+         # B's later adapter reconnect re-runs register_from_config(); its
+         # idempotence key must still be intact, so this must be a no-op
+         # rather than appending a second callback to B's live manager.
+-        monkeypatch.setenv("HERMES_HOME", "/tmp/profile-b")
++        monkeypatch.setenv("HERMES_HOME", str(tmp_path / "profile-b"))
+         second = shell_hooks_mod.register_from_config(cfg, accept_hooks=True)
+ 
+         assert second == []
+--- a/tests/hermes_cli/test_xai_provider_labels.py
++++ b/tests/hermes_cli/test_xai_provider_labels.py
+@@ -4,8 +4,15 @@
+ from hermes_cli.providers import get_label
+ 
+ 
+-def test_xai_oauth_provider_label_is_not_collapsed_to_api_key_label():
++def test_xai_oauth_provider_label_is_not_collapsed_to_api_key_label(monkeypatch):
+     """The model picker must distinguish xAI API-key and OAuth providers."""
++    from agent.models_dev import ProviderInfo
++    from hermes_cli import providers
++    # This asserts label composition with catalog metadata, not live catalog DNS.
++    monkeypatch.setattr(providers, "_models_dev_info", lambda name, *args: (
++        ProviderInfo("xai", "xAI", ("XAI_API_KEY",), "https://api.x.ai/v1")
++        if name == "xai" else None
++    ))
+     assert get_label("xai") == "xAI"
+     assert get_label("xai-oauth") == "xAI Grok OAuth (SuperGrok / Premium+)"
+     assert get_label("grok-oauth") == "xAI Grok OAuth (SuperGrok / Premium+)"
+--- a/tests/openviking_plugin/test_openviking.py
++++ b/tests/openviking_plugin/test_openviking.py
+@@ -1102,6 +1102,8 @@
+         assert posts[1][0].endswith("/commit")
+ 
+     def test_concurrent_refresh_does_not_return_stale_client(self, monkeypatch):
++        monkeypatch.setattr(openviking_plugin, "_load_hermes_openviking_config", lambda: {})
++        monkeypatch.setattr(openviking_plugin, "_openviking_endpoint_is_always_blocked", lambda _: False)
+         refresh_entered = threading.Event()
+         release_refresh = threading.Event()
+ 
+@@ -1241,6 +1243,8 @@
+ 
+     def test_failed_config_probes_once_then_cools_down(self, monkeypatch):
+         """A down endpoint must not pay a health probe on every access."""
++        monkeypatch.setattr(openviking_plugin, "_load_hermes_openviking_config", lambda: {})
++        monkeypatch.setattr(openviking_plugin, "_openviking_endpoint_is_always_blocked", lambda _: False)
+         probes = []
+ 
+         class _StubClient:
+--- a/tests/test_atomic_replace_symlinks.py
++++ b/tests/test_atomic_replace_symlinks.py
+@@ -268,7 +268,7 @@
+         link.symlink_to(real)
+         tmp = _write_tmp(tmp_path, "new\n")
+ 
+-        assert Path(atomic_replace(tmp, link)) == real
++        assert Path(atomic_replace(tmp, link)) == real.resolve()
+         assert link.is_symlink()
+         assert real.read_text(encoding="utf-8") == "new\n"
+         assert not tmp.exists()
+--- a/tests/test_install_macos_launcher.py
++++ b/tests/test_install_macos_launcher.py
+@@ -63,6 +63,7 @@
+             'get_command_link_display_dir() { printf "%s" "$COMMAND_LINK_DIR"; }',
+             "log_info() { :; }",
+             "log_success() { :; }",
++            "log_warn() { :; }",
+             _setup_path_function(),
+             "setup_path",
+         ]
+--- a/tests/test_mcp_serve.py
++++ b/tests/test_mcp_serve.py
+@@ -1340,6 +1340,7 @@
+         messages written after the baseline are delivered."""
+         import mcp_serve
+ 
++        monkeypatch.setattr(mcp_serve, "_hermes_home", lambda: tmp_path)
+         db_path = tmp_path / "state.db"
+         db_path.write_text("placeholder")
+         session_id = "20260329_150000_history"
+@@ -1374,7 +1375,7 @@
+             "id": 2, "role": "assistant", "content": "arrived after start",
+             "timestamp": "2026-03-29T15:05:00",
+         })
+-        os.utime(db_path, None)  # bump mtime so the poll gate opens
++        os.utime(db_path, (db_path.stat().st_atime, db_path.stat().st_mtime + 1))  # bump mtime so the poll gate opens
+         bridge._poll_once(DB())
+         events = bridge.poll_events(after_cursor=0)["events"]
+         assert len(events) == 1
+@@ -1386,6 +1387,7 @@
+         baseline default to last_seen=0.0."""
+         import mcp_serve
+ 
++        monkeypatch.setattr(mcp_serve, "_hermes_home", lambda: tmp_path)
+         db_path = tmp_path / "state.db"
+         db_path.write_text("placeholder")
+         index: dict = {}
+@@ -1412,7 +1414,7 @@
+             "id": 1, "role": "user", "content": "hello after baseline",
+             "timestamp": "2026-03-29T15:10:00",
+         }]
+-        os.utime(db_path, None)
++        os.utime(db_path, (db_path.stat().st_atime, db_path.stat().st_mtime + 1))
+         bridge._poll_once(DB())
+ 
+         events = bridge.poll_events(after_cursor=0)["events"]
+@@ -1420,6 +1422,42 @@
+         assert events[0]["session_key"] == "agent:main:telegram:dm:fresh"
+         assert events[0]["content"] == "hello after baseline"
+ 
++    def test_wal_commit_is_observed_without_main_database_mtime_change(self, tmp_path, monkeypatch):
++        """A real SQLite WAL commit must wake the read-only event bridge."""
++        import mcp_serve
++        monkeypatch.setattr(mcp_serve, "_hermes_home", lambda: tmp_path)
++        path = tmp_path / "state.db"
++        writer = sqlite3.connect(path)
++        try:
++            assert writer.execute("PRAGMA journal_mode=WAL").fetchone()[0] == "wal"
++            writer.execute("PRAGMA wal_autocheckpoint=0")
++            writer.execute("CREATE TABLE messages(id INTEGER PRIMARY KEY,role TEXT,content TEXT,timestamp REAL)")
++            writer.execute("INSERT INTO messages VALUES(1,'user','before startup',1.0)")
++            writer.commit()
++            class Reader:
++                def get_messages(self, sid):
++                    with sqlite3.connect(path) as connection:
++                        rows = connection.execute("SELECT id,role,content,timestamp FROM messages ORDER BY id").fetchall()
++                    connection.close()
++                    return [dict(zip(("id","role","content","timestamp"), row)) for row in rows]
++                def close(self):
++                    pass
++            monkeypatch.setattr(mcp_serve, "_get_session_db", lambda: Reader())
++            monkeypatch.setattr(mcp_serve, "_load_sessions_index", lambda: {"fixture-dm": {"session_id": "fixture-session"}})
++            bridge = mcp_serve.EventBridge()
++            bridge._establish_baseline()
++            main_stat = path.stat()
++            writer.execute("INSERT INTO messages VALUES(2,'assistant','committed only to WAL',2.0)")
++            writer.commit()
++            os.utime(path, ns=(main_stat.st_atime_ns,main_stat.st_mtime_ns))
++            bridge._poll_once(Reader())
++            events = bridge.poll_events(after_cursor=0)["events"]
++            assert [e["content"] for e in events] == ["committed only to WAL"]
++            bridge._poll_once(Reader())
++            assert len(bridge.poll_events(after_cursor=0)["events"]) == 1
++        finally:
++            writer.close()
++
+     def test_poll_interval_is_200ms(self):
+         """Verify the poll interval constant."""
+         from mcp_serve import POLL_INTERVAL
+--- a/tests/test_model_tools_async_bridge.py
++++ b/tests/test_model_tools_async_bridge.py
+@@ -254,8 +254,14 @@
+             FakeExecutor,
+         )
+ 
+-        with pytest.raises(concurrent.futures.TimeoutError):
+-            _run_async(_never_finishes())
++        coro = _never_finishes()
++        try:
++            with pytest.raises(concurrent.futures.TimeoutError):
++                _run_async(coro)
++        finally:
++            # FakeExecutor never executes the submitted wrapper; the fixture
++            # retains ownership of its unstarted coroutine.
++            coro.close()
+ 
+         assert events["result_timeout"] == 300
+         # The worker wrapper creates its own event loop so _run_async can
+@@ -348,6 +354,18 @@
+ 
+ 
+ class TestVisionDispatchLoopSafety:
++
++    @pytest.fixture(autouse=True)
++    def _fixture_dns(self, monkeypatch):
++        import socket
++        real_dns = socket.getaddrinfo
++    
++        def fixture_dns(host, port, *args, **kwargs):
++            if host == "example.com":
++                return [(socket.AF_INET, socket.SOCK_STREAM, 6, "", ("93.184.216.34", int(port or 443)))]
++            return real_dns(host, port, *args, **kwargs)
++    
++        monkeypatch.setattr(socket, "getaddrinfo", fixture_dns)
+     """Simulate the full registry.dispatch('vision_analyze') chain and
+     verify the event loop stays alive afterwards — the exact scenario
+     from issue #2104."""
+--- a/tests/tools/test_browser_open_timeout.py
++++ b/tests/tools/test_browser_open_timeout.py
+@@ -110,6 +110,7 @@
+         process.wait.side_effect = [subprocess.TimeoutExpired("agent-browser", 1), -9, 0]
+         supervisor_events = []
+ 
++        monkeypatch.setattr(bt_session, "_browser_command_preflight", lambda: {"browser_cmd": "agent-browser"})
+         monkeypatch.setattr(bt_install, "_find_agent_browser", lambda: "agent-browser")
+         monkeypatch.setattr("tools.browser_tool_install._requires_real_termux_browser_install", lambda _cmd: False)
+         monkeypatch.setattr("tools.browser_tool_lifecycle._start_browser_cleanup_thread", lambda: None)
+--- a/tests/tools/test_browser_real_profile.py
++++ b/tests/tools/test_browser_real_profile.py
+@@ -960,6 +960,8 @@
+              patch.object(bt_lightpanda_fallback, "_using_lightpanda_engine", return_value=False), \
+              patch("hermes_cli.browser_connect.detect_default_chromium", return_value="chrome"), \
+              patch("hermes_cli.browser_connect.real_profile_copy_dir", return_value=str(tmp_path)), \
++             patch("hermes_cli.browser_connect.chromium_executable", return_value="/test/chrome"), \
++             patch.object(bt_real_profile, "_launch_real_profile_chrome", return_value=(9251, None)), \
+              patch("hermes_cli.browser_connect.snapshot_real_profile",
+                    return_value=(str(tmp_path), None)) as snap, \
+              patch.object(bt_real_profile, "_agent_browser_get_cdp",
+--- a/tests/tools/test_delegate_control_actions.py
++++ b/tests/tools/test_delegate_control_actions.py
+@@ -639,52 +639,83 @@
+ 
+ 
+ def test_spawn_local_stamps_owner_task_id_and_event_carries_it(monkeypatch):
+-    """spawn_local(owner_task_id=...) survives to the completion event, so a
+-    real subagent-spawned process (collapsed task_id) is suppressed on
+-    drain. Exercises the actual spawn -> _move_to_finished -> drain path."""
+-    import time as _time
+-
++    """A completed child keeps its owner and is suppressed when drained."""
+     import hermes_cli.config as _cfg
+     from tools.process_registry import ProcessRegistry
+ 
+     monkeypatch.setattr(_cfg, "read_raw_config", lambda *a, **k: {})
+     reg = ProcessRegistry()
+     session = reg.spawn_local(
+-        command="echo owner-stamp-e2e",
+-        task_id="default",
++        command="echo owner-stamp-e2e", task_id="default",
+         owner_task_id="sa-9-supp0006",
+     )
+-    session.notify_on_complete = True
++    session._reader_thread.join(15)
++    assert not session._reader_thread.is_alive(), "reader did not finish"
++    assert session.exited
+     assert session.owner_task_id == "sa-9-supp0006"
+-    deadline = _time.time() + 15
+-    while not session.exited and _time.time() < deadline:
+-        _time.sleep(0.05)
+-    assert session.exited, "test process should exit promptly"
+-    _time.sleep(0.3)  # let the reader thread enqueue the completion event
++    reg.enable_completion_notification(session)
++    assert reg.completion_queue.qsize() == 1
+     assert reg.drain_notifications() == []
+ 
+ 
+ def test_spawn_local_without_owner_defaults_to_task_id(monkeypatch):
+-    """Backward compat: callers that don't pass owner_task_id behave exactly
+-    as before (owner falls back to task_id; parent-owned still delivers)."""
+-    import time as _time
+-
++    """Parent completion remains deliverable when armed after a fast exit."""
+     import hermes_cli.config as _cfg
+     from tools.process_registry import ProcessRegistry
+ 
+     monkeypatch.setattr(_cfg, "read_raw_config", lambda *a, **k: {})
+     reg = ProcessRegistry()
+     session = reg.spawn_local(command="echo parent-e2e", task_id="default")
+-    session.notify_on_complete = True
++    session._reader_thread.join(15)
++    assert not session._reader_thread.is_alive(), "reader did not finish"
++    assert session.exited
+     assert session.owner_task_id == "default"
+-    deadline = _time.time() + 15
+-    while not session.exited and _time.time() < deadline:
+-        _time.sleep(0.05)
+-    assert session.exited
+-    _time.sleep(0.3)
++    reg.enable_completion_notification(session)
++    reg.enable_completion_notification(session)
++    reg._move_to_finished(session)
+     results = reg.drain_notifications()
+     assert len(results) == 1
+     assert "completed normally" in results[0][1]
++
++
++def test_reader_cannot_finish_before_session_is_registered(monkeypatch):
++    """Force completion inside Thread.start, without scheduling or sleeps."""
++    from tools.process_registry import ProcessRegistry, ProcessSession
++    import tools.process_registry as module
++
++    reg = ProcessRegistry()
++    monkeypatch.setattr(reg, "_write_checkpoint", lambda: None)
++    class InlineThread:
++        def __init__(self, *, target, args, **kwargs):
++            self.target, self.args = target, args
++        def start(self):
++            self.target(*self.args)
++    monkeypatch.setattr(module.threading, "Thread", InlineThread)
++    session = ProcessSession(id="proc_inline", command="echo done", task_id="default",
++                             notify_on_complete=True)
++    reg._track_started(session, lambda s: reg._finish_exited(s, 0), "inline-reader")
++    assert session.id not in reg._running
++    assert reg._finished[session.id] is session
++    assert reg.completion_queue.qsize() == 1
++
++
++def test_reader_start_failure_unregisters_session(monkeypatch):
++    from tools.process_registry import ProcessRegistry, ProcessSession
++    import tools.process_registry as module
++    import pytest
++
++    reg = ProcessRegistry()
++    class FailingThread:
++        def __init__(self, **kwargs):
++            pass
++        def start(self):
++            raise RuntimeError("thread unavailable")
++    monkeypatch.setattr(module.threading, "Thread", FailingThread)
++    session = ProcessSession(id="proc_no_thread", command="echo done")
++    with pytest.raises(RuntimeError, match="thread unavailable"):
++        reg._track_started(session, lambda s: None, "failed-reader")
++    assert session.id not in reg._running
++    assert session.id not in reg._finished
+ 
+ 
+ def test_attribution_line_uses_owner_task_id(monkeypatch):
+--- a/tests/tools/test_termux_api_detection.py
++++ b/tests/tools/test_termux_api_detection.py
+@@ -188,6 +188,7 @@
+             if name == "termux-microphone-record" else None,
+         )
+ 
++        monkeypatch.setattr("tools.voice_mode._is_wsl2_env", lambda: False)
+         from tools.voice_mode import detect_audio_environment
+         result = detect_audio_environment()
+ 
+--- a/tests/tui_gateway/test_compute_host_turn_protocol.py
++++ b/tests/tui_gateway/test_compute_host_turn_protocol.py
+@@ -40,6 +40,10 @@
+     """Neutralize the turn pipeline's environment-heavy side paths (same set as the
+     prompt.submit tests) so the frame protocol is what's under test. Threads stay REAL:
+     ``_run_real_turn`` joins ``session["_run_thread"]`` itself before emitting ``turn.end``."""
++    # Resolve the lazy prompt implementation before timing frame delivery.
++    server._run_prompt_submit
++    monkeypatch.setattr(server, "_ensure_session_db_row", lambda *a: None)
++    monkeypatch.setattr(server, "_persist_branch_seed", lambda *a: None)
+     monkeypatch.setattr(server, "_wire_callbacks", lambda sid: None)
+     monkeypatch.setattr(server, "_sync_agent_model_with_config", lambda sid, session: None)
+     monkeypatch.setattr(server, "_session_cwd", lambda session: str(tmp_path))
+--- a/tests/tui_gateway/test_hosted_room_driver_runtime.py
++++ b/tests/tui_gateway/test_hosted_room_driver_runtime.py
+@@ -757,16 +757,18 @@
+             waiting if binding.room_id == "room-waiting" else healthy
+         ),
+         turn_lock=RecordingTurnLocks(),
+-        lease_ttl_seconds=0.4,
++        lease_ttl_seconds=30.0,
+         poll_interval_seconds=0.01,
+         max_concurrent_rooms=2,
+     )
+ 
+     runtime.start()
+-    assert waiting.submitted.wait(1.0)
+-    _wait_for(lambda: state.get_task(db, identities[1])["status"] == "settled")
+-    assert state.get_task(db, identities[0])["status"] == "running"
+-    assert runtime.stop(timeout=5.0)
++    try:
++        _wait_for(waiting.submitted.is_set)
++        _wait_for(lambda: state.get_task(db, identities[1])["status"] == "settled")
++        assert state.get_task(db, identities[0])["status"] == "running"
++    finally:
++        assert runtime.stop(timeout=5.0)
+ 
+ 
+ def test_bounded_scheduler_eventually_runs_later_room(tmp_path: Path):
+@@ -1188,7 +1190,7 @@
+     runtime = _runtime(db, rpc, clock=clock)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     time.sleep(0.04)
+     assert runtime.stop(timeout=5.0)
+ 
+@@ -1559,7 +1561,7 @@
+     runtime = _runtime(db, rpc)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     _wait_for(
+         lambda: (
+             "observation failed after submit"
+@@ -1583,14 +1585,16 @@
+     identity = _identity()
+     _admit(db, identity)
+     rpc = FakeSessionRPC(auto_complete=False)
+-    runtime = _runtime(db, rpc)
++    # Cancellation semantics do not test lease expiry. Use the production TTL
++    # so SQLite fsync latency cannot expire a deliberately 0.4-second fixture.
++    runtime = _runtime(db, rpc, lease_ttl_seconds=30.0)
+     observed_status: list[str] = []
+     rpc.on_interrupt = lambda: observed_status.append(
+         state.get_task(db, identity)["status"]
+     )
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     cancelled = runtime.cancel(identity, cancel_id="cancel-user")
+     rpc.complete(identity.task_id, content="Too late.")
+     runtime.wakeup()
+@@ -1605,7 +1609,9 @@
+     identity = _identity()
+     _admit(db, identity)
+     rpc = FakeSessionRPC(auto_complete=False)
+-    runtime = _runtime(db, rpc)
++    # Cancellation semantics do not test lease expiry. Use the production TTL
++    # so SQLite fsync latency cannot expire a deliberately 0.4-second fixture.
++    runtime = _runtime(db, rpc, lease_ttl_seconds=30.0)
+     original_interrupt = rpc.interrupt
+     attempts = 0
+     retry_allowed = threading.Event()
+@@ -1620,7 +1626,7 @@
+ 
+     rpc.interrupt = flaky_interrupt
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     stopping = runtime.cancel(identity, cancel_id="cancel-retry")
+     assert stopping["status"] == "stopping"
+     assert state.get_task(db, identity)["status"] == "stopping"
+@@ -1766,7 +1772,7 @@
+     runtime = _runtime(db, rpc)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+ 
+     def finish_only_after_stop_intent():
+         if state.get_task(db, identity)["status"] == "stopping":
+@@ -1959,7 +1965,7 @@
+     )
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     session_id = next(iter(rpc.states))
+     with rpc._lock:
+         rpc.states[session_id]["pending_approval"] = {
+@@ -1984,7 +1990,7 @@
+     runtime = _runtime(db, rpc)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     session_id = next(iter(rpc.states))
+ 
+     def switch_to_newer_task() -> None:
+@@ -2047,7 +2053,7 @@
+     runtime = _runtime(db, rpc, lease_ttl_seconds=30.0)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     hosted_rooms.claim_authority(
+         db,
+         room_id=ROOM_ID,
+@@ -2091,7 +2097,7 @@
+     runtime = _runtime(db, rpc, poll_interval_seconds=0.01)
+ 
+     runtime.start()
+-    assert rpc.submitted.wait(1.0)
++    _wait_for(rpc.submitted.is_set)
+     started = time.monotonic()
+     stopped = runtime.stop(timeout=0.5)
+ 
+--- a/tools/browser_tool_lifecycle.py
++++ b/tools/browser_tool_lifecycle.py
+@@ -681,6 +681,8 @@
+     except Exception:
+         pass
+ 
++    from hermes_cli.config import invalidate_config_cache
++    invalidate_config_cache()
+     _install._discover_homebrew_node_dirs.cache_clear()
+     # Each resolved flag flips BEFORE its cache is nulled so a concurrent reader never
+     # sees ``resolved=True`` with ``cache=None``.
+--- a/tools/process_registry.py
++++ b/tools/process_registry.py
+@@ -345,6 +345,7 @@
+     _watch_cooldown_until: float = field(default=0.0, repr=False)
+     _watch_strike_candidate: bool = field(default=False, repr=False)
+     _watch_consecutive_strikes: int = field(default=0, repr=False)
++    _completion_queued: bool = field(default=False, repr=False)
+     _completion_event: threading.Event = field(default_factory=threading.Event, repr=False)
+     _lock: threading.Lock = field(default_factory=threading.Lock)
+     _reader_thread: Optional[threading.Thread] = field(default=None, repr=False)
+@@ -787,10 +788,17 @@
+         """Start the output reader thread, register the session and checkpoint it."""
+         reader = threading.Thread(target=reader_target, args=(session, *extra_args), daemon=True, name=reader_name)
+         session._reader_thread = reader
+-        reader.start()
++        # A short command can finish as soon as the reader starts. Register it
++        # first so completion can never leave an exited session in _running.
+         with self._lock:
+             self._prune_if_needed()
+             self._running[session.id] = session
++        try:
++            reader.start()
++        except BaseException:
++            with self._lock:
++                self._running.pop(session.id, None)
++            raise
+         self._write_checkpoint()
+ 
+     def _spawn_local_pty(self, session: ProcessSession, safe_command: str, env_vars: dict) -> ProcessSession:
+@@ -1175,7 +1183,26 @@
+             self._finished[session.id] = session
+         session._completion_event.set()
+         self._write_checkpoint()
+-        if was_running and session.notify_on_complete:
++        if was_running:
++            self._queue_completion_once(session)
++
++    def enable_completion_notification(self, session: ProcessSession) -> None:
++        """Arm completion even if a fast command already finished before handoff.
++
++        Routing metadata must be set before this call. Repeated arming and a
++        concurrent reader exit produce only one completion event.
++        """
++        with self._lock:
++            session.notify_on_complete = True
++            finished = self._finished.get(session.id) is session
++        self._write_checkpoint()
++        if finished:
++            self._queue_completion_once(session)
++
++    def _queue_completion_once(self, session: ProcessSession) -> None:
++        with self._lock:
++            if not session.notify_on_complete or session._completion_queued:
++                return
+             notification = {
+                 "type": "completion",
+                 "session_id": session.id,
+@@ -1191,6 +1218,7 @@
+             }
+             _redact_process_result(notification)
+             self.completion_queue.put(notification)
++            session._completion_queued = True
+ 
+     @staticmethod
+     def _exit_fields(session: ProcessSession) -> dict:
+--- a/tools/terminal_tool_background.py
++++ b/tools/terminal_tool_background.py
+@@ -173,7 +173,7 @@
+             logger.warning("background proc %s: %s", proc_session.id, conflict_note)
+             result_data["watch_patterns_ignored"] = conflict_note
+         if notify_on_complete:
+-            proc_session.notify_on_complete = True
++            process_registry.enable_completion_notification(proc_session)
+             result_data["notify_on_complete"] = True
+             if proc_session.watcher_platform:
+                 _register_completion_watcher(process_registry, proc_session, session_key)

@@ -1,0 +1,15 @@
+{
+  "stages": [
+    "raw_event",
+    "formation",
+    "memory_object",
+    "recall",
+    "surface",
+    "consumption",
+    "evidence_envelope",
+    "ephemeral_capsule",
+    "request_manifest",
+    "provider_request"
+  ],
+  "old_data_lineage": "LINEAGE_PARTIAL"
+}

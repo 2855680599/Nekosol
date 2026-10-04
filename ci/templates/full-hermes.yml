@@ -1,0 +1,23 @@
+name: Full Hermes release qualification
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  full:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39
+      - run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - run: |
+          uv sync --frozen --python 3.13 --extra dev --extra messaging --extra web
+          git init --initial-branch=main .
+          export HOME=$(mktemp -d)
+          export HERMES_HOME="$HOME"
+          export TZ=UTC PYTHONDONTWRITEBYTECODE=1
+          bash scripts/run_tests.sh -j 8 --file-timeout 900 --file-retries 0
+        working-directory: vendor/hermes

@@ -1,0 +1,253 @@
+{
+  "case_count": 30,
+  "memory_on_material_effect": "30/30",
+  "memory_off_false_knowledge": 0,
+  "authority_promotion": 0,
+  "forced_mention": 0,
+  "history_leakage": 0,
+  "cross_turn_reuse": 0,
+  "writes": 0,
+  "cases": [
+    {
+      "case_id": "positive-01",
+      "kind": "direct_user_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-02",
+      "kind": "stable_preference",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-03",
+      "kind": "verified_execution",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-04",
+      "kind": "uncertain_memory",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-05",
+      "kind": "supersession",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-06",
+      "kind": "temporal_relevance",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-07",
+      "kind": "tool_observed",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-08",
+      "kind": "non_verbalized",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-09",
+      "kind": "project_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-10",
+      "kind": "language_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-11",
+      "kind": "schedule_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-12",
+      "kind": "food_preference",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-13",
+      "kind": "city_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-14",
+      "kind": "study_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-15",
+      "kind": "exam_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-16",
+      "kind": "project_status",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-17",
+      "kind": "deployment_result",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-18",
+      "kind": "tool_file",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-19",
+      "kind": "tool_port",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-20",
+      "kind": "preference_drink",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-21",
+      "kind": "preference_music",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-22",
+      "kind": "preference_food",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-23",
+      "kind": "plan_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-24",
+      "kind": "past_event",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-25",
+      "kind": "time_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-26",
+      "kind": "identity_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-27",
+      "kind": "language_level",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-28",
+      "kind": "runtime_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-29",
+      "kind": "memory_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    },
+    {
+      "case_id": "positive-30",
+      "kind": "transport_fact",
+      "memory_on_material_effect": true,
+      "memory_off_false_knowledge": false,
+      "forced_mention": false,
+      "authority_promotion": false
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.py[cod]
+.env
+!.env.example
+/data/
+/work/
+/reports/
+/outputs/
+
+# Private runtime state never belongs in the public source tree.
+*.sqlite
+*.sqlite3
+*.db
+*.jsonl
+*.log
+*.pem
+*.key
+.chiyo*/
+.hermes*/
+local-profile*/

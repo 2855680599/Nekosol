@@ -1,0 +1,61 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chiyo"
+version = "0.1.0a0"
+description = "CHIYO - a Persistent Digital Individual runtime (Life Runtime, Action Reality, Agency, and the isolated proactive Contact pipeline)."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["chiyo", "persistent-digital-individual", "life-runtime", "action-reality", "agency"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+# ZERO runtime dependencies.  Every vendored module imports only the Python
+# standard library plus its local siblings; the package is intentionally
+# dependency-free and installs nothing else.
+dependencies = []
+
+[project.optional-dependencies]
+# Optional, and NOT required by the runtime: `tzdata` only affects local-time
+# rendering, because every canonical timestamp is stored and compared in UTC.
+tz = ["tzdata"]
+
+[project.scripts]
+chiyo = "chiyo.cli:main"
+
+[tool.setuptools]
+# The vendored owners and contact modules are shipped FLAT inside these
+# directories (they import each other flat, exactly as the upstream runtime
+# does), so the directories that carry an `__init__.py` are declared as
+# packages and the remaining sub-trees are carried as package data.
+packages = [
+  "chiyo",
+  "chiyo.life_runtime",
+  "chiyo.life_runtime.memory_runtime_v1",
+  "chiyo.contact",
+  "chiyo.contact.canonical_ports",
+  "chiyo.contact.durable",
+  "chiyo.contact.support",
+]
+
+[tool.setuptools.package-data]
+"chiyo.life_runtime" = [
+  "*.py",
+  "agent/*.py",
+  "memory_runtime_v1/*.py",
+  "scripts/*.txt",
+  "service/bridge/*.py",
+]
+"chiyo.contact" = ["*.py"]
+"chiyo.contact.canonical_ports" = ["*.py"]
+"chiyo.contact.durable" = ["*.py"]
+"chiyo.contact.support" = ["*.py"]

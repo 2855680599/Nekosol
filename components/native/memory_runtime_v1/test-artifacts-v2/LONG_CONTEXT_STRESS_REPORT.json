@@ -1,0 +1,8 @@
+{
+  "synthetic_rounds": 1000,
+  "current_user_exact": true,
+  "recent_rounds_exact": true,
+  "lineage_preserved": true,
+  "quadratic_path_detected": false,
+  "pass": true
+}

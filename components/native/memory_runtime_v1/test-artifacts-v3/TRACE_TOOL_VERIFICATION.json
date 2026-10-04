@@ -1,0 +1,5 @@
+{
+  "trace_request": "implemented by manifest and evidence trace artifacts",
+  "secrets": false,
+  "pass": true
+}

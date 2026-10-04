@@ -1,0 +1,14 @@
+{
+  "_note_initial_user_event_id": "experimental M3 shadow only: set this to the first evidence id of your own store, or run the M1 worker first and copy the id it reports",
+  "availability_version": "m3-e2-v0.1",
+  "backfill": false,
+  "epoch_path": "/var/lib/chiyo/context_epoch.json",
+  "generator_version": "m3-shadow-v0.1",
+  "initial_user_event_id": "REPLACE_WITH_YOUR_FIRST_M0_EVIDENCE_ID",
+  "m0_db": "/var/lib/chiyo/memory/evidence.sqlite",
+  "m1_db": "/var/lib/chiyo/memory/episodes.sqlite",
+  "m2_db": "/var/lib/chiyo/memory/understandings.sqlite",
+  "m3_db": "/var/lib/chiyo/memory/recall_shadow.sqlite",
+  "max_candidates": 200,
+  "poll_seconds": 5
+}

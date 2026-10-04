@@ -1,0 +1,361 @@
+{
+  "schema": "chiyo-candidate-consumption-policy",
+  "policy_id": "CANDIDATE_CONSUMPTION_POLICY_V0_3",
+  "version": "0.3",
+  "kind": "RUNTIME_GROUNDED_PRODUCTION_POLICY",
+  "status": "FROZEN / PRODUCTION-CANDIDATE",
+  "supersedes": [
+    {
+      "policy_id": "CANDIDATE_CONSUMPTION_POLICY_V0",
+      "version": "0.1",
+      "sha256": "5c6ba70a160cbe4fa880a91caab47bf548138750bc1257d7daa9764a6a4679b7",
+      "status": "HISTORICAL / FROZEN / NOT PRODUCTION",
+      "files_overwritten": false
+    },
+    {
+      "policy_id": "CANDIDATE_CONSUMPTION_POLICY_V0_2",
+      "version": "0.2",
+      "sha256": "33eaa9c690d68ded77283f23cd21282802919424f12b6cabb88b82a8fcb5fe62",
+      "status": "CANONICAL-RECONCILIATION / FROZEN / NOT DEPLOYABLE",
+      "files_overwritten": false
+    }
+  ],
+  "design_principle": {
+    "statement": "PRODUCTION POLICY MUST BE A FUNCTION OF PRODUCTION-AVAILABLE INPUTS",
+    "allowed": [
+      "information the runtime already possesses",
+      "information deterministically derivable from persisted evidence"
+    ],
+    "forbidden_hard_dependencies": [
+      "sealed canonical relation verdict",
+      "offline reviewer judgement",
+      "GT label",
+      "Phase-N decision",
+      "Phase-P bundle state",
+      "unpersisted semantic judgement",
+      "nonexistent claim splitter"
+    ]
+  },
+  "policy_unit": {
+    "unit": "EvidenceBundle",
+    "definition": "one retrieved Memory Episode + its persisted evidence events + their provenance + their temporal metadata",
+    "claim_is_a_required_unit": false,
+    "statement": "natural language is never force-split into claims"
+  },
+  "arbitration_semantics": {
+    "single_final_decision_system": "ProductionConsumptionEvaluatorV0_3",
+    "second_final_decision_system": null,
+    "v0_1_v0_2_relationship": "historical artefacts; neither shares live arbitration with V0.3",
+    "current_direct_evidence_outranks_historical": true
+  },
+  "input_contract": {
+    "candidate": "ProductionConsumptionCandidateV0_3",
+    "required": [
+      "memory_id",
+      "episode_id",
+      "evidence_units",
+      "surface_payload",
+      "current_user_event_id",
+      "current_user_timestamp",
+      "visible_exact_event_ids",
+      "visible_exact_episode_ids",
+      "visible_exact_contents",
+      "provider_preserves_per_evidence_authority"
+    ],
+    "optional_because_not_persisted": [
+      "supersession_metadata",
+      "invalidation_metadata"
+    ],
+    "per_unit": [
+      "event_id",
+      "source_role",
+      "authority_class",
+      "timestamp",
+      "source_ref",
+      "lineage_status",
+      "content",
+      "instructional_force",
+      "authority_promoted",
+      "provenance_present"
+    ],
+    "runtime_availability_audit": "V0_3_RUNTIME_INPUT_AUDIT.json"
+  },
+  "forbidden_inputs": [
+    "canonical_label",
+    "gt_label",
+    "phase_n_final_consumption_decision",
+    "phase_p_bundle_state",
+    "reviewer_answer",
+    "replay_status",
+    "offline_relation_verdict",
+    "sealed_relation_class",
+    "case_id",
+    "expected_result"
+  ],
+  "claim_safety_replacement": {
+    "abolished_hard_dependency": "claim_boundary_status required",
+    "replacement": "bundle_safety_status",
+    "values": [
+      "SAFE_EVIDENCE_BUNDLE",
+      "MIXED_AUTHORITY",
+      "MISSING_PROVENANCE",
+      "UNSAFE_INSTRUCTIONAL_CONTENT",
+      "UNKNOWN"
+    ],
+    "source": [
+      "persisted event metadata",
+      "source role",
+      "source provenance",
+      "timestamps",
+      "existing firewall metadata"
+    ],
+    "llm_splitter": false
+  },
+  "mixed_bundle_rule": {
+    "whole_bundle_may_be_promoted": false,
+    "must_preserve": "per-evidence authority",
+    "if_provider_cannot_preserve_boundary": "ABSTAIN"
+  },
+  "source_evidence_representation": {
+    "form": "Historical Evidence Bundle",
+    "shape": [
+      "evidence unit A: source type, timestamp, authority",
+      "evidence unit B: source type, timestamp, authority"
+    ],
+    "one_episode_equals_one_claim": false,
+    "inherits": [
+      "Surface V1",
+      "Evidence Authority",
+      "Historical Wording firewall"
+    ],
+    "assistant_wording_is_user_truth": false
+  },
+  "relevance": {
+    "recall_reimplemented": false,
+    "source_of_relevance": "existing M3 Recall -> Surface V1",
+    "v0_3_does_not_do": [
+      "second embedding search",
+      "new lexical ranking",
+      "new semantic recall"
+    ],
+    "v0_3_only_decides": "whether an already-surfaced candidate safely enters the current request"
+  },
+  "visible_history_dedup": {
+    "semantic_relation_classifier_required": false,
+    "runtime_provable_signals": [
+      "same source_event_id",
+      "same message/event identity",
+      "exact normalized evidence identity",
+      "same episode already represented in current exact window"
+    ],
+    "on_hit": "SKIP_REDUNDANT",
+    "on_miss_claims": [],
+    "statement": "on a miss V0.3 never asserts UNRELATED / SUPPORTING_NON_DUPLICATE / PARTIAL_OVERLAP; those semantic classes are not a V0.3 input"
+  },
+  "semantic_duplication": {
+    "semantic_ambiguity_equals_authority_ambiguity": false,
+    "semantic_relation_value": "UNKNOWN",
+    "fabricated_classification": false,
+    "if_all_other_safety_gates_pass": "allowed into the bounded historical bundle",
+    "model_sees_it_does_not_mean_model_must_mention_it": true,
+    "future_layer": "Semantic Redundancy V1 (optimisation layer, not a production blocker)"
+  },
+  "temporal_safety": {
+    "every_unit_carries_historical_timestamp": true,
+    "labeled_as": "PAST_EVIDENCE",
+    "permanent_rule": "current direct user evidence > historical evidence",
+    "old_preference_plan_uncertainty_auto_read_as_current_state": false
+  },
+  "current_evidence_conflict": {
+    "semantic_relation_classifier_required_to_detect_contradiction": false,
+    "context_contract": "historical bundle NEVER overrides the current direct user message",
+    "explicit_metadata_superseded_invalidated_retracted": "ABSTAIN / DEFER",
+    "otherwise": "historical evidence with timestamp, never current truth",
+    "truth_selection": "NONE"
+  },
+  "instruction_firewall": {
+    "past_evidence_is_current_instruction": false,
+    "historical_wording_is_style_authority": false,
+    "assistant_self_history_is_user_truth": false,
+    "instructional_force_admitted_from_history": false
+  },
+  "authority_classes": [
+    "DIRECT_USER_EVIDENCE",
+    "TOOL_OBSERVED_EVIDENCE",
+    "VERIFIED_EXECUTION_OUTCOME",
+    "ASSISTANT_SELF_HISTORY",
+    "DERIVED_MEMORY",
+    "SUMMARY_OR_INTERPRETATION",
+    "UNKNOWN"
+  ],
+  "authority_may_be_promoted": false,
+  "ordered_gates": [
+    {
+      "order": 1,
+      "gate": "HARD_INTEGRITY_GATE",
+      "input": "unit presence + lineage_status + memory_id",
+      "effect": "REJECT_INTEGRITY on failure",
+      "reason_codes": [
+        "INTEGRITY_FAILURE"
+      ]
+    },
+    {
+      "order": 2,
+      "gate": "SOURCE_TRACE_GATE",
+      "input": "per-unit provenance + source_ref + timestamp + source_role",
+      "effect": "REJECT_INTEGRITY if any unit is untraceable",
+      "reason_codes": [
+        "SOURCE_TRACE_INCOMPLETE",
+        "BUNDLE_MISSING_PROVENANCE"
+      ]
+    },
+    {
+      "order": 3,
+      "gate": "AUTHORITY_PROVENANCE_SAFETY_GATE",
+      "input": "authority_class + bundle_declared_authority_class",
+      "effect": "ABSTAIN on unpermitted class or attempted promotion",
+      "reason_codes": [
+        "AUTHORITY_CLASS_NOT_PERMITTED",
+        "BUNDLE_AUTHORITY_PROMOTION_FORBIDDEN"
+      ]
+    },
+    {
+      "order": 4,
+      "gate": "CURRENT_INSTRUCTION_FIREWALL_GATE",
+      "input": "per-unit instructional_force + authority_promoted",
+      "effect": "ABSTAIN",
+      "reason_codes": [
+        "HISTORICAL_INSTRUCTION_FORCE_FORBIDDEN"
+      ]
+    },
+    {
+      "order": 5,
+      "gate": "KNOWN_SUPERSESSION_INVALIDATION_GATE",
+      "input": "known supersession / invalidation / retraction metadata",
+      "effect": "ABSTAIN / DEFER",
+      "reason_codes": [
+        "KNOWN_SUPERSEDED_OR_INVALIDATED"
+      ]
+    },
+    {
+      "order": 6,
+      "gate": "EXACT_IDENTITY_REDUNDANCY_GATE",
+      "input": "visible_exact_event_ids + visible_exact_episode_ids + visible_exact_contents",
+      "effect": "SKIP_REDUNDANT",
+      "reason_codes": [
+        "REDUNDANT_SAME_SOURCE_EVENT_ID",
+        "REDUNDANT_SAME_EPISODE_ALREADY_VISIBLE",
+        "REDUNDANT_EXACT_NORMALIZED_EVIDENCE_IDENTITY"
+      ]
+    },
+    {
+      "order": 7,
+      "gate": "BUNDLE_SAFETY_GATE",
+      "input": "bundle_safety_status + provider boundary capability",
+      "effect": "ABSTAIN / REJECT_INTEGRITY",
+      "reason_codes": [
+        "BUNDLE_UNSAFE_INSTRUCTIONAL_CONTENT",
+        "MIXED_AUTHORITY_BOUNDARY_NOT_PRESERVABLE",
+        "BUNDLE_SAFETY_UNKNOWN"
+      ]
+    },
+    {
+      "order": 8,
+      "gate": "CONSUME_GATE",
+      "input": "bundle_safety_status == SAFE_EVIDENCE_BUNDLE or MIXED_AUTHORITY(preserved)",
+      "effect": "CONSUME",
+      "reason_codes": [
+        "SAFE_USEFUL_HISTORICAL_BUNDLE",
+        "SAFE_USEFUL_MIXED_AUTHORITY_BUNDLE",
+        "HISTORICAL_EVIDENCE_DOES_NOT_OVERRIDE_CURRENT"
+      ]
+    },
+    {
+      "order": 9,
+      "gate": "FAIL_CLOSED_DEFAULT",
+      "input": "no gate fired",
+      "effect": "ABSTAIN",
+      "reason_codes": [
+        "INSUFFICIENT_SAFE_EVIDENCE"
+      ]
+    }
+  ],
+  "decision_outputs": {
+    "enum": [
+      "CONSUME",
+      "ABSTAIN",
+      "SKIP_REDUNDANT",
+      "REJECT_INTEGRITY"
+    ],
+    "runtime_default": "ABSTAIN",
+    "provider_visible_fields": [
+      "memory_id",
+      "episode_id",
+      "decision",
+      "policy_version",
+      "policy_sha"
+    ]
+  },
+  "reason_codes": [
+    "SAFE_USEFUL_HISTORICAL_BUNDLE",
+    "SAFE_USEFUL_MIXED_AUTHORITY_BUNDLE",
+    "HISTORICAL_EVIDENCE_DOES_NOT_OVERRIDE_CURRENT",
+    "REDUNDANT_SAME_SOURCE_EVENT_ID",
+    "REDUNDANT_SAME_EPISODE_ALREADY_VISIBLE",
+    "REDUNDANT_EXACT_NORMALIZED_EVIDENCE_IDENTITY",
+    "INTEGRITY_FAILURE",
+    "SOURCE_TRACE_INCOMPLETE",
+    "BUNDLE_MISSING_PROVENANCE",
+    "AUTHORITY_CLASS_NOT_PERMITTED",
+    "BUNDLE_AUTHORITY_PROMOTION_FORBIDDEN",
+    "HISTORICAL_INSTRUCTION_FORCE_FORBIDDEN",
+    "KNOWN_SUPERSEDED_OR_INVALIDATED",
+    "BUNDLE_UNSAFE_INSTRUCTIONAL_CONTENT",
+    "MIXED_AUTHORITY_BOUNDARY_NOT_PRESERVABLE",
+    "BUNDLE_SAFETY_UNKNOWN",
+    "INSUFFICIENT_SAFE_EVIDENCE"
+  ],
+  "features": [
+    "episode_present",
+    "evidence_unit_count",
+    "multi_event_episode",
+    "distinct_authority_class_count",
+    "bundle_declared_authority_class",
+    "bundle_max_unit_authority_rank",
+    "bundle_authority_promotion_attempted",
+    "bundle_safety_status",
+    "all_units_have_provenance",
+    "all_units_have_timestamp",
+    "all_units_have_source_ref",
+    "all_units_have_source_role",
+    "any_unit_instructional_force",
+    "any_unit_authority_promoted",
+    "per_evidence_authority_preserved_by_provider",
+    "authority_classes_permitted",
+    "known_supersession",
+    "known_invalidation",
+    "known_retraction",
+    "visible_exact_event_id_overlap",
+    "episode_already_visible",
+    "exact_normalized_identity_duplicate",
+    "semantic_relation",
+    "bundle_evidence_utf16_length",
+    "current_direct_evidence_present",
+    "current_user_evidence_would_be_overridden"
+  ],
+  "acceptance_target_removed": {
+    "removed": "canonical 81 must equal 47/34",
+    "canonical_81_role": "historical comparison only",
+    "reasons": [
+      "V0.3 does not target 47/34",
+      "a difference from 47/34 is not a reason to adjust the policy"
+    ]
+  },
+  "firewalls_not_lowered": {
+    "instruction_firewall": true,
+    "authority_promotion": false,
+    "assistant_to_user_promotion": false,
+    "historical_wording_replay": false,
+    "semantic_ambiguity_grants_authority": false
+  }
+}

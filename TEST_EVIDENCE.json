@@ -1,0 +1,439 @@
+{
+  "schema": "chiyo/test-evidence@1",
+  "date": "2026-10-04",
+  "status": "AUTOMATED_QUALIFIED_EXPERIENCE_CANDIDATE",
+  "upstream_commit": "67807e64a66044db9e0a641d98c68a35c1760589",
+  "hermes_full": {
+    "python": "3.13.5",
+    "platform": "Linux (WSL Ubuntu)",
+    "normal_uid": 61050,
+    "runner": [
+      "bash",
+      "scripts/run_tests.sh",
+      "-j",
+      "8",
+      "--file-timeout",
+      "900",
+      "--file-retries",
+      "0"
+    ],
+    "auto_retries": 0,
+    "counts": {
+      "files": 3718,
+      "passed": 45071,
+      "failed": 0,
+      "skipped": 440,
+      "seconds": 1414.6
+    },
+    "log_sha256": "bf56d2d1d31cfb62637040c030647a9e584341774ed01bcecee21e465cff360d",
+    "tested_vendor_tree_sha256": "413115875004140a47cc8fd8e0d1ce9323911d256fba90247dfc105c4842b143",
+    "all_shipped_vendor_files_match_test_input": true,
+    "qualification_checkout": "Isolated real Git metadata for upstream update fixtures; never shipped"
+  },
+  "focused_repair": {
+    "files": 19,
+    "passed": 659,
+    "failed": 0,
+    "skipped": 29,
+    "auto_retries": 0
+  },
+  "owned_components": {
+    "interpreters": [
+      "3.11.15",
+      "3.13.5"
+    ],
+    "qualification_revision": "R17 component suites re-executed under both interpreters",
+    "tests_per_interpreter": 453,
+    "passed": 452,
+    "skipped": 1,
+    "failed": 0,
+    "suites": {
+      "closeout": 17,
+      "native": 52,
+      "memory_controls": 11,
+      "life_supply": 122,
+      "world_body": 251
+    },
+    "root_socket_supplement": {
+      "tests": 9,
+      "passed": 9,
+      "unchanged_source_from_previous_qualification": true
+    }
+  },
+  "process_dual_python": {
+    "interpreters": [
+      "3.11.15",
+      "3.13.5"
+    ],
+    "tests_per_interpreter": 185,
+    "failed": 0,
+    "skipped": 4,
+    "raw_retries": 0
+  },
+  "owned_integration": {
+    "interpreters": [
+      "3.11.15",
+      "3.13.5"
+    ],
+    "host_boundary_tests_per_interpreter": 36,
+    "final_prompt_copy_only_delta_rechecked": true,
+    "life_assembly": "PASS",
+    "cognition_fault_scenarios": "PASS (1 parametrized scenario suite)",
+    "affected_Hermes_tests_per_interpreter": 29,
+    "failures": 0
+  },
+  "alpha": {
+    "A_to_E": "PASS",
+    "F": "PARTIAL",
+    "unimplemented": "N8 recipient/channel permission revocation owner port; proactive behavior disabled"
+  },
+  "real_model_e2e": {
+    "standard_hermes_presence_checks": 4,
+    "memory_checks": 8,
+    "passed": 12,
+    "private_isolated_profile": true,
+    "real_Telegram_messages_sent_by_test": 0,
+    "presence_owners": [
+      "life",
+      "world_body",
+      "life_supply"
+    ],
+    "cognition_effect": "SHADOW, zero canonical decision/activity writes",
+    "R17_scope_note": "Prior real-model checks carried forward for unchanged memory/context/owner behavior; R17 additionally qualifies real command routing. No new real-model calls needed for dispatch and audit-metadata delta."
+  },
+  "process_lifecycle_repair": {
+    "negative_control_failed_nodes": 2,
+    "stress_rounds": 10,
+    "simultaneous_exit_and_arming_rounds": 40,
+    "arming_callers_per_round": 3,
+    "status": "PASS",
+    "raw_retries": 0,
+    "late_notification_and_inline_reader_finish_covered": true
+  },
+  "interim_R7_full": {
+    "passed": 45066,
+    "failed": 1,
+    "skipped": 440,
+    "seconds": 1681.4,
+    "result": "FAIL; retained unchanged before process lifecycle fix"
+  },
+  "interim_R8_full": {
+    "passed": 45066,
+    "failed": 3,
+    "skipped": 440,
+    "seconds": 1341.5,
+    "result": "FAIL; retained unchanged before fixture cleanup and readiness repairs"
+  },
+  "fixture_final_repair": {
+    "changed_test_files": 14,
+    "runtime_delta_from_R8": 0,
+    "focused_passed": 65,
+    "focused_failed": 0,
+    "gateway_fixture_stress_rounds": 5,
+    "provider_fixture_stress_rounds": 10,
+    "stress_round_failures": 0,
+    "raw_retries": 0,
+    "compression_deadline_assertion_preserved_seconds": 5,
+    "cancellation_lease_ttl_matches_production_seconds": 30
+  },
+  "interim_R9_full": {
+    "status": "INTERRUPTED_AFTER_KNOWN_FAILURE",
+    "known_failed_file": "tests/agent/test_compression_worker_isolation_76354.py",
+    "reason": "provider readiness fixture failed; incomplete log retained without invented full-run counts"
+  },
+  "interim_R10_full": {
+    "passed": 44988,
+    "failed": 11,
+    "skipped": 440,
+    "timed_out_files": 1,
+    "seconds": 2281.3,
+    "result": "FAIL; original output retained; affected fixtures subsequently repaired"
+  },
+  "final_catalog_and_dns_fixture_repair": {
+    "files": 8,
+    "passed": 173,
+    "failed": 0,
+    "skipped": 14,
+    "runner": "official per-file, j4, retries0",
+    "runtime_delta": 0,
+    "ssrf_policy_and_address_checks_retained": true
+  },
+  "final_fixture_python311": {
+    "files": 14,
+    "passed": 301,
+    "failed": 0,
+    "skipped": 14,
+    "runner": "official per-file, two prior groups j2 plus kanban and cron j1, retries0"
+  },
+  "final_update_fixture": {
+    "file": "tests/hermes_cli/test_cmd_update.py",
+    "passed": 47,
+    "failed": 0,
+    "stress_rounds": 5,
+    "raw_retries": 0,
+    "module_purge_cannot_discard_transport_stubs": true
+  },
+  "interim_R11_full": {
+    "passed": 45065,
+    "failed": 4,
+    "skipped": 440,
+    "seconds": 1253.8,
+    "result": "FAIL; update test stubs were discarded by real module purge; original log retained"
+  },
+  "kanban_deadline_repair": {
+    "rounds": 10,
+    "failed": 0,
+    "python311_passed": 2,
+    "unbounded_lock_negative_control_exit": 1,
+    "real_file_lock_and_schema_retained": true
+  },
+  "r12_full_before_deadline_fixture_fix": {
+    "passed": 45068,
+    "failed": 1,
+    "skipped": 440,
+    "seconds": 1201.5,
+    "reason": "whole connect wall-clock assertion included schema fsync under parallel load; log retained"
+  },
+  "cron_async_repair": {
+    "rounds": 10,
+    "failed": 0,
+    "python311_passed": 10,
+    "synchronous_negative_control_exit": 1,
+    "negative_control_failed_nodes": 2,
+    "real_pool_and_running_job_guard_retained": true
+  },
+  "interim_R13_full": {
+    "status": "INTERRUPTED_AFTER_KNOWN_FAILURE",
+    "known_failed_file": "tests/cron/test_parallel_pool.py",
+    "reason": "two wall-clock-only nonblocking assertions failed; incomplete log retained without invented full-run counts"
+  },
+  "room_readiness_repair": {
+    "rounds": 5,
+    "failed": 0,
+    "python311_passed": 43,
+    "real_waiting_room_and_independent_settlement_retained": true
+  },
+  "interim_R14_full": {
+    "passed": 45068,
+    "failed": 1,
+    "skipped": 440,
+    "seconds": 1202.8,
+    "reason": "independent room readiness 1s assertion failed in a loaded whole-suite run; original log retained"
+  },
+  "engine_entry_repair": {
+    "rounds": 10,
+    "failed": 0,
+    "python311_passed": 4,
+    "idle_timeout_seconds": 0.6,
+    "preparation_ceiling_seconds": 30,
+    "real_engine_mutation_and_live_transcript_identity_retained": true
+  },
+  "interim_R15_full": {
+    "status": "INTERRUPTED_AFTER_KNOWN_FAILURE",
+    "known_failed_file": "tests/agent/test_compression_worker_isolation_76354.py",
+    "reason": "F3 engine isolation cancelled during cold checkpoint preparation; partial log retained without invented complete counts"
+  },
+  "source_review": {
+    "owned_lint_rules": [
+      "F",
+      "E9"
+    ],
+    "result": "PASS",
+    "isolated_component_imports": 45,
+    "patch_roundtrip": "R17 PASS: apply/check/reapply/rollback/re-rollback/reapply/check",
+    "tracked_Hermes_delta_files": 41,
+    "owned_host_modules_sha256": "c81c1caaab4b476d5a49548ec1880b5330d0ba6bbdde1cc2cc6228d4d238436e"
+  },
+  "previous_full_run": {
+    "source_zip_sha256": "34fdcc6f6d9430dcf1b3244929b1e95e162f41ca2aa91efa0818a6e92f748d09",
+    "files": 3718,
+    "passed": 45037,
+    "failed": 25,
+    "skipped": 444,
+    "retry_passed_flaky_files": 2,
+    "file_timeout_seconds": 300,
+    "not_rewritten": true
+  },
+  "pending": [
+    "Several days of natural Telegram experience",
+    "Actual QQ/Weixin/WeCom/Feishu account E2E",
+    "Native original-instance natural memory canary deferred by author",
+    "Windows/macOS/Desktop/Docker/JavaScript full qualification",
+    "External credential revocation verification",
+    "First public Git clone install and GitHub CI execution; recorded externally when observed"
+  ],
+  "not_implemented": [
+    "Autonomous activity execution",
+    "Proactive Contact",
+    "N8 revocation owner port",
+    "Life Supply Open Inquiry admission",
+    "Web chat"
+  ],
+  "normal_install_final_archive_receipt": "Recorded separately with final archive SHA256, avoiding a circular archive hash inside its contents",
+  "parent_R16_full": {
+    "python": "3.13.5",
+    "platform": "Linux (WSL Ubuntu)",
+    "normal_uid": 61050,
+    "runner": [
+      "bash",
+      "scripts/run_tests.sh",
+      "-j",
+      "8",
+      "--file-timeout",
+      "900",
+      "--file-retries",
+      "0"
+    ],
+    "auto_retries": 0,
+    "counts": {
+      "files": 3718,
+      "passed": 45071,
+      "failed": 0,
+      "skipped": 440,
+      "seconds": 1414.6
+    },
+    "log_sha256": "bf56d2d1d31cfb62637040c030647a9e584341774ed01bcecee21e465cff360d",
+    "tested_vendor_tree_sha256": "413115875004140a47cc8fd8e0d1ce9323911d256fba90247dfc105c4842b143",
+    "all_shipped_vendor_files_match_test_input": true,
+    "qualification_checkout": "Isolated real Git metadata for upstream update fixtures; never shipped"
+  },
+  "R17_command_repair": {
+    "result": "PASS",
+    "focused": {
+      "status": "PASS",
+      "steps": [
+        {
+          "name": "r17-focused",
+          "exit": 0
+        },
+        {
+          "name": "r17-owned-host",
+          "exit": 0
+        },
+        {
+          "name": "r17-negative",
+          "exit": 1
+        }
+      ],
+      "negative_control_expected_failure": true,
+      "modified_file_hashes": {
+        "vendor/hermes/gateway/run_inbound.py": "eefae4daa1da6f2f84637abc49e3b22873ba42eae96a57c4e68910760c24645a",
+        "vendor/hermes/tests/gateway/test_unknown_command.py": "d971584b86860d78cf2200eeba0af8cb73a450e990b0f22eea37cc61e6680774",
+        "tests/test_platform_scope.py": "30ba71e40be5821b985f0f83aec87ccc1786786a95fdaad533f28607b85dedae"
+      }
+    },
+    "owned_and_documentation": {
+      "status": "PASS",
+      "steps": [
+        {
+          "python": "311",
+          "suite": "host",
+          "exit": 0
+        },
+        {
+          "python": "311",
+          "suite": "components",
+          "exit": 0
+        },
+        {
+          "python": "313",
+          "suite": "host",
+          "exit": 0
+        },
+        {
+          "python": "313",
+          "suite": "components",
+          "exit": 0
+        },
+        {
+          "documented_bash_blocks_syntax_checked": 17,
+          "documented_telegram_key_generator": "PASS"
+        }
+      ]
+    },
+    "patch_and_static": {
+      "status": "PASS",
+      "patch_roundtrip": [
+        {
+          "action": "check",
+          "exit": 0
+        },
+        {
+          "action": "apply",
+          "exit": 0
+        },
+        {
+          "action": "check",
+          "exit": 0
+        },
+        {
+          "action": "apply",
+          "exit": 0
+        },
+        {
+          "action": "rollback",
+          "exit": 0
+        },
+        {
+          "action": "check",
+          "exit": 0
+        },
+        {
+          "action": "rollback",
+          "exit": 0
+        },
+        {
+          "action": "apply",
+          "exit": 0
+        },
+        {
+          "action": "check",
+          "exit": 0
+        }
+      ],
+      "tracked_files": 41,
+      "owned_lint_rules": [
+        "F",
+        "E9"
+      ]
+    },
+    "real_plugin_discovery_and_gateway_path_commands": 4,
+    "unbound_DM_denied": true,
+    "natural_Telegram_status_confirmed_by_author": true,
+    "natural_confirmation_date": "2026-10-04",
+    "natural_confirmation_private_content_exported": false,
+    "negative_control_failed_on_R16_code": true,
+    "prior_full_environment_attempts": [
+      "INTERRUPTED: source ZIP has no Git metadata, upstream update fixtures failed",
+      "INTERRUPTED: empty Git marker is not a real repository; Git check-ignore failed"
+    ],
+    "runtime_delta_from_R16": [
+      "gateway/run_inbound.py: exact plugin name before hyphen fallback",
+      "chiyo_bundle/hermes_plugin.py: loaded dispatch audit metadata only"
+    ],
+    "installation_note": "Dedicated venv per version; do not reuse a previous checkout editable install"
+  },
+  "R18_release_materials": {
+    "runtime_and_test_source_delta_from_R17": 0,
+    "full_suite_carried_forward_by_exact_byte_comparison": true,
+    "license_authorized_by_owner_date": "2026-10-04",
+    "first_party_license": "Apache-2.0",
+    "Hermes_license": "MIT",
+    "site_pages": 17,
+    "site_browser_checks": 52,
+    "site_external_requests": 0,
+    "public_Git_install_and_remote_CI": "Require actual post-publication receipts; not claimed by this metadata"
+  },
+  "R19_documentation_final": {
+    "runtime_and_test_source_delta_from_R17": 0,
+    "fixed_repository_url": "https://github.com/2855680599/chiyo",
+    "candidate_tag": "v0.1.0-rc4",
+    "source_zip_and_Git_use_same_installer": true
+  },
+  "R20_publication_scope": {
+    "runtime_and_test_source_delta_from_R17": 0,
+    "CI_templates_not_enabled": true,
+    "reason": "Current publish credential lacks GitHub workflow scope; publish source and templates within granted permissions",
+    "GitHub_CI_passed": false
+  }
+}

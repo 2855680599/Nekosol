@@ -1,0 +1,13 @@
+{
+  "faults": [
+    "capsule_corruption",
+    "lineage_corruption",
+    "double_injection",
+    "budget_error",
+    "serialization_error",
+    "context_runtime_exception"
+  ],
+  "fallback": "ordinary conversation",
+  "provider_crash": false,
+  "pass": true
+}

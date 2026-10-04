@@ -1,0 +1,218 @@
+{
+  "schema": "chiyo/hermes-patches@1",
+  "upstream": {
+    "repository": "https://github.com/NousResearch/hermes-agent",
+    "commit": "67807e64a66044db9e0a641d98c68a35c1760589",
+    "version": "0.21.0",
+    "license": "MIT"
+  },
+  "tracked_files": [
+    {
+      "path": "agent/agent_init.py",
+      "clean_sha256": "ff051678e80721ad4e053f83b66b220fbffaeef28c441fdbd8c9a7e81bdd1a8b",
+      "patched_sha256": "d93d492ca10cec1280af2d805f0e41dc1f8884094d53142a31d5cbfaff5810f7"
+    },
+    {
+      "path": "gateway/run.py",
+      "clean_sha256": "79a8704da45baf702e1e9590a1b55feac9439722685705a4eb1b3f545dc134d3",
+      "patched_sha256": "9dbae85b2263694ae4ecb3bb47de706f388689e1daad6ae0674e37e8d3890e77"
+    },
+    {
+      "path": "gateway/run_agent_cache.py",
+      "clean_sha256": "0b4dc276c70277a365cc850be06d45de50c0a492a3accc6a99fe9f6a9d42280c",
+      "patched_sha256": "5a9a3a14a0e867c776b66f373cf5d74df33598cd7ef6e51fbe3df9fa563f4e11"
+    },
+    {
+      "path": "gateway/run_inbound.py",
+      "clean_sha256": "8b983ea50a991d5ec8512062f8baea73a3e4a9aec8a6093fe7b19004f0f7d45c",
+      "patched_sha256": "eefae4daa1da6f2f84637abc49e3b22873ba42eae96a57c4e68910760c24645a"
+    },
+    {
+      "path": "hermes_cli/config.py",
+      "clean_sha256": "b5503f1015edb1906e182bb0b59a0a3cabd5cf34d55f3ecf2d72e68aaa6c57df",
+      "patched_sha256": "f48884ebde7db78477aeb96fb0a6832f82cd4c973bfc771eb0c51f964e57ac1e"
+    },
+    {
+      "path": "hermes_cli/plugins_dispatch.py",
+      "clean_sha256": "bccbee91f62a4abae4f176c89eb64b8dbc232a0ad71a7467f51d9da31ee700b5",
+      "patched_sha256": "8d4d4e3ff6b38e306c7d884271d096a5b23bb16c454af3173b90939fc9199316"
+    },
+    {
+      "path": "mcp_serve.py",
+      "clean_sha256": "a7330ff77d756a378c9860a3e32e0f80c48c2d5ea865216846d661596b2102c0",
+      "patched_sha256": "aa98c873b0dab64171ea2e0e5bb5b53466fee422096b9f05891ba0182f8e86fb"
+    },
+    {
+      "path": "scripts/run_tests_parallel.py",
+      "clean_sha256": "d71999ea44ef18352ff0f0d08512fae2109ac748a654553b15aa02d72f368bd9",
+      "patched_sha256": "65238fdf9b306dec7d12357aef596696fbe124eada579398c52f3b90c62f2dda"
+    },
+    {
+      "path": "tests/agent/test_compression_worker_isolation_76354.py",
+      "clean_sha256": "c97bf042457ac404174b8d99b757535b403f7f424d998dbfd5fbcf5c0013e26c",
+      "patched_sha256": "204db967e490f62180d5dbcb2c34c6d5f1861520f7da282608f90bb1a99f4424"
+    },
+    {
+      "path": "tests/agent/test_vision_routing_31179.py",
+      "clean_sha256": "149d661323aef6695d823ebe44ff14b87dd79cac9c40c05439c4be6d383486e4",
+      "patched_sha256": "9fb37834a6bc97e388a1732715603f1370373ac542e1cac164676fe93db95d71"
+    },
+    {
+      "path": "tests/computer_use/test_cua_no_overlay.py",
+      "clean_sha256": "ab1e55dca7dee4eb11ef09eb11ffa73d7b7326b86f5c913fe8e0da02348d7249",
+      "patched_sha256": "df221fdd73e268f61aaba62d12a277f945bd460722d3200e3dbb9513149f0d4b"
+    },
+    {
+      "path": "tests/cron/test_parallel_pool.py",
+      "clean_sha256": "9685b60ba19707d91aa470e2ff2f261f429bc52fb499d776cd6617e3fb8e0d7a",
+      "patched_sha256": "082843d4d07a70ccc04c165f3c8c3317632d82efeb1df143101959b67ba60905"
+    },
+    {
+      "path": "tests/gateway/test_browser_control_api.py",
+      "clean_sha256": "a9e61148a118b7b40310b019f6bb52762a1d28c27940e90c390810d139f5b5d3",
+      "patched_sha256": "f30a817f136a55863d42a6d325607be8932d38e84cb7a5e0ba11f2ea20f17bc6"
+    },
+    {
+      "path": "tests/gateway/test_media_download_retry.py",
+      "clean_sha256": "45ac1588e521873e9f0bc3a27201da9c80ae350368a13f1f1abf0374ea776fac",
+      "patched_sha256": "955c8d4d05307a6cf8ab10ce38ffcf3e354506b9cab6d45049aa7b43f91222e4"
+    },
+    {
+      "path": "tests/gateway/test_multiplex_adapter_registry.py",
+      "clean_sha256": "08e53180563851561a919f2b6b6513daf25f1bdd0316ad0c6269c7349e39b2bb",
+      "patched_sha256": "8559f19e775fd024389aa755c9fe873b889bb445b345aa7d3b3a8db12d19b2db"
+    },
+    {
+      "path": "tests/gateway/test_session_hygiene.py",
+      "clean_sha256": "bfec1147e7090c54600f3212ccf7c700be840c83abd30835f7bdc1d3437a3241",
+      "patched_sha256": "47876106c095e0814c2f613bc55cddecd2758a2d0f819eb8a1961d69259a17ca"
+    },
+    {
+      "path": "tests/gateway/test_telegram_media_read_timeout.py",
+      "clean_sha256": "3b60ee5ddced9beec1ebcfd1bfd0604f52d5efd9f4385cf140061fe5e224969d",
+      "patched_sha256": "b2e4ab4e2c103a2016d2baca98f4d20d1a3776014d9ba54515d1721eb1917001"
+    },
+    {
+      "path": "tests/gateway/test_unknown_command.py",
+      "clean_sha256": "14dfc6e2921e4622abe0edff5061b53bc39d9659245a1c47de20716ea98a3ba5",
+      "patched_sha256": "d971584b86860d78cf2200eeba0af8cb73a450e990b0f22eea37cc61e6680774"
+    },
+    {
+      "path": "tests/hermes_cli/test_cmd_update.py",
+      "clean_sha256": "dba4761769e18401f6069a4f12f16e747a7308ec8e7be7584703f685d2688da8",
+      "patched_sha256": "df2bbf8f1d7b85bc48f682e90c8e7b4843932b9a69eff8c71854c7f330541f79"
+    },
+    {
+      "path": "tests/hermes_cli/test_gateway_service.py",
+      "clean_sha256": "a9469c892f8c1c8755353aee79df5839ada31c680afbec690b71bac576d6950b",
+      "patched_sha256": "7619a5ff0cfdc5ae4f593bac5e24cc8b1bb22670e010d9a7d90522e74eefd5a5"
+    },
+    {
+      "path": "tests/hermes_cli/test_install_cua_driver.py",
+      "clean_sha256": "9bfdd951e210d0bde707e388db45231c40abc6cb55bd8d3ac474b3d6795a6d28",
+      "patched_sha256": "244b53816f666e4aca00bc493b4143c5577354d4fdb3d671ea45d72b6627ade1"
+    },
+    {
+      "path": "tests/hermes_cli/test_kanban_init_lock_bounded.py",
+      "clean_sha256": "067f0632c66f4f4f1a89186971f82853b80011a35442c15c2f3670d1eb9a8211",
+      "patched_sha256": "7d317a7828c88804c166bdd315650a0591bd99f97c45f0b7f95d96c18a40330c"
+    },
+    {
+      "path": "tests/hermes_cli/test_local_quickstart.py",
+      "clean_sha256": "83e2985c9b3cc1301344063f949976787e0cdcc969f4bab81818f028bf549e5c",
+      "patched_sha256": "0931841dfb9e34832b8f6d970447ff15fb7e153a8ee93edb8c370097c4480a93"
+    },
+    {
+      "path": "tests/hermes_cli/test_model_switch_custom_providers.py",
+      "clean_sha256": "dc51eea42cc47d6472b7fede0e449a924f5cc272af8d51deb9318cfc84cb7964",
+      "patched_sha256": "7e8bc6aab8143be47a943c0ad0818cae22709781b07a4edb6269210bb85156d2"
+    },
+    {
+      "path": "tests/hermes_cli/test_picker_prewarm.py",
+      "clean_sha256": "93f68af1abc63ab5d8344b948ffbb40d95aa13328870a0bcd1ed65ba918ae6c4",
+      "patched_sha256": "1a115823d8446383ff04942a50735a43e0581a995f7ba867670976fca9c27a1d"
+    },
+    {
+      "path": "tests/hermes_cli/test_plugins.py",
+      "clean_sha256": "7ea9c92be5846e42f20f4b51cb65447ba02251d549870958188eefd3d7702d86",
+      "patched_sha256": "e1ad132854cda8705cdcd9f4e04bea0422449349a9f96887277599a084b49862"
+    },
+    {
+      "path": "tests/hermes_cli/test_xai_provider_labels.py",
+      "clean_sha256": "aa1d05af2bec5efb8e95b1344be41212e52f1ca153bf2d4674b395649d23d38d",
+      "patched_sha256": "b07ac6d933d058cd800b3c50014e838940f792894ada2785f78f2123e5d5ca59"
+    },
+    {
+      "path": "tests/openviking_plugin/test_openviking.py",
+      "clean_sha256": "9812d2b2e7acbe199f75cac8ecc8d00eb10b2b9de976fa69b976c0c58421a0f2",
+      "patched_sha256": "08a2100065fc2d151af257a06ca32f2f2572b013b75e7fa69cbd33a94525486a"
+    },
+    {
+      "path": "tests/test_atomic_replace_symlinks.py",
+      "clean_sha256": "585fbe39ca5c882a08f564b348deb2d9a8f51be46b11a77b51f6320771a0f51d",
+      "patched_sha256": "c2773356ecd69e52b45a844618406c587ff47c39dc305275227255d10145d808"
+    },
+    {
+      "path": "tests/test_install_macos_launcher.py",
+      "clean_sha256": "b3e26fafd5cc157d8cd6386692c9f17706be6bc3e0135a0cbda87cb7b5a09d22",
+      "patched_sha256": "d835f372af87ad4aa31adbc639a09a3a91abb68384a67d201ecd2755b33c1036"
+    },
+    {
+      "path": "tests/test_mcp_serve.py",
+      "clean_sha256": "fe119a0bfe31fbd8af748fb97c588fbac47514ae5908632e49415b6c42fd42d7",
+      "patched_sha256": "e81d0f5d59222ba938e24326ced0d88a0a7a33f3e5f00b2f20b85b27bedd8981"
+    },
+    {
+      "path": "tests/test_model_tools_async_bridge.py",
+      "clean_sha256": "6c567cd66a1fd9c83b86a73e5f395f58a9c03eada09817b1d82c7e72152ab5e1",
+      "patched_sha256": "bd8d36fd3ec5ba843064bd12750dad7df2cae653ac933ec5816cac2d0a68120e"
+    },
+    {
+      "path": "tests/tools/test_browser_open_timeout.py",
+      "clean_sha256": "def0d124abaf7fa08d97cac469b6ce11c4dbb56e865e8cde684a998e58ce2845",
+      "patched_sha256": "435d40fa7e4c1ad9a9b98250642c79928f4dbe3740a1ae73b647fc21aaf68128"
+    },
+    {
+      "path": "tests/tools/test_browser_real_profile.py",
+      "clean_sha256": "67289d84915fa369f5c29a8b5a9a86a7c2d7f4eaed00e13f19dd249f32350727",
+      "patched_sha256": "b9981d5d8f2b4cdf112fb973999998fe29f4ed85c0fd66eb1f7a86474002ff63"
+    },
+    {
+      "path": "tests/tools/test_delegate_control_actions.py",
+      "clean_sha256": "015d2f060349d6d978f15fcf25f691c2f4fb5c096b50a146e15f30c3d1fbf0d7",
+      "patched_sha256": "289d6a73a1cd9e944afec4095fe8fbe9a2b40687245825cd23cf74ebfdef4944"
+    },
+    {
+      "path": "tests/tools/test_termux_api_detection.py",
+      "clean_sha256": "8b6db4cd2664e42f38ce6b0352f40c032e996e21d937a0f1827ce6eb956e451d",
+      "patched_sha256": "9fb695c51ac7f1d1ddf365e05d34d0b6afe4074b9625698aa28b7514fa7399e3"
+    },
+    {
+      "path": "tests/tui_gateway/test_compute_host_turn_protocol.py",
+      "clean_sha256": "1a0e7103d89e50c8a89a72d969be83d76348715a56c78ef983cf9cbcfa5bd802",
+      "patched_sha256": "a79589105a99d6e10e24bfa6196ac130016aa851832ab85ae1e7d2e1fae4391c"
+    },
+    {
+      "path": "tests/tui_gateway/test_hosted_room_driver_runtime.py",
+      "clean_sha256": "15b7b0efb17f4fce2be52a1d1900385248ed70a537c61e3510c672ca46f9b249",
+      "patched_sha256": "7a332253c38d74a9b75c275c2a6ee2324a9fc715c47c5afde4ae003c7c731863"
+    },
+    {
+      "path": "tools/browser_tool_lifecycle.py",
+      "clean_sha256": "2e1e50cdd2364903735aa66c63e3b8e6abe83e1c7e3cf77c66e08c36ec38dff9",
+      "patched_sha256": "82d4d464777bbaa5dd04a7aa625cca91f22c49920f1802e282994ddde4634de2"
+    },
+    {
+      "path": "tools/process_registry.py",
+      "clean_sha256": "d858191b8577d5cae6e330cb0549e6e5e970bae1fe264bd49b9f5f8146b0cbe4",
+      "patched_sha256": "77b5e62577f1741ac40274fa0047e320215fef3c661efa6a1046bff3830fdb24"
+    },
+    {
+      "path": "tools/terminal_tool_background.py",
+      "clean_sha256": "460ac151968e0261f89586941608965e826719c99432c77e91297de5ba62396d",
+      "patched_sha256": "081f4240f5f5ebded113e5ca9fe7a5615502fd33cbd2b26a5cc8148363f0b242"
+    }
+  ],
+  "new_modules": [],
+  "scope": "Generic CHIYO extension hooks plus isolated Hermes config-cache, WAL polling and background-process lifecycle fixes and test-harness/fixture repairs. See HERMES_FIXES.md for runtime versus test-only changes. R17 preserves exact registered plugin command names before Telegram hyphen fallback."
+}

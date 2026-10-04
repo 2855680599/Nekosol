@@ -1,0 +1,10 @@
+{
+  "states": [
+    "AUTHORITATIVE",
+    "SHADOW",
+    "RETIRE_INJECTION",
+    "DISABLED"
+  ],
+  "dual_authority_allowed": false,
+  "pass": true
+}

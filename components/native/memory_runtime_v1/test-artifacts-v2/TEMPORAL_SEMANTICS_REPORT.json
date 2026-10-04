@@ -1,0 +1,7 @@
+{
+  "past_preference_not_current_without_evidence": true,
+  "past_plan_not_completed_action": true,
+  "uncertainty_not_promoted": true,
+  "assistant_claim_not_user_truth": true,
+  "pass": true
+}

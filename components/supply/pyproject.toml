@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=65"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chiyo-life-supply"
+version = "0.1.0"
+description = "Independent Governance, Workspace, and ManagedArtifact owners"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+dependencies = []
+
+[project.scripts]
+life-supply = "lifesupply.service.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["lifesupply*"]

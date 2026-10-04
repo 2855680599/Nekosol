@@ -1,0 +1,32 @@
+{
+  "types": [
+    "STABLE_SYSTEM",
+    "CURRENT_USER",
+    "RECENT_EXACT_HISTORY",
+    "CONVERSATION_DIGEST",
+    "EPHEMERAL_NATIVE_MEMORY",
+    "TOOL_RESULT",
+    "RUNTIME_STATE",
+    "LEGACY_MEMORY",
+    "INTERNAL_AUDIT_ONLY"
+  ],
+  "rules": {
+    "CURRENT_USER": {
+      "authority": "DIRECT_USER_EVIDENCE",
+      "history_eligibility": "ALLOWED"
+    },
+    "EPHEMERAL_NATIVE_MEMORY": {
+      "history_eligibility": "FORBIDDEN",
+      "formation_eligibility": "FORBIDDEN",
+      "persistence": "REQUEST_ONLY"
+    },
+    "CONVERSATION_DIGEST": {
+      "authority": "SUMMARY_OR_INTERPRETATION",
+      "history_role": "NONE",
+      "formation_eligibility": "FORBIDDEN"
+    },
+    "INTERNAL_AUDIT_ONLY": {
+      "provider_visibility": "PROVIDER_HIDDEN"
+    }
+  }
+}

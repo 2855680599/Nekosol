@@ -1,0 +1,327 @@
+{
+  "RESULT": "PASS_WITH_SHADOW_SAMPLE_INCOMPLETE",
+  "AUTH_STATUS": "PASS",
+  "EXECUTION": "memory-runtime-v1-shadow-20260919",
+  "SCOPE": "staging + production shadow only",
+  "PRODUCTION_CHANGED": false,
+  "LIVE_MEMORY_CONTEXT_STATUS": "OFF",
+  "PRODUCTION_SHADOW": "PASS_WITH_SHADOW_SAMPLE_INCOMPLETE",
+  "CANONICAL_ARTIFACT_INTEGRITY": {
+    "policy_expected_sha256": "5c6ba70a160cbe4fa880a91caab47bf548138750bc1257d7daa9764a6a4679b7",
+    "bundle_expected_sha256": "ab44680ac1147e94e6b661b4e57e3052d4740d4428fcb3f14b2f73c94f22548f",
+    "policy_observed_sha256": "5c6ba70a160cbe4fa880a91caab47bf548138750bc1257d7daa9764a6a4679b7",
+    "bundle_observed_sha256": "ab44680ac1147e94e6b661b4e57e3052d4740d4428fcb3f14b2f73c94f22548f",
+    "canonical_artifacts_modified": false,
+    "total": 81,
+    "consumable": 47,
+    "deferred": 34,
+    "consumable_behavior_preserved": true,
+    "deferred_not_injected": true,
+    "pass": true
+  },
+  "POSITIVE_RUNTIME_REPLAY": {
+    "case_count": 12,
+    "memory_on_material_effect": "12/12",
+    "memory_off_false_knowledge": 0,
+    "authority_promotion": 0,
+    "forced_mention": 0,
+    "history_leakage": 0,
+    "cross_turn_reuse": 0,
+    "writes": 0,
+    "cases": [
+      {
+        "case_id": "positive-01",
+        "kind": "direct_user_fact",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-02",
+        "kind": "stable_preference",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-03",
+        "kind": "verified_execution",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-04",
+        "kind": "uncertain_memory",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-05",
+        "kind": "supersession",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-06",
+        "kind": "temporal_relevance",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-07",
+        "kind": "tool_observed",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-08",
+        "kind": "non_verbalized",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-09",
+        "kind": "project_fact",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-10",
+        "kind": "language_fact",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-11",
+        "kind": "schedule_fact",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      },
+      {
+        "case_id": "positive-12",
+        "kind": "food_preference",
+        "memory_on_material_effect": true,
+        "memory_off_false_knowledge": false,
+        "forced_mention": false,
+        "authority_promotion": false
+      }
+    ],
+    "pass": true
+  },
+  "NEGATIVE_RUNTIME_REPLAY": {
+    "case_count": 30,
+    "instruction_leakage": 0,
+    "authority_promotion": 0,
+    "forced_mention": 0,
+    "writeback_promotion": 0,
+    "cases": [
+      {
+        "case_id": "negative-00",
+        "kind": "past_instruction",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-01",
+        "kind": "assistant_self_history",
+        "injected": false,
+        "authority": "ASSISTANT_SELF_HISTORY"
+      },
+      {
+        "case_id": "negative-02",
+        "kind": "ambiguous_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-03",
+        "kind": "conflicting_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-04",
+        "kind": "superseded_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-05",
+        "kind": "irrelevant_high_score",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-06",
+        "kind": "duplicate_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-07",
+        "kind": "opaque_provenance",
+        "injected": false,
+        "authority": "UNKNOWN"
+      },
+      {
+        "case_id": "negative-08",
+        "kind": "evaluation_metadata",
+        "injected": false,
+        "authority": "SUMMARY_OR_INTERPRETATION"
+      },
+      {
+        "case_id": "negative-09",
+        "kind": "recall_writeback",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-10",
+        "kind": "past_instruction",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-11",
+        "kind": "assistant_self_history",
+        "injected": false,
+        "authority": "ASSISTANT_SELF_HISTORY"
+      },
+      {
+        "case_id": "negative-12",
+        "kind": "ambiguous_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-13",
+        "kind": "conflicting_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-14",
+        "kind": "superseded_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-15",
+        "kind": "irrelevant_high_score",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-16",
+        "kind": "duplicate_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-17",
+        "kind": "opaque_provenance",
+        "injected": false,
+        "authority": "UNKNOWN"
+      },
+      {
+        "case_id": "negative-18",
+        "kind": "evaluation_metadata",
+        "injected": false,
+        "authority": "SUMMARY_OR_INTERPRETATION"
+      },
+      {
+        "case_id": "negative-19",
+        "kind": "recall_writeback",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-20",
+        "kind": "past_instruction",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-21",
+        "kind": "assistant_self_history",
+        "injected": false,
+        "authority": "ASSISTANT_SELF_HISTORY"
+      },
+      {
+        "case_id": "negative-22",
+        "kind": "ambiguous_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-23",
+        "kind": "conflicting_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-24",
+        "kind": "superseded_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-25",
+        "kind": "irrelevant_high_score",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-26",
+        "kind": "duplicate_memory",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      },
+      {
+        "case_id": "negative-27",
+        "kind": "opaque_provenance",
+        "injected": false,
+        "authority": "UNKNOWN"
+      },
+      {
+        "case_id": "negative-28",
+        "kind": "evaluation_metadata",
+        "injected": false,
+        "authority": "SUMMARY_OR_INTERPRETATION"
+      },
+      {
+        "case_id": "negative-29",
+        "kind": "recall_writeback",
+        "injected": false,
+        "authority": "DERIVED_MEMORY"
+      }
+    ],
+    "pass": true
+  },
+  "READY_FOR_LIVE_CUTOVER": false,
+  "LIVE_CUTOVER_EXECUTED": false,
+  "OPEN_RISKS": [
+    "No live cutover performed",
+    "Provider request was not changed by shadow"
+  ]
+}

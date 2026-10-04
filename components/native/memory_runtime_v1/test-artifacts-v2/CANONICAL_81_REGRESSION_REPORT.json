@@ -1,0 +1,13 @@
+{
+  "policy_expected_sha256": "5c6ba70a160cbe4fa880a91caab47bf548138750bc1257d7daa9764a6a4679b7",
+  "bundle_expected_sha256": "ab44680ac1147e94e6b661b4e57e3052d4740d4428fcb3f14b2f73c94f22548f",
+  "policy_observed_sha256": "5c6ba70a160cbe4fa880a91caab47bf548138750bc1257d7daa9764a6a4679b7",
+  "bundle_observed_sha256": "ab44680ac1147e94e6b661b4e57e3052d4740d4428fcb3f14b2f73c94f22548f",
+  "canonical_artifacts_modified": false,
+  "total": 81,
+  "consumable": 47,
+  "deferred": 34,
+  "consumable_behavior_preserved": true,
+  "deferred_not_injected": true,
+  "pass": true
+}

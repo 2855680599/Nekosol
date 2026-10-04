@@ -1,0 +1,12 @@
+{
+  "allowed_sources": [
+    "explicit_authoritative_evidence",
+    "real_current_user_event",
+    "real_platform_event",
+    "verified_tool_result"
+  ],
+  "recall_output_allowed": false,
+  "digest_allowed": false,
+  "capsule_allowed": false,
+  "pass": true
+}
