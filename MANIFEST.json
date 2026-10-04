@@ -12286,9 +12286,9 @@
     "website/app.js": "44d2cd5ccaf2285cbca760258e6bc65925afbaf3335f4cfec9788545555fec32",
     "website/docs-data.js": "553f218882aab8dd1f473120f5afc7b93271c42411bd129f59574dc78a902f5c",
     "website/index.html": "00548daf5cc57ded00bb9a05707003084efe2435687cf8555230325cef09bb9c",
-    "website/style.css": "ac7e15f84871d200039f1465e1223f3bce345e2df2feee1d2da9901f182a47b4"
+    "website/style.css": "304e5413dd9d7153f19793f4eecab5f8b452522f90982565c104d9f3c26a9e9a"
   },
-  "tree_sha256": "057bef77219ffdf19e8efecb45aeebbf0c5532d8d5023c08b96575e544f0016e",
+  "tree_sha256": "d05bcde0933f403ae5ee8f6c72f45fe33ee30da22f68b4f67b019695f0c55442",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "Nekosol",
