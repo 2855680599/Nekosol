@@ -1403,6 +1403,9 @@ PUT 398.=441:
 }
 
 @media (max-width: 768px) {
+  .header-container { padding: 0 16px; }
+  .header-left, .header-right { gap: 8px; }
+  .brand-cn, .brand-pill { display: none; }
   .mobile-toggle { display: block; }
   .search-kbd { display: none; }
   .search-trigger { min-width: auto; padding: 5px 8px; }
