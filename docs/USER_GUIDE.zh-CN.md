@@ -1,4 +1,4 @@
-# Nekosol / 关系在场：第一版详细使用文档
+# nyairo / 关系在场：第一版详细使用文档
 
 本文面向准备在自己电脑或服务器上使用千代的用户。第一版使用完整 Hermes 的命令行和消息网关，文档网站只用来阅读说明，不是网页聊天入口。
 
@@ -8,7 +8,7 @@
 
 ### 第一版和 Hermes 的关系
 
-Nekosol 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。Nekosol 新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。
+nyairo 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。nyairo 新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。
 
 | 新增功能 | 用户能做什么 | 本版限制 |
 | --- | --- | --- |
@@ -40,9 +40,9 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 | 方式 | 适合谁 | 目前情况 |
 | --- | --- | --- |
 | 发行 ZIP | 想使用一个固定、可校验的版本 | 当前已有候选 ZIP；发布后从 GitHub Releases 下载 |
-| Git 克隆 | 希望查看改动、贡献代码或切换版本 | 仓库 https://github.com/2855680599/Nekosol；本次候选标签 v0.1.0-rc4 |
+| Git 克隆 | 希望查看改动、贡献代码或切换版本 | 仓库 https://github.com/2855680599/nyairo；本次候选标签 v0.1.0-rc4 |
 
-Git 克隆不是再安装一份原生 Hermes。应克隆 Nekosol 整个仓库，包括其中的 `vendor/hermes`、插件和组件，然后执行 Nekosol 的安装脚本。
+Git 克隆不是再安装一份原生 Hermes。应克隆 nyairo 整个仓库，包括其中的 `vendor/hermes`、插件和组件，然后执行 nyairo 的安装脚本。
 
 ### 系统支持范围
 
@@ -51,9 +51,9 @@ Git 克隆不是再安装一份原生 Hermes。应克隆 Nekosol 整个仓库，
 | Linux 电脑 / 服务器 | 直接在 Linux 中安装 | 普通账号安装、组件与完整 Python 套件已验收 |
 | Windows 电脑 | WSL 2 中运行 Linux 版本 | 本项目完整测试使用 WSL Ubuntu；不等于 Windows 原生程序已验收 |
 | macOS | 待独立安装与完整组件验收 | 不作为当前已验证的完整部署方案 |
-| Docker | 待 Nekosol 全组件镜像和持久化方案验收 | 上游有 Docker 文件，不等于本项目 Docker 交付完成 |
+| Docker | 待 nyairo 全组件镜像和持久化方案验收 | 上游有 Docker 文件，不等于本项目 Docker 交付完成 |
 
-目前没有已交付的 Nekosol Windows 一键安装器、官方容器镜像或 pip 安装包。文档会区分实际可用的方式和后续计划，不让用户在一个不存在的安装渠道上排错。
+目前没有已交付的 nyairo Windows 一键安装器、官方容器镜像或 pip 安装包。文档会区分实际可用的方式和后续计划，不让用户在一个不存在的安装渠道上排错。
 
 ### 硬件和网络
 
@@ -162,7 +162,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 使用本项目仓库与固定候选标签安装。若该候选尚未出现在公开发行页，先使用已交付 ZIP，不要换成上游仓库：
 
 ```bash
-CHIYO_REPOSITORY_URL="https://github.com/2855680599/Nekosol.git"
+CHIYO_REPOSITORY_URL="https://github.com/2855680599/nyairo.git"
 CHIYO_RELEASE="v0.1.0-rc4"
 git clone "$CHIYO_REPOSITORY_URL" "$HOME/apps/chiyo-source"
 cd "$HOME/apps/chiyo-source"
@@ -170,13 +170,13 @@ git checkout --detach "$CHIYO_RELEASE"
 bash scripts/install.sh
 ```
 
-不要用原生 Hermes 仓库地址替代 Nekosol 地址。初次使用选择已发布标签，而不是未经验收的开发分支。仓库和标签都必须真实可访问；仓库暂不可访问时使用对应候选 ZIP。
+不要用原生 Hermes 仓库地址替代 nyairo 地址。初次使用选择已发布标签，而不是未经验收的开发分支。仓库和标签都必须真实可访问；仓库暂不可访问时使用对应候选 ZIP。
 
 如果 Git 标签随附发行清单，也可运行清单校验。开发者自行改文件后，原发行清单失败是预期的变化提示；需要重新测试和生成自己的证据，不能继续引用原版“全量通过”。
 
 ### 已经安装了原生 Hermes 怎么办
 
-保留原安装，另建 Nekosol 源码目录和个人数据目录。不要直接把千代代码覆盖到原生 Hermes 安装中。当前千代仍依赖登记的宿主补丁，不是对任意 Hermes 最新版即插即用的独立插件。
+保留原安装，另建 nyairo 源码目录和个人数据目录。不要直接把千代代码覆盖到原生 Hermes 安装中。当前千代仍依赖登记的宿主补丁，不是对任意 Hermes 最新版即插即用的独立插件。
 
 模型凭据可以通过正常 setup 重新配置。不要盲目复制整个旧数据目录，这可能混入旧记忆、网关身份和服务地址。迁移人格、技能或历史需要分别核对，当前没有通用的一键迁移器。
 
@@ -238,7 +238,7 @@ bash scripts/hermes.sh gateway setup
 bash scripts/hermes.sh gateway run
 ```
 
-按 Hermes 的网关配置向导连接 Telegram。一个 token 只启动一个接收进程，不要同时给原生 Hermes、Nekosol 和 Native 使用。冲突可能表现为 Telegram 409 或消息漏收。
+按 Hermes 的网关配置向导连接 Telegram。一个 token 只启动一个接收进程，不要同时给原生 Hermes、nyairo 和 Native 使用。冲突可能表现为 Telegram 409 或消息漏收。
 
 ### 还需要绑定个人记忆身份
 
@@ -397,7 +397,7 @@ ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删�
 
 ### 正常用户更新什么
 
-更新 **Nekosol 整套发行版**。一个 Nekosol 版本对应一组固定 Hermes 源码、补丁、组件和验收结果。后续 Nekosol 发布可以包含经过适配与测试的新版 Hermes。
+更新 **nyairo 整套发行版**。一个 nyairo 版本对应一组固定 Hermes 源码、补丁、组件和验收结果。后续 nyairo 发布可以包含经过适配与测试的新版 Hermes。
 
 不要在正在运行的版本中直接更新 `vendor/hermes`，也不要认为只更新插件就完成整个项目升级。千代插件使用宿主上下文和命令能力，宿主补丁及接口变化会影响它。
 
@@ -442,9 +442,9 @@ cp -a plugins/chiyo/. "$HERMES_HOME/plugins/chiyo/"
 
 ### 维护者怎样升级 Hermes
 
-在隔离分支或副本中选择上游提交，逐个重做并校验补丁，验证真实插件发现、全部新增命令、记忆与个人身份边界、Life/World/Supply、普通账号冷安装，再跑完整宿主套件和真实模型端到端。通过后生成新的 Nekosol 版本、锁定依赖和发行清单。
+在隔离分支或副本中选择上游提交，逐个重做并校验补丁，验证真实插件发现、全部新增命令、记忆与个人身份边界、Life/World/Supply、普通账号冷安装，再跑完整宿主套件和真实模型端到端。通过后生成新的 nyairo 版本、锁定依赖和发行清单。
 
-所以 Nekosol 可以跟随 Hermes 升级，但需要维护者完成兼容验收后再交给用户；当前不是用户任意升级上游就自动兼容。
+所以 nyairo 可以跟随 Hermes 升级，但需要维护者完成兼容验收后再交给用户；当前不是用户任意升级上游就自动兼容。
 
 ## 10 数据保存、备份与恢复
 
@@ -452,7 +452,7 @@ cp -a plugins/chiyo/. "$HERMES_HOME/plugins/chiyo/"
 
 | 位置 | 内容 | 更新时怎么处理 |
 | --- | --- | --- |
-| Nekosol 源码目录 | Hermes、插件源文件、组件、脚本、虚拟环境 | 新版本另建目录；虚拟环境可重建 |
+| nyairo 源码目录 | Hermes、插件源文件、组件、脚本、虚拟环境 | 新版本另建目录；虚拟环境可重建 |
 | HERMES_HOME | 模型和平台配置、人格、会话、日志、个人插件 | 完整备份并继续使用正确目录 |
 | HERMES_HOME/chiyo | 个人绑定、记忆、控制账本、Life 状态与请求回执 | 必须整体保留，不能只拷一个数据库 |
 | World/Body home | 独立世界与身体状态、数据库与审计 | 单独备份其完整数据根 |
@@ -480,7 +480,7 @@ tar -tzf "$backup_file" >/dev/null
 
 ### 更换电脑
 
-在新设备重新安装同一或明确支持迁移的 Nekosol 版本。旧设备停机后备份完整个人与服务目录，把备份私下转移到新设备。恢复到正确账号，重新核对绝对路径、文件权限、socket、Linux UID、模型配置和平台绑定，再启动一个接收进程。
+在新设备重新安装同一或明确支持迁移的 nyairo 版本。旧设备停机后备份完整个人与服务目录，把备份私下转移到新设备。恢复到正确账号，重新核对绝对路径、文件权限、socket、Linux UID、模型配置和平台绑定，再启动一个接收进程。
 
 Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间迁移不是只拷源码 ZIP，也不是把旧虚拟环境整目录复制过去。
 
@@ -555,7 +555,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 开源前还要补什么
 
-本次发行拟使用仓库 https://github.com/2855680599/Nekosol 与候选标签 v0.1.0-rc4。作者于 2026-10-04 确认 Nekosol 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。是否已公开，以仓库和发行页实际状态为准。公开后替换文档中的占位值，确认 Git 安装能从公开仓库运行，提供贡献与问题反馈说明，再让另一台电脑按文档完整安装。
+本次发行拟使用仓库 https://github.com/2855680599/nyairo 与候选标签 v0.1.0-rc4。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。是否已公开，以仓库和发行页实际状态为准。公开后替换文档中的占位值，确认 Git 安装能从公开仓库运行，提供贡献与问题反馈说明，再让另一台电脑按文档完整安装。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。文档可以先详细准备好，公开发布仍以实际发行和验收为准。
 
@@ -600,13 +600,13 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 版本、下载与兼容性
 
-发行记录应同时写明 Nekosol 版本、验收修订号、Hermes 版本和固定提交、Python 版本、安装方式、数据库迁移说明、SHA-256，以及已知问题。标签固定发行源码；开发分支不作为普通用户直接升级渠道。
+发行记录应同时写明 nyairo 版本、验收修订号、Hermes 版本和固定提交、Python 版本、安装方式、数据库迁移说明、SHA-256，以及已知问题。标签固定发行源码；开发分支不作为普通用户直接升级渠道。
 
-当前 R19 是基于 R17 运行代码、补齐许可证与教程的发行候选，完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，最终 ZIP 冷安装和隐私检查通过。它还不是“所有平台都支持”的稳定性承诺。后续更新应发布整套匹配的 Nekosol 与 Hermes；不要先追上游最新版本、再假设插件会自动兼容。
+当前 R19 是基于 R17 运行代码、补齐许可证与教程的发行候选，完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，最终 ZIP 冷安装和隐私检查通过。它还不是“所有平台都支持”的稳定性承诺。后续更新应发布整套匹配的 nyairo 与 Hermes；不要先追上游最新版本、再假设插件会自动兼容。
 
 ### 许可证与署名
 
-Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许可证。作者于 2026-10-04 确认其有权授权的 Nekosol 新增代码（包括 Life Supply）使用 Apache-2.0；历史自研 MIT 文本继续保留作来源记录，第三方仍适用各自许可。公开仓库并不自动等于具备完整开源授权，参见 [GitHub 仓库许可证说明](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)。
+Hermes 自身继续保留 MIT；候选包保留 nyairo 已有 Apache-2.0 根许可证。作者于 2026-10-04 确认其有权授权的 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；历史自研 MIT 文本继续保留作来源记录，第三方仍适用各自许可。公开仓库并不自动等于具备完整开源授权，参见 [GitHub 仓库许可证说明](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)。
 
 模型服务、消息平台、第三方依赖和角色素材分别有自己的条款或来源；源码许可证不等于赠送这些服务的账号、token、商标或私人关系数据。
 
@@ -631,7 +631,7 @@ Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许
 
 ### 普通功能问题怎么报告
 
-报告 Nekosol 修订号、Hermes 版本、操作系统、Python、安装方式、所选入口，以及可重复的最短步骤。写明实际结果和预期结果，附脱敏的错误行。机器人显示名不能区分实例，应在私下确认正确入口后报告版本；不要在公共 issue 暴露自己的私人聊天 ID。
+报告 nyairo 修订号、Hermes 版本、操作系统、Python、安装方式、所选入口，以及可重复的最短步骤。写明实际结果和预期结果，附脱敏的错误行。机器人显示名不能区分实例，应在私下确认正确入口后报告版本；不要在公共 issue 暴露自己的私人聊天 ID。
 
 ### 安全问题怎么报告
 

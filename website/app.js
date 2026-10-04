@@ -1,5 +1,5 @@
 /**
- * Nekosol DOCS - Clean Minimalist Application Controller
+ * nyairo DOCS - Clean Minimalist Application Controller
  * Handles Home / Docs View Switching, SPA Routing, Command Copy Bar, Dynamic TOC, Search Modal
  */
 
@@ -144,7 +144,7 @@ function routeHash() {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
-    document.title = 'Nekosol · 持久化数字个体运行时';
+    document.title = 'nyairo · 持久化数字个体运行时';
     window.scrollTo({ top: 0, behavior: 'instant' });
     return;
   }
@@ -167,7 +167,7 @@ function loadDoc(docId) {
   const doc = DOCS_CONTENT[docId] || DOCS_CONTENT['intro'];
   const targetId = DOCS_CONTENT[docId] ? docId : 'intro';
 
-  document.title = `${doc.title} · Nekosol Docs`;
+  document.title = `${doc.title} · nyairo Docs`;
 
   document.querySelectorAll('.sidebar-link').forEach(link => {
     if (link.getAttribute('data-id') === targetId) {
@@ -352,7 +352,7 @@ function initSearch() {
 
   function renderSearchResults(query) {
     if (!query) {
-      resultsContainer.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--c-text-3); font-size: 0.88rem;">键入关键词实时搜索 Nekosol 文档...</div>';
+      resultsContainer.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--c-text-3); font-size: 0.88rem;">键入关键词实时搜索 nyairo 文档...</div>';
       return;
     }
 

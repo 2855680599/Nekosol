@@ -1,6 +1,6 @@
-# Nekosol：第一版使用教程
+# nyairo：第一版使用教程
 
-本文帮助你在自己的电脑或服务器上安装 Nekosol，开始聊天，再按需要连接机器人和额外功能。网页只放教程，聊天在实际程序里进行。
+本文帮助你在自己的电脑或服务器上安装 nyairo，开始聊天，再按需要连接机器人和额外功能。网页只放教程，聊天在实际程序里进行。
 
 当前公开体验版本是 v0.1.0-rc4，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
 
@@ -9,7 +9,7 @@
 ### 先准备好这三样
 
 - 一台能上网的电脑。Windows 用户按下一章先装 Ubuntu；Linux 用户可以直接开始。
-- 一个可以使用的模型账号，以及它提供的密钥。模型负责生成回复，Nekosol 负责记忆和生活状态。
+- 一个可以使用的模型账号，以及它提供的密钥。模型负责生成回复，nyairo 负责记忆和生活状态。
 - 一点安装时间：第一次要下载程序需要的小工具，过程中保持网络连接。
 
 这里是使用教程。聊天要在电脑上的程序或你自己的 Telegram 机器人里进行。
@@ -44,7 +44,7 @@
 
 ### 第一版和 Hermes 的关系
 
-Nekosol 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。Nekosol 新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。
+nyairo 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。nyairo 新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。
 
 | 新增功能 | 用户能做什么 | 本版限制 |
 | --- | --- | --- |
@@ -75,21 +75,21 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 - **Linux 电脑或服务器**：直接按 [下载与安装](#linux) 操作。工具安装命令以 Ubuntu / Debian 为例，其他系统需要使用自己的安装方式。
 - **macOS**：还没有单独完成整套安装检查，暂时不把它列为已验证的完整方案。
 
-目前提供的是源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 Nekosol 已提供完整容器安装方案。
+目前提供的是源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 nyairo 已提供完整容器安装方案。
 
 ### 下载方法选一种就好
 
 **Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
-**ZIP 下载**：从 [GitHub Releases](https://github.com/2855680599/Nekosol/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
+**ZIP 下载**：从 [GitHub Releases](https://github.com/2855680599/nyairo/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
 
-无论选哪种，都下载 Nekosol 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
+无论选哪种，都下载 nyairo 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
 
 程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
 
 ### 电脑和网络需要满足什么
 
-使用网上的模型服务时，模型在对方的服务器上运行，Nekosol 本身不要求你有显卡。选择在自己电脑上运行模型时，硬件要求要看那个模型的说明。
+使用网上的模型服务时，模型在对方的服务器上运行，nyairo 本身不要求你有显卡。选择在自己电脑上运行模型时，硬件要求要看那个模型的说明。
 
 首次安装需要联网下载依赖，源码 ZIP 并不是完全离线的安装包。聊天时，电脑也要能连上模型服务；接 Telegram 时，还要能连上 Telegram。
 
@@ -199,7 +199,7 @@ export UV_PYTHON=3.13
 ```bash
 mkdir -p "$HOME/apps"
 git clone --branch v0.1.0-rc4 --depth 1 \
-  https://github.com/2855680599/Nekosol.git "$HOME/apps/chiyo-v0.1"
+  https://github.com/2855680599/nyairo.git "$HOME/apps/chiyo-v0.1"
 cd "$HOME/apps/chiyo-v0.1"
 bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
@@ -213,7 +213,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 ### 方法 B：用 ZIP 下载并安装
 
-如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/2855680599/Nekosol/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
+如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/2855680599/nyairo/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
 
 先检查 ZIP 文件：
 
@@ -241,7 +241,7 @@ ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；�
 
 ### 已经装过 Hermes，怎么处理
 
-保留原来的安装，另外建立本文的 Nekosol 程序文件夹和个人数据文件夹。Nekosol 这一版已经带上匹配的 Hermes 和插件，直接把几个插件文件覆盖到任意新版 Hermes 里，不能保证正常使用。
+保留原来的安装，另外建立本文的 nyairo 程序文件夹和个人数据文件夹。nyairo 这一版已经带上匹配的 Hermes 和插件，直接把几个插件文件覆盖到任意新版 Hermes 里，不能保证正常使用。
 
 模型账号可以在下一章重新填写。原来的人格、技能、聊天记录和记忆要分别核对后再迁移，当前没有通用的一键搬家工具。
 
@@ -318,7 +318,7 @@ bash scripts/hermes.sh
 
 ### 给自己的个体改名字和设定
 
-公开候选在没有现有 `SOUL.md` 时，仍会生成“你是千代”的默认文字。Nekosol 是框架，千代是作者的私人个体；你可以给自己的个体另外取名。
+公开候选在没有现有 `SOUL.md` 时，仍会生成“你是千代”的默认文字。nyairo 是框架，千代是作者的私人个体；你可以给自己的个体另外取名。
 
 第一次建立数据文件夹后，可以在开始聊天前打开它：
 
@@ -358,11 +358,11 @@ bash scripts/hermes.sh gateway setup
 
 选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
 
-如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/2855680599/Nekosol/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/2855680599/nyairo/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
 
 ### 第二步：允许自己的私聊使用记忆
 
-允许账号连接机器人之后，还要告诉 Nekosol：**哪一个私聊属于这套个人记忆**。否则它会拒绝读写私人记忆。
+允许账号连接机器人之后，还要告诉 nyairo：**哪一个私聊属于这套个人记忆**。否则它会拒绝读写私人记忆。
 
 下面的命令会询问你的私聊 chat ID 和用户 user ID，然后打印需要保存的一串文字。普通个人私聊的 chat ID 通常与用户 ID 相同，仍要用自己的真实信息核对；不要填群聊号码或昵称。
 
@@ -409,10 +409,10 @@ export HERMES_HOME="$HOME/.chiyo-v1"
 bash scripts/hermes.sh gateway run
 ```
 
-这个窗口先保持打开。一个 token 同时只交给一个正在收消息的程序；旧 Hermes、Nekosol 或独立 Native 同时使用它，可能出现 Telegram 409 冲突。
+这个窗口先保持打开。一个 token 同时只交给一个正在收消息的程序；旧 Hermes、nyairo 或独立 Native 同时使用它，可能出现 Telegram 409 冲突。
 
 1. 找到自己的机器人，发一句普通消息，确认它会回复。
-2. 发 `/chiyo_status`，确认返回 Nekosol 模块状态，而不是 Unknown command。
+2. 发 `/chiyo_status`，确认返回 nyairo 模块状态，而不是 Unknown command。
 3. 发 `/chiyo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
 4. 告诉它一个小事实，换新会话后再问，提问时不要重复答案。
 5. 重启自己的连接程序，再检查同一套个人数据和状态是否仍然可用。
@@ -423,7 +423,7 @@ bash scripts/hermes.sh gateway run
 
 项目保留了 Hermes 对这些平台的连接代码，但第一版还没有用它们的真实账号完成整套收发和断线重连检查。
 
-个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 Nekosol 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收。
+个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 nyairo 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收。
 
 
 ## 07 额外功能怎么设置
@@ -553,7 +553,7 @@ ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删�
 
 ### 正常用户更新什么
 
-更新 **Nekosol 整套发行版**。一个 Nekosol 版本对应一组固定 Hermes 源码、补丁、组件和验收结果。后续 Nekosol 发布可以包含经过适配与测试的新版 Hermes。
+更新 **nyairo 整套发行版**。一个 nyairo 版本对应一组固定 Hermes 源码、补丁、组件和验收结果。后续 nyairo 发布可以包含经过适配与测试的新版 Hermes。
 
 不要在正在运行的版本中直接更新 `vendor/hermes`，也不要认为只更新插件就完成整个项目升级。千代插件使用宿主上下文和命令能力，宿主补丁及接口变化会影响它。
 
@@ -598,9 +598,9 @@ cp -a plugins/chiyo/. "$HERMES_HOME/plugins/chiyo/"
 
 ### 维护者怎样升级 Hermes
 
-在隔离分支或副本中选择上游提交，逐个重做并校验补丁，验证真实插件发现、全部新增命令、记忆与个人身份边界、Life/World/Supply、普通账号冷安装，再跑完整宿主套件和真实模型端到端。通过后生成新的 Nekosol 版本、锁定依赖和发行清单。
+在隔离分支或副本中选择上游提交，逐个重做并校验补丁，验证真实插件发现、全部新增命令、记忆与个人身份边界、Life/World/Supply、普通账号冷安装，再跑完整宿主套件和真实模型端到端。通过后生成新的 nyairo 版本、锁定依赖和发行清单。
 
-所以 Nekosol 可以跟随 Hermes 升级，但需要维护者完成兼容验收后再交给用户；当前不是用户任意升级上游就自动兼容。
+所以 nyairo 可以跟随 Hermes 升级，但需要维护者完成兼容验收后再交给用户；当前不是用户任意升级上游就自动兼容。
 
 ## 10 数据保存、备份与恢复
 
@@ -608,7 +608,7 @@ cp -a plugins/chiyo/. "$HERMES_HOME/plugins/chiyo/"
 
 | 位置 | 内容 | 更新时怎么处理 |
 | --- | --- | --- |
-| Nekosol 源码目录 | Hermes、插件源文件、组件、脚本、虚拟环境 | 新版本另建目录；虚拟环境可重建 |
+| nyairo 源码目录 | Hermes、插件源文件、组件、脚本、虚拟环境 | 新版本另建目录；虚拟环境可重建 |
 | HERMES_HOME | 模型和平台配置、人格、会话、日志、个人插件 | 完整备份并继续使用正确目录 |
 | HERMES_HOME/chiyo | 个人绑定、记忆、控制账本、Life 状态与请求回执 | 必须整体保留，不能只拷一个数据库 |
 | World/Body home | 独立世界与身体状态、数据库与审计 | 单独备份其完整数据根 |
@@ -636,7 +636,7 @@ tar -tzf "$backup_file" >/dev/null
 
 ### 更换电脑
 
-在新设备重新安装同一或明确支持迁移的 Nekosol 版本。旧设备停机后备份完整个人与服务目录，把备份私下转移到新设备。恢复到正确账号，重新核对绝对路径、文件权限、socket、Linux UID、模型配置和平台绑定，再启动一个接收进程。
+在新设备重新安装同一或明确支持迁移的 nyairo 版本。旧设备停机后备份完整个人与服务目录，把备份私下转移到新设备。恢复到正确账号，重新核对绝对路径、文件权限、socket、Linux UID、模型配置和平台绑定，再启动一个接收进程。
 
 Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间迁移不是只拷源码 ZIP，也不是把旧虚拟环境整目录复制过去。
 
@@ -644,7 +644,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 ### 提示 Unknown command：命令没认出来
 
-先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](#cli-reference) 的格式输入；Nekosol 的命令使用 `/chiyo_*` 名称。
+先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](#cli-reference) 的格式输入；nyairo 的命令使用 `/chiyo_*` 名称。
 
 旧 R16 版本存在下划线命令无法正确转交给插件的问题，R17 已修复；它不是用户输入错误。其他情况下，也可能是插件没加载、启动了另一个数据文件夹，或后台仍在运行旧版本。
 
@@ -674,7 +674,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 **401** 通常表示模型账号认证失败。核对密钥、服务地址和模型名称，并检查自己的账号是否还能使用。
 
-**Telegram 409** 先检查同一个 token 是否被另一个 Hermes、Nekosol 或 Native 程序同时使用。一个机器人同一时间只交给一个收消息的程序。
+**Telegram 409** 先检查同一个 token 是否被另一个 Hermes、nyairo 或 Native 程序同时使用。一个机器人同一时间只交给一个收消息的程序。
 
 记录具体错误再排查。普通聊天无法回复，和额外功能没开启，处理方式不同。
 
@@ -707,12 +707,12 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-保存为 `/etc/systemd/system/nekosol-gateway.service`。Ubuntu / Debian 可以用 `sudo nano /etc/systemd/system/nekosol-gateway.service` 打开编辑器。核对路径、运行账号和私有配置的读取权限后，执行：
+保存为 `/etc/systemd/system/nyairo-gateway.service`。Ubuntu / Debian 可以用 `sudo nano /etc/systemd/system/nyairo-gateway.service` 打开编辑器。核对路径、运行账号和私有配置的读取权限后，执行：
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now nekosol-gateway.service
-sudo systemctl status nekosol-gateway.service
+sudo systemctl enable --now nyairo-gateway.service
+sudo systemctl status nyairo-gateway.service
 ```
 
 最后一行查看程序是否正在运行。启用了世界或资源服务，还需要分别设置它们的启动和先后顺序，单个网关模板不会自动完成所有服务的配置。
@@ -721,7 +721,7 @@ sudo systemctl status nekosol-gateway.service
 
 ### 关闭所有附加功能后，忘记刚才的话
 
-第一版有一个已复现的问题：记忆、生活与世界身体都关闭时，仍可能使用 Nekosol 的专用上下文处理，只把当前问题交给模型，漏掉前几轮短期对话。原始聊天记录没有因此删除；本文推荐的 `--memory --life` 配置未触发这次复现。
+第一版有一个已复现的问题：记忆、生活与世界身体都关闭时，仍可能使用 nyairo 的专用上下文处理，只把当前问题交给模型，漏掉前几轮短期对话。原始聊天记录没有因此删除；本文推荐的 `--memory --life` 配置未触发这次复现。
 
 如果你确实只使用 Hermes 普通聊天，先备份个人设置，并确认这些附加功能全部关闭。然后在个人 `config.yaml` 的 `context` 下面删掉 `engine: chiyo` 这一行，保留其他设置，再重新启动自己的程序。
 
@@ -746,7 +746,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 公开后仍需验证什么
 
-公开仓库为 https://github.com/2855680599/Nekosol ，已发布体验候选标签 `v0.1.0-rc4`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 Nekosol 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
+公开仓库为 https://github.com/2855680599/nyairo ，已发布体验候选标签 `v0.1.0-rc4`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。本次网站维护同步了本页列出的定向复核结果；没有重新执行运行时全量测试，不把历史验收数字作为本次网站检查结果。
 
@@ -801,13 +801,13 @@ GitHub Pages 已有网站构建与部署记录；功能 CI 模板仍放在 `ci/t
 
 ### 版本、下载与兼容性
 
-发行记录应同时写明 Nekosol 版本、验收修订号、Hermes 版本和固定提交、Python 版本、安装方式、数据库迁移说明、SHA-256，以及已知问题。标签固定发行源码；开发分支不作为普通用户直接升级渠道。
+发行记录应同时写明 nyairo 版本、验收修订号、Hermes 版本和固定提交、Python 版本、安装方式、数据库迁移说明、SHA-256，以及已知问题。标签固定发行源码；开发分支不作为普通用户直接升级渠道。
 
-公开发行准备历经 R18 许可证与教程、R19 文档定稿和 R20 发布权限说明；运行与测试源码沿用已验收的 R17。历史完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，最终 ZIP 冷安装和隐私检查另有发行证据。R20 将 CI 模板保存在 `ci/templates/`，未启用自动 Actions，不能据此宣称 GitHub CI 已通过。这也不是“所有平台都支持”的稳定性承诺。后续更新应发布整套匹配的 Nekosol 与 Hermes；不要先追上游最新版本、再假设插件会自动兼容。
+公开发行准备历经 R18 许可证与教程、R19 文档定稿和 R20 发布权限说明；运行与测试源码沿用已验收的 R17。历史完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，最终 ZIP 冷安装和隐私检查另有发行证据。R20 将 CI 模板保存在 `ci/templates/`，未启用自动 Actions，不能据此宣称 GitHub CI 已通过。这也不是“所有平台都支持”的稳定性承诺。后续更新应发布整套匹配的 nyairo 与 Hermes；不要先追上游最新版本、再假设插件会自动兼容。
 
 ### 许可证与署名
 
-Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许可证。作者于 2026-10-04 确认其有权授权的 Nekosol 新增代码（包括 Life Supply）使用 Apache-2.0；历史自研 MIT 文本继续保留作来源记录，第三方仍适用各自许可。公开仓库并不自动等于具备完整开源授权，参见 [GitHub 仓库许可证说明](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)。
+Hermes 自身继续保留 MIT；候选包保留 nyairo 已有 Apache-2.0 根许可证。作者于 2026-10-04 确认其有权授权的 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；历史自研 MIT 文本继续保留作来源记录，第三方仍适用各自许可。公开仓库并不自动等于具备完整开源授权，参见 [GitHub 仓库许可证说明](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)。
 
 模型服务、消息平台、第三方依赖和角色素材分别有自己的条款或来源；源码许可证不等于赠送这些服务的账号、token、商标或私人关系数据。
 
@@ -820,7 +820,7 @@ Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许
 5. 创建仓库、提交发行标签、上传可校验的源码与安装包；填上真实下载和仓库链接。
 6. 对公开地址再做一次克隆安装、链接检查与文档站发布检查，记录实际结果。
 
-公开下载以 https://github.com/2855680599/Nekosol/releases 为准；已发布 `v0.1.0-rc4` 标签与资产保持原样。R18–R20 的许可证、教程与发布材料修订不代表重新运行了 R17 全量测试；公开地址克隆安装、CI 和长期自然使用的结果必须分别记录。
+公开下载以 https://github.com/2855680599/nyairo/releases 为准；已发布 `v0.1.0-rc4` 标签与资产保持原样。R18–R20 的许可证、教程与发布材料修订不代表重新运行了 R17 全量测试；公开地址克隆安装、CI 和长期自然使用的结果必须分别记录。
 
 ### 怎样更新这个教程网站
 
@@ -828,9 +828,9 @@ Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许
 
 1. 在 `main` 分支的 `website/` 文件夹修改网站。正文放在 `docs-data.js`，Markdown 手册也同步修改。
 2. 把更新后的网页文件放到 `gh-pages` 分支的最外层；不要再套一层 `website` 文件夹。**只改 main，线上网站不会自动跟着更新。**
-3. 保留 `index.html`、`docs-data.js`、`app.js`、`style.css`、`.nojekyll` 和 `CNAME`。CNAME 里面只写域名 `nekosol.929711.xyz`；发布分支的 LICENSE 也保留。
+3. 保留 `index.html`、`docs-data.js`、`app.js`、`style.css`、`.nojekyll` 和 `CNAME`。CNAME 里面只写域名 `nyairo.929711.xyz`；发布分支的 LICENSE 也保留。
 4. 改了正文、脚本或样式，同时更新 index.html 里资源地址的 `?v=` 版本号，让浏览器重新取到新文件。
-5. 提交发布分支后，在 GitHub 的 Actions 页面等 **pages build and deployment** 完成。成功后打开 [文档网站](https://nekosol.929711.xyz/)，实际检查首页、搜索、复制按钮和文档链接；手机上也检查导航。
+5. 提交发布分支后，在 GitHub 的 Actions 页面等 **pages build and deployment** 完成。成功后打开 [文档网站](https://2855680599.github.io/nyairo/)，实际检查首页、搜索、复制按钮和文档链接；手机上也检查导航。
 
 这叫“发布教程网站”。让聊天机器人长期开机，是另一个设置，按 [遇到问题怎么办](#troubleshooting) 中的后台运行说明处理。更多网站托管细节见 [GitHub Pages 官方说明](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)。
 
@@ -839,7 +839,7 @@ Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许
 
 ### 普通功能问题怎么报告
 
-报告 Nekosol 修订号、Hermes 版本、操作系统、Python、安装方式、所选入口，以及可重复的最短步骤。写明实际结果和预期结果，附脱敏的错误行。机器人显示名不能区分实例，应在私下确认正确入口后报告版本；不要在公共 issue 暴露自己的私人聊天 ID。
+报告 nyairo 修订号、Hermes 版本、操作系统、Python、安装方式、所选入口，以及可重复的最短步骤。写明实际结果和预期结果，附脱敏的错误行。机器人显示名不能区分实例，应在私下确认正确入口后报告版本；不要在公共 issue 暴露自己的私人聊天 ID。
 
 ### 安全问题怎么报告
 
