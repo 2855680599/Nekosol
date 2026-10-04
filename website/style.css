@@ -1202,3 +1202,8 @@ a:focus-visible, button:focus-visible {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; }
 }
+
+.copy-feedback { min-height: 1.5em; margin: 0.5rem 0 0; color: var(--c-text-2); font-size: 0.8rem; }
+
+.cmd-copy-btn.copied .copy-icon-default { display: none; }
+.cmd-copy-btn.copied .copy-icon-success { display: inline-block !important; }

@@ -65,25 +65,21 @@ function initCommandCopy() {
   const cmdPill = document.getElementById('hero-cmd');
   if (!cmdPill) return;
 
-  const defaultIcon = cmdPill.querySelector('.copy-icon-default');
-  const successIcon = cmdPill.querySelector('.copy-icon-success');
+  const code = cmdPill.querySelector('.cmd-text');
   const btn = document.getElementById('hero-cmd-btn');
+  const feedback = document.getElementById('hero-copy-feedback');
+  if (!code || !btn || !feedback) return;
 
-  cmdPill.addEventListener('click', () => {
-    const code = cmdPill.querySelector('.cmd-text')?.textContent || 'bash scripts/install.sh';
-    navigator.clipboard.writeText(code).then(() => {
-      if (defaultIcon && successIcon) {
-        defaultIcon.style.display = 'none';
-        successIcon.style.display = 'inline-block';
-        if (btn) btn.classList.add('copied');
-
-        setTimeout(() => {
-          defaultIcon.style.display = 'inline-block';
-          successIcon.style.display = 'none';
-          if (btn) btn.classList.remove('copied');
-        }, 1600);
-      }
-    });
+  cmdPill.addEventListener('click', async () => {
+    const copied = await copyTextOrSelect(code);
+    feedback.textContent = copied ? '已复制安装命令' : '已选中命令，请按 Ctrl+C 或 Command+C 复制';
+    btn.setAttribute('aria-label', copied ? '已复制安装命令' : '已选中安装命令，请手动复制');
+    btn.classList.toggle('copied', copied);
+    setTimeout(() => {
+      feedback.textContent = '';
+      btn.setAttribute('aria-label', '复制安装命令');
+      btn.classList.remove('copied');
+    }, 2500);
   });
 }
 
@@ -419,16 +415,24 @@ function escapeHtml(str) {
 
 function docAnchorPage(anchorId) { return anchorId.split("-section-")[0]; }
 
-async function copyDocumentationText(code, btn) {
-  const origin = btn.textContent;
+async function copyTextOrSelect(code) {
   try {
     if (!navigator.clipboard) throw new Error('clipboard unavailable');
     await navigator.clipboard.writeText(code.textContent);
-    btn.textContent = '已复制!';
+    return true;
   } catch {
-    const range = document.createRange(); range.selectNodeContents(code);
-    const selection = getSelection(); selection.removeAllRanges(); selection.addRange(range);
-    btn.textContent = '已选中，请手动复制';
+    const range = document.createRange();
+    range.selectNodeContents(code);
+    const selection = getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    return false;
   }
-  setTimeout(() => btn.textContent = origin, 1800);
+}
+
+async function copyDocumentationText(code, btn) {
+  const origin = btn.textContent;
+  const copied = await copyTextOrSelect(code);
+  btn.textContent = copied ? '已复制!' : '已选中，请手动复制';
+  setTimeout(() => btn.textContent = origin, 2500);
 }
