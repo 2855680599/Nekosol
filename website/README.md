@@ -7,3 +7,5 @@
 源码由 `main` 分支 `website/` 维护，GitHub Pages 从 `gh-pages` 根目录发布。同步本站文件时保留发布分支的 LICENSE，且必须包含 `.nojekyll` 与 `CNAME`（`nekosol.929711.xyz`）。GitHub Pages 会构建并部署发布分支；运行时功能 CI 模板尚未启用。main 源码提交不会自动同步到发布分支。
 
 无数据库、聊天接口、外部字体或统计脚本；搜索本地完成，主题存 localStorage。`docs-data.js` 是网页正文源，与 `USER_GUIDE.zh-CN.md` 同步维护。仓库：https://github.com/2855680599/Nekosol ，下载以 Releases 为准；本站维护不重新验收运行时代码。
+
+修改脚本、文档正文或样式后，同步更新 index.html 中资源 URL 的 `?v=` 版本，避免访问者继续读取旧缓存。
