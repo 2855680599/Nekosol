@@ -1,0 +1,483 @@
+const DOCS_TREE = [
+  {
+    "category": "起步与安装",
+    "items": [
+      {
+        "id": "intro",
+        "title": "项目定位与新增功能"
+      },
+      {
+        "id": "quickstart",
+        "title": "从哪里开始"
+      },
+      {
+        "id": "installation",
+        "title": "安装方式与支持范围"
+      },
+      {
+        "id": "windows",
+        "title": "Windows 电脑部署"
+      },
+      {
+        "id": "linux",
+        "title": "Linux 环境与源码安装"
+      },
+      {
+        "id": "configuration",
+        "title": "创建配置、模型与命令行"
+      },
+      {
+        "id": "telegram",
+        "title": "Telegram 与其他消息平台"
+      }
+    ]
+  },
+  {
+    "category": "功能与日常使用",
+    "items": [
+      {
+        "id": "modules",
+        "title": "认知、World/Body 与 Life Supply"
+      },
+      {
+        "id": "cli-reference",
+        "title": "日常命令与几天使用测试"
+      }
+    ]
+  },
+  {
+    "category": "维护与验收",
+    "items": [
+      {
+        "id": "update",
+        "title": "用户更新与 Hermes 升级"
+      },
+      {
+        "id": "data",
+        "title": "数据保存、备份与恢复"
+      },
+      {
+        "id": "troubleshooting",
+        "title": "常见故障与持续运行"
+      },
+      {
+        "id": "testing",
+        "title": "文档站、验收与公开发布"
+      }
+    ]
+  },
+  {
+    "category": "隐私与开源",
+    "items": [
+      {
+        "id": "privacy",
+        "title": "隐私与数据管理"
+      },
+      {
+        "id": "release",
+        "title": "开源发行与维护"
+      },
+      {
+        "id": "contributing",
+        "title": "贡献、反馈与测试规则"
+      },
+      {
+        "id": "status-matrix",
+        "title": "功能交付与后续计划"
+      }
+    ]
+  }
+];
+const DOCS_CONTENT = {
+  "intro": {
+    "title": "项目定位与新增功能",
+    "summary": "CHIYO v0.1 · 项目定位与新增功能",
+    "toc": [
+      {
+        "id": "intro-section-0",
+        "text": "第一版和 Hermes 的关系"
+      },
+      {
+        "id": "intro-section-1",
+        "text": "哪些不属于完成的功能"
+      },
+      {
+        "id": "intro-section-2",
+        "text": "开始前要准备什么"
+      }
+    ],
+    "content": "<h2 id=\"intro-section-0\">第一版和 Hermes 的关系</h2><p>CHIYO 包含完整 Hermes 源码、千代插件、独立组件及必要的宿主补丁。正常使用由 Hermes 提供命令行、模型选择、工具、技能和消息平台连接。千代新增的是个人长期记忆、生活状态、认知观察、世界身体观察和个人资源。</p><div class=\"table-scroll\"><table class=\"doc-table\"><thead><tr><th scope=\"col\">新增功能</th><th scope=\"col\">用户能做什么</th><th scope=\"col\">本版限制</th></tr></thead><tbody><tr><td>长期记忆</td><td>跨会话询问过去的个人经历，查看、纠正和停止使用记忆</td><td>默认保守组织经历；模型 M1/M2 形成需额外配置</td></tr><tr><td>生活连续性</td><td>读取真实生活状态，保存入站事件与审计，重启后恢复</td><td>没有正式活动时为 IDLE；不自主安排生活</td></tr><tr><td>认知判断</td><td>提交明确请求，由真实模型给出判断与原因</td><td>Shadow 观察，不执行；通用安装默认关闭</td></tr><tr><td>世界与身体</td><td>读取位置、姿态和身体信号</td><td>标准插件只读，不移动或执行动作</td></tr><tr><td>个人资源</td><td>在个人 Workspace 中保存和读取独立文档</td><td>需要独立 Life Supply 服务与真实有限授权</td></tr><tr><td>身份边界</td><td>明确绑定个人 DM，限制其他身份写入个人记忆</td><td>不是本地管理员或任意文件工具的访问沙箱</td></tr></tbody></table></div><h2 id=\"intro-section-1\">哪些不属于完成的功能</h2><p>自主活动执行、主动 Contact、N8 正式权限撤销和新 Open Inquiry 正式入库尚未交付。已有 Alpha 策略、认知判断及底层动作组件，不等于完整执行闭环已经完成。</p><p>Native Runtime 也随包提供，用于独立运行及研发验证，但本手册的标准安装方式是 Hermes 加千代插件，不需要同时启动 Native。</p><h2 id=\"intro-section-2\">开始前要准备什么</h2><p>需要一台持续联网的电脑或服务器，以及你自己的模型服务配置。模型可以通过 Hermes setup/model 流程选择；是否收费、能否访问和额度取决于你使用的服务。</p><p>只用命令行不需要 Telegram 账号配置。要接 Telegram，需要自己的机器人 token 和允许用户设置。千代记忆、生活状态和资源保存在自己的设备上，不会随公开源码包赠送某个部署实例的私人关系或历史。</p>"
+  },
+  "installation": {
+    "title": "安装方式与支持范围",
+    "summary": "CHIYO v0.1 · 安装方式与支持范围",
+    "toc": [
+      {
+        "id": "installation-section-0",
+        "text": "两种源码获取方式"
+      },
+      {
+        "id": "installation-section-1",
+        "text": "系统支持范围"
+      },
+      {
+        "id": "installation-section-2",
+        "text": "硬件和网络"
+      }
+    ],
+    "content": "<h2 id=\"installation-section-0\">两种源码获取方式</h2><p>压缩包不是唯一安装方式。两种方式最终都会执行同一套安装脚本：</p><div class=\"table-scroll\"><table class=\"doc-table\"><thead><tr><th scope=\"col\">方式</th><th scope=\"col\">适合谁</th><th scope=\"col\">目前情况</th></tr></thead><tbody><tr><td>发行 ZIP</td><td>想使用一个固定、可校验的版本</td><td>当前已有候选 ZIP；发布后从 GitHub Releases 下载</td></tr><tr><td>Git 克隆</td><td>希望查看改动、贡献代码或切换版本</td><td>仓库 https://github.com/2855680599/chiyo；本次候选标签 v0.1.0-rc4</td></tr></tbody></table></div><p>Git 克隆不是再安装一份原生 Hermes。应克隆 CHIYO 整个仓库，包括其中的 <code>vendor/hermes</code>、插件和组件，然后执行 CHIYO 的安装脚本。</p><h2 id=\"installation-section-1\">系统支持范围</h2><div class=\"table-scroll\"><table class=\"doc-table\"><thead><tr><th scope=\"col\">环境</th><th scope=\"col\">第一版建议的路径</th><th scope=\"col\">验收情况</th></tr></thead><tbody><tr><td>Linux 电脑 / 服务器</td><td>直接在 Linux 中安装</td><td>普通账号安装、组件与完整 Python 套件已验收</td></tr><tr><td>Windows 电脑</td><td>WSL 2 中运行 Linux 版本</td><td>本项目完整测试使用 WSL Ubuntu；不等于 Windows 原生程序已验收</td></tr><tr><td>macOS</td><td>待独立安装与完整组件验收</td><td>不作为当前已验证的完整部署方案</td></tr><tr><td>Docker</td><td>待 CHIYO 全组件镜像和持久化方案验收</td><td>上游有 Docker 文件，不等于本项目 Docker 交付完成</td></tr></tbody></table></div><p>目前没有已交付的 CHIYO Windows 一键安装器、官方容器镜像或 pip 安装包。文档会区分实际可用的方式和后续计划，不让用户在一个不存在的安装渠道上排错。</p><h2 id=\"installation-section-2\">硬件和网络</h2><p>使用远程模型 API 时，聊天模型不在本机运行，因此本项目本身不要求 GPU。选择本地模型时，模型的硬件需求另行计算。没有完成最低内存或并发性能基准，不给出未经验证的最低配置保证。</p><p>首次安装需要下载 Python 依赖；源码 ZIP 不含全部依赖，所以并非完全离线安装包。持续聊天需要设备保持运行并能访问模型端点和所选消息平台；电脑睡眠或关机后机器人会离线。</p>"
+  },
+  "windows": {
+    "title": "Windows 电脑部署",
+    "summary": "CHIYO v0.1 · Windows 电脑部署",
+    "toc": [
+      {
+        "id": "windows-section-0",
+        "text": "第一步：安装 WSL"
+      },
+      {
+        "id": "windows-section-1",
+        "text": "第二步：分清两个终端"
+      },
+      {
+        "id": "windows-section-2",
+        "text": "第三步：从 Windows 拿到 ZIP"
+      },
+      {
+        "id": "windows-section-3",
+        "text": "电脑需要一直开着吗"
+      }
+    ],
+    "content": "<h2 id=\"windows-section-0\">第一步：安装 WSL</h2><p>在 Windows 中，以管理员身份打开 PowerShell，执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>powershell</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>wsl --install -d Ubuntu</code></pre></div><p>按系统提示完成重启，首次打开 Ubuntu 后创建 Linux 用户名和密码。再在 PowerShell 查询：</p><div class=\"code-block\"><div class=\"code-header\"><span>powershell</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>wsl --list --verbose</code></pre></div><p>Ubuntu 的 VERSION 应为 2。如果安装遇到系统版本、虚拟化或发行版下载问题，按 <a href=\"https://learn.microsoft.com/windows/wsl/install\" target=\"_blank\" rel=\"noopener noreferrer\">Microsoft WSL 安装说明</a> 排查。</p><h2 id=\"windows-section-1\">第二步：分清两个终端</h2><p><code>wsl ...</code> 命令在 Windows PowerShell 中执行。后文的 <code>sudo</code>、<code>bash</code>、<code>export</code> 和 <code>~/apps</code> 命令在 Ubuntu 终端中执行，不要直接粘贴进 PowerShell。</p><p>打开 Ubuntu 后，继续“Linux 环境准备”和“获取源码”。把程序和个人数据放在 Linux 用户目录下，例如 <code>~/apps</code> 和 <code>~/.chiyo-v1</code>。Microsoft 的 <a href=\"https://learn.microsoft.com/windows/wsl/setup/environment\" target=\"_blank\" rel=\"noopener noreferrer\">WSL 环境准备说明</a> 也提供终端与文件存储建议。</p><h2 id=\"windows-section-2\">第三步：从 Windows 拿到 ZIP</h2><p>Windows 的 C 盘在 WSL 中通常映射为 <code>/mnt/c</code>。例如下载目录中的 ZIP 可以从 Ubuntu 读取：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>mkdir -p &quot;$HOME/apps/chiyo-v0.1&quot;\nunzip &quot;/mnt/c/Users/你的Windows用户名/Downloads/你下载的发行包.zip&quot; -d &quot;$HOME/apps/chiyo-v0.1&quot;\ncd &quot;$HOME/apps/chiyo-v0.1&quot;</code></pre></div><p>替换路径中的用户名和文件名。解压后，这个目录应直接包含 <code>scripts</code>、<code>vendor</code>、<code>components</code> 和 <code>MANIFEST.json</code>。如果外面还有一层目录，先进入真正的发行根目录。</p><h2 id=\"windows-section-3\">电脑需要一直开着吗</h2><p>命令行体验时，关闭程序即停止。Telegram 网关想持续在线，需要电脑、WSL 和相应服务保持运行。Windows 睡眠、重启或执行 <code>wsl --shutdown</code> 都会中断服务。需要长期在线可以改用常开 Linux 服务器；不要把终端窗口开着误认为已经配置开机自启。</p>"
+  },
+  "linux": {
+    "title": "Linux 环境与源码安装",
+    "summary": "CHIYO v0.1 · Linux 环境与源码安装",
+    "toc": [
+      {
+        "id": "linux-section-0",
+        "text": "准备基础工具"
+      },
+      {
+        "id": "linux-section-1",
+        "text": "方法 A：从发行 ZIP 安装"
+      },
+      {
+        "id": "linux-section-2",
+        "text": "方法 B：从 Git 安装"
+      },
+      {
+        "id": "linux-section-3",
+        "text": "已经安装了原生 Hermes 怎么办"
+      }
+    ],
+    "content": "<h2 id=\"linux-section-0\">准备基础工具</h2><p>下面的包管理命令适用于 Ubuntu / Debian 系列，在 Linux 终端执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>sudo apt update\nsudo apt install -y git curl unzip ripgrep</code></pre></div><p>安装 uv 可按 <a href=\"https://docs.astral.sh/uv/getting-started/installation/\" target=\"_blank\" rel=\"noopener noreferrer\">uv 官方安装说明</a> 下载脚本、先查看，再执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>curl -LsSf https://astral.sh/uv/install.sh -o /tmp/chiyo-uv-install.sh\nless /tmp/chiyo-uv-install.sh\nsh /tmp/chiyo-uv-install.sh</code></pre></div><p>退出 <code>less</code> 按 <code>q</code>。安装后按安装器提示重开终端或更新 PATH，确认：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>uv --version\ngit --version\nrg --version</code></pre></div><p>本版支持 Python 3.11–3.13。可用 uv 安装 Python；具体行为见 <a href=\"https://docs.astral.sh/uv/guides/install-python/\" target=\"_blank\" rel=\"noopener noreferrer\">uv 的 Python 管理说明</a>：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>uv python install 3.13\nexport UV_PYTHON=3.13</code></pre></div><p>本次验收使用 Python 3.13.5 与 3.11.15。<code>UV_PYTHON=3.13</code> 选择这一版本系列，不保证自动下载的补丁版本恰好等于验收版本。完整宿主的部分工具和测试还使用 Node.js；本轮验收版本为 Node.js 22.19.0、ripgrep 15.1.0。需要这些工具时应另行安装，不能把系统自带 Node 的存在当成版本已匹配。</p><h2 id=\"linux-section-1\">方法 A：从发行 ZIP 安装</h2><p>从正式发布渠道下载 ZIP 和 SHA256 校验值。先比较下载文件：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>sha256sum 你下载的发行包.zip</code></pre></div><p>结果必须与该次发布公告一致，不能把 R16 的哈希用于 R17。然后解压到一个新的、带版本号的目录，进入发行根目录。</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>mkdir -p &quot;$HOME/apps/chiyo-v0.1&quot;\nunzip 你下载的发行包.zip -d &quot;$HOME/apps/chiyo-v0.1&quot;\ncd &quot;$HOME/apps/chiyo-v0.1&quot;\nbash scripts/install.sh\nvendor/hermes/.venv/bin/python scripts/verify_manifest.py</code></pre></div><p><code>install.sh</code> 使用锁定的依赖文件安装，<code>verify_manifest.py</code> 检查发行文件完整性。成功后再建个人配置。校验失败先保留报错并重新核对下载来源，不要删除清单绕过校验。</p><h2 id=\"linux-section-2\">方法 B：从 Git 安装</h2><p>使用本项目仓库与固定候选标签安装。若该候选尚未出现在公开发行页，先使用已交付 ZIP，不要换成上游仓库：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>CHIYO_REPOSITORY_URL=&quot;https://github.com/2855680599/chiyo.git&quot;\nCHIYO_RELEASE=&quot;v0.1.0-rc4&quot;\ngit clone &quot;$CHIYO_REPOSITORY_URL&quot; &quot;$HOME/apps/chiyo-source&quot;\ncd &quot;$HOME/apps/chiyo-source&quot;\ngit checkout --detach &quot;$CHIYO_RELEASE&quot;\nbash scripts/install.sh</code></pre></div><p>不要用原生 Hermes 仓库地址替代 CHIYO 地址。初次使用选择已发布标签，而不是未经验收的开发分支。仓库和标签都必须真实可访问；仓库暂不可访问时使用对应候选 ZIP。</p><p>如果 Git 标签随附发行清单，也可运行清单校验。开发者自行改文件后，原发行清单失败是预期的变化提示；需要重新测试和生成自己的证据，不能继续引用原版“全量通过”。</p><h2 id=\"linux-section-3\">已经安装了原生 Hermes 怎么办</h2><p>保留原安装，另建 CHIYO 源码目录和个人数据目录。不要直接把千代代码覆盖到原生 Hermes 安装中。当前千代仍依赖登记的宿主补丁，不是对任意 Hermes 最新版即插即用的独立插件。</p><p>模型凭据可以通过正常 setup 重新配置。不要盲目复制整个旧数据目录，这可能混入旧记忆、网关身份和服务地址。迁移人格、技能或历史需要分别核对，当前没有通用的一键迁移器。</p>"
+  },
+  "configuration": {
+    "title": "创建配置、模型与命令行",
+    "summary": "CHIYO v0.1 · 创建配置、模型与命令行",
+    "toc": [
+      {
+        "id": "configuration-section-0",
+        "text": "建立基础个人实例"
+      },
+      {
+        "id": "configuration-section-1",
+        "text": "配置模型"
+      },
+      {
+        "id": "configuration-section-2",
+        "text": "下一次怎么启动"
+      },
+      {
+        "id": "configuration-section-3",
+        "text": "基础配置不等于所有模块都就绪"
+      }
+    ],
+    "content": "<h2 id=\"configuration-section-0\">建立基础个人实例</h2><p>在发行根目录执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>vendor/hermes/.venv/bin/python scripts/setup_profile.py \\\n  --home &quot;$HOME/.chiyo-v1&quot; \\\n  --owner local-owner \\\n  --memory --life\nexport HERMES_HOME=&quot;$HOME/.chiyo-v1&quot;\nbash scripts/hermes.sh setup\nbash scripts/hermes.sh</code></pre></div><p><code>--home</code> 是个人配置与数据的位置，必须在源码目录外。<code>--owner</code> 是这个个人实例的内部标识，使用 1–128 个 ASCII 字母、数字、下划线或连字符，且首字符为字母或数字；它不是显示昵称，也不等于 Telegram 用户 ID。</p><p><code>--memory</code> 开启千代记忆，<code>--life</code> 开启生活状态与事件审计。创建脚本配置千代上下文引擎，并在启用千代记忆时关闭 Hermes 内置自动记忆，避免两条记忆同时注入。</p><p>脚本拒绝覆盖已经存在的千代配置。看到“profile already exists”时，检查当前目录和配置，不要删除旧目录只为消除错误。</p><h2 id=\"configuration-section-1\">配置模型</h2><p>在 Hermes setup/model 流程里选择服务商、模型及自己的凭据。自定义兼容端点还需要正确的 Base URL 与模型名称。程序能够启动不代表模型凭据有效，先正常问一句话确认真实回复。</p><p>模型密钥保存在自己的配置或受控环境中，不写进仓库或公共文档。启用 Shadow 会额外使用模型预算；普通安装不会默认开启这个费用项。</p><h2 id=\"configuration-section-2\">下一次怎么启动</h2><p>新开终端后，重新进入所使用版本的源码根目录并设置同一个数据目录：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>cd &quot;$HOME/apps/chiyo-v0.1&quot;\nexport HERMES_HOME=&quot;$HOME/.chiyo-v1&quot;\nbash scripts/hermes.sh</code></pre></div><p>更换 <code>HERMES_HOME</code> 就是在换个人实例。不要因为找不到历史而重新创建 profile；先检查是否启动到了正确的目录。</p><h2 id=\"configuration-section-3\">基础配置不等于所有模块都就绪</h2><p>以上命令只建立记忆和 Life 的基础实例。World/Body、Life Supply 与认知需要额外配置。<code>/chiyo_status</code> 显示 OFF 或未接通时，要按对应模块的步骤安装，不是通过一句角色指令就能开启。</p>"
+  },
+  "telegram": {
+    "title": "Telegram 与其他消息平台",
+    "summary": "CHIYO v0.1 · Telegram 与其他消息平台",
+    "toc": [
+      {
+        "id": "telegram-section-0",
+        "text": "Telegram 配置"
+      },
+      {
+        "id": "telegram-section-1",
+        "text": "还需要绑定个人记忆身份"
+      },
+      {
+        "id": "telegram-section-2",
+        "text": "Telegram 平台验收步骤"
+      },
+      {
+        "id": "telegram-section-3",
+        "text": "QQ、微信、飞书"
+      }
+    ],
+    "content": "<h2 id=\"telegram-section-0\">Telegram 配置</h2><p>为自己的安装准备独立机器人，在 BotFather 获取 token，并确认允许访问的用户。公开项目不会提供开发者部署中的私人 token，也不会把既有体验机器人交给每位安装用户共用。</p><p>在同一源码目录与个人 profile 下执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>export HERMES_HOME=&quot;$HOME/.chiyo-v1&quot;\nbash scripts/hermes.sh gateway setup\nbash scripts/hermes.sh gateway run</code></pre></div><p>按 Hermes 的网关配置向导连接 Telegram。一个 token 只启动一个接收进程，不要同时给原生 Hermes、CHIYO 和 Native 使用。冲突可能表现为 Telegram 409 或消息漏收。</p><h2 id=\"telegram-section-1\">还需要绑定个人记忆身份</h2><p>平台允许用户只是第一层鉴权。千代还需要把真实个人 DM 的会话 key 写进 <code>chiyo/config.json</code> 的 <code>gateway_bindings</code>。</p><p>不要直接猜 key。下面的辅助命令使用本版 Hermes 的真实 key 构造函数；把自己的 DM chat ID 和 user ID 作为输入，输出在本机查看，不要贴进公共 issue：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>PYTHONPATH=&quot;$PWD:$PWD/vendor/hermes&quot; vendor/hermes/.venv/bin/python -c &#x27;\nfrom gateway.config import Platform\nfrom gateway.session import SessionSource, build_session_key\nchat_id = input(&quot;Telegram DM chat ID: &quot;).strip()\nuser_id = input(&quot;Telegram user ID: &quot;).strip()\nsource = SessionSource(platform=Platform.TELEGRAM, chat_type=&quot;dm&quot;,\n                       chat_id=chat_id, user_id=user_id)\nprint(build_session_key(source))\n&#x27;</code></pre></div><p>该示例用于本手册的默认、单个人 profile。使用 Hermes 的命名 profile 或 multiplex 时必须按实际 profile 构造，不能照搬默认 key。ID 从你自己实例的受控元数据或平台信息中确认；不要用显示昵称当数字身份。</p><p>在已有 <code>chiyo/config.json</code> 中仅修改绑定部分，保留其余字段：</p><div class=\"code-block\"><div class=\"code-header\"><span>json</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>{\n  &quot;gateway_bindings&quot;: {\n    &quot;telegram&quot;: [&quot;由实际实例生成的个人DM会话key&quot;]\n  }\n}</code></pre></div><p>这只是局部配置示例，不是完整文件。保存后重启当前网关，再测试命令。群聊和未绑定身份不得获得个人记忆权限。</p><h2 id=\"telegram-section-2\">Telegram 平台验收步骤</h2><ol><li>打开自己的机器人，先发普通消息确认收发。</li><li>发 <code>/chiyo_status</code> 确认进入千代模块，而不是 Unknown command。</li><li>发 <code>/chiyo_memory list</code> 确认个人身份已绑定；没有记忆与命令不可识别是不同情况。</li><li>保存一个测试事实，开新会话后询问，确认记忆消费。</li><li>重启自己的网关，再确认同一实例和状态；不要重启其他人的实例。</li></ol><p>开发者现有体验入口是独立 Telegram 机器人，使用方式和新用户自建机器人分开说明；日常 Native 入口不是同一条部署链。</p><h2 id=\"telegram-section-3\">QQ、微信、飞书</h2><p>完整 Hermes 中保留对应适配器，接入仍按上游流程。个人微信 Weixin/iLink 与企业微信 WeCom 是不同入口。第一版没有用 QQ、微信、飞书的真实账号完成整体收发和重连验收，不把源码包含写成生产已验收。</p><p>固定版本平台说明可在包内 <code>vendor/hermes/website/docs/user-guide/messaging/</code> 中阅读；先核对适配器所需身份，再配置千代自己的个人会话绑定。</p>"
+  },
+  "modules": {
+    "title": "认知、World/Body 与 Life Supply",
+    "summary": "CHIYO v0.1 · 认知、World/Body 与 Life Supply",
+    "toc": [
+      {
+        "id": "modules-section-0",
+        "text": "认知 Shadow"
+      },
+      {
+        "id": "modules-section-1",
+        "text": "World/Body 只读观察"
+      },
+      {
+        "id": "modules-section-2",
+        "text": "Life Supply 当前是管理员装配"
+      }
+    ],
+    "content": "<h2 id=\"modules-section-0\">认知 Shadow</h2><p>创建一个全新的 profile 时，基础命令增加 <code>--cognition-shadow --life</code>：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>vendor/hermes/.venv/bin/python scripts/setup_profile.py \\\n  --home &quot;$HOME/.chiyo-shadow-v1&quot; \\\n  --owner local-owner --memory --life --cognition-shadow</code></pre></div><p>它会同时打开个人配置中的 <code>cognition_shadow</code> 和 Hermes 配置中的千代 LLM 授权。已有 profile 不应重跑创建脚本；需明确修改两处配置：<code>chiyo/config.json</code> 中 <code>cognition_shadow: true</code>，以及 <code>config.yaml</code> 中 <code>plugins.entries.chiyo.llm.enabled: true</code>，保留其他设置，随后重启。</p><p>通过 <code>/chiyo_consider 请求</code> 提交候选，再用 <code>/chiyo_status</code> 看判断和原因。它可能因预算、审计状态或模型错误不启动判断；应返回实际原因，不能假装完成活动。</p><h2 id=\"modules-section-1\">World/Body 只读观察</h2><p>在发行根目录、与聊天程序同一个普通 Linux 账号下，初始化独立世界：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>export PYTHONPATH=&quot;$PWD:$PWD/vendor/hermes&quot;\nvendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service init \\\n  --home &quot;$HOME/.chiyo-world-v1&quot;</code></pre></div><p>初始化只运行一次；不要覆盖已有世界。另开一个 Linux 终端，在同一源码根目录和账号下持续运行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>export PYTHONPATH=&quot;$PWD:$PWD/vendor/hermes&quot;\nvendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service run \\\n  --home &quot;$HOME/.chiyo-world-v1&quot;</code></pre></div><p>将个人 <code>chiyo/config.json</code> 的 <code>world_body_socket</code> 设置为实际绝对路径，例如 <code>/home/你的Linux用户名/.chiyo-world-v1/run/read.sock</code>，随后重启聊天。配置文件里的 <code>$HOME</code> 和 <code>~</code> 不应当作已经展开的路径。</p><p>新 profile 也可用 <code>--world-body-socket &quot;$HOME/.chiyo-world-v1/run/read.sock&quot;</code>。服务和客户端必须同 Linux UID；不同账号或错误权限会被拒绝。第一次初始化为卧室、站姿和空物件集合，不携带开发者世界的物件与历史。</p><p>服务停止时状态应报告不可用。底层 root peer 动作端口不是这个只读端口，不要替换 socket 地址尝试开启移动。</p><h2 id=\"modules-section-2\">Life Supply 当前是管理员装配</h2><p>资源文档代码与部署体验已经接通，但通用安装仍需要管理员配置正式服务与授权，没有已交付的全自动配置向导。仅运行基础安装脚本不能直接使用 <code>/chiyo_note</code> 写文档。</p><p>管理员需要依次完成：</p><ol><li>建立独立数据根和 Unix socket，配置 <code>LIFE_SUPPLY_DATA_ROOT</code>、<code>LIFE_SUPPLY_SOCKET</code>。</li><li>配置不同的非 root operator 与 service 身份，以及允许的 subject；对应变量为 <code>LIFE_SUPPLY_OPERATOR_UIDS</code>、<code>LIFE_SUPPLY_SERVICE_UIDS</code>、<code>LIFE_SUPPLY_ALLOWED_SUBJECTS</code>。</li><li>通过正式 owner / Governance 管理接口启用工作区创建，并为个人 subject 创建唯一 Workspace。</li><li>通过 operator 的正式授权接口授予 <code>COMMIT_MANAGED_ARTIFACT</code>、<code>artifact:personal</code>、限定到该 Workspace 的有限 grant；同时明确打开 <code>ARTIFACT_EXTERNAL_ACTION</code>。</li><li>配置个人实例的 <code>life_supply_socket</code>、<code>life_supply_subject</code>、<code>life_supply_artifact_grant</code>，开启 Life，重启聊天。</li><li>保存和读取测试文档；确认无授权时拒绝、重复提交不重复创建、重启后资源仍存在。</li></ol><p>服务入口是 <code>scripts/supply_service.py</code>，使用单 SQLite 正式实现。旧多库兼容入口不能与新服务混用数据根。socket 只允许 owner 访问，身份验证还依赖 peer UID；管理员装配必须同时解决访问路径和身份分离，不能用放宽权限到所有用户来代替授权。</p><p>目前不提供未经普通安装验收的“复制一串 grant ID 就自动开通”命令。正式 ID 来自你自己的服务，配置里随意填写一个 ID 不会产生权限。完整自助安装向导应作为后续工程，不能仅靠补文档宣称已经实现。</p>"
+  },
+  "cli-reference": {
+    "title": "日常命令与几天使用测试",
+    "summary": "CHIYO v0.1 · 日常命令与几天使用测试",
+    "toc": [
+      {
+        "id": "cli-reference-section-0",
+        "text": "查看真实状态"
+      },
+      {
+        "id": "cli-reference-section-1",
+        "text": "记忆操作"
+      },
+      {
+        "id": "cli-reference-section-2",
+        "text": "资源文档"
+      },
+      {
+        "id": "cli-reference-section-3",
+        "text": "认知观察"
+      },
+      {
+        "id": "cli-reference-section-4",
+        "text": "建议的体验顺序"
+      },
+      {
+        "id": "cli-reference-section-5",
+        "text": "反馈问题"
+      }
+    ],
+    "content": "<h2 id=\"cli-reference-section-0\">查看真实状态</h2><div class=\"code-block\"><div class=\"code-header\"><span>text</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>/chiyo_status</code></pre></div><p>检查 Memory、Life、World/Body、Life Supply 与认知的实际状态。Life 为 IDLE 表示没有正式活动，不是系统为了保持在线必须编造一项生活行为。</p><h2 id=\"cli-reference-section-1\">记忆操作</h2><div class=\"code-block\"><div class=\"code-header\"><span>text</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>/chiyo_memory list\n/chiyo_memory correct ID 新内容\n/chiyo_memory delete ID</code></pre></div><p>ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删除停止召回并排除旧上下文，原始审计保留。纠正产生的新事实也能独立删除。当前会保守排除旧短期历史，因此该段里其他未删除的话题也可能不再进入短期上下文。</p><h2 id=\"cli-reference-section-2\">资源文档</h2><div class=\"code-block\"><div class=\"code-header\"><span>text</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>/chiyo_note 旅行计划 | 周末想去海边\n/chiyo_note read 文档ID</code></pre></div><p>保存后记下返回的 ID，再读取。相同标题与正文重试使用同一操作编号，避免重复创建。删除聊天记忆不删除资源文档，它们是独立的内容。</p><h2 id=\"cli-reference-section-3\">认知观察</h2><div class=\"code-block\"><div class=\"code-header\"><span>text</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>/chiyo_consider 请考虑响应这个请求\n/chiyo_status</code></pre></div><p>查看有效判断、理由和实际模型调用；不要把“建议响应”理解为“已经发送消息”或“已经执行活动”。</p><h2 id=\"cli-reference-section-4\">建议的体验顺序</h2><p>第一天测普通聊天、实际状态、文档保存读取和重试。第二天测新会话召回、纠正、删除后不复活。第三天及以后测话题变化、认知预算与报错、持续运行状态一致性。</p><p>跨会话测试时，提问不能重复答案，否则无法区分真正召回与读到了本次输入。重启和断线故障实验只针对自己的实例，先备份，再操作。</p><h2 id=\"cli-reference-section-5\">反馈问题</h2><p>记录发生时间与时区、版本、平台、触发步骤、期望和实际结果、相关模块状态、是否能重复触发。公开提交前删掉 token、模型密钥和无关私人聊天；不要上传整个个人目录。</p>"
+  },
+  "update": {
+    "title": "用户更新与 Hermes 升级",
+    "summary": "CHIYO v0.1 · 用户更新与 Hermes 升级",
+    "toc": [
+      {
+        "id": "update-section-0",
+        "text": "正常用户更新什么"
+      },
+      {
+        "id": "update-section-1",
+        "text": "直接运行 Hermes update 会怎样"
+      },
+      {
+        "id": "update-section-2",
+        "text": "ZIP 用户的升级步骤"
+      },
+      {
+        "id": "update-section-3",
+        "text": "Git 用户的升级步骤"
+      },
+      {
+        "id": "update-section-4",
+        "text": "回滚怎么做"
+      },
+      {
+        "id": "update-section-5",
+        "text": "维护者怎样升级 Hermes"
+      }
+    ],
+    "content": "<h2 id=\"update-section-0\">正常用户更新什么</h2><p>更新 <strong>CHIYO 整套发行版</strong>。一个 CHIYO 版本对应一组固定 Hermes 源码、补丁、组件和验收结果。后续 CHIYO 发布可以包含经过适配与测试的新版 Hermes。</p><p>不要在正在运行的版本中直接更新 <code>vendor/hermes</code>，也不要认为只更新插件就完成整个项目升级。千代插件使用宿主上下文和命令能力，宿主补丁及接口变化会影响它。</p><h2 id=\"update-section-1\">直接运行 Hermes update 会怎样</h2><p>当前不保证兼容。源码 ZIP 不带 Git 元数据，上游更新器可能因为安装结构不符合要求而失败；在 Git 安装或人为替换宿主时，上游更新也可能覆盖或绕开千代补丁，导致命令、记忆注入或组件装配失效。</p><p>这不等于个人记忆必然被删除：正确部署的数据在源码目录外。但更新可能让程序读不到、错误使用或无法加载这些数据，所以必须先停机备份再实验。当前没有自动拦截一切上游更新路径的保护，也没有自动适配任意最新版的机制。</p><h2 id=\"update-section-2\">ZIP 用户的升级步骤</h2><ol><li>看新版本说明，确认支持从你的旧版本升级，是否有数据库迁移和回滚限制。当前没有承诺任意旧版本可以自动迁移。</li><li>停止自己的聊天网关和所有写同一数据目录的附加服务。</li><li>按“备份与恢复”复制完整个人目录及各服务数据根。</li><li>校验新 ZIP，解压到新的版本目录，不覆盖旧源码目录。</li><li>在新目录安装依赖并校验清单。每个版本使用自己的虚拟环境，不复制或把 <code>.venv</code> 链接到旧版本；editable 安装和启动时的环境选择可能让看似新目录的进程仍加载旧代码。</li><li>核对 profile 中的千代插件副本。创建脚本曾把 <code>plugins/chiyo</code> 复制到个人目录；如果新版本要求更新插件，先备份副本，再用新版本的插件文件更新它，保留个人配置与数据。不要重跑 setup_profile.py 创建脚本。</li><li>用同一个 <code>HERMES_HOME</code> 启动新源码，检查实际模块、消息收发、记忆及资源。</li><li>如使用 systemd，把服务的 ExecStart、WorkingDirectory 和 PYTHONPATH 切到新版本。只在终端进入新目录，不会自动改变后台服务。</li></ol><p>第 6 步的插件副本更新示例，在已经停机并备份后执行：</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>export HERMES_HOME=&quot;$HOME/.chiyo-v1&quot;\ncp -a &quot;$HERMES_HOME/plugins/chiyo&quot; &quot;$HOME/chiyo-plugin-before-upgrade&quot;\ncp -a plugins/chiyo/. &quot;$HERMES_HOME/plugins/chiyo/&quot;</code></pre></div><p>备份目标必须是尚不存在的新目录。若自己修改过插件，先比较差异，不要用复制覆盖来掩盖自定义更改。新发行版有专门迁移说明时，以该版本说明为准。</p><h2 id=\"update-section-3\">Git 用户的升级步骤</h2><p>仓库公开后，仍按发布标签升级，先备份个人数据并停止自己的服务。对源码执行 <code>git status --short</code>，有自定义改动时先保存或提交。然后获取标签，切换到要使用的已发布版本，重新安装依赖，再按 ZIP 用户相同的 profile、服务路径和功能检查步骤完成升级。</p><p>不使用 <code>git reset --hard</code> 来丢弃用户修改。不要把 <code>git pull</code> 开发分支称为稳定版本升级。</p><h2 id=\"update-section-4\">回滚怎么做</h2><p>旧源码目录保留用于恢复。如果新版本未改数据格式且发布说明允许，可以停止新服务，把启动路径切回旧源码并读取当前数据。已有格式迁移时，不能保证旧代码还能读取新数据。</p><p>从备份恢复数据会丢失备份之后的聊天和资源，因此恢复前应先保存当前状态。不要把“切回旧源码”和“把数据库倒回旧时间”当作同一件事。</p><h2 id=\"update-section-5\">维护者怎样升级 Hermes</h2><p>在隔离分支或副本中选择上游提交，逐个重做并校验补丁，验证真实插件发现、全部新增命令、记忆与个人身份边界、Life/World/Supply、普通账号冷安装，再跑完整宿主套件和真实模型端到端。通过后生成新的 CHIYO 版本、锁定依赖和发行清单。</p><p>所以 CHIYO 可以跟随 Hermes 升级，但需要维护者完成兼容验收后再交给用户；当前不是用户任意升级上游就自动兼容。</p>"
+  },
+  "data": {
+    "title": "数据保存、备份与恢复",
+    "summary": "CHIYO v0.1 · 数据保存、备份与恢复",
+    "toc": [
+      {
+        "id": "data-section-0",
+        "text": "哪些目录分别保存什么"
+      },
+      {
+        "id": "data-section-1",
+        "text": "一份可执行的停机备份例子"
+      },
+      {
+        "id": "data-section-2",
+        "text": "更换电脑"
+      }
+    ],
+    "content": "<h2 id=\"data-section-0\">哪些目录分别保存什么</h2><div class=\"table-scroll\"><table class=\"doc-table\"><thead><tr><th scope=\"col\">位置</th><th scope=\"col\">内容</th><th scope=\"col\">更新时怎么处理</th></tr></thead><tbody><tr><td>CHIYO 源码目录</td><td>Hermes、插件源文件、组件、脚本、虚拟环境</td><td>新版本另建目录；虚拟环境可重建</td></tr><tr><td>HERMES_HOME</td><td>模型和平台配置、人格、会话、日志、个人插件</td><td>完整备份并继续使用正确目录</td></tr><tr><td>HERMES_HOME/chiyo</td><td>个人绑定、记忆、控制账本、Life 状态与请求回执</td><td>必须整体保留，不能只拷一个数据库</td></tr><tr><td>World/Body home</td><td>独立世界与身体状态、数据库与审计</td><td>单独备份其完整数据根</td></tr><tr><td>Life Supply data root</td><td>Governance、Workspace、资源文档数据库</td><td>单独备份其完整数据根</td></tr></tbody></table></div><p>服务地址、授权、身份属于自己的配置，不随公共源码发布。确认路径时不要输出全部 <code>.env</code> 来排错，以免把凭据贴到日志或公开 issue。</p><h2 id=\"data-section-1\">一份可执行的停机备份例子</h2><p>先停止自己的进程或 systemd 服务，确认没有同目录写入者。以下只备份手册中的基础个人目录；如果还启用了 World 与 Supply，也必须分别备份它们的真实目录。</p><div class=\"code-block\"><div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>export HERMES_HOME=&quot;$HOME/.chiyo-v1&quot;\nmkdir -p &quot;$HOME/chiyo-backups&quot;\nchmod 700 &quot;$HOME/chiyo-backups&quot;\nbackup_file=&quot;$HOME/chiyo-backups/profile-$(date +%Y%m%d-%H%M%S).tar.gz&quot;\ntar -czf &quot;$backup_file&quot; -C &quot;$HOME&quot; .chiyo-v1\nchmod 600 &quot;$backup_file&quot;\ntar -tzf &quot;$backup_file&quot; &gt;/dev/null</code></pre></div><p>备份中可能含密钥和私人聊天，存放在私有位置。归档能读不代表已经完成业务恢复验收；最好在独立恢复目录测试，不让恢复副本连接原机器人 token 或成为第二个写入者。</p><p>不要在 SQLite 服务持续写入时只复制 <code>.db</code> 文件，可能漏掉未合并的日志或其他控制文件。基础方案采用停机后完整目录备份；在线备份需要专门的一致性方案，当前不提供未经验证的在线备份命令。</p><h2 id=\"data-section-2\">更换电脑</h2><p>在新设备重新安装同一或明确支持迁移的 CHIYO 版本。旧设备停机后备份完整个人与服务目录，把备份私下转移到新设备。恢复到正确账号，重新核对绝对路径、文件权限、socket、Linux UID、模型配置和平台绑定，再启动一个接收进程。</p><p>Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间迁移不是只拷源码 ZIP，也不是把旧虚拟环境整目录复制过去。</p>"
+  },
+  "troubleshooting": {
+    "title": "常见故障与持续运行",
+    "summary": "CHIYO v0.1 · 常见故障与持续运行",
+    "toc": [
+      {
+        "id": "troubleshooting-section-0",
+        "text": "Unknown command"
+      },
+      {
+        "id": "troubleshooting-section-1",
+        "text": "命令提示没有绑定个人实例"
+      },
+      {
+        "id": "troubleshooting-section-2",
+        "text": "记忆似乎没有生效"
+      },
+      {
+        "id": "troubleshooting-section-3",
+        "text": "World 或 Life Supply 不可用"
+      },
+      {
+        "id": "troubleshooting-section-4",
+        "text": "模型错误与 Telegram 冲突"
+      },
+      {
+        "id": "troubleshooting-section-5",
+        "text": "长期运行与 systemd"
+      }
+    ],
+    "content": "<h2 id=\"troubleshooting-section-0\">Unknown command</h2><p>先确认机器人用户名与使用版本。R16 存在下划线命令被网关转换成连字符、查不到实际插件注册的缺陷，<code>/chiyo_status</code>、<code>/chiyo_note</code>、<code>/chiyo_consider</code> 会受影响；不是用户输入错误。R17 修复后应按实际网关路径重新验收，不能只直接调用 Python handler。</p><p>其他版本也可能因插件未加载、启动了另一个 profile、服务仍指向旧源码而报 Unknown command。检查实际 ExecStart、HERMES_HOME 和插件启用配置，不以磁盘上有一个新版本目录来证明后台进程已使用它。</p><h2 id=\"troubleshooting-section-1\">命令提示没有绑定个人实例</h2><p>这表示命令已经进入千代 handler，但个人身份未绑定。检查平台、个人 DM key、实际 profile 和配置；不能用允许所有用户绕开个人记忆边界。</p><h2 id=\"troubleshooting-section-2\">记忆似乎没有生效</h2><p>先确认 Memory READY，测试事实是用户自己说的文字消息。用新会话询问且不要重复答案；检查是否启用的是千代记忆、是否启动到了另一个数据目录。多模态消息暂不形成文本长期记忆。</p><h2 id=\"troubleshooting-section-3\">World 或 Life Supply 不可用</h2><p>检查服务是否运行、socket 绝对路径、peer 身份和正式授权。World 只接受同账号；Supply 还区分 operator 与 service。资源请求没有确认保存时，应按相同内容重试并核对结果，不能凭聊天里的“保存好了”判断数据库已写入。</p><h2 id=\"troubleshooting-section-4\">模型错误与 Telegram 冲突</h2><p>模型 401 或认证错误先核对自己的凭据与端点。Telegram 409 先排查同一个 token 是否被另一套网关或 Native 使用。普通聊天失败与附加模块未启用是不同故障，记录实际错误再定位。</p><h2 id=\"troubleshooting-section-5\">长期运行与 systemd</h2><p>前台网关适合初次体验；要长期运行需配置自己系统上的服务管理。第一版没有跨 Windows、macOS 和所有 Linux 发行版的一键常驻安装器。</p><p>Linux 管理员可据以下模板设置网关服务。所有路径和账号必须换成实际值；World 与 Supply 若启用，还要分别建立服务、用户及依赖关系。这是模板，未对每种机器完成安装验收。</p><div class=\"code-block\"><div class=\"code-header\"><span>ini</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>[Unit]\nDescription=CHIYO Hermes gateway\nAfter=network-online.target\nWants=network-online.target\n\n[Service]\nType=simple\nUser=你的Linux运行账号\nWorkingDirectory=/home/你的账号/apps/chiyo-v0.1\nEnvironment=HERMES_HOME=/home/你的账号/.chiyo-v1\nExecStart=/bin/bash /home/你的账号/apps/chiyo-v0.1/scripts/hermes.sh gateway run\nRestart=on-failure\nRestartSec=5\n\n[Install]\nWantedBy=multi-user.target</code></pre></div><p>使用 systemd 时，把 unit 保存到该系统的服务配置目录，核对运行账号和私有配置读取权限，再执行 daemon-reload、enable/start。查看自己服务的状态和日志；停止、重启及升级只针对自己创建的服务。升级后修改服务路径并重新加载，不要继续运行旧版本。</p><p>WSL 中能否使用 systemd 取决于自己的 WSL 配置；Windows 开机、WSL 启动与 Linux 服务自启也不是同一层机制，当前不承诺上述模板自动解决 Windows 登录后的所有常驻需求。</p>"
+  },
+  "testing": {
+    "title": "文档站、验收与公开发布",
+    "summary": "CHIYO v0.1 · 文档站、验收与公开发布",
+    "toc": [
+      {
+        "id": "testing-section-0",
+        "text": "文档站需要的数据"
+      },
+      {
+        "id": "testing-section-1",
+        "text": "当前验收证据怎么理解"
+      },
+      {
+        "id": "testing-section-2",
+        "text": "开源前还要补什么"
+      }
+    ],
+    "content": "<h2 id=\"testing-section-0\">文档站需要的数据</h2><p>公开文档需要版本、功能及状态、安装步骤、配置示例、命令、测试结果、已知问题、升级和备份方法。它不需要模型密钥、机器人 token、私人聊天或真实数据库。</p><p>当前预览为静态页面，内容文件是 <code>doc-data.js</code>。搜索在浏览器本地完成，主题偏好存放在访问者浏览器中；没有账号系统或后端数据库。更新文档内容后重新发布网页文件即可。</p><h2 id=\"testing-section-1\">当前验收证据怎么理解</h2><p>R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失败、440 条件跳过；千代组件、宿主边界、普通账号冷安装及真实模型 12 项另有证据。这是指定版本与范围的结果，不能用来证明自主活动、所有平台或新修订版都已经通过。</p><p>真实体验暴露命令路由遗漏后，R17 增加真实入口回归与旧代码负对照，完整默认 Python 套件为 3,718 文件、45,071 通过、0 失败、440 条件跳过，关闭自动重试。千代双 Python 组件与 36 项宿主边界检查通过；17 段 Bash 示例语法检查通过，会话 key 示例实际执行通过。四个命令使用真实插件发现和完整网关消息路径检查，并验证未绑定个人 DM 被拒绝。独立体验网关的进程内加载与 Telegram 轮询就绪已核对；作者已确认修复后的自然 Telegram status 回复正常；几天持续使用仍单独待验收。</p><p>长期自然使用、QQ/微信/飞书真实账号、macOS、Windows 原生、Docker、桌面端与 JavaScript 全套仍单独列为待覆盖。</p><h2 id=\"testing-section-2\">开源前还要补什么</h2><p>本次发行拟使用仓库 https://github.com/2855680599/chiyo 与候选标签 v0.1.0-rc4。作者于 2026-10-04 确认 CHIYO 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。是否已公开，以仓库和发行页实际状态为准。公开后替换文档中的占位值，确认 Git 安装能从公开仓库运行，提供贡献与问题反馈说明，再让另一台电脑按文档完整安装。</p><p>暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。文档可以先详细准备好，公开发布仍以实际发行和验收为准。</p>"
+  },
+  "privacy": {
+    "title": "隐私与数据管理",
+    "summary": "CHIYO v0.1 · 隐私与数据管理",
+    "toc": [
+      {
+        "id": "privacy-section-0",
+        "text": "哪些数据在自己的机器上"
+      },
+      {
+        "id": "privacy-section-1",
+        "text": "哪些内容会离开自己的机器"
+      },
+      {
+        "id": "privacy-section-2",
+        "text": "停止召回和彻底擦除"
+      },
+      {
+        "id": "privacy-section-3",
+        "text": "发布代码和反馈问题"
+      }
+    ],
+    "content": "<h2 id=\"privacy-section-0\">哪些数据在自己的机器上</h2><p>个人 profile 中可能有模型密钥、平台 token、聊天会话、记忆证据、理解与召回索引、纠正与停止召回记录、生活审计以及运行日志。World 与 Life Supply 使用各自的数据目录；资源文档不在记忆删除命令的管理范围里。</p><p>第一版没有自带数据库加密或登录式管理后台。文件访问取决于操作系统账号、目录权限及 Hermes 工具权限；本地管理员、获得同账号访问权的人和有文件能力的工具可能读取这些文件。身份绑定限制个人模块的写入来源，不是整个电脑的安全沙箱。</p><h2 id=\"privacy-section-1\">哪些内容会离开自己的机器</h2><p>使用远程模型时，当前问题、组装后的历史与被召回的记忆，以及启用模块提供的上下文，会按实际 Hermes 配置发送给所选模型服务。启用 Shadow 认知后，提交的候选及所需上下文也可能触发额外模型调用。平台消息由 Telegram 等平台处理；用户主动启用的 Hermes 工具、MCP、技能和网络功能还可能访问相应服务。</p><p>“自部署”不等于“聊天永远不会出本机”。需要全部留在本机时，应另行验证本地模型、关闭外部平台及网络工具，并检查实际配置；当前体验号使用联网聊天链路。</p><p>文档网站不接入聊天数据库、模型或机器人。本站不加入统计脚本和外部字体请求，搜索在浏览器中完成；主题偏好仅保存于访问者的 localStorage。公开托管服务仍可能记录普通访问日志，不能把静态网站解释为绝对没有任何网络记录。</p><h2 id=\"privacy-section-2\">停止召回和彻底擦除</h2><p>本版的记忆 forget 是停止后续召回，并排除受影响的旧聊天上下文；原始聊天与审计证据仍保留。correct 使用新内容替代旧事实供后续使用。两者都不是磁盘安全擦除，不会删除资源文档、备份、模型供应商或消息平台保存的数据。</p><p>如需停用整个个人实例，可停止该实例全部写入进程，确认个人与服务目录的绝对路径，私下保存需要的备份，再由管理员处理这些目录及其他备份。当前没有承诺“一条命令彻底抹除全部副本”的工具；共享服务和其他实例不能一起删除。</p><h2 id=\"privacy-section-3\">发布代码和反馈问题</h2><p>公开仓库只包含程序、模板、文档、测试和必要的上游源码，不上传生产 profile、机器人 token、数据库、运行日志、SSH 私钥或整份服务器备份。环境变量名和示例是假数据；真实值只在个人私有配置中填写。</p><p>提交 issue 时只提供版本、操作系统、命令和脱敏错误。不要直接附完整 .env、profile、日志或私人对话。截图也要检查用户名、聊天 ID、密钥、网址参数及二维码。</p><p><code>.gitignore</code> 不能删除已经提交到 Git 历史中的秘密。第一版发布准备采用从白名单源码创建的新历史，避免继承开发目录的历史；若凭据曾公开，应先在供应商处撤销或轮换，不能只删一个文件。参见 <a href=\"https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/removing-sensitive-data-from-a-repository\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub 敏感数据处理说明</a>。</p>"
+  },
+  "release": {
+    "title": "开源发行与维护",
+    "summary": "CHIYO v0.1 · 开源发行与维护",
+    "toc": [
+      {
+        "id": "release-section-0",
+        "text": "公开仓库应该包含什么"
+      },
+      {
+        "id": "release-section-1",
+        "text": "版本、下载与兼容性"
+      },
+      {
+        "id": "release-section-2",
+        "text": "许可证与署名"
+      },
+      {
+        "id": "release-section-3",
+        "text": "发布操作的顺序"
+      },
+      {
+        "id": "release-section-4",
+        "text": "文档网站如何发布"
+      }
+    ],
+    "content": "<h2 id=\"release-section-0\">公开仓库应该包含什么</h2><p>根目录给出 README、LICENSE、NOTICE、安装教程、功能与已知问题；vendor/hermes 保留上游许可证和固定版本；patches 保存宿主改动与可核对的前后哈希；组件、插件及测试各自可定位。公开源码不依赖作者机器上的生产目录。</p><p>建议把完整教程网站放在 website/，保留独立 Markdown 手册。文档站不需要部署聊天服务，源码与文档可以在同一仓库维护，静态网站可以单独托管。</p><h2 id=\"release-section-1\">版本、下载与兼容性</h2><p>发行记录应同时写明 CHIYO 版本、验收修订号、Hermes 版本和固定提交、Python 版本、安装方式、数据库迁移说明、SHA-256，以及已知问题。标签固定发行源码；开发分支不作为普通用户直接升级渠道。</p><p>当前 R19 是基于 R17 运行代码、补齐许可证与教程的发行候选，完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，最终 ZIP 冷安装和隐私检查通过。它还不是“所有平台都支持”的稳定性承诺。后续更新应发布整套匹配的 CHIYO 与 Hermes；不要先追上游最新版本、再假设插件会自动兼容。</p><h2 id=\"release-section-2\">许可证与署名</h2><p>Hermes 自身继续保留 MIT；候选包保留 CHIYO 已有 Apache-2.0 根许可证。作者于 2026-10-04 确认其有权授权的 CHIYO 新增代码（包括 Life Supply）使用 Apache-2.0；历史自研 MIT 文本继续保留作来源记录，第三方仍适用各自许可。公开仓库并不自动等于具备完整开源授权，参见 <a href=\"https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub 仓库许可证说明</a>。</p><p>模型服务、消息平台、第三方依赖和角色素材分别有自己的条款或来源；源码许可证不等于赠送这些服务的账号、token、商标或私人关系数据。</p><h2 id=\"release-section-3\">发布操作的顺序</h2><ol><li>确认新增代码及组件的许可证与来源，保留上游文本和修改说明。</li><li>从已验收白名单导出源码，检查文件、隐私和依赖；从干净历史开始。</li><li>把教程网站与贡献、问题反馈说明放到公开目录，扫描文档和图片中的私人信息。</li><li>用最终版本执行安装、完整宿主测试、组件及真实网关入口回归；核对实际运行文件与测试输入。</li><li>创建仓库、提交发行标签、上传可校验的源码与安装包；填上真实下载和仓库链接。</li><li>对公开地址再做一次克隆安装、链接检查与文档站发布检查，记录实际结果。</li></ol><p>公开下载应以真实仓库与 Releases 页面为准。R19 仅更新许可证、教程与发布材料，运行代码与已完成全量测试的 R17 一致；公开地址仍须克隆安装验证。</p><h2 id=\"release-section-4\">文档网站如何发布</h2><p>本网站是零构建的静态文件，可直接打开 index.html。公开仓库建立后，可把网站放在独立目录并选择 GitHub Pages 的实际发布源；若采用分支发布，发布目录内必须有 index.html。部署前替换真实仓库与下载链接，并检查 HTTPS 下的搜索、复制、深链接和手机导航。参见 <a href=\"https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub Pages 建站说明</a>。</p><p>当前只交付本地预览与静态包，没有为作者偷偷开通域名、公开机器人或把服务器数据库接到网站。</p>"
+  },
+  "contributing": {
+    "title": "贡献、反馈与测试规则",
+    "summary": "CHIYO v0.1 · 贡献、反馈与测试规则",
+    "toc": [
+      {
+        "id": "contributing-section-0",
+        "text": "普通功能问题怎么报告"
+      },
+      {
+        "id": "contributing-section-1",
+        "text": "安全问题怎么报告"
+      },
+      {
+        "id": "contributing-section-2",
+        "text": "如何贡献代码"
+      },
+      {
+        "id": "contributing-section-3",
+        "text": "这次命令缺陷如何防止复发"
+      },
+      {
+        "id": "contributing-section-4",
+        "text": "自动化结果与长时间使用"
+      }
+    ],
+    "content": "<h2 id=\"contributing-section-0\">普通功能问题怎么报告</h2><p>报告 CHIYO 修订号、Hermes 版本、操作系统、Python、安装方式、所选入口，以及可重复的最短步骤。写明实际结果和预期结果，附脱敏的错误行。机器人显示名不能区分实例，应在私下确认正确入口后报告版本；不要在公共 issue 暴露自己的私人聊天 ID。</p><h2 id=\"contributing-section-1\">安全问题怎么报告</h2><p>涉及凭据泄漏、越权读取、跨身份记忆写入或私人数据披露的问题，先停止继续公开相关信息。正式仓库建立后应启用并公布私下报告渠道；当前尚没有公开的安全邮箱或已启用的 GitHub 私密漏洞报告入口，不编造联系方式。若某个凭据已泄漏，由持有人在对应平台撤销，再单独修复代码或公开历史。</p><h2 id=\"contributing-section-2\">如何贡献代码</h2><p>先阅读对应目录的 AGENTS.md 与组件说明。将改动限制在明确的功能或缺陷，保持 owner 边界；通用 Hermes 扩展使用通用钩子，不把个人身份硬编码进上游核心。新的示例和测试只用假身份、独立临时目录及隔离存储。</p><p>提交 PR 时说明具体触发条件、修复后的行为、实际测试与剩余限制。不同平台的测试必须分别报告，不能因为 Linux 通过便把 Windows 原生或 macOS 标成已支持。</p><h2 id=\"contributing-section-3\">这次命令缺陷如何防止复发</h2><p>R16 的直接 handler 与组件测试没有验证 Telegram 命令解析和插件名称匹配。R17 同时覆盖精确下划线名称、旧连字符别名回退、名称冲突优先级、真实插件注册、完整网关消息路径和未绑定个人 DM 的拒绝；用户重发 status 已确认自然入口可用。</p><p>以后新增用户入口，测试应从 MessageEvent 或真实平台消息进入，经过实际路由到最终 handler，验证响应与副作用；直接调函数仅是其中一层。回归测试还应在旧行为下失败，才能说明它真的能挡住同一个缺陷。</p><h2 id=\"contributing-section-4\">自动化结果与长时间使用</h2><p>随包 CI 模板覆盖双 Python 千代组件及完整宿主选择，保存在 ci/templates。当前发布凭据没有 workflow 权限，模板尚未启用，不存在可宣称通过的 GitHub CI 运行。维护者取得 workflow 授权并审查模板后，才可复制到 .github/workflows 启用；还应增加普通账号冷安装、最终包清单与隐私检查作业，记录首次实际运行结果。</p><p>长期体验关注跨会话记忆、纠正与 forget、重启连续性、文档保存、Shadow 费用及超时、平台断线重连、重复入站与错误恢复。遇到异常保留脱敏时间和步骤；不要用一次 status READY 代替几天业务体验。</p>"
+  },
+  "status-matrix": {
+    "title": "功能交付与后续计划",
+    "summary": "CHIYO v0.1 · 功能交付与后续计划",
+    "toc": [
+      {
+        "id": "status-matrix-section-0",
+        "text": "当前可以使用"
+      },
+      {
+        "id": "status-matrix-section-1",
+        "text": "当前需要管理员装配"
+      },
+      {
+        "id": "status-matrix-section-2",
+        "text": "当前没有交付"
+      },
+      {
+        "id": "status-matrix-section-3",
+        "text": "建议的维护优先级"
+      }
+    ],
+    "content": "<h2 id=\"status-matrix-section-0\">当前可以使用</h2><p>Hermes 命令行和 Telegram 个人入口；千代长期记忆查看、纠正与停止召回；生活事件及状态连续性；只读世界身体观察；正式授权的 Workspace 资源保存；显式触发的 Shadow 判断。独立体验号由管理员完整装配，普通自部署仍需要按模块章节配置额外服务。</p><h2 id=\"status-matrix-section-1\">当前需要管理员装配</h2><p>World/Body 的同账号 socket、Life Supply 的 operator/service 权限与有限授权，以及跨服务运行目录、启动顺序和持久化。通用安装脚本安装依赖，不会自动替用户创建所有权限和服务；全模块自助安装向导还未交付。</p><h2 id=\"status-matrix-section-2\">当前没有交付</h2><p>自主执行生活活动、主动 Contact、N8 正式撤销接口、Open Inquiry 正式准入、网页聊天、原生 Windows 安装器、官方完整容器镜像和 macOS 全流程验收。认知调用数为 0 可以只是尚未提交考虑请求，Shadow 判断也不会驱动真实动作。</p><h2 id=\"status-matrix-section-3\">建议的维护优先级</h2><p>先完成第一版自然使用、错误修复、全模块自助安装和升级迁移演练；再推进更多消息平台的真实账号验收与容器/桌面部署。自主活动需要决策、授权、执行、真实结果和撤销形成完整链路，不能通过去掉 Shadow 开关提前声称已完成。</p><p>这是一份优先级建议，不是已实现列表或承诺的发布日期。</p>"
+  },
+  "quickstart": {
+    "title": "从哪里开始",
+    "summary": "按自己的操作系统和要启用的模块，逐步完成安装。",
+    "toc": [
+      {
+        "id": "quickstart-section-0",
+        "text": "选择安装路径"
+      }
+    ],
+    "content": "<h2 id=\"quickstart-section-0\">选择安装路径</h2><ol><li><a href=\"#installation\">阅读安装方式和支持范围</a>。</li><li>Windows 用户先完成 <a href=\"#windows\">WSL 安装</a>；Linux 用户阅读 <a href=\"#linux\">Linux 部署</a>。</li><li><a href=\"#configuration\">创建个人 profile、配置模型并启动 CLI</a>。</li><li>需要机器人时，继续 <a href=\"#telegram\">Telegram 绑定</a>。</li><li>要使用全部附加能力，按 <a href=\"#modules\">模块装配</a> 启用额外服务。</li><li><a href=\"#cli-reference\">验证命令</a>，再开始几天使用。</li></ol><p>ZIP 与 Git 均执行同一安装脚本；当前没有全模块一键安装器。基本聊天启动成功不等于所有模块已经接线。</p>"
+  }
+};
