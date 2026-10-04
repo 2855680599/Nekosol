@@ -1,61 +1,64 @@
-# nyairo · 持久数字个体框架
+# nyairo · 数字个体框架
 
 ![nyairo](website/assets/nyairo-horizontal.png)
 
-基于 Hermes Agent 0.21.0（固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`），包含完整 Hermes 源码。第一版使用 Hermes 命令行与原有消息网关。
+nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态、世界与身体观察、认知判断和个人文档放在同一个框架中，让它们按明确的配置和边界配合。
 
-nyairo 新增个人长期记忆的证据写入、受控召回、纠正与停止使用；生活状态观察、事件审计与可选 Shadow 认知；独立 World/Body 感知、个人 Workspace 和资源文档保存/读取。用 `/chiyo_status` 查看已接模块，`/chiyo_consider` 提交认知观察请求，`/chiyo_note` 保存文档。详见 [功能与边界](FEATURES.md)。
+项目基于完整 Hermes Agent 0.21.0（固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`）。第一版沿用 Hermes 的命令行、工具、技能和消息网关，新增以下能力：
 
-这份包是自动化验收通过的体验候选版：完整 Hermes 默认 Python 套件 45,071 通过、0 失败、440 跳过。完整测试结果与未完成项见 [验收说明](TESTING.md)、[已知问题](KNOWN_ISSUES.md)，不能据此宣称零 bug 或所有平台均已生产验收。
+| 能力 | 第一版能做什么 | 使用条件与范围 |
+| --- | --- | --- |
+| 长期记忆 | 组织个人经历，跨会话召回，查看、纠正或停止采用记忆 | 基础配置可启用；原始聊天与审计另行管理 |
+| 生活状态 | 保存入站事件、状态与审计，重启恢复，为聊天提供有限状态观察 | 基础配置可启用；没有正式活动时显示 IDLE |
+| 世界与身体 | 读取有限世界中的位置、姿态与身体信号 | 需要独立 World/Body 服务；标准插件提供只读观察 |
+| 认知观察 | 对明确请求给出模型判断与原因，包含预算、超时和故障保护 | 可选开启；Shadow 判断不直接执行动作 |
+| 个人文档与资源 | 在个人工作空间中保存、读取独立文档 | 需要 Life Supply 服务与有限授权；通用装配仍有已知限制 |
 
-## 框架与个体
+`/chiyo_status` 查看模块实际状态，`/chiyo_consider` 提交认知观察请求，`/chiyo_note` 保存或读取文档。命令是否可用取决于相应服务和配置；安装依赖并不自动完成全部模块装配。详见 [功能与来源](FEATURES.md) 和 [第一版功能状态](https://nyairo.com/#status-matrix)。
 
-nyairo 是开源框架的正式名字。千代是作者使用该框架的私人数字个体，姓名、人格、关系与个人数据均不随框架发行。
+## 从哪里开始
 
-第一版已有接口保留 `/chiyo_*`、`CHIYO_*`、`chiyo_bundle` 和 `.chiyo-v1` 命名以保持兼容；这些是历史技术标识，不是公开框架名称。已发布 v0.1.0-rc4 标签与资产保持原字节，后续公开介绍统一使用 nyairo。
+- [官网与完整教程](https://nyairo.com/)
+- [第一次使用的安装路线](https://nyairo.com/#quickstart)
+- [GitHub Releases：v0.1.0-rc4](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4)
+- [仓库内的中文使用教程](docs/USER_GUIDE.zh-CN.md)
 
-## 开始
-
-Linux Python 3.11–3.13、git、uv。完整宿主工具与测试还使用 Node.js 和 ripgrep；本轮验证版本为 Node.js 22.19.0、ripgrep 15.1.0：
+Windows 用户先按教程打开 WSL 2 / Ubuntu；Linux 用户准备好 Git、uv 等工具。第一次安装可选 Git 或 ZIP，两种方法选一种。推荐跟着教程完成工具准备，再在 Ubuntu / Linux 终端运行：
 
 ```bash
+mkdir -p "$HOME/apps"
+git clone --branch v0.1.0-rc4 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
+cd "$HOME/apps/chiyo-v0.1"
 bash scripts/install.sh
+vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 vendor/hermes/.venv/bin/python scripts/setup_profile.py --home "$HOME/.chiyo-v1" --owner local-owner --memory --life
 export HERMES_HOME="$HOME/.chiyo-v1"
 bash scripts/hermes.sh setup
 bash scripts/hermes.sh
 ```
 
-使用 Telegram、QQ、微信、飞书等现有入口，请继续看 [安装与体验](INSTALL.md)。私有配置、密钥、聊天历史和个人数据库放在源码目录之外。
+个人设置创建成功时会显示 `Profile ready`。选择模型、填好自己的密钥，收到真实回复后，再输入 `/chiyo_status` 检查模块。模型、程序依赖和附加服务的详细设置见 [安装说明](INSTALL.md)。已有安装目录或个人设置时，请按教程继续使用，不要为重做上述步骤而删除旧记录。
 
-`vendor/hermes/` 为完整宿主；`plugins/chiyo/` 是一般插件；`chiyo_bundle/` 是个人服务装配；`components/` 是独立组件；`patches/` 可重建 Hermes 改动。保留各部分原许可证，见 [NOTICE](NOTICE.md)。
+## 第一版的实际范围
 
-## R17 修正与详细使用手册
+当前公开安装标签和 Release ZIP 是 `v0.1.0-rc4` 体验候选。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
 
-修复 Telegram 下划线插件命令被错误转换成连字符、返回 Unknown command 的问题。已通过真实插件发现、完整网关消息路径及作者自然 Telegram 状态回复验收。
+Linux / Windows WSL 的公开标签和 ZIP 有普通账号安装复核记录。Telegram 有已装配实例的收发记录；Hermes 包含其他平台适配器，不代表每个平台都已用真实账号完成同样的验收。原生 Windows、macOS、官方完整容器方案和全模块一键配置没有完成相同范围的交付。
 
-电脑部署、ZIP / Git 安装、模型、平台、附加服务、升级兼容、备份与排错见 [详细中文使用文档](docs/USER_GUIDE.zh-CN.md)。每个版本安装独立虚拟环境；更新 nyairo 整套发行，不直接升级内置 Hermes。
+当前已记录的使用问题，包括关闭全部附加模块后的上下文配置、记忆命令提示前缀，以及 Supply 双身份 socket 连接安排，见 [已知问题](KNOWN_ISSUES.md) 和 [排错教程](https://nyairo.com/#troubleshooting)。
 
-## R18 发行候选
+## 框架、个体与个人数据
 
-R18 在已验收的 R17 上补齐作者确认的 Apache-2.0、Life Supply 正式许可、隐私说明和 17 篇教程网站；所有 Python、Shell、运行配置和 Hermes 源码与 R17 一致，没有声称重新运行过同一套全量测试。
+nyairo 是公开框架。千代是作者使用该框架的私人数字个体，其人格、关系和私人数据不随框架发行。你可以建立自己的个体，修改个人目录中的 `SOUL.md`。
 
-仓库：https://github.com/L1AN929/nyairo 。发行候选标签：`v0.1.0-rc4`。公开状态以实际仓库和 Releases 为准。Git 方式与 ZIP 方式执行同一安装脚本：
+记忆、聊天记录、配置和个人文档放在独立数据目录；按模型和平台设置，所需内容会发送给相应服务。停止召回记忆不等于删除原始聊天、审计或消息平台副本。数据与权限说明见 [隐私教程](https://nyairo.com/#privacy) 和 [安全反馈](SECURITY.md)。
 
-```bash
-git clone --branch v0.1.0-rc4 https://github.com/L1AN929/nyairo.git chiyo-v0.1
-cd chiyo-v0.1
-bash scripts/install.sh
-```
+历史 `/chiyo_*`、`CHIYO_*`、`chiyo_bundle` 和 `.chiyo-v1` 名称保留兼容。已发布标签和安装包保持原字节；当前主分支中的文档或代码更新，不会自动改写旧包。
 
-直接打开 `website/index.html` 阅读使用教程，或用静态服务器预览。当前完整部署验收覆盖 Linux / Windows WSL；原生 Windows、macOS、Docker 和全模块一键安装器尚未交付。基础 profile 与依赖安装成功不等于额外 World / Supply 服务已经装配。
+## 验证与开发
 
-维护者阅读 [贡献说明](CONTRIBUTING.md)、[安全反馈](SECURITY.md)。代码、数据、凭据分开；升级整套 nyairo 发行，不直接追上游 Hermes 更新。
+历史 R17 的完整 Hermes 默认 Python 套件记录为 45,071 通过、0 失败、440 条件跳过。这属于当时对应候选的证据，不能据此宣布当前主分支零缺陷或所有平台已验证。后续公开候选复核与定向检查单独记录，详见 [验收与复测](TESTING.md) 和 [网站验收说明](https://nyairo.com/#testing)。
 
-## R19 文档定稿
+当前 GitHub Actions 运行的是 Pages 网站构建与部署；功能 CI 模板仍在 `ci/templates/`，尚未启用。网站发布成功与运行时功能测试是两件分别验证的工作。
 
-补齐固定仓库与 v0.1.0-rc4 候选标签的可执行 Git 安装步骤。运行与测试源码仍与 R17 相同；公开仓库克隆安装和 GitHub CI 的实际结果独立记录，不能据此推断所有 CI 已完成。
-
-## R20 发布权限说明
-
-GitHub 当前令牌没有 workflow 权限；首次公开源码在此权限范围内发布，CI 配置保存在 `ci/templates/`，未启用自动 Actions，也没有宣称 GitHub CI 已通过。手动安装及测试脚本保留。运行与测试源码仍与已验收 R17 一致。
+`vendor/hermes/` 包含完整宿主，`plugins/chiyo/` 是插件，`chiyo_bundle/` 负责个人服务装配，`components/` 包含独立组件，`patches/` 记录宿主改动。更新时使用配套的 nyairo 发行，不直接升级内置 Hermes。开发者请看 [贡献说明](CONTRIBUTING.md)、[许可证与来源](NOTICE.md)。
