@@ -87,9 +87,9 @@ class FakeProposer:
                 ensure_ascii=False,
             )
         if self.episode_mode == "false_bio":
-            statement = "千代昨天去了海边。"
+            statement = "该个体昨天去了海边。"
         elif self.episode_mode == "false_relationship":
-            statement = "Alex和千代是恋人关系。"
+            statement = "Alex和该个体是恋人关系。"
         elif self.episode_mode == "false_body":
             statement = "Alex发烧了。"
         elif self.episode_mode == "false_world":

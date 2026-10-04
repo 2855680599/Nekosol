@@ -20,7 +20,7 @@ class CaptureBackend:
     def complete(self, messages):
         self.calls.append(messages)
         return ModelResult(
-            content="新千代回复",
+            content="新该个体回复",
             usage={},
             finish_reason="stop",
             reasoning_content_present=False,
@@ -32,7 +32,7 @@ class Config:
     provider = "test-provider"
     endpoint = "http://127.0.0.1/unused"
     sampling = {"temperature": 1.0, "top_p": 0.9}
-    identity_text = "你是千代。\n你是持续存在的千代。"
+    identity_text = "你是该个体。\n你是持续存在的该个体。"
 
 
 class ContextEpochTests(unittest.TestCase):
@@ -83,13 +83,13 @@ class ContextEpochTests(unittest.TestCase):
                 ["system", "system", "user"],
             )
             self.assertNotIn("旧回答", json.dumps(backend.calls[0], ensure_ascii=False))
-            self.assertEqual(first["raw_content"], "新千代回复")
+            self.assertEqual(first["raw_content"], "新该个体回复")
             second = runtime.handle_turn("conv", "第二条", participant=participant)
             self.assertEqual(
                 [item["role"] for item in backend.calls[1]],
                 ["system", "system", "user", "assistant", "user"],
             )
-            self.assertIn("新千代回复", json.dumps(backend.calls[1], ensure_ascii=False))
+            self.assertIn("新该个体回复", json.dumps(backend.calls[1], ensure_ascii=False))
             self.assertNotIn("旧回答", json.dumps(backend.calls[1], ensure_ascii=False))
             self.assertEqual(len(store.load("conv")), 6)
 

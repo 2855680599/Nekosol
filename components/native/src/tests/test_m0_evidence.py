@@ -44,7 +44,7 @@ class FakeConfig:
     provider = "test-provider"
     endpoint = "http://127.0.0.1/unused"
     sampling = {"temperature": 1.0, "top_p": 0.90}
-    identity_text = "你是千代。"
+    identity_text = "你是该个体。"
 
 
 def event(origin=USER_ORIGIN, ref="message-1", content="123"):

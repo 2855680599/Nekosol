@@ -34,20 +34,20 @@ class FakeConfig:
     provider = "test-provider"
     endpoint = "http://127.0.0.1/unused"
     sampling = {"temperature": 1.0, "top_p": 0.90}
-    identity_text = "你是千代。"
+    identity_text = "你是该个体。"
 
 
 class NativeV0Tests(unittest.TestCase):
     def test_context_has_only_identity_history_current_turn(self):
         assembly = assemble_context(
-            "你是千代。",
+            "你是该个体。",
             [{"speaker": "user", "raw_content": "旧问题"}],
             "当前问题",
         )
         self.assertEqual(
             assembly.messages,
             [
-                {"role": "system", "content": "你是千代。"},
+                {"role": "system", "content": "你是该个体。"},
                 {"role": "user", "content": "旧问题"},
                 {"role": "user", "content": "当前问题"},
             ],
@@ -60,7 +60,7 @@ class NativeV0Tests(unittest.TestCase):
     def test_context_has_participant_without_relationship(self):
         participant = Participant("alex", "Alex", "telegram", "42")
         assembly = assemble_context(
-            "你是千代，18岁。\n你是持续存在的千代。",
+            "你是该个体。\n你是持续存在的该个体。",
             [],
             "我是谁？",
             participant,
@@ -68,7 +68,7 @@ class NativeV0Tests(unittest.TestCase):
         self.assertEqual(
             assembly.messages,
             [
-                {"role": "system", "content": "你是千代，18岁。\n你是持续存在的千代。"},
+                {"role": "system", "content": "你是该个体。\n你是持续存在的该个体。"},
                 {"role": "system", "content": "当前与你对话的人是Alex。"},
                 {"role": "user", "content": "我是谁？"},
             ],
