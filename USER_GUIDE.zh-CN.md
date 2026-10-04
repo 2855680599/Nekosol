@@ -1,8 +1,44 @@
-# Nekosol / 关系在场：第一版详细使用文档
+# Nekosol：第一版使用教程
 
-本文面向准备在自己电脑或服务器上使用千代的用户。第一版使用完整 Hermes 的命令行和消息网关，文档网站只用来阅读说明，不是网页聊天入口。
+本文帮助你在自己的电脑或服务器上安装 Nekosol，开始聊天，再按需要连接机器人和额外功能。网页只放教程，聊天在实际程序里进行。
 
-当前源码基线是 Hermes 0.21.0，固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`。R16 自动化验收后，实际体验发现千代下划线命令无法正确路由；R17 已修复，并重新完成完整宿主套件与真实网关路由检查。R17 完整默认 Python 套件为 45,071 通过、0 失败、440 条件跳过，不能据此说第一版没有 bug。
+当前公开体验版本是 v0.1.0-rc4，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
+
+## 00 第一次使用，从这里开始
+
+### 先准备好这三样
+
+- 一台能上网的电脑。Windows 用户按下一章先装 Ubuntu；Linux 用户可以直接开始。
+- 一个可以使用的模型账号，以及它提供的密钥。模型负责生成回复，Nekosol 负责记忆和生活状态。
+- 一点安装时间：第一次要下载程序需要的小工具，过程中保持网络连接。
+
+这里是使用教程。聊天要在电脑上的程序或你自己的 Telegram 机器人里进行。
+
+### 照着这条路线安装
+
+1. Windows 用户先看 [在 Windows 上安装](#windows)，把 Ubuntu 打开。
+2. 在 [下载与安装](#linux) 中完成工具准备，再选择 Git 或 ZIP，**两种下载方法选一种就够了**。
+3. 接着 [设置并开始聊天](#configuration)，建立自己的数据文件夹，选择模型，再发一句话试试。
+4. 能正常聊天后，再按 [接入 Telegram](#telegram) 设置自己的机器人。
+5. 查看 [日常命令](#cli-reference)，试着查看、纠正和删除记忆。
+
+从 Git 和 ZIP 安装都使用同一个程序文件夹：`$HOME/apps/chiyo-v0.1`。后面的启动命令也使用它，跟着本文安装时无需改名字。
+
+### 第一次成功时，会看到什么
+
+安装完成只是第一步。能收到模型的真实回复，才说明聊天已经跑起来。
+
+输入 `/chiyo_status` 查看状态。记忆显示 READY 表示已准备好；生活显示 IDLE 表示当前没有正在进行的活动。其他功能显示 OFF 时，可以先继续聊天，之后按 [额外功能](#modules) 配置。
+
+第一次先体验聊天、记忆和生活状态。世界身体、资源文档和“只给建议”的认知功能，需要另外设置。
+
+### 遇到这些词，不用先学一遍技术
+
+- **终端**：输入命令的窗口。Windows 的 PowerShell 和 Ubuntu 的终端是两个不同窗口。
+- **配置文件**：保存你的模型、账号和功能设置的文件。
+- **个人数据文件夹**：保存聊天记录、记忆和设置的地方。本文用 `$HOME/.chiyo-v1`。
+- **模型密钥 / API Key**：模型服务给你的访问凭证，按它的说明填写，不要发给别人。
+- **profile**：下文旧文件或提示里可能出现这个词，它指的就是这一套个人设置和数据。
 
 ## 01 项目定位与新增功能
 
@@ -31,63 +67,74 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 
 只用命令行不需要 Telegram 账号配置。要接 Telegram，需要自己的机器人 token 和允许用户设置。千代记忆、生活状态和资源保存在自己的设备上，不会随公开源码包赠送某个部署实例的私人关系或历史。
 
-## 02 安装方式与支持范围
+## 02 安装前先看这里
 
-### 两种源码获取方式
+### 先确认自己用哪种电脑
 
-压缩包不是唯一安装方式。两种方式最终都会执行同一套安装脚本：
+- **Windows 电脑**：先安装 WSL 2。它相当于在 Windows 里准备一套能运行 Linux 程序的环境，本文使用 Ubuntu。具体步骤在 [Windows 安装](#windows)。
+- **Linux 电脑或服务器**：直接按 [下载与安装](#linux) 操作。工具安装命令以 Ubuntu / Debian 为例，其他系统需要使用自己的安装方式。
+- **macOS**：还没有单独完成整套安装检查，暂时不把它列为已验证的完整方案。
 
-| 方式 | 适合谁 | 目前情况 |
-| --- | --- | --- |
-| 发行 ZIP | 想使用一个固定、可校验的版本 | v0.1.0-rc4 候选 ZIP 已公开，可从 GitHub Releases 下载 |
-| Git 克隆 | 希望查看改动、贡献代码或切换版本 | 仓库 https://github.com/2855680599/Nekosol；本次候选标签 v0.1.0-rc4 |
+目前提供的是源码和源码 ZIP；Windows 原生一键安装包、官方 Docker 整套镜像和 pip 安装包还没有交付。上游目录里出现 Docker 文件，也不等于 Nekosol 已提供完整容器安装方案。
 
-Git 克隆不是再安装一份原生 Hermes。应克隆 Nekosol 整个仓库，包括其中的 `vendor/hermes`、插件和组件，然后执行 Nekosol 的安装脚本。
+### 下载方法选一种就好
 
-### 系统支持范围
+**Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
-| 环境 | 第一版建议的路径 | 验收情况 |
-| --- | --- | --- |
-| Linux 电脑 / 服务器 | 直接在 Linux 中安装 | 普通账号安装、组件与完整 Python 套件已验收 |
-| Windows 电脑 | WSL 2 中运行 Linux 版本 | 本项目完整测试使用 WSL Ubuntu；不等于 Windows 原生程序已验收 |
-| macOS | 待独立安装与完整组件验收 | 不作为当前已验证的完整部署方案 |
-| Docker | 待 Nekosol 全组件镜像和持久化方案验收 | 上游有 Docker 文件，不等于本项目 Docker 交付完成 |
+**ZIP 下载**：从 [GitHub Releases](https://github.com/2855680599/Nekosol/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
 
-目前没有已交付的 Nekosol Windows 一键安装器、官方容器镜像或 pip 安装包。文档会区分实际可用的方式和后续计划，不让用户在一个不存在的安装渠道上排错。
+无论选哪种，都下载 Nekosol 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
 
-### 硬件和网络
+程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
 
-使用远程模型 API 时，聊天模型不在本机运行，因此本项目本身不要求 GPU。选择本地模型时，模型的硬件需求另行计算。没有完成最低内存或并发性能基准，不给出未经验证的最低配置保证。
+### 电脑和网络需要满足什么
 
-首次安装需要下载 Python 依赖；源码 ZIP 不含全部依赖，所以并非完全离线安装包。持续聊天需要设备保持运行并能访问模型端点和所选消息平台；电脑睡眠或关机后机器人会离线。
+使用网上的模型服务时，模型在对方的服务器上运行，Nekosol 本身不要求你有显卡。选择在自己电脑上运行模型时，硬件要求要看那个模型的说明。
 
-## 03 Windows 电脑部署
+首次安装需要联网下载依赖，源码 ZIP 并不是完全离线的安装包。聊天时，电脑也要能连上模型服务；接 Telegram 时，还要能连上 Telegram。
 
-### 第一步：安装 WSL
+还没有完成最低内存和多人同时使用的性能测试，因此本文不给出未经验证的最低配置保证。电脑关机或睡眠后，机器人也会离线。
 
-在 Windows 中，以管理员身份打开 PowerShell，执行：
+
+## 03 在 Windows 上安装
+
+### 第一步：打开 PowerShell，安装 Ubuntu
+
+在开始菜单搜索 **PowerShell**，右键选择“以管理员身份运行”。在打开的窗口里复制下面这一行，按回车：
 
 ```powershell
 wsl --install -d Ubuntu
 ```
 
-按系统提示完成重启，首次打开 Ubuntu 后创建 Linux 用户名和密码。再在 PowerShell 查询：
+按提示完成安装；如果要求重启，就先重启电脑。WSL 是让 Linux 程序在 Windows 里运行的工具，Ubuntu 是本文用的 Linux 系统。
+
+安装遇到虚拟化、系统版本或下载问题时，按 [微软 WSL 安装说明](https://learn.microsoft.com/windows/wsl/install) 排查。
+
+### 第二步：打开 Ubuntu，建立自己的账号
+
+从开始菜单打开 **Ubuntu**。第一次打开时，会让你设置 Linux 用户名和密码。这个账号可以和 Windows 账号不同。
+
+输入密码时，窗口通常不会显示星号或文字，这是正常的；输完按回车即可。以后安装工具时，如果 `sudo` 要求输入密码，就用这里设置的密码。
+
+回到 PowerShell，输入：
 
 ```powershell
 wsl --list --verbose
 ```
 
-Ubuntu 的 VERSION 应为 2。如果安装遇到系统版本、虚拟化或发行版下载问题，按 [Microsoft WSL 安装说明](https://learn.microsoft.com/windows/wsl/install) 排查。
+列表中的 Ubuntu，VERSION 一栏应为 **2**。
 
-### 第二步：分清两个终端
+### 第三步：后面的命令都在 Ubuntu 里运行
 
-`wsl ...` 命令在 Windows PowerShell 中执行。后文的 `sudo`、`bash`、`export` 和 `~/apps` 命令在 Ubuntu 终端中执行，不要直接粘贴进 PowerShell。
+接下来打开 [下载与安装](#linux)，从准备工具开始做。里面的 `sudo`、`bash`、`export` 等命令，全部复制到 **Ubuntu 终端**，不要复制到 PowerShell。
 
-打开 Ubuntu 后，继续“Linux 环境准备”和“获取源码”。把程序和个人数据放在 Linux 用户目录下，例如 `~/apps` 和 `~/.chiyo-v1`。Microsoft 的 [WSL 环境准备说明](https://learn.microsoft.com/windows/wsl/setup/environment) 也提供终端与文件存储建议。
+本文把程序放在 Ubuntu 的用户目录里，把聊天数据放在另一个独立文件夹里；这样以后换程序版本时，个人记录仍有自己的保存位置。关于两个系统的文件位置，可看 [微软的 WSL 环境说明](https://learn.microsoft.com/windows/wsl/setup/environment)。
 
-### 第三步：从 Windows 拿到 ZIP
+### 如果 ZIP 已经下载到 Windows
 
-Windows 的 C 盘在 WSL 中通常映射为 `/mnt/c`。例如下载目录中的 ZIP 可以从 Ubuntu 读取：
+先完成下一章的工具准备。如果选 Git 下载，可以跳过这一步。
+
+选择 ZIP 时，Windows 的 C 盘在 Ubuntu 中通常写作 `/mnt/c`。下面用下载文件夹举例，**把用户名和 ZIP 文件名换成自己的**：
 
 ```bash
 mkdir -p "$HOME/apps/chiyo-v0.1"
@@ -95,24 +142,33 @@ unzip "/mnt/c/Users/你的Windows用户名/Downloads/你下载的发行包.zip" 
 cd "$HOME/apps/chiyo-v0.1"
 ```
 
-替换路径中的用户名和文件名。解压后，这个目录应直接包含 `scripts`、`vendor`、`components` 和 `MANIFEST.json`。如果外面还有一层目录，先进入真正的发行根目录。
+解压后的这个文件夹应该直接包含 `scripts`、`vendor`、`components` 和 `MANIFEST.json`。然后按下一章的 ZIP 步骤安装、检查文件。
 
-### 电脑需要一直开着吗
+### 关掉窗口以后，机器人还在吗
 
-命令行体验时，关闭程序即停止。Telegram 网关想持续在线，需要电脑、WSL 和相应服务保持运行。Windows 睡眠、重启或执行 `wsl --shutdown` 都会中断服务。需要长期在线可以改用常开 Linux 服务器；不要把终端窗口开着误认为已经配置开机自启。
+第一次在窗口里启动程序时，请保持窗口和电脑运行。关闭正在运行聊天程序的终端，程序可能随之停止；Windows 关机、睡眠或执行 `wsl --shutdown`，也会让它离线。
 
-## 04 Linux 环境与源码安装
+先把聊天跑通，再考虑长期开机或 [让程序在后台运行](#troubleshooting)。需要全天在线时，可以使用一直开机的 Linux 服务器，但仍要按自己的系统设置自动启动。
 
-### 准备基础工具
 
-下面的包管理命令适用于 Ubuntu / Debian 系列，在 Linux 终端执行：
+## 04 下载与安装
+
+### 第一步：准备安装工具
+
+**Windows 用户在 Ubuntu 终端操作；Linux 用户在自己的终端操作。**下面的工具安装命令适用于 Ubuntu / Debian。
+
+先复制这两行：
 
 ```bash
 sudo apt update
-sudo apt install -y git curl unzip ripgrep
+sudo apt install -y git curl unzip ripgrep less nano
 ```
 
-安装 uv 可按 [uv 官方安装说明](https://docs.astral.sh/uv/getting-started/installation/) 下载脚本、先查看，再执行：
+需要密码时，输入你的 Linux 密码，按回车。看到报错就先处理；不要把后面的所有步骤一次性粘进去。Git 用来下载项目，unzip 用来解压，其他工具会帮助安装和查看文件。
+
+### 第二步：装好 Python 的安装工具
+
+这里使用 **uv** 下载合适的 Python 并安装程序需要的依赖。按 [uv 官方安装说明](https://docs.astral.sh/uv/getting-started/installation/)，先下载并查看安装脚本，再运行：
 
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh -o /tmp/chiyo-uv-install.sh
@@ -120,32 +176,54 @@ less /tmp/chiyo-uv-install.sh
 sh /tmp/chiyo-uv-install.sh
 ```
 
-退出 `less` 按 `q`。安装后按安装器提示重开终端或更新 PATH，确认：
+查看脚本的窗口里，按 **q** 退出，再执行最后一行。完成后，按安装器提示重新打开终端。检查工具，再安装 Python：
 
 ```bash
 uv --version
 git --version
 rg --version
-```
-
-本版支持 Python 3.11–3.13。可用 uv 安装 Python；具体行为见 [uv 的 Python 管理说明](https://docs.astral.sh/uv/guides/install-python/)：
-
-```bash
 uv python install 3.13
 export UV_PYTHON=3.13
 ```
 
-本次验收使用 Python 3.13.5 与 3.11.15。`UV_PYTHON=3.13` 选择这一版本系列，不保证自动下载的补丁版本恰好等于验收版本。完整宿主的部分工具和测试还使用 Node.js；本轮验收版本为 Node.js 22.19.0、ripgrep 15.1.0。需要这些工具时应另行安装，不能把系统自带 Node 的存在当成版本已匹配。
+前三行能显示版本号，Python 安装也没有报错，就可以继续。重新打开终端后，必要时再执行 `export UV_PYTHON=3.13`。
 
-### 方法 A：从发行 ZIP 安装
+组件支持 Python 3.11–3.13；历史检查使用过 3.13.5 与 3.11.15，公开候选也在 WSL 的 3.12.3 下完成过安装复核。这里选择 3.13 系列，不要求下载的补丁版本和旧检查完全相同。更多细节见 [uv 的 Python 安装说明](https://docs.astral.sh/uv/guides/install-python/)。
 
-从正式发布渠道下载 ZIP 和 SHA256 校验值。先比较下载文件：
+### 方法 A：用 Git 下载并安装
+
+第一次按命令安装，可以选这条路线。**如果选择了这里，就不用再做 ZIP 下载。**
+
+下面会下载已经公开的 `v0.1.0-rc4` 体验版本，并把程序放在后续教程使用的同一个文件夹里：
+
+```bash
+mkdir -p "$HOME/apps"
+git clone --branch v0.1.0-rc4 --depth 1 \
+  https://github.com/2855680599/Nekosol.git "$HOME/apps/chiyo-v0.1"
+cd "$HOME/apps/chiyo-v0.1"
+bash scripts/install.sh
+vendor/hermes/.venv/bin/python scripts/verify_manifest.py
+```
+
+下载标签时，Git 可能提示 **detached HEAD**，这是选择固定版本时的正常提示。安装完成后，文件检查结果中的 `changed_or_missing` 应为 `[]`，表示没有发现变动或缺失的发行文件。
+
+如果提示目标文件夹已经存在，先确认那里是否有旧版本。不要为了重装就删除聊天数据；需要另用一个程序文件夹时，后面的 `cd` 路径也要相应改成它。
+
+接着打开 [设置并开始聊天](#configuration)。
+
+### 方法 B：用 ZIP 下载并安装
+
+如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/2855680599/Nekosol/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
+
+先检查 ZIP 文件：
 
 ```bash
 sha256sum 你下载的发行包.zip
 ```
 
-结果必须与该次发布公告一致，不能把 R16 的哈希用于 R17。然后解压到一个新的、带版本号的目录，进入发行根目录。
+打印出的长串字符应和这次发行公布的 SHA256 一样。它用来确认文件没有下错或损坏；不要拿其他版本的值来比较。
+
+然后解压、安装并检查程序文件：
 
 ```bash
 mkdir -p "$HOME/apps/chiyo-v0.1"
@@ -155,36 +233,34 @@ bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 ```
 
-`install.sh` 使用锁定的依赖文件安装，`verify_manifest.py` 检查发行文件完整性。成功后再建个人配置。校验失败先保留报错并重新核对下载来源，不要删除清单绕过校验。
+ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；已经解压好了，就从 `cd` 这一行继续，不必重复解压。
 
-### 方法 B：从 Git 安装
+文件检查结果中的 `changed_or_missing` 应为 `[]`。如果不是，先重新核对下载来源和文件，不要删掉清单来跳过检查。随后打开 [设置并开始聊天](#configuration)。
 
-使用本项目仓库与固定候选标签安装。若该候选尚未出现在公开发行页，先使用已交付 ZIP，不要换成上游仓库：
+程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
+
+### 已经装过 Hermes，怎么处理
+
+保留原来的安装，另外建立本文的 Nekosol 程序文件夹和个人数据文件夹。Nekosol 这一版已经带上匹配的 Hermes 和插件，直接把几个插件文件覆盖到任意新版 Hermes 里，不能保证正常使用。
+
+模型账号可以在下一章重新填写。原来的人格、技能、聊天记录和记忆要分别核对后再迁移，当前没有通用的一键搬家工具。
+
+
+## 05 设置并开始聊天
+
+### 第一步：进入刚才安装的程序文件夹
+
+下面仍然在 Ubuntu / Linux 终端里操作。保持使用自己的普通 Linux 账号，进入刚才下载或解压的位置：
 
 ```bash
-CHIYO_REPOSITORY_URL="https://github.com/2855680599/Nekosol.git"
-CHIYO_RELEASE="v0.1.0-rc4"
-git clone "$CHIYO_REPOSITORY_URL" "$HOME/apps/chiyo-source"
-cd "$HOME/apps/chiyo-source"
-git checkout --detach "$CHIYO_RELEASE"
-bash scripts/install.sh
+cd "$HOME/apps/chiyo-v0.1"
 ```
 
-不要用原生 Hermes 仓库地址替代 Nekosol 地址。初次使用选择已发布标签，而不是未经验收的开发分支。仓库和标签都必须真实可访问；仓库暂不可访问时使用对应候选 ZIP。
+如果你自行选了其他安装位置，把这一行改成那个文件夹。运行 `ls` 应能看到 `scripts` 和 `vendor`；看不到时，先找到真正的程序文件夹。
 
-如果 Git 标签随附发行清单，也可运行清单校验。开发者自行改文件后，原发行清单失败是预期的变化提示；需要重新测试和生成自己的证据，不能继续引用原版“全量通过”。
+### 第二步：建立自己的数据文件夹
 
-### 已经安装了原生 Hermes 怎么办
-
-保留原安装，另建 Nekosol 源码目录和个人数据目录。不要直接把千代代码覆盖到原生 Hermes 安装中。当前千代仍依赖登记的宿主补丁，不是对任意 Hermes 最新版即插即用的独立插件。
-
-模型凭据可以通过正常 setup 重新配置。不要盲目复制整个旧数据目录，这可能混入旧记忆、网关身份和服务地址。迁移人格、技能或历史需要分别核对，当前没有通用的一键迁移器。
-
-## 05 创建配置、模型与命令行
-
-### 建立基础个人实例
-
-在发行根目录执行：
+**这一步只在第一次创建时运行。**它会把你的设置、聊天记录和记忆放到程序文件夹之外：
 
 ```bash
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
@@ -192,27 +268,45 @@ vendor/hermes/.venv/bin/python scripts/setup_profile.py \
   --owner local-owner \
   --memory --life
 export HERMES_HOME="$HOME/.chiyo-v1"
+```
+
+看到 **Profile ready** 就表示个人设置已经建好。后面要继续使用同一个终端、同一个数据文件夹。
+
+如果提示 **profile already exists**，说明已有一套设置，不需要再次创建。先核对自己是否打开了正确的位置，之后直接按“下次怎么启动”操作，不要删除旧记录来消除提示。
+
+### 第三步：选择模型，填自己的密钥
+
+启动设置向导：
+
+```bash
 bash scripts/hermes.sh setup
+```
+
+按向导选择你使用的模型服务和模型名称，再填写服务商提供的密钥。**API Key 就是密钥，Base URL 就是服务地址。**使用自定义服务时，地址和模型名称都按服务商的说明填写。
+
+填完能启动，只说明设置被接受；下一步收到真实回复，才说明账号和网络可以用。密钥留在自己的配置里，不要贴进 GitHub 或发给别人。
+
+### 第四步：开始聊天，再看看记忆状态
+
+运行：
+
+```bash
 bash scripts/hermes.sh
 ```
 
-`--home` 是个人配置与数据的位置，必须在源码目录外。`--owner` 是这个个人实例的内部标识，使用 1–128 个 ASCII 字母、数字、下划线或连字符，且首字符为字母或数字；它不是显示昵称，也不等于 Telegram 用户 ID。
+进入聊天后，先发一句普通消息。能收到模型回复，再输入：
 
-`--memory` 开启千代记忆，`--life` 开启生活状态与事件审计。创建脚本配置千代上下文引擎，并在启用千代记忆时关闭 Hermes 内置自动记忆，避免两条记忆同时注入。
+```text
+/chiyo_status
+```
 
-脚本拒绝覆盖已经存在的千代配置。看到“profile already exists”时，检查当前目录和配置，不要删除旧目录只为消除错误。
+记忆显示 **READY** 表示已经准备好；生活显示 **IDLE** 表示当前没有正在进行的活动。附加功能显示 OFF，可以之后再配置。
 
-设置自己的个体：公开候选在没有现有 `SOUL.md` 时仍会生成“你是千代”的默认文本。Nekosol 是框架，千代是作者的私人个体；创建 profile 后，可编辑个人目录中的 `SOUL.md`，填写自己的名称与人格，再启动聊天。已有 `SOUL.md` 会被保留；修改显示设定不需要重命名兼容用的 `/chiyo_*` 命令或配置键。
+接着试试告诉它一个小事实，换一个新会话后再问。提问时别把答案重复写进去，否则无法判断它是否真的记住了。
 
-### 配置模型
+### 下次打开电脑，怎么启动
 
-在 Hermes setup/model 流程里选择服务商、模型及自己的凭据。自定义兼容端点还需要正确的 Base URL 与模型名称。程序能够启动不代表模型凭据有效，先正常问一句话确认真实回复。
-
-模型密钥保存在自己的配置或受控环境中，不写进仓库或公共文档。启用 Shadow 会额外使用模型预算；普通安装不会默认开启这个费用项。
-
-### 下一次怎么启动
-
-新开终端后，重新进入所使用版本的源码根目录并设置同一个数据目录：
+重新打开 Ubuntu / Linux 终端，复制下面三行即可；不用再安装，也不用再创建个人设置：
 
 ```bash
 cd "$HOME/apps/chiyo-v0.1"
@@ -220,36 +314,62 @@ export HERMES_HOME="$HOME/.chiyo-v1"
 bash scripts/hermes.sh
 ```
 
-更换 `HERMES_HOME` 就是在换个人实例。不要因为找不到历史而重新创建 profile；先检查是否启动到了正确的目录。
+第二行是在告诉程序“这次使用哪一个数据文件夹”。换了这个位置，看到的就会是另一套设置和记录。如果历史突然不见了，先核对这一行。
 
-### 基础配置不等于所有模块都就绪
+### 给自己的个体改名字和设定
 
-以上命令只建立记忆和 Life 的基础实例。World/Body、Life Supply 与认知需要额外配置。`/chiyo_status` 显示 OFF 或未接通时，要按对应模块的步骤安装，不是通过一句角色指令就能开启。
+公开候选在没有现有 `SOUL.md` 时，仍会生成“你是千代”的默认文字。Nekosol 是框架，千代是作者的私人个体；你可以给自己的个体另外取名。
 
-## 06 Telegram 与其他消息平台
-
-### Telegram 配置
-
-为自己的安装准备独立机器人，在 BotFather 获取 token，并确认允许访问的用户。公开项目不会提供开发者部署中的私人 token，也不会把既有体验机器人交给每位安装用户共用。
-
-在同一源码目录与个人 profile 下执行：
+第一次建立数据文件夹后，可以在开始聊天前打开它：
 
 ```bash
-export HERMES_HOME="$HOME/.chiyo-v1"
-bash scripts/hermes.sh gateway setup
-bash scripts/hermes.sh gateway run
+nano "$HOME/.chiyo-v1/SOUL.md"
 ```
 
-按 Hermes 的网关配置向导连接 Telegram。一个 token 只启动一个接收进程，不要同时给原生 Hermes、Nekosol 和 Native 使用。冲突可能表现为 Telegram 409 或消息漏收。
+用自己的名字和人格描述替换默认文字。按 **Ctrl+O** 保存，回车确认，再按 **Ctrl+X** 退出。已经在聊天时，修改后重新启动程序。
 
-### 还需要绑定个人记忆身份
+已有的 `SOUL.md` 会被保留。改名字不需要改 `/chiyo_*` 命令名；这些历史名称保留着，是为了让旧配置继续能用。
 
-平台允许用户只是第一层鉴权。千代还需要把真实个人 DM 的会话 key 写进 `chiyo/config.json` 的 `gateway_bindings`。
+### 这些参数是什么意思
 
-不要直接猜 key。下面的辅助命令使用本版 Hermes 的真实 key 构造函数；把自己的 DM chat ID 和 user ID 作为输入，输出在本机查看，不要贴进公共 issue：
+- `--home`：个人数据保存在哪里，必须和程序文件夹分开。
+- `--owner`：这套个人数据的内部编号。第一次可保持 `local-owner`，它不是昵称或 Telegram 用户 ID；自行修改时，用 1–128 个英文字母、数字、下划线或连字符，第一位是字母或数字。
+- `--memory`：打开长期记忆；安装器会关闭 Hermes 原本的自动记忆，避免两套记忆同时影响回复。
+- `--life`：保存生活状态和收到的事件，重启后继续读取。
+
+这些命令先准备聊天、记忆和生活状态。世界身体、资源文档和认知观察，按 [额外功能](#modules) 单独设置。
+
+
+## 06 接入 Telegram
+
+### 第一步：准备自己的机器人
+
+先确认电脑里已经能正常聊天，再设置 Telegram。
+
+在 Telegram 的 **BotFather** 创建自己的机器人，保存它给你的 token。token 就是让程序操作这个机器人的凭证；别把它写到公开教程或发给别人。
+
+在 Ubuntu / Linux 终端里进入程序文件夹，启动连接设置：
 
 ```bash
-PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python -c '
+cd "$HOME/apps/chiyo-v0.1"
+export HERMES_HOME="$HOME/.chiyo-v1"
+bash scripts/hermes.sh gateway setup
+```
+
+选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
+
+如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/2855680599/Nekosol/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+
+### 第二步：允许自己的私聊使用记忆
+
+允许账号连接机器人之后，还要告诉 Nekosol：**哪一个私聊属于这套个人记忆**。否则它会拒绝读写私人记忆。
+
+下面的命令会询问你的私聊 chat ID 和用户 user ID，然后打印需要保存的一串文字。普通个人私聊的 chat ID 通常与用户 ID 相同，仍要用自己的真实信息核对；不要填群聊号码或昵称。
+
+仍在程序文件夹中复制运行：
+
+```bash
+PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python -c &#x27;
 from gateway.config import Platform
 from gateway.session import SessionSource, build_session_key
 chat_id = input("Telegram DM chat ID: ").strip()
@@ -257,12 +377,16 @@ user_id = input("Telegram user ID: ").strip()
 source = SessionSource(platform=Platform.TELEGRAM, chat_type="dm",
                        chat_id=chat_id, user_id=user_id)
 print(build_session_key(source))
-'
+&#x27;
 ```
 
-该示例用于本手册的默认、单个人 profile。使用 Hermes 的命名 profile 或 multiplex 时必须按实际 profile 构造，不能照搬默认 key。ID 从你自己实例的受控元数据或平台信息中确认；不要用显示昵称当数字身份。
+复制最后打印的结果，再打开自己的配置文件：
 
-在已有 `chiyo/config.json` 中仅修改绑定部分，保留其余字段：
+```bash
+nano "$HOME/.chiyo-v1/chiyo/config.json"
+```
+
+找到 `gateway_bindings`，只修改这一项。下面是**局部示例**，把括号里的提示文字换成刚才打印的真实结果；其他设置都保留：
 
 ```json
 {
@@ -272,29 +396,43 @@ print(build_session_key(source))
 }
 ```
 
-这只是局部配置示例，不是完整文件。保存后重启当前网关，再测试命令。群聊和未绑定身份不得获得个人记忆权限。
+按 Ctrl+O、回车保存，再按 Ctrl+X 退出。这里的步骤用于本文默认的个人设置；使用 Hermes 其他配置方案或 multiplex 模式时，需要按那套设置生成对应结果，不能直接照搬。
 
-### Telegram 平台验收步骤
+个人编号与配置留在自己的电脑里，不需要上传到 GitHub。群聊或没有绑定的用户不会因此获得你的私人记忆。
 
-1. 打开自己的机器人，先发普通消息确认收发。
-2. 发 `/chiyo_status` 确认进入千代模块，而不是 Unknown command。
-3. 发 `/chiyo_memory list` 确认个人身份已绑定；没有记忆与命令不可识别是不同情况。
-4. 保存一个测试事实，开新会话后询问，确认记忆消费。
-5. 重启自己的网关，再确认同一实例和状态；不要重启其他人的实例。
+### 第三步：启动机器人，检查是否能用
 
-开发者现有体验入口是独立 Telegram 机器人，使用方式和新用户自建机器人分开说明；日常 Native 入口不是同一条部署链。
+运行连接程序：
 
-### QQ、微信、飞书
+```bash
+export HERMES_HOME="$HOME/.chiyo-v1"
+bash scripts/hermes.sh gateway run
+```
 
-完整 Hermes 中保留对应适配器，接入仍按上游流程。个人微信 Weixin/iLink 与企业微信 WeCom 是不同入口。第一版没有用 QQ、微信、飞书的真实账号完成整体收发和重连验收，不把源码包含写成生产已验收。
+这个窗口先保持打开。一个 token 同时只交给一个正在收消息的程序；旧 Hermes、Nekosol 或独立 Native 同时使用它，可能出现 Telegram 409 冲突。
 
-固定版本平台说明可在包内 `vendor/hermes/website/docs/user-guide/messaging/` 中阅读；先核对适配器所需身份，再配置千代自己的个人会话绑定。
+1. 找到自己的机器人，发一句普通消息，确认它会回复。
+2. 发 `/chiyo_status`，确认返回 Nekosol 模块状态，而不是 Unknown command。
+3. 发 `/chiyo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
+4. 告诉它一个小事实，换新会话后再问，提问时不要重复答案。
+5. 重启自己的连接程序，再检查同一套个人数据和状态是否仍然可用。
 
-## 07 认知、World/Body 与 Life Supply
+独立体验号由管理员设置。这里讲的是你自己安装的机器人；使用体验号时，以管理员给的入口说明为准。
 
-### 认知 Shadow
+### QQ、微信和飞书怎么接
 
-创建一个全新的 profile 时，基础命令增加 `--cognition-shadow --life`：
+项目保留了 Hermes 对这些平台的连接代码，但第一版还没有用它们的真实账号完成整套收发和断线重连检查。
+
+个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 Nekosol 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收。
+
+
+## 07 额外功能怎么设置
+
+### 让它给出建议：认知观察
+
+认知观察会调用模型，对你明确提出的请求给出判断和原因。它不会因为判断“可以做”就自动执行动作。旧文件把这种方式称为 **Shadow**。
+
+第一次新建另一套个人设置时，可以使用：
 
 ```bash
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
@@ -302,13 +440,19 @@ vendor/hermes/.venv/bin/python scripts/setup_profile.py \
   --owner local-owner --memory --life --cognition-shadow
 ```
 
-它会同时打开个人配置中的 `cognition_shadow` 和 Hermes 配置中的千代 LLM 授权。已有 profile 不应重跑创建脚本；需明确修改两处配置：`chiyo/config.json` 中 `cognition_shadow: true`，以及 `config.yaml` 中 `plugins.entries.chiyo.llm.enabled: true`，保留其他设置，随后重启。
+这会使用单独的数据文件夹 `$HOME/.chiyo-shadow-v1`。之后启动时，把 `HERMES_HOME` 也设置到这个位置，不能继续指向原来的文件夹。
 
-通过 `/chiyo_consider 请求` 提交候选，再用 `/chiyo_status` 看判断和原因。它可能因预算、审计状态或模型错误不启动判断；应返回实际原因，不能假装完成活动。
+如果已有设置，就不要重跑创建命令。需要修改两处：
+- 个人 `chiyo/config.json` 里的 `cognition_shadow` 改为 `true`。
+- 个人 `config.yaml` 里的 `plugins.entries.chiyo.llm.enabled` 改为 `true`，保留其他设置。
 
-### World/Body 只读观察
+重新启动后，用 `/chiyo_consider 你的请求` 提问，再用 `/chiyo_status` 看结果。模型预算用完、服务出错或审计不可用时，它应告诉你实际原因。额外判断也可能产生模型费用。
 
-在发行根目录、与聊天程序同一个普通 Linux 账号下，初始化独立世界：
+### 读取位置和姿态：世界与身体
+
+这个功能读取世界中的位置、姿态和身体信号。标准插件只能读取这些信息，不会移动个体或执行动作。
+
+先在程序文件夹里创建一份独立世界，**只在第一次运行**：
 
 ```bash
 export PYTHONPATH="$PWD:$PWD/vendor/hermes"
@@ -316,38 +460,44 @@ vendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service init \
   --home "$HOME/.chiyo-world-v1"
 ```
 
-初始化只运行一次；不要覆盖已有世界。另开一个 Linux 终端，在同一源码根目录和账号下持续运行：
+再开一个 Ubuntu / Linux 终端，进入同一个程序文件夹，用**同一个 Linux 账号**启动世界服务：
 
 ```bash
+cd "$HOME/apps/chiyo-v0.1"
 export PYTHONPATH="$PWD:$PWD/vendor/hermes"
 vendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service run \
   --home "$HOME/.chiyo-world-v1"
 ```
 
-将个人 `chiyo/config.json` 的 `world_body_socket` 设置为实际绝对路径，例如 `/home/你的Linux用户名/.chiyo-world-v1/run/read.sock`，随后重启聊天。配置文件里的 `$HOME` 和 `~` 不应当作已经展开的路径。
+这个窗口先保持运行。然后在个人 `chiyo/config.json` 里，把 `world_body_socket` 填成真实连接文件的完整位置，例如 `/home/你的Linux用户名/.chiyo-world-v1/run/read.sock`，再重新启动聊天。
 
-新 profile 也可用 `--world-body-socket "$HOME/.chiyo-world-v1/run/read.sock"`。服务和客户端必须同 Linux UID；不同账号或错误权限会被拒绝。第一次初始化为卧室、站姿和空物件集合，不携带开发者世界的物件与历史。
+这里的 socket 可以理解为聊天程序连接世界服务的本机入口。填写配置时用完整路径，不要把 `$HOME` 或 `~` 原样写进去。两个程序用不同的 Linux 账号启动，会被拒绝连接。
 
-服务停止时状态应报告不可用。底层 root peer 动作端口不是这个只读端口，不要替换 socket 地址尝试开启移动。
+第一次创建的世界是卧室、站姿和空物件列表，不带作者的私人世界数据。已有世界不要重复创建；服务停止时应显示不可用。
 
-### Life Supply 当前是管理员装配
+### 保存资源文档：目前需要管理员设置
 
-资源文档代码与已装配实例的部署体验已经接通，但下面只是管理员装配检查表，不是已验证的双身份安装教程。公开候选的默认 socket 存在连接安排限制，见下文。仅运行基础安装脚本不能直接使用 `/chiyo_note` 写文档。
+Life Supply 用来在自己的工作区保存、读取独立文档。已经设置好的实例可以使用；普通安装的这部分仍需要管理员处理账号、服务与授权。
 
-管理员需要依次完成：
+**下面是设置检查表，还不是经过验证的双账号完整安装教程。**只运行基础安装脚本，还不能直接用 `/chiyo_note` 保存文档。
 
-1. 建立独立数据根和 Unix socket，配置 `LIFE_SUPPLY_DATA_ROOT`、`LIFE_SUPPLY_SOCKET`。
-2. 配置不同的非 root operator 与 service 身份，以及允许的 subject；对应变量为 `LIFE_SUPPLY_OPERATOR_UIDS`、`LIFE_SUPPLY_SERVICE_UIDS`、`LIFE_SUPPLY_ALLOWED_SUBJECTS`。
-3. 通过正式 owner / Governance 管理接口启用工作区创建，并为个人 subject 创建唯一 Workspace。
-4. 通过 operator 的正式授权接口授予 `COMMIT_MANAGED_ARTIFACT`、`artifact:personal`、限定到该 Workspace 的有限 grant；同时明确打开 `ARTIFACT_EXTERNAL_ACTION`。
-5. 配置个人实例的 `life_supply_socket`、`life_supply_subject`、`life_supply_artifact_grant`，开启 Life，重启聊天。
-6. 保存和读取测试文档；确认无授权时拒绝、重复提交不重复创建、重启后资源仍存在。
+1. 给资源服务准备独立的数据文件夹和连接文件位置，分别填入 `LIFE_SUPPLY_DATA_ROOT`、`LIFE_SUPPLY_SOCKET`。
+2. 让“负责批准权限的管理账号”和“聊天程序使用的账号”分开，均不使用 root。对应的设置是 `LIFE_SUPPLY_OPERATOR_UIDS`、`LIFE_SUPPLY_SERVICE_UIDS`；`LIFE_SUPPLY_ALLOWED_SUBJECTS` 指定允许使用资源的个人身份。
+3. 通过资源服务的正式管理接口，为这个个人身份建立自己的工作区。
+4. 通过管理账号的正式接口批准有限的保存权限：`COMMIT_MANAGED_ARTIFACT`、`artifact:personal`，限定到该工作区，并明确开启 `ARTIFACT_EXTERNAL_ACTION`。
+5. 把自己服务的连接位置、个人身份和权限编号填入 `life_supply_socket`、`life_supply_subject`、`life_supply_artifact_grant`；开启 Life，再重新启动聊天。
+6. 实际保存并读取一篇测试文档；还要检查没权限时会拒绝、重复保存不会创建多份、重启后文档仍存在。
 
-服务入口是 `scripts/supply_service.py`，使用单 SQLite 正式实现。旧多库兼容入口不能与新服务混用数据根。socket 只允许 owner 访问，身份验证还依赖 peer UID；管理员装配必须同时解决访问路径和身份分离，不能用放宽权限到所有用户来代替授权。
+服务入口是 `scripts/supply_service.py`。新旧资源服务使用的数据格式不同，不要混用同一个数据文件夹。权限编号必须来自自己的服务，随便填一串文字不会自动取得权限。
 
-已确认的装配限制：默认 Unix socket 为 0600，配置校验也拒绝组或其他用户权限。两个不同的非 root UID 按上述检查表连接同一默认 socket 时，operator 会先遇到 PermissionError，尚未进入应用层授权。仅填写 operator/service UID 不会解决连接问题；当前尚未提供经过验证的完整双身份连接方案。遇到此错误时保留错误与实际 UID 供排查，不要把 socket 改成 0666，也不要把 grant ID 当作连接权限。
+### 资源服务的已知连接问题
 
-目前不提供未经普通安装验收的“复制一串 grant ID 就自动开通”命令。正式 ID 来自你自己的服务，配置里随意填写一个 ID 不会产生权限。完整自助安装向导应作为后续工程，不能仅靠补文档宣称已经实现。
+公开候选默认只允许连接文件的所属账号访问，也就是权限 `0600`。两个不同的普通 Linux 账号连接同一个默认入口时，管理账号会遇到 **PermissionError**：系统先拒绝连接，程序还没来得及检查它有没有资源权限。
+
+因此只填好两个账号的 UID，还没有解决连接安排。这里尚未提供验证通过的完整方案；遇到这个错误，先记录两个程序实际使用的账号与错误，交给管理员处理。不要把入口改成所有人都能连接的 `0666`，也不要拿权限编号去代替连接权限。
+
+这是第一版现有的装配问题。本次网页改写只把限制讲清楚，没有修改资源服务的运行时代码。
+
 
 ## 08 日常命令与几天使用测试
 
@@ -490,35 +640,53 @@ tar -tzf "$backup_file" >/dev/null
 
 Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间迁移不是只拷源码 ZIP，也不是把旧虚拟环境整目录复制过去。
 
-## 11 常见故障与持续运行
+## 11 遇到问题怎么办
 
-### Unknown command
+### 提示 Unknown command：命令没认出来
 
-先确认机器人用户名与使用版本。R16 存在下划线命令被网关转换成连字符、查不到实际插件注册的缺陷，`/chiyo_status`、`/chiyo_note`、`/chiyo_consider` 会受影响；不是用户输入错误。R17 修复后应按实际网关路径重新验收，不能只直接调用 Python handler。
+先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](#cli-reference) 的格式输入；Nekosol 的命令使用 `/chiyo_*` 名称。
 
-其他版本也可能因插件未加载、启动了另一个 profile、服务仍指向旧源码而报 Unknown command。检查实际 ExecStart、HERMES_HOME 和插件启用配置，不以磁盘上有一个新版本目录来证明后台进程已使用它。
+旧 R16 版本存在下划线命令无法正确转交给插件的问题，R17 已修复；它不是用户输入错误。其他情况下，也可能是插件没加载、启动了另一个数据文件夹，或后台仍在运行旧版本。
 
-### 命令提示没有绑定个人实例
+核对启动命令中的程序位置和 `HERMES_HOME`。后台运行时，还要核对后台服务使用的路径。仅把新文件下载到电脑，并不表示正在运行的程序已经换成新版本。
 
-这表示命令已经进入千代 handler，但个人身份未绑定。检查平台、个人 DM key、实际 profile 和配置；不能用允许所有用户绕开个人记忆边界。
+### 提示没有绑定个人实例
 
-### 记忆似乎没有生效
+说明它认出了命令，但还不知道这个私聊是不是你自己的。按 [Telegram 第二步](#telegram) 核对个人绑定、所用数据文件夹和真实 ID，再重新启动连接程序。
 
-先确认 Memory READY，测试事实是用户自己说的文字消息。用新会话询问且不要重复答案；检查是否启用的是千代记忆、是否启动到了另一个数据目录。多模态消息暂不形成文本长期记忆。
+不要把允许用户改成“所有人”来绕过个人记忆绑定。连接机器人和允许使用私人记忆，是两步不同的设置。
 
-### World 或 Life Supply 不可用
+### 感觉它没有记住
 
-检查服务是否运行、socket 绝对路径、peer 身份和正式授权。World 只接受同账号；Supply 还区分 operator 与 service。资源请求没有确认保存时，应按相同内容重试并核对结果，不能凭聊天里的“保存好了”判断数据库已写入。
+先用 `/chiyo_status` 看记忆是否为 READY。测试时，先由你发一条文字事实，换新会话再问；不要在问题里把答案一起说出来。
 
-### 模型错误与 Telegram 冲突
+确认两次启动使用同一个 `HERMES_HOME`，否则可能正在读另一套数据。当前图片、语音等多模态消息不会按这条文字入口形成长期记忆。
 
-模型 401 或认证错误先核对自己的凭据与端点。Telegram 409 先排查同一个 token 是否被另一套网关或 Native 使用。普通聊天失败与附加模块未启用是不同故障，记录实际错误再定位。
+不带参数输入 `/chiyo_memory` 时，公开候选可能给出错误的 `/memory` 帮助提示。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](#cli-reference) 中的 `/chiyo_memory`。
 
-### 长期运行与 systemd
+### 世界或资源文档显示不可用
 
-前台网关适合初次体验；要长期运行需配置自己系统上的服务管理。第一版没有跨 Windows、macOS 和所有 Linux 发行版的一键常驻安装器。
+先确认额外服务还在运行，配置里填的是连接文件的完整位置。世界服务与聊天程序要由同一个 Linux 账号启动；资源文档还需要单独批准权限。
 
-Linux 管理员可据以下模板设置网关服务。所有路径和账号必须换成实际值；World 与 Supply 若启用，还要分别建立服务、用户及依赖关系。这是模板，未对每种机器完成安装验收。
+资源服务报 PermissionError 时，查看 [额外功能里的已知连接问题](#modules)。保存请求没有确认成功时，可用相同标题与正文重试，再按返回的文档 ID 读取核对。聊天里说“保存好了”，还不能代替实际读取结果。
+
+### 模型 401 或 Telegram 409
+
+**401** 通常表示模型账号认证失败。核对密钥、服务地址和模型名称，并检查自己的账号是否还能使用。
+
+**Telegram 409** 先检查同一个 token 是否被另一个 Hermes、Nekosol 或 Native 程序同时使用。一个机器人同一时间只交给一个收消息的程序。
+
+记录具体错误再排查。普通聊天无法回复，和额外功能没开启，处理方式不同。
+
+### 怎样让机器人一直在线
+
+先用前台窗口把聊天和机器人跑通。想长期在线，需要让系统帮你启动和看管程序；电脑关机、断网或睡眠时，它仍然会离线。
+
+Linux 通常可以用 **systemd**，它是系统自带的后台程序管理工具。下面给管理员一份参考配置；第一版没有跨所有电脑的一键常驻安装器。
+
+### Linux 后台运行参考
+
+把下面模板中的账号、程序文件夹和数据文件夹换成自己的。模板是给自己的新服务用的；不要直接覆盖服务器上别人的服务：
 
 ```ini
 [Unit]
@@ -539,15 +707,26 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-使用 systemd 时，把 unit 保存到该系统的服务配置目录，核对运行账号和私有配置读取权限，再执行 daemon-reload、enable/start。查看自己服务的状态和日志；停止、重启及升级只针对自己创建的服务。升级后修改服务路径并重新加载，不要继续运行旧版本。
+保存为 `/etc/systemd/system/nekosol-gateway.service`。Ubuntu / Debian 可以用 `sudo nano /etc/systemd/system/nekosol-gateway.service` 打开编辑器。核对路径、运行账号和私有配置的读取权限后，执行：
 
-WSL 中能否使用 systemd 取决于自己的 WSL 配置；Windows 开机、WSL 启动与 Linux 服务自启也不是同一层机制，当前不承诺上述模板自动解决 Windows 登录后的所有常驻需求。
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now nekosol-gateway.service
+sudo systemctl status nekosol-gateway.service
+```
 
-### 关闭所有附加模块后忘记前几轮
+最后一行查看程序是否正在运行。启用了世界或资源服务，还需要分别设置它们的启动和先后顺序，单个网关模板不会自动完成所有服务的配置。
 
-公开候选有一个已复现的配置问题：Memory、Life 与 World/Body 都关闭时，profile 仍选择 `context.engine=chiyo`，可能只向模型发送 system 和当前用户输入，导致前几轮短期对话消失。原始聊天数据库没有因此删除。推荐的 `--memory --life` 配置未触发这次复现。
+升级程序后，后台配置里的启动位置也要改成新版本。Windows 中的 Ubuntu 是否支持并开启 systemd，取决于自己的 WSL 设置；即使 Linux 服务能自启，也不代表 Windows 登录后已经会自动启动 Ubuntu。这份模板没有在每一种系统上完成安装验收。
 
-若只需要 Hermes 普通聊天，先备份个人配置，确认这些附加模块确实全部关闭，再在个人目录的 `config.yaml` 中移除 context 映射下的 `engine: chiyo` 配置行（保留 context 的其他设置），重启自己的聊天或网关。若启用了 Memory，或出现记忆服务故障，请按上面的记忆排错步骤处理；不要用这个办法绕过纠正与删除后的旧上下文保护。该运行时问题尚未通过本次网站更新修复。
+### 关闭所有附加功能后，忘记刚才的话
+
+第一版有一个已复现的问题：记忆、生活与世界身体都关闭时，仍可能使用 Nekosol 的专用上下文处理，只把当前问题交给模型，漏掉前几轮短期对话。原始聊天记录没有因此删除；本文推荐的 `--memory --life` 配置未触发这次复现。
+
+如果你确实只使用 Hermes 普通聊天，先备份个人设置，并确认这些附加功能全部关闭。然后在个人 `config.yaml` 的 `context` 下面删掉 `engine: chiyo` 这一行，保留其他设置，再重新启动自己的程序。
+
+如果启用了记忆，或者记忆服务出了故障，就按上面的记忆排错步骤处理；不要用这个办法绕过纠正、删除记忆后的保护。这个运行时问题仍待修复，本次网页更新没有把它改掉。
+
 
 ## 12 文档站、验收与公开发布
 
@@ -643,11 +822,18 @@ Hermes 自身继续保留 MIT；候选包保留 Nekosol 已有 Apache-2.0 根许
 
 公开下载以 https://github.com/2855680599/Nekosol/releases 为准；已发布 `v0.1.0-rc4` 标签与资产保持原样。R18–R20 的许可证、教程与发布材料修订不代表重新运行了 R17 全量测试；公开地址克隆安装、CI 和长期自然使用的结果必须分别记录。
 
-### 文档网站如何发布
+### 怎样更新这个教程网站
 
-本网站是零构建的静态文件，可直接打开 index.html，或使用本地静态服务器预览。源码位于 `main` 分支的 `website/`，GitHub Pages 从 `gh-pages` 分支根目录发布。文档域名为 https://nekosol.929711.xyz/ ，发布目录必须保留 index.html、docs-data.js、app.js、style.css、.nojekyll 与 CNAME；CNAME 内容为 `nekosol.929711.xyz`。发布后应检查 HTTPS 下的搜索、复制、深链接和手机导航。参见 [GitHub Pages 建站说明](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)。
+这个网站是几份网页文件，内容更新后交给 GitHub Pages 发布。它只展示公开教程，不连接聊天数据库，也不公开私人机器人。
 
-本站只托管公开文档，不公开私人机器人，也不接入服务器聊天数据库。自定义域名仅用于静态文档，不改变个人主站或现有聊天服务。
+1. 在 `main` 分支的 `website/` 文件夹修改网站。正文放在 `docs-data.js`，Markdown 手册也同步修改。
+2. 把更新后的网页文件放到 `gh-pages` 分支的最外层；不要再套一层 `website` 文件夹。**只改 main，线上网站不会自动跟着更新。**
+3. 保留 `index.html`、`docs-data.js`、`app.js`、`style.css`、`.nojekyll` 和 `CNAME`。CNAME 里面只写域名 `nekosol.929711.xyz`；发布分支的 LICENSE 也保留。
+4. 改了正文、脚本或样式，同时更新 index.html 里资源地址的 `?v=` 版本号，让浏览器重新取到新文件。
+5. 提交发布分支后，在 GitHub 的 Actions 页面等 **pages build and deployment** 完成。成功后打开 [文档网站](https://nekosol.929711.xyz/)，实际检查首页、搜索、复制按钮和文档链接；手机上也检查导航。
+
+这叫“发布教程网站”。让聊天机器人长期开机，是另一个设置，按 [遇到问题怎么办](#troubleshooting) 中的后台运行说明处理。更多网站托管细节见 [GitHub Pages 官方说明](https://docs.github.com/en/pages/getting-started-with-github-pages/creating-a-github-pages-site)。
+
 
 ## 15 贡献、反馈与测试规则
 
