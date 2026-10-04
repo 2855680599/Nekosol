@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 数字个体框架</title>
   <meta name="description" content="nyairo 是基于 Hermes 的数字个体框架，探索长期记忆、生活状态、世界与身体观察、认知判断和个人文档的协作。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261004-nyairo-short-pillars">
+  <link rel="stylesheet" href="style.css?v=20261004-guided-install">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -139,11 +139,11 @@
           </a>
         </div>
 
-        <p class="hero-install-note">先按<a href="#quickstart">上手指南</a>下载程序；进入程序文件夹后，运行安装命令。</p>
+        <p class="hero-install-note">在 Linux / WSL 终端运行，自动安装后引导设置模型。<a href="#quickstart">查看上手指南</a></p>
         <!-- 安装命令复制栏 -->
         <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
           <span class="cmd-prefix">$</span>
-          <code class="cmd-text">bash scripts/install.sh</code>
+          <code class="cmd-text">curl -fsSL https://www.nyairo.com/install.sh | bash</code>
           <button class="cmd-copy-btn" id="hero-cmd-btn" aria-label="复制安装命令">
             <svg class="copy-icon-default" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -291,7 +291,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261004-nyairo-blue-framework-r2"></script>
+  <script src="docs-data.js?v=20261004-guided-install"></script>
   <script src="app.js?v=20261004-nyairo-blue-framework-r2"></script>
 </body>
 </html>

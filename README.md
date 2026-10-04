@@ -11,3 +11,5 @@
 修改脚本、文档正文或样式后，同步更新 index.html 中资源 URL 的 `?v=` 版本，避免访问者继续读取旧缓存。
 
 文档域名为 `nyairo.com`，`www.nyairo.com` 自动 301 跳转到它，HTTPS 已启用。发布分支的 `CNAME` 必须写 `nyairo.com`；写成别的域名会让线上站点失效。
+
+官网 `/install.sh` 与 `scripts/bootstrap.sh` 内容完全相同，提供 Linux / WSL 引导安装，固定下载并校验 rc5。更新时同步这两个脚本；网站仍是静态教程站，模型设置和聊天在用户电脑上的 Hermes 中进行。
