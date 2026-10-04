@@ -1,5 +1,5 @@
 /* ==========================================================================
-   NEKOSOL DOCS - Quiet Graphite Developer Aesthetic
+   nyairo DOCS - Quiet Graphite Developer Aesthetic
    Inspired by: Linear, Vercel, GitHub Docs & VitePress
    Deep Graphite Base · Subtle Frosted Glass · Crisp Typography · Zero Clutter
    ========================================================================== */
@@ -1257,3 +1257,7 @@ a:focus-visible, button:focus-visible {
 @media (forced-colors: active) {
   [data-theme] .title-keyword { background: none !important; color: CanvasText !important; -webkit-text-stroke: 0; text-shadow: none; animation: none; }
 }
+
+/* Preserve the supplied icon while fitting its existing white margins in the header. */
+.brand-logo { overflow:hidden; background:#fff; }
+.brand-logo img { display:block; width:52px; height:52px; max-width:none; flex-shrink:0; object-fit:cover; }
