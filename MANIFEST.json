@@ -9,9 +9,8 @@
     "version": "0.21.0",
     "license": "MIT"
   },
-  "file_count": 12286,
+  "file_count": 12285,
   "files": {
-    ".git": "a1321a24ae816e75c0d8a18f0c0d00210876a42d531d612395e3bcf2d1f95dbb",
     ".gitignore": "5f746a5461b1bbd9dcd9fec6ca1cb64e340aab4605ac9a238e9f5214da87735e",
     "chiyo_bundle/__init__.py": "9681e0496224e66885a2a802846fe9aa95e973a29622ac3dfa54cc4ca371c563",
     "chiyo_bundle/__main__.py": "20843b9c1eafc15561798a475283199acc02d765ea186ce3b1af8cd29d2c889a",
@@ -12298,7 +12297,7 @@
     "website/style.css": "f9ce9a31bae04c9d602eae6fa575d573b9e26e1ccef1ed6d369695a17aa536fb",
     "website/USER_GUIDE.zh-CN.md": "de11eeef2e8d4c861cd5f389c8fbdc5f0c900839bbd64f888d858ed6b2053f5b"
   },
-  "tree_sha256": "57e1ca1178a5cd1b5a8a88eeb3c68fde59d00315b2d3ef2fb30a9d07b443ab76",
+  "tree_sha256": "77eb5704e4ad95aff70ff546001ff80347b98c87db32a08da882da92fde63e9f",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",
