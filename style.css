@@ -581,41 +581,39 @@ body {
 .cmd-copy-btn.copied {
   color: var(--c-success);
 }
-/* 核心三大支柱卡片 (通透质感，自然三列) */
+/* 六项能力纵向展开，名称、说明与教程入口各有清楚的位置。 */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--c-divider);
   margin-bottom: 24px;
 }
 
-
 .feature-card {
-  background: var(--c-bg-card);
-  border: 1px solid var(--c-border);
-  border-radius: 14px;
-  padding: 30px 26px;
+  display: grid;
+  grid-template-columns: 42px minmax(170px, 0.85fr) minmax(0, 1.8fr) auto;
+  grid-template-areas:
+    "icon tag desc link"
+    "icon title desc link"
+    "icon title state link";
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 6px;
+  padding: 28px 16px;
+  border-bottom: 1px solid var(--c-divider);
   text-decoration: none;
   color: inherit;
-  display: flex;
-  flex-direction: column;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 0;
+  transition: background-color 0.2s ease;
 }
 
 .feature-card:hover {
-  border-color: var(--c-border-hover);
   background: var(--c-bg-card-hover);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.6);
-}
-
-[data-theme="light"] .feature-card:hover {
-  box-shadow: 0 12px 28px -10px rgba(15, 23, 42, 0.08);
 }
 
 .card-icon-wrap {
+  grid-area: icon;
   width: 42px;
   height: 42px;
   border-radius: 10px;
@@ -625,46 +623,50 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--c-accent);
-  margin-bottom: 16px;
 }
 
 .card-tag {
+  grid-area: tag;
+  align-self: end;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 600;
   color: var(--c-text-3);
-  margin-bottom: 8px;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
 }
 
 .card-title {
+  grid-area: title;
+  align-self: start;
   font-size: 1.12rem;
   font-weight: 700;
   letter-spacing: -0.015em;
   color: var(--c-text-1);
-  margin-bottom: 8px;
 }
 
 .card-desc {
-  font-size: 0.88rem;
+  grid-area: desc;
+  align-self: end;
+  font-size: 0.9rem;
   color: var(--c-text-2);
-  line-height: 1.6;
-  flex-grow: 1;
+  line-height: 1.75;
 }
 
 .card-footer-link {
-  margin-top: 18px;
+  grid-area: link;
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--c-accent);
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 8px;
+  white-space: nowrap;
   transition: gap 0.15s ease;
 }
 
 .feature-card:hover .card-footer-link {
-  gap: 8px;
+  gap: 12px;
 }
 
 /* 极简底部页脚 */
@@ -692,10 +694,6 @@ body {
   color: var(--c-text-1);
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
-}
-
-.footer-copy {
-  color: var(--c-text-3);
 }
 
 .footer-links {
@@ -1200,7 +1198,6 @@ body {
    响应式媒体查询
    ========================================================================== */
 @media (max-width: 1024px) {
-  .features-grid { grid-template-columns: 1fr; gap: 16px; }
   .home-footer { flex-direction: column; align-items: center; gap: 14px; text-align: center; }
   .docs-aside { display: none; }
   .docs-content { padding: 32px 28px 60px; }
@@ -1274,15 +1271,25 @@ a:focus-visible, button:focus-visible {
 .section-intro { margin-bottom: 24px; max-width: 720px; }
 .section-intro h2, .start-strip h2 { font-size: 1.45rem; font-weight: 650; letter-spacing: -0.02em; margin-bottom: 8px; }
 .section-intro p, .start-strip p { color: var(--c-text-2); font-size: 0.92rem; line-height: 1.7; }
-.card-state { color: var(--c-text-3); font-size: 0.76rem; line-height: 1.6; border-top: 1px solid var(--c-divider); padding-top: 12px; margin-top: 16px; }
+.card-state { grid-area: state; align-self: start; color: var(--c-text-3); font-size: 0.76rem; line-height: 1.7; }
 .capabilities-note { color: var(--c-text-3); font-size: 0.84rem; line-height: 1.8; }
 .capabilities-note code { font-family: var(--font-mono); font-size: 0.8rem; }
 .start-strip { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 30px 0 8px; margin-top: 30px; border-top: 1px solid var(--c-divider); }
 .start-strip .btn-secondary { flex-shrink: 0; }
 .search-modal-input:focus-visible { outline: 2px solid #5e9de8; outline-offset: 4px; }
 .markdown-body h2[id], .markdown-body h3[id] { scroll-margin-top: calc(var(--header-height) + 24px); }
-@media (min-width: 769px) and (max-width: 1024px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 768px) {
+  .feature-card {
+    grid-template-columns: 42px minmax(0, 1fr);
+    grid-template-areas: "icon tag" "icon title" "desc desc" "state state" "link link";
+    column-gap: 16px;
+    row-gap: 6px;
+    padding: 24px 4px;
+  }
+  .card-icon-wrap { align-self: center; }
+  .card-desc { margin-top: 10px; }
+  .card-state { margin-top: 4px; }
+  .card-footer-link { justify-content: flex-start; margin-top: 10px; }
   .hero-title { font-size: clamp(27px, 7.5vw, 32px); }
   .start-strip { align-items: flex-start; flex-direction: column; gap: 16px; }
   .footer-left, .footer-links { flex-wrap: wrap; justify-content: center; }
