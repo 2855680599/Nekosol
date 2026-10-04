@@ -84,12 +84,12 @@ BOUNDARY_VERSION = "chiyo.ct0_10.telegram_boundary.v1"
 # 1. the real adapters: names, shapes, and what must never run
 # ==========================================================================
 # (a) the native telegram adapter on the owner's deployment -- a stdlib long-polling client behind the
-#     ACTIVE hermes-world-telegram.service. Local read-only reference: the prior-session
+#     ACTIVE service in the owner's deployment. Local read-only reference: the prior-session
 #     capture in TELEGRAM_ADAPTER_CAPTURE_CANDIDATES.
 # (b) the hermes gateway plugins/platforms/telegram adapter `async def send()`.
 REAL_NATIVE_OWNER = ("<real native telegram owner install>/telegram_adapter.py "
                     "(TelegramApi; a remote deployment, NOT available locally)")
-REAL_GATEWAY_OWNER = "plugins/platforms/telegram/adapter.py TelegramAdapter.send (HK, NOT local)"
+REAL_GATEWAY_OWNER = "plugins/platforms/telegram/adapter.py TelegramAdapter.send (owner deployment, not available locally)"
 TELEGRAM_API_URL_TEMPLATE = "https://api.telegram.org/bot<TELEGRAM_BOT_TOKEN>"
 NATIVE_SEND_METHOD = "sendMessage"
 MAX_TELEGRAM_TEXT = 4096  # telegram_adapter.py:25 (MAX_TELEGRAM_TEXT)
@@ -162,14 +162,15 @@ ISOLATED_ROOT_CANDIDATES = (
 PRODUCTION_COUNTERPARTY_REF_NOT_USED = "telegram:<REDACTED_PRODUCTION_CHAT_ID>"
 PRODUCTION_COUNTERPARTY_USED = False
 
-FORBIDDEN_REAL_SENDERS = (
+# An installation may declare its own sender and service names here. The open-source
+# release ships none of the maintainer's private deployment names.
+_EXTRA_SENDERS = tuple(x for x in os.environ.get("NYAIRO_FORBIDDEN_SENDERS", "").split(",") if x)
+_EXTRA_SERVICES = tuple(x for x in os.environ.get("NYAIRO_FORBIDDEN_SERVICES", "").split(",") if x)
+FORBIDDEN_REAL_SENDERS = _EXTRA_SENDERS + (
     "telegram_adapter",                     # the real native telegram adapter
     "chiyo_native_v0",                      # the harness package around it
     "plugins.platforms.telegram.adapter",   # hermes gateway sender
     "plugins.platforms.telegram",           # that plugin package
-    "split_send",                           # scripts/split_send.py
-    "sticker_send",                         # scripts/sticker_send.py
-    "waifu",                                # scripts/waifu.py
     "delivery_ledger",                      # gateway outbound-obligation writer
     "intent_executor",                      # service/bridge/intent_executor.py
     "world_body_service",                   # service/world_body_service.py
@@ -180,8 +181,7 @@ FORBIDDEN_REAL_SENDERS = (
     "approval_queue",                       # approve/reject/add
     "telegram",                             # python-telegram-bot
 )
-FORBIDDEN_SERVICES = (
-    "hermes-world-telegram.service",
+FORBIDDEN_SERVICES = _EXTRA_SERVICES + (
     "hermes-gateway",
     "chiyo-world-body",
 )

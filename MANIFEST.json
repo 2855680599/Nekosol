@@ -40,7 +40,7 @@
     "components/alpha/chiyo/contact/canonical_ports/expression_adapter.py": "2aa0e9e82f88609f5e8067c844f8b9b8c8184a13f55c2430ab8848dad1dd7736",
     "components/alpha/chiyo/contact/canonical_ports/grounding_resolver.py": "a6837e37dbbd9d24ca16f14908ecfdb37befbafc245b83b033c7312a7f65126c",
     "components/alpha/chiyo/contact/canonical_ports/read_ports.py": "699babd9e3a4e4e171fa9e6606323e8b659bbab12051818cce7eb30560dbc238",
-    "components/alpha/chiyo/contact/canonical_ports/telegram_boundary.py": "756a2a37364c943befbd550645d4eaeb9f0dd9725179c6f0abb97c29073fcc1e",
+    "components/alpha/chiyo/contact/canonical_ports/telegram_boundary.py": "0f37abc60ee89a668db4a70943f901df361c15777a9078e484c0313589245ca0",
     "components/alpha/chiyo/contact/canonical_spine.py": "d3e5e929c9c8cc4ceaa9586210cb1b2aa4f522e477e52994d4050c04f2afd14c",
     "components/alpha/chiyo/contact/contact_candidate_model.py": "296f10d86a98976d254c2e0171f4aa9c7002e9602c393732243298a24d65b8c1",
     "components/alpha/chiyo/contact/contact_candidate_sources.py": "d308de2370ab708c395ecc884484ad51c66d8a3f923a5bf8142330afa15ab7da",
@@ -12297,7 +12297,7 @@
     "website/style.css": "f9ce9a31bae04c9d602eae6fa575d573b9e26e1ccef1ed6d369695a17aa536fb",
     "website/USER_GUIDE.zh-CN.md": "de11eeef2e8d4c861cd5f389c8fbdc5f0c900839bbd64f888d858ed6b2053f5b"
   },
-  "tree_sha256": "6a8eb7db081ff08292a6a2290a3de027ebc8dedf96a2f05d9b2d94e8192351c7",
+  "tree_sha256": "48202c694940644f31b3a3801982b1b870aeb00cd9d8b686ba65d8355f9a9e5f",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",
