@@ -472,7 +472,7 @@ const DOCS_CONTENT = {
       },
       {
         "id": "status-matrix-section-3",
-        "text": "建议的维护优先级"
+        "text": "第一版质量核查"
       }
     ],
     "content": "<h2 id=\"status-matrix-section-0\">当前可以使用</h2><p>Hermes 命令行和 Telegram 个人入口；千代长期记忆查看、纠正与停止召回；生活事件及状态连续性；只读世界身体观察；正式授权的 Workspace 资源保存；显式触发的 Shadow 判断。独立体验号由管理员完整装配，普通自部署仍需要按模块章节配置额外服务。</p><h2 id=\"status-matrix-section-1\">当前需要管理员装配</h2><p>World/Body 的同账号 socket、Life Supply 的 operator/service 权限与有限授权，以及跨服务运行目录、启动顺序和持久化。通用安装脚本安装依赖，不会自动替用户创建所有权限和服务；全模块自助安装向导还未交付。</p><h2 id=\"status-matrix-section-2\">当前没有交付</h2><p>自主执行生活活动、主动 Contact、N8 正式撤销接口、Open Inquiry 正式准入、网页聊天、原生 Windows 安装器、官方完整容器镜像和 macOS 全流程验收。认知调用数为 0 可以只是尚未提交考虑请求，Shadow 判断也不会驱动真实动作。</p><h2 id=\"status-matrix-section-3\">第一版质量核查</h2><p>第一版重点核查已经交付的安装、命令、记忆与状态行为。2026-10-04 已确认的上下文、命令提示与 Supply 连接问题，详见“常见故障与持续运行”和模块章节；普通账号公开标签与 ZIP 安装、选定测试结果，详见“文档站、验收与公开发布”。</p><p>本次网站修订更新使用说明和已知问题，未修改运行时代码；有意延期的功能不作为第一版缺陷。</p>"
