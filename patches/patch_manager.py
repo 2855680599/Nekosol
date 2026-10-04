@@ -1,36 +1,50 @@
-"""Reproduce the pinned Hermes delta with exact pre/post-image guards."""
-import argparse,hashlib,json,shutil,subprocess
+"""Reproduce pinned Hermes patches using isolated staging and no-follow targets."""
+import argparse,hashlib,json,subprocess,tempfile
+from contextlib import ExitStack
 from pathlib import Path
+from secure_target import Target
 HERE=Path(__file__).resolve().parent
 
-def sha(path):return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+def digest(value):return hashlib.sha256(value).hexdigest() if value is not None else None
+
+def manage(action,root,*,allow_shipped_rollback=False):
+ root=Path(root).absolute()
+ if action=='rollback' and root.resolve()==(HERE.parent/'vendor/hermes').resolve() and not allow_shipped_rollback:
+  raise ValueError('Bundled Hermes needs these hooks. Use a separate upstream checkout; --allow-shipped-rollback is for deliberate development only.')
+ baseline=(HERE/'baseline.json').read_bytes()
+ if hashlib.sha256(baseline).hexdigest()!=(HERE/'baseline.sha256').read_text().split()[0]:raise ValueError('baseline checksum mismatch')
+ data=json.loads(baseline);tracked=data['tracked_files'];new=data['new_modules'];records=tracked+new
+ with ExitStack() as stack:
+  target=Target(root,stack)
+  import fcntl
+  fcntl.flock(target.root,fcntl.LOCK_EX)
+  snapshot={x['path']:target.read(x['path']) for x in records}
+  clean=all(digest(snapshot[x['path']])==x['clean_sha256'] for x in tracked) and all(snapshot[x['path']] is None for x in new)
+  patched=all(digest(snapshot[x['path']])==x['patched_sha256'] for x in records)
+  if action=='check':print('CLEAN' if clean else 'PATCHED' if patched else 'DRIFT');return 0 if clean or patched else 1
+  if (action=='apply' and patched) or (action=='rollback' and clean):print('ALREADY_PATCHED' if patched else 'ALREADY_CLEAN');return 0
+  if not (clean if action=='apply' else patched):raise ValueError('Target differs from exact recorded preimages')
+  with tempfile.TemporaryDirectory(prefix='nyairo-patch-') as temporary:
+   stage=Path(temporary)
+   for name,value in snapshot.items():
+    if value is not None:
+     path=stage/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(value)
+   command=['git','apply']+(['--reverse'] if action=='rollback' else [])
+   subprocess.run([*command,'--check',str(HERE/'01-tracked.patch')],cwd=stage,check=True)
+   subprocess.run([*command,str(HERE/'01-tracked.patch')],cwd=stage,check=True)
+   values={}
+   for record in records:
+    name=record['path']
+    value=((HERE/'new-modules'/name).read_bytes() if action=='apply' else None) if record in new else (stage/name).read_bytes()
+    expected=record['patched_sha256'] if action=='apply' else record.get('clean_sha256')
+    if digest(value)!=expected:raise ValueError('Patch source differs from expected postimage')
+    values[name]=value
+   if any(target.read(name)!=before for name,before in snapshot.items()):raise ValueError('Concurrent target modification')
+   for name,value in values.items():target.publish(name,value)
+   if any(target.read(name)!=value for name,value in values.items()):raise ValueError('Postimage verification failed')
+  print('APPLIED' if action=='apply' else 'ROLLED_BACK');return 0
 
 def main():
- p=argparse.ArgumentParser();p.add_argument('action',choices=['check','apply','rollback']);p.add_argument('target',nargs='?',default=str(HERE.parent/'vendor/hermes'));a=p.parse_args();root=Path(a.target).resolve()
- data=json.loads((HERE/'baseline.json').read_text(encoding='utf8'));tracked=data['tracked_files'];new=data['new_modules']
- for x in tracked+new:
-  path=root/x['path'];assert root in path.resolve().parents,'path escape'
-  assert not any(q.is_symlink() for q in (path,*path.parents) if q!=root.parent),'symlink refused'
- clean=all(sha(root/x['path'])==x['clean_sha256'] for x in tracked) and all(not (root/x['path']).exists() for x in new)
- patched=all(sha(root/x['path'])==x['patched_sha256'] for x in tracked+new)
- if a.action=='check':
-  print('CLEAN' if clean else 'PATCHED' if patched else 'DRIFT');raise SystemExit(0 if clean or patched else 1)
- if a.action=='apply':
-  if patched:print('ALREADY_PATCHED');return
-  if not clean:raise ValueError('Target differs from the exact upstream preimages')
-  for x in new:assert sha(HERE/'new-modules'/x['path'])==x['patched_sha256'],'new module source drift'
-  subprocess.run(['git','apply','--check',str(HERE/'01-tracked.patch')],cwd=root,check=True)
-  subprocess.run(['git','apply',str(HERE/'01-tracked.patch')],cwd=root,check=True)
-  for x in new:
-   path=root/x['path'];path.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(HERE/'new-modules'/x['path'],path)
-  assert all(sha(root/x['path'])==x['patched_sha256'] for x in tracked+new)
-  print('APPLIED')
- else:
-  if clean:print('ALREADY_CLEAN');return
-  if not patched:raise ValueError('Target differs from the exact CHIYO postimages')
-  subprocess.run(['git','apply','--reverse','--check',str(HERE/'01-tracked.patch')],cwd=root,check=True)
-  subprocess.run(['git','apply','--reverse',str(HERE/'01-tracked.patch')],cwd=root,check=True)
-  for x in new:(root/x['path']).unlink()
-  assert all(sha(root/x['path'])==x['clean_sha256'] for x in tracked)
-  print('ROLLED_BACK')
-if __name__=='__main__':main()
+ p=argparse.ArgumentParser();p.add_argument('action',choices=['check','apply','rollback']);p.add_argument('target',nargs='?',default=str(HERE.parent/'vendor/hermes'));p.add_argument('--allow-shipped-rollback',action='store_true');a=p.parse_args()
+ return manage(a.action,a.target,allow_shipped_rollback=a.allow_shipped_rollback)
+if __name__=='__main__':raise SystemExit(main())

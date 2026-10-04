@@ -600,7 +600,7 @@ class TelegramAdapter:
                 try:
                     self.process_update(update)
                 except Exception as exc:
-                    LOGGER.exception(
+                    LOGGER.error(
                         "update.failed update_id=%s error_class=%s",
                         update_id,
                         type(exc).__name__,

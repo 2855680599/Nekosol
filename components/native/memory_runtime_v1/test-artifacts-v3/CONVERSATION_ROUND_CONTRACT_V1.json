@@ -1,5 +1,0 @@
-{
-  "round_is": "user -> assistant -> atomic tool chains -> assistant final",
-  "current_user": "always exact",
-  "tool_chain": "call/result pairs; partial chains rejected"
-}

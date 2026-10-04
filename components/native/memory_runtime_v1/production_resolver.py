@@ -188,7 +188,9 @@ class ProductionNativeMemoryResolver:
         sealed_dir: pathlib.Path = SEALED_DIR,
         max_memories: int = 8,
         recency_seconds: int | None = None,
+        environment=None,
     ) -> None:
+        self.environment = os.environ if environment is None else dict(environment)
         self.sealed_dir = pathlib.Path(sealed_dir)
         self.m3_config_path = m3_config_path
         self.telegram_env_path = telegram_env_path
@@ -198,7 +200,7 @@ class ProductionNativeMemoryResolver:
         _wiring: dict[str, Any] = {}
         try:
             _wiring = json.loads(pathlib.Path(
-                os.environ.get(CONFIG_ENV) or DEFAULT_WIRING).read_text(encoding="utf-8"))
+                self.environment.get(CONFIG_ENV) or DEFAULT_WIRING).read_text(encoding="utf-8"))
         except Exception:
             _wiring = {}
         self.recency_seconds = int(
@@ -369,7 +371,7 @@ class ProductionNativeMemoryResolver:
             return ()
         # test-only fault injection (default OFF): lets the canary exercise the hook's
         # NATIVE_ERROR_BYPASS / ordinary-request-survives path with a real failure
-        _fault = os.environ.get(FAULT_ENV, "").strip().lower()
+        _fault = self.environment.get(FAULT_ENV, "").strip().lower()
         if _fault in ("resolver_raise", "raise"):
             self.stats.fault_injections += 1
             raise RuntimeError("fault injection: resolver_raise")

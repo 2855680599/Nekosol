@@ -1,9 +1,0 @@
-{
-  "same_session": "isolated turn namespaces",
-  "different_sessions": "isolated",
-  "different_users": "isolated",
-  "cross_user_leak": 0,
-  "cross_session_leak": 0,
-  "wrong_turn_reuse": 0,
-  "pass": true
-}

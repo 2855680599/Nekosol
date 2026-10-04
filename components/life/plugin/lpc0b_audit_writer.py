@@ -413,10 +413,12 @@ class AuditWriter:
     def _atomic_write(path: Path, doc: Mapping[str, Any]) -> None:
         """Order section 三C: independent temporary file plus a safe publish boundary."""
         try:
-            path.parent.mkdir(parents=True, exist_ok=True)
+            path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+            os.chmod(path.parent, 0o700)
             tmp = path.with_name(f".{path.name}.tmp.{uuid.uuid4().hex}")
-            tmp.write_text(json.dumps(doc, indent=2, ensure_ascii=False) + "\n",
-                           encoding="utf-8")
+            fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as handle:
+                handle.write(json.dumps(doc, indent=2, ensure_ascii=False) + "\n")
             os.replace(tmp, path)
         except OSError:
             # Health/metrics publication is itself optional observability.

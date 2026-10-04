@@ -98,13 +98,13 @@ def conversation_id_for(namespace: str, chat_id: str) -> str:
         (namespace + ":" + chat_id).encode("utf-8")).hexdigest()[:24]
 
 
-def load_binding() -> dict[str, str]:
+def load_binding(*, telegram_env=None, participants_path=None) -> dict[str, str]:
     """Namespace + participant come from the live native config, not from us."""
-    env = read_env(NATIVE_TELEGRAM_ENV)
+    env = read_env(Path(telegram_env) if telegram_env is not None else NATIVE_TELEGRAM_ENV)
     participants: list[dict] = []
     try:
         participants = json.loads(
-            NATIVE_PARTICIPANTS.read_text(encoding="utf-8")).get("participants", [])
+            (Path(participants_path) if participants_path is not None else NATIVE_PARTICIPANTS).read_text(encoding="utf-8")).get("participants", [])
     except Exception:
         participants = []
     match = next(
@@ -160,7 +160,7 @@ def child_append() -> int:
                             "ref": raw["source_refs"][0]["id"]})
         except Exception as exc:                      # conflict / lock / schema
             results.append({"status": "error", "error_class": type(exc).__name__,
-                            "detail": str(exc)[:200],
+                            "detail": "append rejected",
                             "ref": raw["source_refs"][0]["id"]})
     print(json.dumps({"results": results}, ensure_ascii=False))
     return 0
@@ -257,15 +257,15 @@ def already_present(m0_db: Path, events: list[dict]) -> set[str]:
         connection.close()
 
 
-def append_via_child(m0_db: Path, events: list[dict]) -> list[dict]:
+def append_via_child(m0_db: Path, events: list[dict], *, writer_user=M0_WRITER_USER) -> list[dict]:
     """Append events to M0 through a child process that runs as the store's owner."""
     if not events:
         return []
     payload = json.dumps({"m0_db": str(m0_db), "events": events}, ensure_ascii=False)
     identity = {}
-    if M0_WRITER_USER is not None:
+    if writer_user is not None:
         import pwd
-        target = int(M0_WRITER_USER) if isinstance(M0_WRITER_USER, int) or str(M0_WRITER_USER).isdigit() else pwd.getpwnam(str(M0_WRITER_USER)).pw_uid
+        target = int(writer_user) if isinstance(writer_user, int) or str(writer_user).isdigit() else pwd.getpwnam(str(writer_user)).pw_uid
         if target != os.getuid():
             if os.geteuid() != 0:
                 raise PermissionError("only root can hand off to a different M0 writer")
@@ -276,13 +276,13 @@ def append_via_child(m0_db: Path, events: list[dict]) -> list[dict]:
         **identity,
     )
     if proc.returncode != 0:
-        raise RuntimeError("m0 child append failed rc=%s %s"
-                           % (proc.returncode, proc.stderr[-200:]))
+        raise RuntimeError("m0 child append failed rc=%s" % proc.returncode)
     return json.loads(proc.stdout)["results"]
 
 
 def write_user_event(conversation_id: str, user_text: str, source_ref: str,
-                     turn_id: str, occurred_at: str, source_kind: str = "native_telegram_input", source_context: str | None = None) -> dict:
+                     turn_id: str, occurred_at: str, source_kind: str = "native_telegram_input", source_context: str | None = None,
+                     m0_db=None, writer_user=M0_WRITER_USER) -> dict:
     """Record the user's inbound turn in M0 *at receipt*.
 
     The resolver anchors recall on the newest persisted user turn, so the inbound
@@ -307,7 +307,7 @@ def write_user_event(conversation_id: str, user_text: str, source_ref: str,
         ],
     }
     if source_context:event["source_refs"].append({"kind":"hermes_personal_scope","id":source_context})
-    results = append_via_child(load_m0_path(), [event])
+    results = append_via_child(load_m0_path() if m0_db is None else Path(m0_db), [event], writer_user=writer_user)
     return results[0] if results else {}
 
 
@@ -337,16 +337,16 @@ def run_cycle(m0_db: Path, binding: dict) -> dict:
     duplicates = sum(1 for r in results if r["status"] == "duplicate")
     errors = [r for r in results if r["status"] == "error"]
     for err in errors:
-        LOGGER.error("m0.append.error ref=%s class=%s detail=%s",
-                     err.get("ref"), err.get("error_class"), err.get("detail"))
+        LOGGER.error("m0.append.error ref_hash=%s class=%s",
+                     hashlib.sha256(str(err.get("ref")).encode()).hexdigest()[:24], err.get("error_class"))
     return {"turns": len(turns), "appended": inserted, "duplicate_after_check": duplicates,
             "skipped_present": skipped, "errors": len(errors),
             "m0_db": str(m0_db), "conversation_id": binding["conversation_id"]}
 
 
 def write_assistant_event(*, conversation_id: str, content: str, source_ref: str,
-                          turn_id: str, occurred_at: str) -> dict:
-    binding = load_binding()
+                          turn_id: str, occurred_at: str, binding=None, m0_db=None, writer_user=M0_WRITER_USER) -> dict:
+    binding = load_binding() if binding is None else binding
     if conversation_id != binding['conversation_id'] or not source_ref.startswith('telegram:' + str(binding['chat_id']) + ':'):
         raise ValueError('confirmed output binding mismatch')
     event = {'occurred_at': occurred_at, 'created_at': occurred_at,
@@ -355,8 +355,33 @@ def write_assistant_event(*, conversation_id: str, content: str, source_ref: str
         'conversation_id': conversation_id, 'turn_id': turn_id,
         'source_refs': [{'kind': 'native_telegram_output', 'id': source_ref},
                         {'kind': 'native_turn', 'id': turn_id}]}
-    results = append_via_child(load_m0_path(), [event])
+    results = append_via_child(load_m0_path() if m0_db is None else Path(m0_db), [event], writer_user=writer_user)
     return results[0] if results else {'status': 'failed'}
+
+
+class ConfiguredBridge:
+    """Instance-owned paths and writer identity; no process environment mutation."""
+    def __init__(self, environment):
+        self.environment = dict(environment)
+
+    def load_binding(self):
+        return load_binding(telegram_env=self.environment.get('CHIYO_IDENTITY_ENV'),
+                            participants_path=self.environment.get('CHIYO_PARTICIPANTS_FILE'))
+
+    def load_m0_path(self):
+        override = self.environment.get('CHIYO_ORIGINAL_M0_DB')
+        if override:
+            return Path(override)
+        config = Path(self.environment.get('CHIYO_M3_CONFIG', str(NATIVE_M3_CONFIG)))
+        return Path(json.loads(config.read_text(encoding='utf8'))['m0_db'])
+
+    def write_user_event(self, **kwargs):
+        return write_user_event(**kwargs, m0_db=self.load_m0_path(),
+                                writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
+
+    def write_assistant_event(self, **kwargs):
+        return write_assistant_event(**kwargs, binding=self.load_binding(), m0_db=self.load_m0_path(),
+                                     writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
 
 
 def main() -> int:

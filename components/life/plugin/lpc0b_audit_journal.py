@@ -36,6 +36,22 @@ Nothing here ever deletes a record that is still inside the retention window, an
 here silently skips an unreadable record.
 """
 from __future__ import annotations
+from contextlib import contextmanager
+
+
+@contextmanager
+def _private_append(path):
+    flags = os.O_WRONLY | os.O_APPEND | os.O_CREAT | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(path, flags, 0o600)
+    try:
+        os.fchmod(fd, 0o600)
+        handle = os.fdopen(fd, "ab")
+    except BaseException:
+        os.close(fd)
+        raise
+    with handle:
+        yield handle
+
 
 import hashlib
 import json
@@ -188,7 +204,8 @@ class SegmentJournal:
             "front_pruned": False,
         }
         try:
-            self.root.mkdir(parents=True, exist_ok=True)
+            self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+            os.chmod(self.root, 0o700)
         except OSError as exc:
             self._unavailable(f"ROOT_NOT_CREATABLE:{exc.__class__.__name__}")
             report.update(state=self.state, reasons=list(self.reasons))
@@ -338,7 +355,7 @@ class SegmentJournal:
 
     def _add_terminating_newline(self, path: Path, raw: bytes) -> None:
         try:
-            with path.open("ab") as handle:
+            with _private_append(path) as handle:
                 handle.write(b"\n")
                 handle.flush()
         except OSError as exc:
@@ -458,7 +475,7 @@ class SegmentJournal:
         if path is None:
             raise JournalUnavailable("no open segment")
         try:
-            with path.open("ab") as handle:
+            with _private_append(path) as handle:
                 handle.write(data)
                 handle.flush()
         except OSError as exc:
@@ -480,8 +497,9 @@ class SegmentJournal:
 
     def _create_segment(self, index: int) -> None:
         path = self.segment_path(index)
-        self.root.mkdir(parents=True, exist_ok=True)
-        with path.open("ab") as handle:
+        self.root.mkdir(parents=True, exist_ok=True, mode=0o700)
+        os.chmod(self.root, 0o700)
+        with _private_append(path) as handle:
             handle.flush()
         self._segment_index = index
         self._segment_path = path
@@ -499,7 +517,7 @@ class SegmentJournal:
         )
         data = (header.to_line() + "\n").encode("utf-8")
         try:
-            with path.open("ab") as handle:
+            with _private_append(path) as handle:
                 handle.write(data)
                 handle.flush()
                 os.fsync(handle.fileno())
@@ -688,7 +706,7 @@ class SegmentJournal:
         if path is None:
             return
         try:
-            with path.open("ab") as handle:
+            with _private_append(path) as handle:
                 handle.flush()
                 os.fsync(handle.fileno())
                 self.fsync_count += 1

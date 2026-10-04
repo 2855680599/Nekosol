@@ -1,8 +1,0 @@
-{
-  "runs": 24,
-  "cross_user_leak": 0,
-  "cross_session_leak": 0,
-  "wrong_turn_reuse": 0,
-  "wrong_source_lineage": 0,
-  "pass": true
-}

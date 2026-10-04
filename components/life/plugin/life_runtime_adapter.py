@@ -40,8 +40,10 @@ from typing import Any, Mapping, Optional
 
 logger = logging.getLogger("chiyo_life_runtime")
 
-INSTALL_ROOT = Path(os.environ.get("CHIYO_LIFE_INSTALL_ROOT") or "./data/life")
-RELEASE_SCRIPTS = Path(os.environ.get('CHIYO_LIFE_RELEASE_SCRIPTS') or INSTALL_ROOT / "current" / "scripts")
+_ENVIRONMENT = globals().get("_ENVIRONMENT", os.environ)
+
+INSTALL_ROOT = Path(_ENVIRONMENT.get("CHIYO_LIFE_INSTALL_ROOT") or "./data/life")
+RELEASE_SCRIPTS = Path(_ENVIRONMENT.get('CHIYO_LIFE_RELEASE_SCRIPTS') or INSTALL_ROOT / "current" / "scripts")
 STATE_ROOT = INSTALL_ROOT / "state"
 LOG_DIR = INSTALL_ROOT / "logs"
 SHADOW_DIR = LOG_DIR / "shadow"
@@ -113,7 +115,7 @@ def integration_mode() -> str:
                 return raw
     except OSError:
         pass
-    raw = str(os.environ.get(MODE_ENV) or MODE_OFF).strip().lower()
+    raw = str(_ENVIRONMENT.get(MODE_ENV) or MODE_OFF).strip().lower()
     return raw if raw in {MODE_OFF, MODE_SHADOW, MODE_LIVE} else MODE_OFF
 
 
@@ -157,7 +159,7 @@ def start_audit() -> bool:
         return False
     try:
         bridge.configure(install_root=INSTALL_ROOT,
-                         audit_root=os.environ.get("CHIYO_LPC0B_AUDIT_ROOT") or None)
+                         audit_root=_ENVIRONMENT.get("CHIYO_LPC0B_AUDIT_ROOT") or None)
         started = bool(bridge.start())
     except Exception as exc:  # noqa: BLE001
         logger.warning("LPC0B audit start failed; audit disabled: %s", exc)
@@ -255,15 +257,19 @@ def _digest(value: Any) -> str:
 def _ensure_dirs() -> None:
     for d in (LOG_DIR, SHADOW_DIR):
         try:
-            d.mkdir(parents=True, exist_ok=True)
+            d.mkdir(parents=True, exist_ok=True, mode=0o700)
+            os.chmod(d,0o700)
         except OSError:
             pass
 
 
 def _append_jsonl(path: Path, record: Mapping[str, Any]) -> None:
     try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        with path.open("a", encoding="utf-8") as handle:
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        os.chmod(path.parent,0o700)
+        fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_APPEND|getattr(os,"O_NOFOLLOW",0),0o600)
+        os.fchmod(fd,0o600)
+        with os.fdopen(fd,"a",encoding="utf-8") as handle:
             handle.write(json.dumps(record, ensure_ascii=False, separators=(",", ":")) + "\n")
     except OSError as exc:  # observability must never break the turn
         logger.warning("life adapter could not append %s: %s", path.name, exc)
@@ -273,7 +279,9 @@ def _write_metrics() -> None:
     try:
         _ensure_dirs()
         tmp = METRICS_PATH.with_name(f".{METRICS_PATH.name}.tmp.{uuid.uuid4().hex}")
-        tmp.write_text(json.dumps(_METRICS, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        fd=os.open(tmp,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+        with os.fdopen(fd,"w",encoding="utf-8") as handle:
+            handle.write(json.dumps(_METRICS, indent=2, ensure_ascii=False) + "\n")
         os.replace(tmp, METRICS_PATH)
     except OSError as exc:
         logger.warning("life adapter could not write metrics: %s", exc)
@@ -360,6 +368,7 @@ def _runtime() -> Any:
                     factory = None
             _RUNTIME = lrp.build_production_life_runtime(
                 STATE_ROOT, kill_switches=switches, audit_journal_factory=factory,
+                install_root=INSTALL_ROOT, apply_production_cutover=lrp.production_cutover_requested(_ENVIRONMENT),
             )
             _METRICS["runtime_loaded"] = True
             _METRICS["writer_lease_held"] = bool(_RUNTIME.lease.held)
@@ -609,7 +618,7 @@ def _kill_switches() -> Any:
     """
     import life_integration_ag2 as ag2  # noqa: WPS433
 
-    base = ag2.LifeRuntimeKillSwitches.from_env()
+    base = ag2.LifeRuntimeKillSwitches.from_env(_ENVIRONMENT)
     try:
         if CONTROL_PATH.is_file():
             data = json.loads(CONTROL_PATH.read_text(encoding="utf-8"))
@@ -771,7 +780,7 @@ def _cognition_wiring(rt: Any = None) -> Any:
         try:
             import life_cognition_wiring as lcw  # noqa: WPS433 - plugin-local module
 
-            _COGNITION = lcw.wire(_CTX_LLM, install_root=INSTALL_ROOT, runtime=runtime)
+            _COGNITION = lcw.wire(_CTX_LLM, install_root=INSTALL_ROOT, runtime=runtime, environment=_ENVIRONMENT)
             if _COGNITION is None:
                 _COGNITION_ERROR = "WIRING_UNAVAILABLE"
         except Exception as exc:  # noqa: BLE001

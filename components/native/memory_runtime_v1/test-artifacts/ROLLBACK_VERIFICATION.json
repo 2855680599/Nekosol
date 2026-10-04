@@ -1,7 +1,0 @@
-{
-  "shadow_switch_off": true,
-  "legacy_path_healthy": true,
-  "git_revert_required": false,
-  "live_cutover": false,
-  "pass": true
-}

@@ -29,7 +29,7 @@ class NativeLLMFacade:
         config.timeout_seconds = min(60.0, max(0.1, float(timeout)))
         config.sampling = {**self._runtime.model_cfg.sampling, 'temperature': 0.0,
                            'top_p': 1.0, 'max_tokens': max(1, min(int(max_tokens), 1024))}
-        result = DirectProvider(config).complete(messages)
+        result = DirectProvider(config, api_key=self._runtime.model_key).complete(messages)
         usage = result.usage or {}
         return SimpleNamespace(text=result.content, model=config.model, provider='native',
             finish_reason=result.finish_reason, audit={'purpose': purpose},
@@ -66,10 +66,16 @@ class NativeLifeRuntime:
             root = Path(environment['CHIYO_NATIVE_LIFE_ROOT'])
             plugin = root / 'plugin'
             scripts = root / 'scripts'
-            os.environ['CHIYO_LIFE_RELEASE_SCRIPTS'] = str(scripts)
+            environment = {**environment, 'CHIYO_LIFE_RELEASE_SCRIPTS': str(scripts)}
             for p in (plugin, scripts):
                 sys.path.insert(0, str(p))
-            adapter = importlib.import_module('life_runtime_adapter')
+            # Each native instance owns its module state and explicit configuration.
+            import importlib.util
+            spec=importlib.util.spec_from_file_location('life_runtime_adapter_'+str(id(self)), plugin/'life_runtime_adapter.py')
+            adapter=importlib.util.module_from_spec(spec)
+            adapter._ENVIRONMENT=dict(environment)
+            sys.modules[spec.name]=adapter
+            spec.loader.exec_module(adapter)
             self._adapter = adapter
             adapter.register_context(SimpleNamespace(llm=getattr(runtime, "_life_llm_facade", None) or NativeLLMFacade(runtime)))
             if not adapter.start_audit():

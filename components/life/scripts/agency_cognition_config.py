@@ -41,10 +41,11 @@ DEFAULT_COGNITION_CONFIG: dict[str, Any] = {
 }
 
 
-def load_cognition_config(path: Optional[Path | str] = None) -> dict[str, Any]:
+def load_cognition_config(path: Optional[Path | str] = None, *, environment=None) -> dict[str, Any]:
     """Read the cognition config, falling back to safe defaults.  Never raises."""
     cfg: dict[str, Any] = json.loads(json.dumps(DEFAULT_COGNITION_CONFIG))
-    candidate = Path(path) if path else Path(os.environ.get(COGNITION_CONFIG_ENV) or DEFAULT_CONFIG_PATH)
+    env = os.environ if environment is None else environment
+    candidate = Path(path) if path else Path(env.get(COGNITION_CONFIG_ENV) or DEFAULT_CONFIG_PATH)
     try:
         loaded = json.loads(candidate.read_text(encoding="utf-8"))
         if isinstance(loaded, Mapping):

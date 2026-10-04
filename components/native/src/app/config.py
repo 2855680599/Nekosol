@@ -21,6 +21,8 @@ class NativeConfig:
     port: int
     timeout_seconds: float
     sampling: dict[str, Any]
+    auth_token_env: str = "CHIYO_NATIVE_AUTH_TOKEN"
+    allow_remote: bool = False
 
     @classmethod
     def load(cls, path: str | Path) -> "NativeConfig":
@@ -42,6 +44,8 @@ class NativeConfig:
             port=int(data.get("port", 18652)),
             timeout_seconds=float(data.get("timeout_seconds", 120)),
             sampling=dict(data.get("sampling") or {}),
+            auth_token_env=str(data.get("auth_token_env", "CHIYO_NATIVE_AUTH_TOKEN")),
+            allow_remote=data.get("allow_remote") is True,
         )
 
     @property

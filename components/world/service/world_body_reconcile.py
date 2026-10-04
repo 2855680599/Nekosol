@@ -128,7 +128,7 @@ def reconcile_startup(
                     "execution_id": execution_id,
                     "resolver_verdict": view.get("verdict"),
                     "frame_state": frame_state,
-                    "reconciliation_required": frame.get("reconciliation_required"),
+                    "reconciliation_required": True,
                     "action": "none (never auto-retry, never auto-grade)",
                 }
             )

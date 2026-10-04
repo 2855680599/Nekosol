@@ -23,9 +23,9 @@ class ModelResult:
 class DirectProvider:
     """Direct OpenAI-compatible HTTP client; no Hermes imports or calls."""
 
-    def __init__(self, config):
+    def __init__(self, config, *, api_key=None):
         self.config = config
-        self.api_key = os.environ.get(config.api_key_env, "")
+        self.api_key = os.environ.get(config.api_key_env, "") if api_key is None else api_key
         if not self.api_key:
             raise ProviderError("provider credential is missing")
 
@@ -65,17 +65,15 @@ class DirectProvider:
             ) as response:
                 body = response.read()
         except urllib.error.HTTPError as exc:
-            detail = exc.read(1000).decode("utf-8", errors="replace")
-            raise ProviderError(
-                "provider HTTP " + str(exc.code) + ": " + detail
-            ) from exc
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
-            raise ProviderError("provider transport failure: " + str(exc)) from exc
+            exc.close()
+            raise ProviderError("provider HTTP " + str(exc.code)) from None
+        except (urllib.error.URLError, TimeoutError, OSError):
+            raise ProviderError("provider transport failure") from None
 
         try:
             decoded = json.loads(body.decode("utf-8"))
-        except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-            raise ProviderError("provider returned invalid JSON") from exc
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            raise ProviderError("provider returned invalid JSON") from None
         # Some OpenAI-compatible gateways (e.g. api.cline.bot) wrap the standard
         # chat-completion body one level down:
         #   {"data": {"choices": [...], "usage": {...}}, "success": true}
@@ -88,8 +86,8 @@ class DirectProvider:
             choice = decoded["choices"][0]
             message = choice["message"]
             content = message["content"]
-        except (KeyError, IndexError, TypeError) as exc:
-            raise ProviderError("provider response has no chat content") from exc
+        except (KeyError, IndexError, TypeError):
+            raise ProviderError("provider response has no chat content") from None
         if not isinstance(content, str):
             raise ProviderError("provider content is not text")
         return ModelResult(

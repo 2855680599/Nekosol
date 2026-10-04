@@ -1,7 +1,7 @@
 {
   "schema": "chiyo/test-evidence@1",
   "date": "2026-10-04",
-  "status": "AUTOMATED_QUALIFIED_EXPERIENCE_CANDIDATE",
+  "status": "HISTORICAL_EVIDENCE_CURRENT_REVISION_REQUIRES_RETEST",
   "upstream_commit": "67807e64a66044db9e0a641d98c68a35c1760589",
   "hermes_full": {
     "python": "3.13.5",
@@ -28,7 +28,8 @@
     "log_sha256": "bf56d2d1d31cfb62637040c030647a9e584341774ed01bcecee21e465cff360d",
     "tested_vendor_tree_sha256": "413115875004140a47cc8fd8e0d1ce9323911d256fba90247dfc105c4842b143",
     "all_shipped_vendor_files_match_test_input": true,
-    "qualification_checkout": "Isolated real Git metadata for upstream update fixtures; never shipped"
+    "qualification_checkout": "Isolated real Git metadata for upstream update fixtures; never shipped",
+    "scope": "Historical R17 report only; not proof of the current main revision."
   },
   "focused_repair": {
     "files": 19,
@@ -271,31 +272,9 @@
   ],
   "normal_install_final_archive_receipt": "Recorded separately with final archive SHA256, avoiding a circular archive hash inside its contents",
   "parent_R16_full": {
-    "python": "3.13.5",
-    "platform": "Linux (WSL Ubuntu)",
-    "normal_uid": 61050,
-    "runner": [
-      "bash",
-      "scripts/run_tests.sh",
-      "-j",
-      "8",
-      "--file-timeout",
-      "900",
-      "--file-retries",
-      "0"
-    ],
-    "auto_retries": 0,
-    "counts": {
-      "files": 3718,
-      "passed": 45071,
-      "failed": 0,
-      "skipped": 440,
-      "seconds": 1414.6
-    },
-    "log_sha256": "bf56d2d1d31cfb62637040c030647a9e584341774ed01bcecee21e465cff360d",
-    "tested_vendor_tree_sha256": "413115875004140a47cc8fd8e0d1ce9323911d256fba90247dfc105c4842b143",
-    "all_shipped_vendor_files_match_test_input": true,
-    "qualification_checkout": "Isolated real Git metadata for upstream update fixtures; never shipped"
+    "status": "UNVERIFIED_DUPLICATE_RECORD",
+    "independent_run_verified": false,
+    "note": "The previous R16 entry duplicated hermes_full including its log hash. Removed duplicate counts; the original R16 log is not present in this repository and its independent result cannot be verified."
   },
   "R17_command_repair": {
     "result": "PASS",

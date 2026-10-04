@@ -63,7 +63,10 @@ from memory_control import MemoryControlLedger, MemoryProjection
 LOGGER = logging.getLogger("chiyo.original_runner")
 
 class OriginalNativeRuntime:
-    def __init__(self, data_dir: Path, trace_dir: Path, model_key: str):
+    def __init__(self, data_dir: Path, trace_dir: Path, model_key: str, *, environment=None):
+        env = dict(os.environ if environment is None else environment)
+        self.environment = env
+        self.model_key = model_key
         self.data_dir = data_dir
         self.trace_dir = trace_dir
         self.store = ConversationStore(str(data_dir))
@@ -73,9 +76,9 @@ class OriginalNativeRuntime:
         self.persona_provider = CanonicalPersonaProvider()
         self.history_reader = HermesHistoryReader()
         self.world_body = None
-        if os.environ.get('CHIYO_NATIVE_WORLD_BODY_ENABLED', 'false').lower() == 'true':
+        if env.get('CHIYO_NATIVE_WORLD_BODY_ENABLED', 'false').lower() == 'true':
             from integration.world_body_client import WorldBodyClient
-            self.world_body = WorldBodyClient(timeout=0.3, read_retries=0)
+            self.world_body = WorldBodyClient(timeout=0.3, read_retries=0, environment=env)
         # The canonical M37 M0 store is written through the bridge module, so the
         # runtime and the delivery poller share one derivation of the store path,
         # the owner binding and the conversation id.
@@ -83,49 +86,49 @@ class OriginalNativeRuntime:
         self.m37_binding: dict = {}
         try:
             import m37_m0_bridge as _bridge
-            self.m37_bridge = _bridge
-            self.m37_binding = _bridge.load_binding()
+            self.m37_bridge = _bridge.ConfiguredBridge(env)
+            self.m37_binding = self.m37_bridge.load_binding()
             LOGGER.info("m37.bridge.ready conversation_id=%s",
                         self.m37_binding.get("conversation_id"))
         except (Exception, SystemExit) as exc:
             LOGGER.warning("m37.bridge.unavailable error_class=%s", type(exc).__name__)
 
         self.memory_controls = None
-        control_path = os.environ.get('CHIYO_MEMORY_CONTROL_DB') or str(data_dir / 'memory-controls.sqlite')
+        control_path = env.get('CHIYO_MEMORY_CONTROL_DB') or str(data_dir / 'memory-controls.sqlite')
         if self.m37_bridge is not None and self.m37_binding:
             self.memory_controls = MemoryControlLedger(
                 control_path, self.m37_bridge.load_m0_path(),
                 owner=self.m37_binding['chat_id'], conversation=self.m37_binding['conversation_id'])
         self.memory_control_unavailable = self.memory_controls is None and (
-            bool(os.environ.get('CHIYO_MEMORY_CONTROL_DB')) or Path(control_path).exists())
+            bool(env.get('CHIYO_MEMORY_CONTROL_DB')) or Path(control_path).exists())
         
         # M37 resolver setup
-        os.environ.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_ENABLED', 'false')
-        os.environ.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_MODE', 'OFF')
-        os.environ.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_CONFIG', './config/native/memory-context-wiring.json')
-        os.environ.setdefault('CHIYO_NATIVE_MEMORY_RUNTIME_ROOT', str(INTEG_ROOT))
-        os.environ.setdefault('CHIYO_NATIVE_MEMORY_OWNER_USER_IDS', self.m37_binding.get('chat_id', ''))
+        env.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_ENABLED', 'false')
+        env.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_MODE', 'OFF')
+        env.setdefault('CHIYO_NATIVE_MEMORY_CONTEXT_CONFIG', './config/native/memory-context-wiring.json')
+        env.setdefault('CHIYO_NATIVE_MEMORY_RUNTIME_ROOT', str(INTEG_ROOT))
+        env.setdefault('CHIYO_NATIVE_MEMORY_OWNER_USER_IDS', self.m37_binding.get('chat_id', ''))
         
         self.m37_resolver = None
         try:
             from memory_runtime_v1.production_resolver import ProductionNativeMemoryResolver
-            self.m37_resolver = ProductionNativeMemoryResolver()
+            self.m37_resolver = ProductionNativeMemoryResolver(m3_config_path=env.get("CHIYO_M3_CONFIG"), telegram_env_path=env.get("CHIYO_IDENTITY_ENV"), participants_path=env.get("CHIYO_PARTICIPANTS_FILE"), sealed_dir=INTEG_ROOT/"native_recall", environment=env)
             LOGGER.info("M37 production resolver initialized")
         except Exception as exc:
-            LOGGER.warning("M37 resolver init skipped: %s", exc)
+            LOGGER.warning("M37 resolver init skipped error_class=%s", type(exc).__name__)
 
-        os.environ["CHIYO_ORIG_KEY"] = model_key
+        env["CHIYO_ORIG_KEY"] = model_key
         self.model_cfg = SimpleNamespace(
-            model=os.environ.get("CHIYO_MODEL", "configure-model"),
+            model=env.get("CHIYO_MODEL", "configure-model"),
             provider="gateway",
-            base_url=os.environ.get("CHIYO_MODEL_BASE_URL", "https://api.example.invalid/v1"),
-            endpoint=os.environ.get("CHIYO_MODEL_ENDPOINT", "https://api.example.invalid/v1/chat/completions"),
+            base_url=env.get("CHIYO_MODEL_BASE_URL", "https://api.example.invalid/v1"),
+            endpoint=env.get("CHIYO_MODEL_ENDPOINT", "https://api.example.invalid/v1/chat/completions"),
             api_path="/chat/completions",
             api_key_env="CHIYO_ORIG_KEY",
             timeout_seconds=60,
             sampling={"temperature": 1.0, "top_p": 0.9, "stream": False}
         )
-        self.provider = DirectProvider(self.model_cfg)
+        self.provider = DirectProvider(self.model_cfg,api_key=model_key)
 
     def m37_owner_user_id(self) -> str:
         """The user id the M37 resolver itself is bound to.

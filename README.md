@@ -4,7 +4,7 @@
 
 nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态、世界与身体观察、认知判断和个人文档放在同一个框架中，让它们按明确的配置和边界配合。
 
-项目基于完整 Hermes Agent 0.21.0（固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`）。第一版沿用 Hermes 的命令行、工具、技能和消息网关，新增以下能力：
+项目包含已打补丁的完整 Hermes Agent 0.21.0（固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`）。第一版沿用 Hermes 的命令行、工具、技能和消息网关，新增以下能力：
 
 | 能力 | 第一版能做什么 | 使用条件与范围 |
 | --- | --- | --- |
@@ -20,36 +20,38 @@ nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态�
 
 - [官网与完整教程](https://nyairo.com/)
 - [第一次使用的安装路线](https://nyairo.com/#quickstart)
-- [GitHub Releases：v0.1.0-rc4](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4)
+- [GitHub Releases：v0.1.0-rc5](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc5)
 - [仓库内的中文使用教程](docs/USER_GUIDE.zh-CN.md)
 
 Windows 用户先按教程打开 WSL 2 / Ubuntu；Linux 用户准备好 Git、uv 等工具。第一次安装可选 Git 或 ZIP，两种方法选一种。推荐跟着教程完成工具准备，再在 Ubuntu / Linux 终端运行：
 
 ```bash
 mkdir -p "$HOME/apps"
-git clone --branch v0.1.0-rc4 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
+git clone --branch v0.1.0-rc5 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
 cd "$HOME/apps/chiyo-v0.1"
 bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
-vendor/hermes/.venv/bin/python scripts/setup_profile.py --home "$HOME/.chiyo-v1" --owner local-owner --memory --life
+vendor/hermes/.venv/bin/python scripts/setup_profile.py --home "$HOME/.chiyo-v1" --owner local-owner --memory --life --allow-local-owner
 export HERMES_HOME="$HOME/.chiyo-v1"
 bash scripts/hermes.sh setup
 bash scripts/hermes.sh
 ```
 
+`--allow-local-owner` 表示明确允许这个 Linux 账号通过本地命令行使用个人模块；不写它就不会自动把本地入口当成主人。启用记忆后，模型工具默认受限，避免从文件或终端读回被遗忘的历史；详见 [隐私修复与升级](PRIVACY_REVIEW.md)。
+
 个人设置创建成功时会显示 `Profile ready`。选择模型、填好自己的密钥，收到真实回复后，再输入 `/chiyo_status` 检查模块。模型、程序依赖和附加服务的详细设置见 [安装说明](INSTALL.md)。已有安装目录或个人设置时，请按教程继续使用，不要为重做上述步骤而删除旧记录。
 
 ## 第一版的实际范围
 
-当前公开安装标签和 Release ZIP 是 `v0.1.0-rc4` 体验候选。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
+当前公开安装标签和 Release ZIP 是 `v0.1.0-rc5` 体验候选。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
 
 Linux / Windows WSL 的公开标签和 ZIP 有普通账号安装复核记录。Telegram 有已装配实例的收发记录；Hermes 包含其他平台适配器，不代表每个平台都已用真实账号完成同样的验收。原生 Windows、macOS、官方完整容器方案和全模块一键配置没有完成相同范围的交付。
 
-当前已记录的使用问题，包括关闭全部附加模块后的上下文配置、记忆命令提示前缀，以及 Supply 双身份 socket 连接安排，见 [已知问题](KNOWN_ISSUES.md) 和 [排错教程](https://nyairo.com/#troubleshooting)。
+rc5 已修复旧候选的上下文和记忆命令提示问题。Supply 双身份 socket 连接安排仍需按服务权限单独配置，见 [已知问题](KNOWN_ISSUES.md) 和 [排错教程](https://nyairo.com/#troubleshooting)。
 
 ## 框架、个体与个人数据
 
-nyairo 是公开框架。千代是作者使用该框架的私人数字个体，其人格、关系和私人数据不随框架发行。你可以建立自己的个体，修改个人目录中的 `SOUL.md`。
+新实例从中性模板开始，不预置作者的名字、人格、关系、账号或历史。修改自己数据目录中的 `SOUL.md`，就能定义名字、说话方式与关系；已有的人设文件会保留。
 
 记忆、聊天记录、配置和个人文档放在独立数据目录；按模型和平台设置，所需内容会发送给相应服务。停止召回记忆不等于删除原始聊天、审计或消息平台副本。数据与权限说明见 [隐私教程](https://nyairo.com/#privacy) 和 [安全反馈](SECURITY.md)。
 
@@ -61,4 +63,4 @@ nyairo 是公开框架。千代是作者使用该框架的私人数字个体，�
 
 当前 GitHub Actions 运行的是 Pages 网站构建与部署；功能 CI 模板仍在 `ci/templates/`，尚未启用。网站发布成功与运行时功能测试是两件分别验证的工作。
 
-`vendor/hermes/` 包含完整宿主，`plugins/chiyo/` 是插件，`chiyo_bundle/` 负责个人服务装配，`components/` 包含独立组件，`patches/` 记录宿主改动。更新时使用配套的 nyairo 发行，不直接升级内置 Hermes。开发者请看 [贡献说明](CONTRIBUTING.md)、[许可证与来源](NOTICE.md)。
+`vendor/hermes/` 包含已修改的完整宿主；41 个宿主文件的前后哈希记录在 `patches/baseline.json`。不要对运行中的内置宿主执行 rollback，否则会撤掉插件所需接线。`plugins/chiyo/` 是插件，`chiyo_bundle/` 负责个人服务装配，`components/` 包含独立组件，`patches/` 记录宿主改动。更新时使用配套的 nyairo 发行，不直接升级内置 Hermes。开发者请看 [贡献说明](CONTRIBUTING.md)、[许可证与来源](NOTICE.md)。

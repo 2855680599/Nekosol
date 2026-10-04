@@ -239,7 +239,7 @@ class CognitionWiring:
 # ---------------------------------------------------------------------------------
 
 
-def wire(ctx_llm: Any, *, install_root: Path | str, runtime: Any) -> Optional[CognitionWiring]:
+def wire(ctx_llm: Any, *, install_root: Path | str, runtime: Any, environment=None) -> Optional[CognitionWiring]:
     """Build the one cognition wiring for this process. Idempotent by construction."""
     global _WIRING, _REGISTER_COUNT
     with _LOCK:
@@ -253,7 +253,7 @@ def wire(ctx_llm: Any, *, install_root: Path | str, runtime: Any) -> Optional[Co
         except Exception as exc:  # noqa: BLE001
             logger.warning("LIFE COGNITION: cannot import config (%s); cognition stays OFF", exc)
             return None
-        cfg = acc.load_cognition_config()
+        cfg = acc.load_cognition_config(environment=environment)
         _WIRING = CognitionWiring(install_root=Path(install_root), ctx_llm=ctx_llm,
                                   runtime=runtime, cognition_config=cfg)
         return _WIRING

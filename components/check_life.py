@@ -13,12 +13,12 @@ with tempfile.TemporaryDirectory() as td:
     (install/'cognition-config.json').write_text(json.dumps({'enabled':True,'effect':'shadow','timeout_s':2,'max_output_tokens':512}))
     os.environ['CHIYO_COGNITION_CONFIG']=str(install/'cognition-config.json')
     calls=[]
-    rt=NS(model_cfg=NS(model='fake',api_key_env='KEY',endpoint='http://unused',timeout_seconds=60,
+    rt=NS(model_key='unused-offline',model_cfg=NS(model='fake',api_key_env='KEY',endpoint='http://unused',timeout_seconds=60,
                       sampling={'temperature':1,'top_p':.9}),
         handle_turn=lambda *a,**k:{'turn_id':'t','raw_content':'unchanged'},
         commit_turn=lambda *a:None,record_delivery_success=lambda *a:'inserted')
     class FakeProvider:
-        def __init__(self,cfg):self.cfg=cfg;calls.append(cfg)
+        def __init__(self,cfg,*,api_key=None):self.cfg=cfg;calls.append(cfg);assert api_key=='unused-offline'
         def complete(self,messages):return NS(content='{}',usage={},finish_reason='stop')
     with patch('app.model.DirectProvider',FakeProvider):
         wrapper=NativeLifeRuntime(rt,environment=os.environ)

@@ -1,0 +1,180 @@
+{
+  "schema": "nyairo/privacy-test-evidence@1",
+  "date": "2026-10-04",
+  "version": "0.1.0-rc5",
+  "status": "SOURCE_REVIEWED_TARGETED_TESTS_PASSED_WITH_DECLARED_LIMITS",
+  "base_main_commit": "0ebde70c328f784b000ee78d39145aee3bf9c77c",
+  "audit_base_commit": "7acd545a13248fabbf8a095eb0d5dd73181da0cc",
+  "environment": {
+    "python": "3.13.14",
+    "platform": "isolated Linux candidate",
+    "suite_uid": 0,
+    "cold_install_uid": 994
+  },
+  "owned_runner": {
+    "command": "vendor/hermes/.venv/bin/python -B scripts/test.py",
+    "failed_suites": [],
+    "unittest_suites": {
+      "closeout": 17,
+      "native": 52,
+      "memory": 11,
+      "supply": 122,
+      "world": 251,
+      "host_boundaries": 51
+    },
+    "unittest_passed": 504,
+    "cognition_fault_test_passed": 1,
+    "life_assembly_checks": "PASS: canonical owner, restart dedup, writer lease, sampling isolation",
+    "official_hermes_runner": {
+      "command": "bash scripts/run_tests.sh -j 2 (four context engine test files)",
+      "files": 4,
+      "passed": 29,
+      "failed": 0
+    },
+    "total_counted_tests_passed": 534
+  },
+  "final_changed_tests": {
+    "privacy_security": 9,
+    "filesystem_security": 4,
+    "note": "Included in host boundaries, not added to the 534 total. Final filesystem subset includes rollback alias refusal; privacy subset includes directory symlink scan."
+  },
+  "alpha": {
+    "command": "vendor/hermes/.venv/bin/python -B scripts/test_alpha.py",
+    "scripts": [
+      {
+        "name": "a_clean_install",
+        "exit": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "b_core_demo",
+        "exit": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "c_contact_demo",
+        "exit": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "d_semantics",
+        "exit": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "e_safety",
+        "exit": 0,
+        "status": "PASS"
+      },
+      {
+        "name": "f_regression",
+        "exit": 0,
+        "status": "PARTIAL"
+      }
+    ],
+    "limitation": "N8 permission revocation owner is not implemented. Both profiles report PARTIAL, not an invented pass."
+  },
+  "negative_controls": [
+    {
+      "test": "test_http_rejects_unauthorized_reads_and_writes_before_runtime",
+      "base_exit": 1,
+      "detects_old_behavior": true
+    },
+    {
+      "test": "test_provider_error_never_exposes_upstream_echo_or_transport_details",
+      "base_exit": 1,
+      "detects_old_behavior": true
+    },
+    {
+      "test": "test_evidence_logs_hash_source_identity_but_keeps_deduplication",
+      "base_exit": 1,
+      "detects_old_behavior": true
+    },
+    {
+      "test": "manifest_rejects_unlisted_file",
+      "base_exit": 0,
+      "candidate_exit": 1,
+      "detects_old_behavior": true
+    }
+  ],
+  "whole_source_scan": {
+    "status": "PASS",
+    "scanned_text_files": 12117,
+    "unapproved_matches": 0,
+    "private_state_or_symlinks": 0,
+    "exceptions": "Exact public upstream fixtures and generic tutorial examples, config/public-scan-exceptions.json"
+  },
+  "cold_install_candidate": {
+    "status": "PASS",
+    "method": "unprivileged uid 994, fresh HOME and dependencies, no credentials; CLI version/help, neutral profile, real memory and Life assembly, 0600 files, unchanged environment",
+    "no_real_model_or_telegram_calls": true
+  },
+  "full_hermes_attempt": {
+    "status": "INCOMPLETE_NOT_QUALIFIED",
+    "initial_obstacle": "Missing optional ACP dependency; added locked acp extra for retry",
+    "retry_stopped": "Resource pressure on 1 CPU / approximately 1 GB RAM; full run explicitly terminated. No completed full-suite result is claimed."
+  },
+  "warnings": [
+    "SQLite ResourceWarning observed in legacy memory assembly; not claimed eliminated.",
+    "Cognition fault injections intentionally raise worker-thread exceptions.",
+    "Supply test reports fork in multithreaded process DeprecationWarning."
+  ],
+  "baseline_hash_finding": "Git LF baseline matches eb55a899...; converting it to CRLF yields the reported 8d8d8496... . Manager now validates the digest; source bytes must be preserved.",
+  "historical_r16": "Withdrawn as independent full-suite evidence: duplicated R17 counts, duration and log digest.",
+  "removed_generated_reports": {
+    "count": 97,
+    "archive_sha256": "2e34647b954bbcbbb5c78633396bd71cead517c9938b9c8ee95d35422c9dc0ca",
+    "archive_location": "Retained outside public source; original files also remain in historical rc4."
+  },
+  "github_runtime_ci": "NOT_ENABLED; Pages deployment is a separate pipeline",
+  "not_covered": [
+    "All OS/platforms and optional integrations",
+    "Live model quality, new Telegram delivery and multi-day use",
+    "Provider credential revocation",
+    "Isolation from malicious same-UID administrator or host"
+  ],
+  "final_owned_python_files_sha256": {
+    "chiyo_bundle/hermes_plugin.py": "a8231e2762248f5df7a90259f8cae56549bab4513e9e297872280dd4b84c86d4",
+    "chiyo_bundle/host.py": "2d89b48d1f09459afee918df6199d8b7dfa4297ff8540ccb8578e44d0e342083",
+    "chiyo_bundle/instance.py": "2cf3b6ec08935e57c02c625413109fc9d0dae6b45b8fdef4d9182dc02c024aea",
+    "components/alpha/tests/acceptance/e_safety.py": "70f0dbf2a512586919c2407a94f9c4466d1e2601b205f2ec559fe66ab8dfe0d6",
+    "components/check_life.py": "2d05b9aa4c6678b072dbe5c26f9dd78bf4560da1ab71d857152adf554b990277",
+    "components/life/plugin/life_cognition_wiring.py": "0e86a70640b5a57e6d26292b1b8ac71d165d6832f03c4a2d818d21283aa0fa13",
+    "components/life/plugin/life_runtime_adapter.py": "5661fa6e38c5f00d687e419b82d8986c70bb4c5314e5266e2da7c350ee5a4452",
+    "components/life/plugin/lpc0b_audit_journal.py": "45aa0fd6b5e99bbaea2505097bd96da037773882a8b06ab4a23f0f605180d57e",
+    "components/life/plugin/lpc0b_audit_writer.py": "eb20be3ed5406b045ec91f9c591f659c15566a8e91945cc4503d00c9e0c54810",
+    "components/life/scripts/agency_cognition_config.py": "d4a72ee1301b648c615e49129cc886c189c87c25c1043694392707bbf4491ba9",
+    "components/life/scripts/agency_decision_ag1.py": "9ad2f93961ce19177e0fc47b2513295fada90a0672d5bd698f0de835d62dfa3d",
+    "components/life/scripts/life_runtime_production.py": "235a3422c014106031e7901f8ade16b46a8861206d0b1ce5b1ab5d7f04822d99",
+    "components/native/chiyo_original_runner.py": "595ef6598d6434e930711136a420b048b0dcb64462841fe88a30ea05a09965c3",
+    "components/native/m37_m0_bridge.py": "1af8ddf8f646be16ee9963104ed54422166ddd77c8703c92ea1c04b06605a8b4",
+    "components/native/memory_runtime_v1/production_resolver.py": "3cf13e1318c1c0a304eeec8d580cff1d59dffc6326e9de3d19b02cd8ad2675d3",
+    "components/native/native_life.py": "2e5de3b5903be785e05d247097f85e53007a15fb436ad07bbb60104343d4aef1",
+    "components/native/src/app/config.py": "260d43993368c6f02d2d98d50b1f5f839436061d9be23d2d7693bc8f4eb25277",
+    "components/native/src/app/evidence.py": "2279487cd372703b727af655c6a89bb4bbc9fce8a1d0ebd7d1377b616f5f40f4",
+    "components/native/src/app/model.py": "4123bcf60e7500bcf7ecc33491d6971a9ff6e88eaf4900e704fa545e092078eb",
+    "components/native/src/app/server.py": "98c129f567b3aad3fc67848717efb8a0fd074ad0372867904147a254bce0c77d",
+    "components/native/src/telegram_adapter.py": "a48b403de95bb3c6451f68ec3771bd44b4f0c6b5085d2748fe718a0375ca5af5",
+    "components/world/service/test_object_action_m15.py": "e951b62e3d0295cb219c6ebb55e5222e2dde23a3c742ace39bd6b9232fc3c6a8",
+    "components/world/service/test_world_action_authorization.py": "9dbf0a87f7007011e7da7203788463073817a693dd1fc03d71c4c64182cfa8b6",
+    "components/world/service/world_body_reconcile.py": "86a2b08fffb4000dadba325a5a9ca5cb2f77f9f7ca3c0bcb129e62783cd3b751",
+    "components/world/service/world_body_service.py": "b675d6db35713bbc53a0631039ae2a97142b51996d4c55035f84a47ef6d36c85",
+    "patches/patch_manager.py": "a0167db589700d68e9342d08d7b4e166aa31d58ec99281f978b78033473ff1c3",
+    "patches/secure_target.py": "e205ec9e4ef87770b3de864cefcf4597c2206beead2ab40c90d31164bf21e573",
+    "scripts/scan_public_source.py": "fb95bca04be4dd48f5467a2159e278164b57b90d6cc54a67aed92409444e3a76",
+    "scripts/setup_profile.py": "84501e36af8f5d92e207c12646aec2e92b0ff78bdf1451bac58a1569a7edb93d",
+    "scripts/verify_manifest.py": "f7694aca44e1e0b4b1b0240aa6370461bcfd84d93da96b21bc8d4538fd0ef236",
+    "tests/test_context_safety.py": "1c2e9e6287792838ec76a54aee63e7811514d3757ceb2004232ef937ed8ce38b",
+    "tests/test_filesystem_security.py": "0d3173737d3fb743d4affa642bc98dc35115944bea5c780037ef1a73070bb2f3",
+    "tests/test_privacy_security.py": "015d8d9573f30167bf75fc03b8229c37120271341ec483000d88e068905155bb"
+  },
+  "private_log_receipts_sha256": {
+    "nyairo-privacy-owned-final.log": "bbfe12f500fb4b73723f004c9fe971ada31fb24773f6d97ea16e9a0b10124f4d",
+    "nyairo-alpha-sealed-final.log": "b1b9e056682435c2a839ee229adcc276746b954ebc3bedcbbeb5763810fff768",
+    "nyairo-negative-controls.json": "cba6b503877c82592536f35bb063afa6171face6b4b8a3ba6841cc74b8d8353c",
+    "nyairo-ordinary-candidate.log": "aea224293bdca18dac613df25d64254111bf0b6ebe1b9c7b4f9a2b1049b98805",
+    "nyairo-security-final.log": "2239935b5ff8f6c53e3c7b8a38c179bf66e874919e283a7534d92594305d67fe",
+    "nyairo-filesystem-final.log": "c4669646d655c3edf7867c773334426a565370bd5a48546080dc470575dfbd87"
+  },
+  "public_release_cold_install_receipt": "Attached to rc5 release after real public tag and ZIP installation; not self-referenced in this source seal."
+}

@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 import fcntl
+import hashlib
 import json
 import logging
 import os
@@ -553,34 +554,34 @@ class EvidenceWriter:
                 self.metrics.increment(key)
                 self.logger.info(
                     "evidence.append.ok source_origin=%s event_id=%s conversation_id=%s "
-                    "turn_id=%s source_ref=%s",
+                    "turn_id=%s source_ref_hash=%s",
                     event.source_origin,
                     result.event_id,
                     event.conversation_id,
                     event.turn_id,
-                    event.primary_source_ref_id,
+                    hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
                 )
             else:
                 self.metrics.increment("evidence_duplicate_total")
                 self.logger.info(
                     "evidence.append.duplicate source_origin=%s event_id=%s "
-                    "conversation_id=%s turn_id=%s source_ref=%s",
+                    "conversation_id=%s turn_id=%s source_ref_hash=%s",
                     event.source_origin,
                     result.event_id,
                     event.conversation_id,
                     event.turn_id,
-                    event.primary_source_ref_id,
+                    hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
                 )
             return result.status
         except ValueError:
             self.metrics.increment("evidence_failed_total")
             self.logger.error(
                 "evidence.append.failed error_class=ValueError source_origin=%s "
-                "conversation_id=%s turn_id=%s source_ref=%s",
+                "conversation_id=%s turn_id=%s source_ref_hash=%s",
                 event.source_origin,
                 event.conversation_id,
                 event.turn_id,
-                event.primary_source_ref_id,
+                hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
             )
             return "failed"
         except Exception as exc:
@@ -590,12 +591,12 @@ class EvidenceWriter:
                 self.metrics.set_value("evidence_retry_pending", self.spool.pending_count())
                 self.logger.error(
                     "evidence.retry.queued error_class=%s source_origin=%s "
-                    "conversation_id=%s turn_id=%s source_ref=%s",
+                    "conversation_id=%s turn_id=%s source_ref_hash=%s",
                     type(exc).__name__,
                     event.source_origin,
                     event.conversation_id,
                     event.turn_id,
-                    event.primary_source_ref_id,
+                    hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
                 )
                 return "queued"
             except Exception as spool_exc:
@@ -624,24 +625,24 @@ class EvidenceWriter:
                     self.metrics.increment("evidence_duplicate_total")
                 self.logger.info(
                     "evidence.retry.ok source_origin=%s event_id=%s status=%s "
-                    "conversation_id=%s turn_id=%s source_ref=%s",
+                    "conversation_id=%s turn_id=%s source_ref_hash=%s",
                     event.source_origin,
                     result.event_id,
                     result.status,
                     event.conversation_id,
                     event.turn_id,
-                    event.primary_source_ref_id,
+                    hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
                 )
             except Exception as exc:
                 failed += 1
                 self.logger.error(
                     "evidence.retry.failed error_class=%s source_origin=%s "
-                    "conversation_id=%s turn_id=%s source_ref=%s",
+                    "conversation_id=%s turn_id=%s source_ref_hash=%s",
                     type(exc).__name__,
                     event.source_origin,
                     event.conversation_id,
                     event.turn_id,
-                    event.primary_source_ref_id,
+                    hashlib.sha256(event.primary_source_ref_id.encode()).hexdigest()[:24],
                 )
         try:
             self.metrics.set_value("evidence_retry_pending", self.spool.pending_count())

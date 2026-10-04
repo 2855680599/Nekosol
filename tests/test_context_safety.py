@@ -9,6 +9,31 @@ from agent.agent_init import _inject_context_engine_tools
 from gateway.run_inbound import GatewayInboundMixin
 
 class ContextSafetyTests(unittest.TestCase):
+    def test_real_tool_dispatch_stops_before_reading_forgotten_files(self):
+        import tempfile
+        import model_tools
+        from hermes_cli.plugins import PluginManager
+        with tempfile.TemporaryDirectory() as temp:
+            manager=PluginManager(scope_key=temp);manager._discovered=True
+            manager._hooks['pre_tool_call']=[memory_tool_gate]
+            with patch('hermes_cli.plugins.get_plugin_manager',return_value=manager), \
+                 patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,{'memory':True})), \
+                 patch('model_tools._execute_tool') as execute:
+                for name in ('terminal','read_file','execute_code'):
+                    result=model_tools.handle_function_call(name,{},skip_tool_request_middleware=True)
+                    self.assertIn('Personal memory mode blocks',result)
+                execute.assert_not_called()
+
+    def test_disabled_modules_preserve_ordinary_chat_context(self):
+        import os
+        config={'cli_owner':True,'local_owner_uid':os.getuid(),'memory':False,'life':False}
+        engine=ChiyoContextEngine()
+        with patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,config)):
+            engine.on_session_start('fixture',platform='cli')
+            self.assertTrue(engine._authorized)
+            messages=[{'role':'user','content':'earlier'},{'role':'assistant','content':'answer'},{'role':'user','content':'current'}]
+            self.assertIsNone(engine.select_context(messages,incoming_message=messages[-1]))
+
     def test_missing_completion_hook_does_not_poison_the_next_direct_input(self):
         from chiyo_bundle.instance import install_paths
         install_paths()
@@ -81,7 +106,8 @@ class ContextSafetyTests(unittest.TestCase):
         messages=[{'role':'system','content':'persona'},{'role':'user','content':'forgotten fact'},
             {'role':'assistant','content':'forgotten answer'},{'role':'user','content':'current'},
             {'role':'assistant','tool_calls':[{'id':'tool-1'}]},{'role':'tool','tool_call_id':'tool-1','content':'fresh result'}]
-        self.assertEqual(e.select_context(messages,incoming_message={'content':'current'}),[messages[0]]+messages[3:])
+        with patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,{'memory':True})):
+            self.assertEqual(e.select_context(messages,incoming_message={'content':'current'}),[messages[0]]+messages[3:])
     def test_multimodal_turn_cannot_resurrect_deleted_history_or_mint_text_authority(self):
         projection=NS(controls=['delete'],healthy=True)
         bridge=Mock();ledger=NS(projection=lambda:projection)
@@ -93,6 +119,9 @@ class ContextSafetyTests(unittest.TestCase):
     def test_memory_tools_do_not_bypass_forgetting_via_raw_transcripts(self):
         with patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,{'memory':True})):
             for name in ['memory','session_search']:self.assertEqual(memory_tool_gate(name,{})['action'],'block')
+            for name in ('terminal','read_file','delegate_task','unknown_future_tool'):
+                self.assertEqual(memory_tool_gate(name,{})['action'],'block')
+        with patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,{'memory':True,'memory_tool_policy':'unrestricted'})):
             self.assertIsNone(memory_tool_gate('terminal',{}))
         with patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,{'memory':False})):
             self.assertIsNone(memory_tool_gate('session_search',{}))

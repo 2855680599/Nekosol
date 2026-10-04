@@ -6,6 +6,9 @@ import argparse
 import json
 import logging
 import sys
+import os
+import hmac
+import ipaddress
 
 from .config import NativeConfig
 from .epoch import ContextEpochStore
@@ -18,6 +21,14 @@ from .trace import TraceStore
 
 class Handler(BaseHTTPRequestHandler):
     runtime: NativeRuntime
+    auth_token = ""
+
+    def _authorized(self):
+        supplied = self.headers.get("Authorization", "")
+        if not self.auth_token or not hmac.compare_digest(supplied.encode(), ("Bearer " + self.auth_token).encode()):
+            self._send(401, {"error": "unauthorized"})
+            return False
+        return True
 
     def _send(self, status: int, body: dict):
         encoded = json.dumps(body, ensure_ascii=False).encode("utf-8")
@@ -38,6 +49,8 @@ class Handler(BaseHTTPRequestHandler):
                     "hermes_dependency": False,
                 },
             )
+            return
+        if not self._authorized():
             return
         if parsed.path == "/v1/evidence/status":
             try:
@@ -71,6 +84,8 @@ class Handler(BaseHTTPRequestHandler):
         self._send(404, {"error": "not_found"})
 
     def do_POST(self):
+        if not self._authorized():
+            return
         if self.path != "/v1/turn":
             self._send(404, {"error": "not_found"})
             return
@@ -90,35 +105,49 @@ class Handler(BaseHTTPRequestHandler):
             logger = logging.getLogger("chiyo")
             logger.info(
                 "generation.ready conversation_id=%s turn_id=%s trace_id=%s",
-                result["conversation_id"],
+                "redacted",
                 result["turn_id"],
                 result["trace_id"],
             )
             logger.info(
                 "delivery.attempted conversation_id=%s turn_id=%s trace_id=%s",
-                result["conversation_id"],
+                "redacted",
                 result["turn_id"],
                 result["trace_id"],
             )
             self._send(200, result)
             logger.info(
                 "delivery.delivered conversation_id=%s turn_id=%s trace_id=%s",
-                result["conversation_id"],
+                "redacted",
                 result["turn_id"],
                 result["trace_id"],
             )
             try:
                 self.runtime.record_delivery_success(result)
             except Exception:
-                logger.exception("delivery evidence hook failed")
-        except ValueError as exc:
-            self._send(400, {"error": str(exc)})
+                logger.error("delivery evidence hook failed")
+        except (ValueError, KeyError, TypeError):
+            self._send(400, {"error": "invalid_request"})
         except Exception as exc:
-            logging.getLogger("chiyo").exception("turn failed")
+            logging.getLogger("chiyo").error("turn failed error_class=%s", type(exc).__name__)
             self._send(502, {"error": type(exc).__name__})
 
     def log_message(self, format, *args):
-        logging.getLogger("chiyo").info(format, *args)
+        logging.getLogger("chiyo").info("http.request method=%s", self.command)
+
+
+def create_server(config, runtime):
+    token = os.environ.get(config.auth_token_env, "")
+    if len(token) < 32 or any(c.isspace() for c in token):
+        raise ValueError("native HTTP requires a private auth token of at least 32 characters")
+    try:
+        loopback = ipaddress.ip_address(config.host).is_loopback
+    except ValueError:
+        loopback = config.host == "localhost"
+    if not loopback and not config.allow_remote:
+        raise ValueError("non-loopback HTTP requires explicit allow_remote; use a TLS reverse proxy")
+    handler = type("ConfiguredHandler", (Handler,), {"runtime": runtime, "auth_token": token})
+    return ThreadingHTTPServer((config.host, config.port), handler)
 
 
 def main():
@@ -137,8 +166,7 @@ def main():
     evidence = EvidenceWriter(config.data_dir)
     context_epoch = ContextEpochStore(config.data_dir)
     runtime = NativeRuntime(config, store, backend, traces, evidence, context_epoch)
-    Handler.runtime = runtime
-    server = ThreadingHTTPServer((config.host, config.port), Handler)
+    server = create_server(config, runtime)
     logging.getLogger("chiyo").info(
         "native runtime listening host=%s port=%s model=%s provider=%s",
         config.host,

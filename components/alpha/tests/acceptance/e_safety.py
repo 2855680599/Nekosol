@@ -7,7 +7,6 @@ Scans every shipped file and requires:
 * zero personal filesystem paths (a developer's home directory / scratch tree),
 * zero personal-database files (no sqlite/db file ships in the tree),
 * zero real personal messages (no captured message dump, no counterparty name),
-* zero VPS addresses,
 * zero real Telegram chat ids,
 * the documented default configuration has all four kill switches OFF, and
   ``chiyo doctor`` passes its own kill-switch check.
@@ -23,6 +22,7 @@ import argparse
 import json
 import re
 import sys
+import subprocess
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -70,10 +70,8 @@ SKIP_DIRS = {".git", "__pycache__", ".venv", "venv", "build", "dist", ".eggs"}
 DATA_SUFFIXES = {".sqlite", ".sqlite3", ".db", ".db3", ".jsonl", ".wal"}
 
 
-#: This scanner itself legitimately contains the pattern strings it looks for,
-#: and the human-facing documentation at the tree root / under ``docs/`` is
-#: owned by another workstream.  Both are reported as OUT-OF-SCOPE with their
-#: measured hit counts instead of being silently skipped.
+#: No Alpha files are silently excluded. The companion public source scan
+#: covers vendor, root documentation and website, with exact public exceptions.
 OUT_OF_SCOPE_DIRS: set[str] = set()
 OUT_OF_SCOPE_FILES: set[str] = set()
 
@@ -105,6 +103,11 @@ def main(argv: list[str] | None = None) -> int:
     data_files: list[str] = []
     scanned = 0
 
+    source_root=Path(__file__).resolve().parents[4]
+    full_scan=subprocess.run([sys.executable,str(source_root/'scripts/scan_public_source.py')],capture_output=True,text=True,env=env)
+    try:full_report=json.loads(full_scan.stdout)
+    except json.JSONDecodeError:full_report={'status':'FAIL','reason':'full source scan did not return a report'}
+    checks.append(check('whole public source scan including vendor and website',full_scan.returncode==0,full_report))
     for path in iter_files(TREE):
         if path.suffix.lower() in DATA_SUFFIXES:
             data_files.append(str(path.relative_to(TREE)))
@@ -161,7 +164,6 @@ def main(argv: list[str] | None = None) -> int:
                     "personal_windows_path",
                     "personal_posix_capture",
                     "pi_desktop_scratch",
-                    "developer_username",
                 )
             ),
             {
@@ -170,7 +172,6 @@ def main(argv: list[str] | None = None) -> int:
                     "personal_windows_path",
                     "personal_posix_capture",
                     "pi_desktop_scratch",
-                    "developer_username",
                 )
             },
         )
@@ -192,13 +193,6 @@ def main(argv: list[str] | None = None) -> int:
                 "note": "the production counterparty constant carries "
                 "'telegram:<REDACTED_PRODUCTION_CHAT_ID>' and still refuses that destination",
             },
-        )
-    )
-    checks.append(
-        check(
-            "no VPS address",
-            not hits["vps_address_hk"] and not hits["vps_address_us"],
-            {"hk": hits["vps_address_hk"], "us": hits["vps_address_us"]},
         )
     )
     checks.append(
@@ -299,10 +293,8 @@ def main(argv: list[str] | None = None) -> int:
                 "excluded_dirs": sorted(OUT_OF_SCOPE_DIRS),
                 "excluded_root_files": sorted(OUT_OF_SCOPE_FILES),
                 "hits_in_excluded_files": out_of_scope,
-                "reason": "docs/**, the root markdown documents and LICENSE are owned by "
-                "another workstream and are not mine to edit; tests/acceptance/* contains "
-                "this scanner, whose source necessarily spells the patterns it hunts for. "
-                "Their hits are reported here so the reader can judge them.",
+                "reason": "No Alpha files excluded. Vendor, root documentation and website "
+                "are covered by the whole public source scan above.",
             },
         )
     )

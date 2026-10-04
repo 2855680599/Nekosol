@@ -4,8 +4,8 @@ import uuid
 from types import SimpleNamespace
 
 class HermesCompletionProvider:
-    def __init__(self, config, *, tools=False):
-        self.config=config;self.tools=tools;self.last_report={}
+    def __init__(self, config, *, tools=False, api_key=None):
+        self.config=config;self.tools=tools;self.last_report={};self.api_key=api_key
 
     def complete(self, messages):
         from run_agent import AIAgent
@@ -14,7 +14,7 @@ class HermesCompletionProvider:
             raise ValueError('Hermes host requires a final direct user message')
         system='\n\n'.join(m['content'] for m in messages if m.get('role')=='system')
         history=[dict(m) for m in messages[:-1] if m.get('role')!='system']
-        agent=AIAgent(model=self.config.model,api_key=os.environ[self.config.api_key_env],
+        agent=AIAgent(model=self.config.model,api_key=self.api_key if self.api_key is not None else os.environ[self.config.api_key_env],
             base_url=self.config.base_url,provider='custom',api_mode='chat_completions',
             max_iterations=8,enabled_toolsets=['terminal','file'] if self.tools else [],
             disabled_toolsets=['memory','session_search','cronjob'],skip_memory=True,

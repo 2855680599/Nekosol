@@ -2,7 +2,7 @@
 
 本文帮助你在自己的电脑或服务器上安装 nyairo，开始聊天，再按需要连接机器人和额外功能。网页只放教程，聊天在实际程序里进行。
 
-当前公开体验版本是 v0.1.0-rc4，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
+当前公开体验版本是 v0.1.0-rc5，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
 
 ## 00 第一次使用，从这里开始
 
@@ -81,11 +81,11 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 
 **Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
-**ZIP 下载**：从 [GitHub Releases](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4) 下载 `v0.1.0-rc4` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
+**ZIP 下载**：从 [GitHub Releases](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc5) 下载 `v0.1.0-rc5` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
 
 无论选哪种，都下载 nyairo 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
 
-程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
+程序 ZIP 是 `nyairo-v0.1.0-rc5.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc5。
 
 ### 电脑和网络需要满足什么
 
@@ -194,11 +194,11 @@ export UV_PYTHON=3.13
 
 第一次按命令安装，可以选这条路线。**如果选择了这里，就不用再做 ZIP 下载。**
 
-下面会下载已经公开的 `v0.1.0-rc4` 体验版本，并把程序放在后续教程使用的同一个文件夹里：
+下面会下载已经公开的 `v0.1.0-rc5` 体验版本，并把程序放在后续教程使用的同一个文件夹里：
 
 ```bash
 mkdir -p "$HOME/apps"
-git clone --branch v0.1.0-rc4 --depth 1 \
+git clone --branch v0.1.0-rc5 --depth 1 \
   https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
 cd "$HOME/apps/chiyo-v0.1"
 bash scripts/install.sh
@@ -213,7 +213,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 ### 方法 B：用 ZIP 下载并安装
 
-如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc4) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
+如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc5) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
 
 先检查 ZIP 文件：
 
@@ -237,7 +237,7 @@ ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；�
 
 文件检查结果中的 `changed_or_missing` 应为 `[]`。如果不是，先重新核对下载来源和文件，不要删掉清单来跳过检查。随后打开 [设置并开始聊天](https://nyairo.com/#configuration)。
 
-程序 ZIP 是 `chiyo-v0.1-hermes-rc4-r20-20261004.zip`，同名 `.sha256` 文件记录校验值；`docs-reference` ZIP 只是参考文档包。旧文件名保留 chiyo，已发布文件保持原样。
+程序 ZIP 是 `nyairo-v0.1.0-rc5.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc5。
 
 ### 已经装过 Hermes，怎么处理
 
@@ -266,7 +266,7 @@ cd "$HOME/apps/chiyo-v0.1"
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
   --home "$HOME/.chiyo-v1" \
   --owner local-owner \
-  --memory --life
+  --memory --life --allow-local-owner
 export HERMES_HOME="$HOME/.chiyo-v1"
 ```
 
@@ -358,7 +358,7 @@ bash scripts/hermes.sh gateway setup
 
 选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
 
-如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc4/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc5/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
 
 ### 第二步：允许自己的私聊使用记忆
 
@@ -437,7 +437,7 @@ bash scripts/hermes.sh gateway run
 ```bash
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
   --home "$HOME/.chiyo-shadow-v1" \
-  --owner local-owner --memory --life --cognition-shadow
+  --owner local-owner --memory --life --allow-local-owner --cognition-shadow
 ```
 
 这会使用单独的数据文件夹 `$HOME/.chiyo-shadow-v1`。之后启动时，把 `HERMES_HOME` 也设置到这个位置，不能继续指向原来的文件夹。
@@ -519,7 +519,7 @@ Life Supply 用来在自己的工作区保存、读取独立文档。已经设�
 
 ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删除停止召回并排除旧上下文，原始审计保留。纠正产生的新事实也能独立删除。当前会保守排除旧短期历史，因此该段里其他未删除的话题也可能不再进入短期上下文。
 
-公开候选的提示文案有一个已知错误：不带参数输入 `/chiyo_memory` 或输入错误格式时，可能提示使用 `/memory list/delete/correct`。在 Hermes CLI 与消息网关中，请使用上面的 `/chiyo_memory` 命令；Hermes 自带的 `/memory` 是另一套审批命令。独立 Native 运行器的命令名称仍以其自身说明为准。
+旧 rc4 的提示文案有一个错误，rc5 已修复：不带参数输入 `/chiyo_memory` 或输入错误格式时，可能提示使用 `/memory list/delete/correct`。在 Hermes CLI 与消息网关中，请使用上面的 `/chiyo_memory` 命令；Hermes 自带的 `/memory` 是另一套审批命令。独立 Native 运行器的命令名称仍以其自身说明为准。
 
 ### 资源文档
 
@@ -662,7 +662,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 确认两次启动使用同一个 `HERMES_HOME`，否则可能正在读另一套数据。当前图片、语音等多模态消息不会按这条文字入口形成长期记忆。
 
-不带参数输入 `/chiyo_memory` 时，公开候选可能给出错误的 `/memory` 帮助提示。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](https://nyairo.com/#cli-reference) 中的 `/chiyo_memory`。
+旧 rc4 不带参数输入 `/chiyo_memory` 时，可能给出错误的 `/memory` 帮助提示；rc5 已修复。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](https://nyairo.com/#cli-reference) 中的 `/chiyo_memory`。
 
 ### 世界或资源文档显示不可用
 
@@ -721,11 +721,11 @@ sudo systemctl status nyairo-gateway.service
 
 ### 关闭所有附加功能后，忘记刚才的话
 
-第一版有一个已复现的问题：记忆、生活与世界身体都关闭时，仍可能使用 nyairo 的专用上下文处理，只把当前问题交给模型，漏掉前几轮短期对话。原始聊天记录没有因此删除；本文推荐的 `--memory --life` 配置未触发这次复现。
+旧 rc4 有一个已复现的问题，rc5 已修复：记忆、生活与世界身体都关闭时，仍可能使用 nyairo 的专用上下文处理，只把当前问题交给模型，漏掉前几轮短期对话。原始聊天记录没有因此删除；本文推荐的 `--memory --life --allow-local-owner` 配置未触发这次复现。
 
 如果你确实只使用 Hermes 普通聊天，先备份个人设置，并确认这些附加功能全部关闭。然后在个人 `config.yaml` 的 `context` 下面删掉 `engine: chiyo` 这一行，保留其他设置，再重新启动自己的程序。
 
-如果启用了记忆，或者记忆服务出了故障，就按上面的记忆排错步骤处理；不要用这个办法绕过纠正、删除记忆后的保护。这个运行时问题仍待修复，本次网页更新没有把它改掉。
+如果启用了记忆，或者记忆服务出了故障，就按上面的记忆排错步骤处理；不要用这个办法绕过纠正、删除记忆后的保护。rc5 会在全部附加模块关闭时恢复 Hermes 的普通上下文；上述临时处理仅供旧版排错。
 
 
 ## 12 文档站、验收与公开发布
@@ -738,7 +738,7 @@ sudo systemctl status nyairo-gateway.service
 
 ### 当前验收证据怎么理解
 
-R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失败、440 条件跳过；千代组件、宿主边界、普通账号冷安装及真实模型 12 项另有证据。这是指定版本与范围的结果，不能用来证明自主活动、所有平台或新修订版都已经通过。
+R16 的完整运行数字目前无法独立核验：旧证据条目复制了 R17 的数量、耗时和日志摘要，已撤下重复数字。现有历史记录与本次复测分开列出，不把一条记录算成两次通过。
 
 真实体验暴露命令路由遗漏后，R17 增加真实入口回归与旧代码负对照，完整默认 Python 套件为 3,718 文件、45,071 通过、0 失败、440 条件跳过，关闭自动重试。千代双 Python 组件与 36 项宿主边界检查通过；17 段 Bash 示例语法检查通过，会话 key 示例实际执行通过。四个命令使用真实插件发现和完整网关消息路径检查，并验证未绑定个人 DM 被拒绝。独立体验网关的进程内加载与 Telegram 轮询就绪已核对；作者已确认修复后的自然 Telegram status 回复正常；几天持续使用仍单独待验收。
 
@@ -746,7 +746,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 ### 公开后仍需验证什么
 
-公开仓库为 https://github.com/L1AN929/nyairo ，已发布体验候选标签 `v0.1.0-rc4`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
+公开仓库为 https://github.com/L1AN929/nyairo ，当前体验候选标签 `v0.1.0-rc5`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。本次网站维护同步了本页列出的定向复核结果；没有重新执行运行时全量测试，不把历史验收数字作为本次网站检查结果。
 
@@ -757,7 +757,7 @@ R16 完整 Hermes 默认 Python 套件为 3,718 文件、45,069 通过、0 失�
 
 本轮选定的组件、宿主边界与上下文检查合计为 517 通过、1 失败、1 条件跳过。Supply 失败项使用固定 UID 65534，恰好与本轮测试账号相同；换不同 UID 只复跑该项后通过，归因于测试夹具身份碰撞。首轮 `scripts/test.py` 退出 1，不能写成全部通过。Life 装配与 Alpha 检查单独记录。
 
-复核同时确认了关闭全部模块时的上下文问题、记忆帮助命令前缀错误和 Supply 默认双身份 socket 连接问题，使用与排错章节已说明。这些是第一版现有行为的问题；已声明延期的自主活动等不计作本版缺陷。本轮没有重跑 45,071 项完整宿主套件，也没有重新验证真实模型质量、平台收发或多日自然使用。
+复核同时确认了关闭全部模块时的上下文问题、记忆帮助命令前缀错误和 Supply 默认双身份 socket 连接问题，使用与排错章节已说明。前两项已在 rc5 修复，Supply 连接安排仍需单独配置；已声明延期的自主活动等不计作本版缺陷。本轮没有重跑 45,071 项完整宿主套件，也没有重新验证真实模型质量、平台收发或多日自然使用。
 
 GitHub Pages 已有网站构建与部署记录；功能 CI 模板仍放在 `ci/templates/`，尚未启用。网站部署成功不代表运行时功能测试通过。旧候选包中的安装与测试说明若仍写“仓库未公开”或“功能 CI 已运行”，请以本站和实际仓库状态为准；已发布标签与 ZIP 保留原字节。
 
@@ -882,3 +882,16 @@ World/Body 的同账号 socket、Life Supply 的 operator/service 权限与有�
 第一版重点核查已经交付的安装、命令、记忆与状态行为。2026-10-04 已确认的上下文、命令提示与 Supply 连接问题，详见“常见故障与持续运行”和模块章节；普通账号公开标签与 ZIP 安装、选定测试结果，详见“文档站、验收与公开发布”。
 
 本次网站修订更新使用说明和已知问题，未修改运行时代码；有意延期的功能不作为第一版缺陷。
+
+
+## 15 rc5 隐私修复与自定义
+
+首次安装请选 rc5。旧 rc4 标签和 ZIP 保持原样，不会因为网站更新而自动获得修复。
+
+新建实例使用中性人设，不带作者的私人身份、关系或历史。打开自己数据目录中的 `SOUL.md`，写入你希望的名字、说话方式和边界；程序不会替换已有的人设。
+
+安装命令里的 `--allow-local-owner` 是你主动允许当前 Linux 账号使用个人模块；不加它，本地入口也不会自动获得权限。Telegram 还需要按教程绑定自己的私聊，不能用平台名称代替授权。
+
+启用记忆时，模型调用的终端、读文件、浏览器、委派等工具默认全部拦截，避免读回已经停止召回的聊天。`/chiyo_*` 命令和普通聊天仍保留。若你明确需要完整 Hermes 工具，可以在自己 `chiyo/config.json` 中设置 `"memory_tool_policy": "unrestricted"` 并重启；这样就不能再承诺工具不会读回原始历史。忘记不是擦除备份，也不是隔离本地管理员。
+
+已有用户先备份自己的数据目录，安装新程序后更新插件与授权设置，不要删除原目录或重建人设。具体步骤、Native HTTP 的访问口令、本次测试与尚存限制见 [隐私修复与升级](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc5/PRIVACY_REVIEW.md)。

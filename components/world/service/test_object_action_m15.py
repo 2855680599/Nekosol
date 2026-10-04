@@ -328,9 +328,7 @@ class CrashWindows(M15Base):
 
     def test_window_b_crash_after_apply_reconciles_without_second_pickup(self):
         s = self.start()
-        try:
-            self.propose(s, "PICK_UP", {"object_id": CUP, "slot_id": "right_hand"},
-                         execution_id="world-exec:m15-b")
+        with self.assertRaises(war.ResolverCrash):
             s.resolver.resolve({
                 "action": "PICK_UP", "execution_id": "world-exec:m15-b2",
                 "actor_id": "chiyo", "body_id": "chiyo_body",
@@ -338,11 +336,8 @@ class CrashWindows(M15Base):
                 "observed_dependencies": self.deps(s),
                 "params": {"object_id": CUP, "slot_id": "right_hand"}},
                 crash_after=war.CRASH_AFTER_MUTATION)
-        except war.ResolverCrash:
-            pass
         held = self.placement(CUP)
-        if held["kind"] != "hand":
-            self.skipTest("crash hook did not reach the mutation")
+        self.assertEqual(held["kind"], "hand", "crash hook must reach the mutation")
         s.shutdown()   # release the single-writer lease before restarting
         s2 = wbsvc.WorldBodyService(self._config(), now=NOW, instance_id="m15-b2")
         self.addCleanup(s2.shutdown)
@@ -350,7 +345,15 @@ class CrashWindows(M15Base):
         self.assertEqual(self.placement(CUP), {"kind": "hand", "slot_id": "right_hand"},
                          "no second PICK_UP")
         recon = report.get("reconciliation") or s2.startup_reconciliation or {}
-        self.assertEqual(int(recon.get("unresolved", 0) or 0), 0)
+        unresolved = recon.get("unresolved", [])
+        self.assertEqual(len(unresolved), 1)
+        self.assertEqual(unresolved[0]["resolver_verdict"], "UNKNOWN")
+        self.assertTrue(unresolved[0]["reconciliation_required"])
+        before = self.substrate_bytes()
+        replay = self.propose(s2, "PICK_UP", {"object_id": CUP, "slot_id": "right_hand"},
+                              execution_id="world-exec:m15-b2")
+        self.assertEqual(replay["status"], "uncertain")
+        self.assertEqual(self.substrate_bytes(), before, "uncertain execution must not apply twice")
 
     def test_window_c_replay_after_commit_is_already_committed(self):
         s = self.start()

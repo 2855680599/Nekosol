@@ -277,9 +277,9 @@ if __name__ == "__main__":
 class TransportLayerTests(unittest.TestCase):
     """§7: OS peer authorization (distinct from business authorization)."""
 
-    def test_only_root_may_call_the_gateway_surface(self):
-        self.assertTrue(wbsvc.gateway_peer_allowed(0))
-        for uid in (1, 33, 1000, 65534):
+    def test_only_service_owner_may_call_the_gateway_surface(self):
+        self.assertTrue(wbsvc.gateway_peer_allowed(os.geteuid()))
+        for uid in (os.geteuid()+1, os.geteuid()+2):
             self.assertFalse(wbsvc.gateway_peer_allowed(uid))
 
     def test_gateway_socket_is_root_only(self):

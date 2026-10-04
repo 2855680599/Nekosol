@@ -28,6 +28,8 @@ import pathlib
 import selectors
 import signal
 import socket
+import stat
+import errno
 import sys
 import time
 from datetime import datetime, timezone
@@ -68,7 +70,7 @@ class StartupRefused(RuntimeError):
 
 
 #: M14A: only this uid may call the gateway surface (transport layer).
-GATEWAY_ALLOWED_PEER_UID = 0  # root; the deployment runs as root
+GATEWAY_ALLOWED_PEER_UID = os.geteuid()
 
 
 def gateway_peer_allowed(uid: int) -> bool:
@@ -654,14 +656,36 @@ class WorldBodyService:
     def _bind_socket(self, path: pathlib.Path, mode: int = 0o600) -> socket.socket:
         """Bind one unix socket, owned by the service and readable only by root."""
 
-        path.parent.mkdir(parents=True, exist_ok=True)
-        if path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            info = None
+        if info is not None:
+            if not stat.S_ISSOCK(info.st_mode) or info.st_uid != os.geteuid():
+                raise StartupRefused("SOCKET_PATH_REFUSED", "socket path is not an owned socket")
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as probe:
+                probe.settimeout(0.3)
+                try:
+                    probe.connect(str(path))
+                except OSError as exc:
+                    if exc.errno != errno.ECONNREFUSED:
+                        raise StartupRefused("SOCKET_PATH_REFUSED", "socket liveness could not be established") from None
+                else:
+                    raise StartupRefused("SOCKET_PATH_REFUSED", "socket is already live")
+            current = path.lstat()
+            if (current.st_dev, current.st_ino) != (info.st_dev, info.st_ino):
+                raise StartupRefused("SOCKET_PATH_REFUSED", "socket path changed during startup")
             path.unlink()
         server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         server.bind(str(path))
         os.chmod(path, mode)
         server.listen(8)
         server.setblocking(False)
+        if not hasattr(self, '_bound_sockets'):
+            self._bound_sockets = {}
+        info = path.lstat()
+        self._bound_sockets[path] = (info.st_dev, info.st_ino)
         return server
 
     def _control_socket(self) -> socket.socket:
@@ -711,7 +735,8 @@ class WorldBodyService:
             reports["runtime_persisted"] = True
         for path in (self.socket_path, self.gateway_socket_path):
             try:
-                if path.exists():
+                info = path.lstat()
+                if stat.S_ISSOCK(info.st_mode) and getattr(self, '_bound_sockets', {}).get(path) == (info.st_dev, info.st_ino):
                     path.unlink()
             except OSError:
                 pass

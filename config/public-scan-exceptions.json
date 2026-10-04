@@ -1,0 +1,968 @@
+{
+  "scope": "Exact public upstream fixture/example matches and generic tutorial placeholders. Review exceptions do not prove that a token is inactive. Newly added matches fail. No credential values are recorded.",
+  "matches": [
+    {
+      "path": "docs/USER_GUIDE.zh-CN.md",
+      "pattern": "wsl_home",
+      "match_sha256": "e23b0301d62034e1e7f4038e8e06d26a30ddfafade1766f23f26c8027201c43f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/acp_adapter/content.py",
+      "pattern": "windows_home",
+      "match_sha256": "5c490c261ea297ec1c0c242d0e35e85d58d3fef3a7cb9427ddac4fd8d6ff0018",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/acp_adapter/content.py",
+      "pattern": "windows_home",
+      "match_sha256": "ad4971851f8a9a8b841e5d8e6e60f7dded1c1e831c5e588ab007975c60d2f809",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/agent/prompt_builder.py",
+      "pattern": "windows_home",
+      "match_sha256": "31e989aa0fbf83d6de5d2f0cd6f08b3cd8151592050b71794ffa180b80385ff2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/agent/redact.py",
+      "pattern": "windows_home",
+      "match_sha256": "ad4971851f8a9a8b841e5d8e6e60f7dded1c1e831c5e588ab007975c60d2f809",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/bootstrap-installer/src-tauri/src/update.rs",
+      "pattern": "windows_home",
+      "match_sha256": "028b2373fc122dcf9e7dfc3099792b9f05ac86aa77b6f4ed4e1ade4d9689f0d8",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/electron/updater-process.test.ts",
+      "pattern": "windows_home",
+      "match_sha256": "2de8158e257c24eb3dea6dde49490ffd9d4ea2bea1ab105140d79f7fd8514daf",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/electron/wsl-path-bridge-profile.test.ts",
+      "pattern": "wsl_home",
+      "match_sha256": "4f7e1b152959f3500e28c4f5ab2b30bbb650719c42a0551c7e9696b17ecc73ae",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/electron/wsl-path-bridge.test.ts",
+      "pattern": "wsl_home",
+      "match_sha256": "4f7e1b152959f3500e28c4f5ab2b30bbb650719c42a0551c7e9696b17ecc73ae",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/app/right-sidebar/terminal/revive-buffer.test.ts",
+      "pattern": "windows_home",
+      "match_sha256": "087968198dcf0e38d602ed261d29cd4b2e8882fc87cf99a1c5454265085d141e",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/components/assistant-ui/markdown-text.media-md.test.tsx",
+      "pattern": "windows_home",
+      "match_sha256": "4f50c95d72e733b89214dc504f4f32b06ef9f95748081a23da53e07cfbe413be",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/lib/display-path.test.ts",
+      "pattern": "windows_home",
+      "match_sha256": "16006688e828936890389a32eb578577eb8282c03b07119b59ded580be7a9d3f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/lib/display-path.test.ts",
+      "pattern": "windows_home",
+      "match_sha256": "21d0d59c5fc2ee35dcd3f44c9808ac9f19dc0bc69aabb2695d5a875bdb0583e0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/lib/display-path.ts",
+      "pattern": "windows_home",
+      "match_sha256": "08f8d8465831fe8a4d3fa38ea95bc96fff4fdefae580a49d96a0edb09332b11d",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/apps/desktop/src/lib/display-path.ts",
+      "pattern": "windows_home",
+      "match_sha256": "7fcee24cfdc8b264daea2fe4ed9726c9f47272f376659fb14eb11353228af1d8",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/evals/slack_stream_wire_contract.py",
+      "pattern": "slack_token",
+      "match_sha256": "90fb9082cdae01fed6841dcdfa9d2c875f173024f8457dbb0f4e919f07b2133a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/mcp_serve.py",
+      "pattern": "telegram_identity",
+      "match_sha256": "d4c53534aa4af07af5a406daea2d3bd6af5fb0ffa3ec25e288c3c7ff689cd218",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/optional-skills/mlops/training/unsloth/references/llms-full.md",
+      "pattern": "windows_home",
+      "match_sha256": "658e6d618d7a43762e5c45e8919c905332dee198217ace6d02c4b8dc2f626e19",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/optional-skills/mlops/training/unsloth/references/llms-txt.md",
+      "pattern": "windows_home",
+      "match_sha256": "658e6d618d7a43762e5c45e8919c905332dee198217ace6d02c4b8dc2f626e19",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/scripts/ci/test_install_ps1_path_migration.ps1",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/scripts/install.ps1",
+      "pattern": "windows_home",
+      "match_sha256": "d2de0c03700e728b773ee6904e2334bccd529b4a99e5284bd78ca5441e8118ea",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/scripts/tests/test-install-ps1-longpath.ps1",
+      "pattern": "windows_home",
+      "match_sha256": "2245af41e343beec0010e91406d2c7bed5f8bcc6cf9f755a8e0eafac58ef7973",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/scripts/tests/test-install-ps1-longpath.ps1",
+      "pattern": "windows_home",
+      "match_sha256": "d2de0c03700e728b773ee6904e2334bccd529b4a99e5284bd78ca5441e8118ea",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/skills/autonomous-ai-agents/hermes-agent/references/native-mcp.md",
+      "pattern": "openai_style_key",
+      "match_sha256": "a7c9ba235a1cb12abb1eb1cb042e842fcd9a16b2d421b000739a9beff3e1f7b3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/skills/autonomous-ai-agents/hermes-agent/references/windows-quirks.md",
+      "pattern": "windows_home",
+      "match_sha256": "5c490c261ea297ec1c0c242d0e35e85d58d3fef3a7cb9427ddac4fd8d6ff0018",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/acp/test_session.py",
+      "pattern": "windows_home",
+      "match_sha256": "4eb4617ce5f3e109d390d11415c0c0a63d3656174479b5841a6c5cfc75ba4066",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/acp/test_session.py",
+      "pattern": "wsl_home",
+      "match_sha256": "bb7317c7482df59b81568e2e40bd0219adbb41152238249d359444f2f95a91a2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_bedrock_integration.py",
+      "pattern": "aws_key_id",
+      "match_sha256": "1a5d44a2dca19669d72edf4c4f1c27c4c1ca4b4408fbb17f6ce4ad452d78ddb3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_context_references.py",
+      "pattern": "windows_home",
+      "match_sha256": "c18bb0b9eecf042e4838667014cc80db8ee1a59f73b01f4bc46dca08add9ef93",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "github_token",
+      "match_sha256": "3f67e5ea08498eeec216aec40cf88ccc6483ea955b13bda787dd58575382ae52",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "github_token",
+      "match_sha256": "5a1991f2cd432caca3d3ac0d88b11a447814bf00e9a0b30b0cde4d6ff2733be2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "github_token",
+      "match_sha256": "77ddd0f66244b43a420ac020fed863e8f02804bb0a35ad4e03727d24f7b9f6b2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "1584ab5c55a42564800f5830b7493e486ca81cc746d7d35236fff2fd53153121",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "ef66026345747f32ac302956ee7552b73ca69e8b390ffd7ac354b17fe7fc623f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_redact.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "810f116906616521c58f9ef127d7a96a9a8ce2b066ef5674fa59f22c1e2073df",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_trace_upload.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "d29887d602274257be92b3a69503ee46b39cd2f5b825c6b5e6a63bc0a5a96f35",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/agent/test_verification_evidence.py",
+      "pattern": "windows_home",
+      "match_sha256": "10532ffeb97adbcdb106b159a12a3bb939fd46112209017e12649ffea1965c28",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/computer_use/test_cua_wsl_manifest_path.py",
+      "pattern": "windows_home",
+      "match_sha256": "782a604250f5fa14b4fdb4cde2aa8e26c54ea3a6e09c7915e92fabce803b7f8d",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/computer_use/test_cua_wsl_manifest_path.py",
+      "pattern": "wsl_home",
+      "match_sha256": "1000f5107717fa754bbd498244fc3089c91a4855e514ad728fe072020f9bccef",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/cron/test_cron_incidents.py",
+      "pattern": "github_token",
+      "match_sha256": "bf4722b7db40f2615d1fb5307ac841e9b585b5bbdba3454118e0fbea1f09c5ab",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_config.py",
+      "pattern": "slack_token",
+      "match_sha256": "0567b5cd497a23a1c422c9e036302acaf543fadc40e7c2450b5ce05dad17aae1",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_extract_local_files.py",
+      "pattern": "windows_home",
+      "match_sha256": "6b98ff7f0398f06452f19c4a93f3d69186401dab40aaa7077b394ef59b3e730e",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_gateway_command_line_matcher.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_kanban_changes_requested_notifier.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "82be8a4d9cdebab78235e6d0618fdea34065fcb6f498073283ff4ec7376e551a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_kanban_wake_scope.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_media_extraction.py",
+      "pattern": "windows_home",
+      "match_sha256": "b75f6c27cdd233bc60262434e8ce5908091d0946fd5f2a262dc77497118eb221",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_platform_base.py",
+      "pattern": "private_key_block",
+      "match_sha256": "03d104c669e3c7b6be7f989db8b12c8b910d3be8c1e2a73c9369d3cc0ba803b5",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_run_tool_media_re.py",
+      "pattern": "windows_home",
+      "match_sha256": "6b98ff7f0398f06452f19c4a93f3d69186401dab40aaa7077b394ef59b3e730e",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_approval_buttons.py",
+      "pattern": "slack_token",
+      "match_sha256": "717f1f393204cfc6621c042434b1ae253ee6c66f3e9b31ceb48366d60458f3e2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_channel_session_scope.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_clarify_buttons.py",
+      "pattern": "slack_token",
+      "match_sha256": "717f1f393204cfc6621c042434b1ae253ee6c66f3e9b31ceb48366d60458f3e2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_download_ssrf.py",
+      "pattern": "slack_token",
+      "match_sha256": "717f1f393204cfc6621c042434b1ae253ee6c66f3e9b31ceb48366d60458f3e2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_ignore_other_user_mentions.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_log_noise.py",
+      "pattern": "slack_token",
+      "match_sha256": "717f1f393204cfc6621c042434b1ae253ee6c66f3e9b31ceb48366d60458f3e2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_peer_agent_smoke.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_require_mention_channels.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_slack_socket_reconnect_heal.py",
+      "pattern": "slack_token",
+      "match_sha256": "f464ec181204aff5a01065bc1714626c30a20ac4d4e57617f205443bf4f5a34f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_telegram_error_redaction.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "01f74800519a92c6cd198d19b16d9394d0c02cd07fbc83dc2c712b5297f1de9e",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_telegram_noise_filter.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "98f7c9f513d2ab4f7d032b9f431a5b5fa7baba8a8dba31bb1ef67dbbe2f835b2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_telegram_rich_messages.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "6bc0e33e2dc7d1fadbebcbf8deeea6731173dcac5c3bdcb0053083e7f30c4708",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/gateway/test_weak_credential_guard.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "07d86b41ef9bcdf9cea132d43a847a579b06fd37f8aa26eb7f99987bc572f10f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_computer_use_cli.py",
+      "pattern": "windows_home",
+      "match_sha256": "028b2373fc122dcf9e7dfc3099792b9f05ac86aa77b6f4ed4e1ade4d9689f0d8",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_ensure_windows_bin_launchers.py",
+      "pattern": "windows_home",
+      "match_sha256": "6b863e7e2dc9bc4a627fe20ac32e8dd3e24c758d15db1c98b0d70b1b6e84153b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_in_dir_msys_paths.py",
+      "pattern": "windows_home",
+      "match_sha256": "0e476a853251a981f7f5111ed6118369efb860d0fd868952de6f9ceb1d69d76f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_install_cua_driver.py",
+      "pattern": "windows_home",
+      "match_sha256": "af7665e84e4d00418831df14e157ba699a3482a4d72878a6b2d39c3cd3e725fb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_plugin_config_state_bridge.py",
+      "pattern": "windows_home",
+      "match_sha256": "b4e284c56ed4e3ad5d1e222aa528a7af23e137aa3314c644a6242861873c10e4",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_relaunch.py",
+      "pattern": "windows_home",
+      "match_sha256": "10532ffeb97adbcdb106b159a12a3bb939fd46112209017e12649ffea1965c28",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_scan_venv_blockers.py",
+      "pattern": "windows_home",
+      "match_sha256": "95934ac1477e4bb99b2efb8fb40da752ae509bfd1946bb2083da21cf18ef6912",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_set_config_value.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "cae8b801f9e3fba22a5e8e61ddbe8ad8f85a57010f19152f8096dbb08768c18d",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_stale_pid_guard.py",
+      "pattern": "windows_home",
+      "match_sha256": "2110755178605af7c8c9c48307209caef3030ea6f791a89a170484c92358388a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_telegram_managed_bot.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "6bc0e33e2dc7d1fadbebcbf8deeea6731173dcac5c3bdcb0053083e7f30c4708",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_telegram_managed_bot.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "aa4bdfa725e221ad225dc341166caea8a86b217b8a936675237d7a6bd51259ba",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_telegram_managed_bot.py",
+      "pattern": "windows_home",
+      "match_sha256": "10532ffeb97adbcdb106b159a12a3bb939fd46112209017e12649ffea1965c28",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_uninstall_windows_bin_launchers.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_update_concurrent_quarantine.py",
+      "pattern": "windows_home",
+      "match_sha256": "2110755178605af7c8c9c48307209caef3030ea6f791a89a170484c92358388a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_web_server.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "dd65e03569cfa4fa17f41cc914529f60fa210b46a7ee8647c7c2f1ed5844a3ea",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_web_server_messaging_profiles.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "04312eaf8e179d6dfb0d4f6062b5ec180426c7754a6180154c8654df1e9de385",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/hermes_cli/test_web_server_messaging_profiles.py",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "c1f5d09464ac307253ece0402cf3bc1b0f2eb06329d1d0ed8a3377c7becdc5e6",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/manual/cron_inchannel_dm_e2e.py",
+      "pattern": "slack_token",
+      "match_sha256": "37b2ce597c8e5dfd9465b29bd37c75975c61abbb7f90a54d248431ed9ee156d2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/plugins/test_a2a_plugin.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "61bb1d75a995d91ab62225ae0ac19fea58e5a9b5ba9539f4048293de7122a324",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/plugins/test_a2a_plugin.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "e398495ce6f9682638693bc79c5e68e763856a427ca9c2eda4ac6f7fa8d6b27c",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/plugins/test_langfuse_plugin.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "6c2b82b5db2d55c4e1869eecd8b5d53af11425839bde5ee86a55d300c93e819e",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_hermes_constants.py",
+      "pattern": "windows_home",
+      "match_sha256": "06e4e2f478caf7cbcddad7fe7c04ddb7420d10975eb7b0a717067c45500c78b2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_hermes_constants.py",
+      "pattern": "windows_home",
+      "match_sha256": "5b791a0944d1547698a33e0e0fff063a06e6abb07b1ba12c5142d77fc0f5e993",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_hermes_constants.py",
+      "pattern": "wsl_home",
+      "match_sha256": "4f7e1b152959f3500e28c4f5ab2b30bbb650719c42a0551c7e9696b17ecc73ae",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_hermes_state.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_iron_proxy.py",
+      "pattern": "private_key_block",
+      "match_sha256": "8bcac7908eb950419537b91e19adc83ce2c9cbfdacf4f81157fdadfec11f7017",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_iron_proxy.py",
+      "pattern": "slack_token",
+      "match_sha256": "a208868faca8b2ea45800979a932cc9cba37789a60ffede900edb1c890b87920",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/test_plugin_compat_notice.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_approval.py",
+      "pattern": "windows_home",
+      "match_sha256": "028b2373fc122dcf9e7dfc3099792b9f05ac86aa77b6f4ed4e1ade4d9689f0d8",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_approval.py",
+      "pattern": "windows_home",
+      "match_sha256": "32663b730507a3f247dfad6f6137a2837c948b5cdf2ba1d93e36972c19716a15",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_approval_plugin_hooks.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "fca77af53e4a95471187f0ef4e080f00782a05c38e1b811b13a82eb9f68bfcef",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_approval_windows.py",
+      "pattern": "windows_home",
+      "match_sha256": "21d0d59c5fc2ee35dcd3f44c9808ac9f19dc0bc69aabb2695d5a875bdb0583e0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_approval_windows.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_bot_relay_windows_paths.py",
+      "pattern": "windows_home",
+      "match_sha256": "dd2395f5e3dd1e232ecf5f90b353846963a1d28e4979c731f90c9bb037fdac12",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_browser_real_profile.py",
+      "pattern": "windows_home",
+      "match_sha256": "c1aadeef661c7f51f830e8b73c3f20d291cf291a48e2df0ddc509bc5b5b70ae3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_code_execution_windows_env.py",
+      "pattern": "windows_home",
+      "match_sha256": "2110755178605af7c8c9c48307209caef3030ea6f791a89a170484c92358388a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_code_execution_windows_env.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_container_cwd_sanitize.py",
+      "pattern": "windows_home",
+      "match_sha256": "6e199265e683f1f880b98c28c667ea91eff0ea958f1fecc6eb01c684b566b246",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_file_operations.py",
+      "pattern": "windows_home",
+      "match_sha256": "0e476a853251a981f7f5111ed6118369efb860d0fd868952de6f9ceb1d69d76f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_file_operations.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_file_tools.py",
+      "pattern": "windows_home",
+      "match_sha256": "4118bc4d7733d628bce80d063df6d3b832768062cf8c8a0b4e5c2930d519b402",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_hidden_dir_filter.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_local_env_blocklist.py",
+      "pattern": "aws_key_id",
+      "match_sha256": "1a5d44a2dca19669d72edf4c4f1c27c4c1ca4b4408fbb17f6ce4ad452d78ddb3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_local_env_windows_msys.py",
+      "pattern": "windows_home",
+      "match_sha256": "831f76fbd9c813e67ad43528e9448dd7dd6565a95e2a66aa6e5302361795fb15",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_local_env_windows_msys.py",
+      "pattern": "windows_home",
+      "match_sha256": "9ff096f454c1c2e47748dce67a334d533402da6025e3c38633b125b4f2d7c68c",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_local_env_windows_msys.py",
+      "pattern": "windows_home",
+      "match_sha256": "b3c08fa20ded5048238e830fd7c0c522661608e3ef1038af0beecd2a585a909b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_local_env_windows_msys.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_mcp_tool.py",
+      "pattern": "aws_key_id",
+      "match_sha256": "1a5d44a2dca19669d72edf4c4f1c27c4c1ca4b4408fbb17f6ce4ad452d78ddb3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_mcp_tool.py",
+      "pattern": "github_token",
+      "match_sha256": "46eb12352e801d0b8907174aa272b0d9d4a414fef2e1c8be66ceab11910d7fd0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_mcp_tool.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_memory_tool.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "6ac31a86e9bb995464216399ddde2188efb9593810244b480c1838dba21dec90",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_modal_sandbox_fixes.py",
+      "pattern": "windows_home",
+      "match_sha256": "21d0d59c5fc2ee35dcd3f44c9808ac9f19dc0bc69aabb2695d5a875bdb0583e0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_process_registry.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "138bbe4093156e51d7d43fd8c9ccb4d5e2e525ff6d0fbb7c798ba243071d5c16",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_process_registry.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "bf3966a21a991f673482bed460808273a21c4e7adbaa3703b8e30f0e23052e2f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_search_files_engine_selection.py",
+      "pattern": "windows_home",
+      "match_sha256": "0e476a853251a981f7f5111ed6118369efb860d0fd868952de6f9ceb1d69d76f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_terminal_error_redaction.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "644cc1f30eb4f14e095d25a1ca63ae16e5405382c3b06965c3c7fd27db37052a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_terminal_tool.py",
+      "pattern": "windows_home",
+      "match_sha256": "b75f6c27cdd233bc60262434e8ce5908091d0946fd5f2a262dc77497118eb221",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_windows_agent_loop_papercuts.py",
+      "pattern": "windows_home",
+      "match_sha256": "16f5ccec9297035beb8a0c5b96a9bba65bc32cac269fd28e2fa815da52c5bf34",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_windows_agent_loop_papercuts.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_windows_agent_loop_papercuts.py",
+      "pattern": "windows_home",
+      "match_sha256": "95934ac1477e4bb99b2efb8fb40da752ae509bfd1946bb2083da21cf18ef6912",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_windows_native_support.py",
+      "pattern": "windows_home",
+      "match_sha256": "4eb4617ce5f3e109d390d11415c0c0a63d3656174479b5841a6c5cfc75ba4066",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tools/test_windows_native_support.py",
+      "pattern": "windows_home",
+      "match_sha256": "edfa81c320b8f0b776375512aa7a2a8545633a1188c67f61cd78e969edf314da",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tests/tui_gateway/test_diagnostics_share_nous.py",
+      "pattern": "openai_style_key",
+      "match_sha256": "c99e03e40bc6c5bd935cc9b1248647ab10656fbd622a7cf5e9964ac3e8e03b07",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tools/approval_detection.py",
+      "pattern": "windows_home",
+      "match_sha256": "66ae9804fdfebde920af2a3a6067b57f6abc86852e3088c7201f01394a594b9f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tools/approval_detection.py",
+      "pattern": "windows_home",
+      "match_sha256": "e79c60e7d95fd88c1508f05bd1d846411c682d2ee393b8a79cd3218509ad37bb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tools/environments/local.py",
+      "pattern": "windows_home",
+      "match_sha256": "2110755178605af7c8c9c48307209caef3030ea6f791a89a170484c92358388a",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tools/environments/local.py",
+      "pattern": "windows_home",
+      "match_sha256": "31e989aa0fbf83d6de5d2f0cd6f08b3cd8151592050b71794ffa180b80385ff2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/tools/file_operations.py",
+      "pattern": "windows_home",
+      "match_sha256": "31e989aa0fbf83d6de5d2f0cd6f08b3cd8151592050b71794ffa180b80385ff2",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/ui-tui/src/__tests__/terminalSetup.test.ts",
+      "pattern": "windows_home",
+      "match_sha256": "21d0d59c5fc2ee35dcd3f44c9808ac9f19dc0bc69aabb2695d5a875bdb0583e0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/guides/team-telegram-assistant.md",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "03bea78a9cc51a70d2b60ad4a52444b54a60d8a85a5b992f11cefa790df4fe1d",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/integrations/providers.md",
+      "pattern": "windows_home",
+      "match_sha256": "0add330c1cadfb486ef8057548ff16b4432a2d3808db567ede7ab7f427df1a4b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/features/cron.md",
+      "pattern": "telegram_identity",
+      "match_sha256": "76fef0e7e7f910d101026aed7055cb8b641f6df5b49c41d1b8db03ef65e964ea",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "69e8fdeb3381eb24cc1c21a1fe12130797514e4ffbedbd8065644a729ed339a0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "6f1ec2d089f463b078f9a07751fdf066390c35279c681b4b8920a25a63b28c36",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "a69a16a8ebe0bb40b423e9079f623ab98054edd8c88e6cc15a23274bf2ecf315",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "c13e55470aca22e4c8e3d98e0fd741a196ac7e4c933fe784f4bc08875f062a5b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "e9386e352e96ace7bac7f3c0688464fc0cc7f58d6a8f374cfbbc60fac74e0538",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/windows-wsl-quickstart.md",
+      "pattern": "windows_home",
+      "match_sha256": "b824f4c3ee4e0d34274e0a602ed822990a9976070fd46931b6cfec0e43d752fb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/windows-wsl-quickstart.md",
+      "pattern": "windows_home",
+      "match_sha256": "e2d25de1afed87d605363aa17f080aca33990849dbbede052c9a06063ea22482",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/docs/user-guide/windows-wsl-quickstart.md",
+      "pattern": "wsl_home",
+      "match_sha256": "db9d4ddd3e740d97c261691080074e0618adeca234ca44ac187eb75e60e120b3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/guides/team-telegram-assistant.md",
+      "pattern": "telegram_bot_token",
+      "match_sha256": "03bea78a9cc51a70d2b60ad4a52444b54a60d8a85a5b992f11cefa790df4fe1d",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/integrations/providers.md",
+      "pattern": "windows_home",
+      "match_sha256": "0add330c1cadfb486ef8057548ff16b4432a2d3808db567ede7ab7f427df1a4b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/features/cron.md",
+      "pattern": "telegram_identity",
+      "match_sha256": "76fef0e7e7f910d101026aed7055cb8b641f6df5b49c41d1b8db03ef65e964ea",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "69e8fdeb3381eb24cc1c21a1fe12130797514e4ffbedbd8065644a729ed339a0",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "6f1ec2d089f463b078f9a07751fdf066390c35279c681b4b8920a25a63b28c36",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "a69a16a8ebe0bb40b423e9079f623ab98054edd8c88e6cc15a23274bf2ecf315",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "c13e55470aca22e4c8e3d98e0fd741a196ac7e4c933fe784f4bc08875f062a5b",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/messaging/slack.md",
+      "pattern": "slack_token",
+      "match_sha256": "e9386e352e96ace7bac7f3c0688464fc0cc7f58d6a8f374cfbbc60fac74e0538",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/skills/bundled/autonomous-ai-agents/autonomous-ai-agents-hermes-agent.md",
+      "pattern": "windows_home",
+      "match_sha256": "5c490c261ea297ec1c0c242d0e35e85d58d3fef3a7cb9427ddac4fd8d6ff0018",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/windows-wsl-quickstart.md",
+      "pattern": "windows_home",
+      "match_sha256": "b824f4c3ee4e0d34274e0a602ed822990a9976070fd46931b6cfec0e43d752fb",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/windows-wsl-quickstart.md",
+      "pattern": "windows_home",
+      "match_sha256": "e2d25de1afed87d605363aa17f080aca33990849dbbede052c9a06063ea22482",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "vendor/hermes/website/i18n/zh-Hans/docusaurus-plugin-content-docs/current/user-guide/windows-wsl-quickstart.md",
+      "pattern": "wsl_home",
+      "match_sha256": "db9d4ddd3e740d97c261691080074e0618adeca234ca44ac187eb75e60e120b3",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "website/USER_GUIDE.zh-CN.md",
+      "pattern": "wsl_home",
+      "match_sha256": "e23b0301d62034e1e7f4038e8e06d26a30ddfafade1766f23f26c8027201c43f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    },
+    {
+      "path": "website/docs-data.js",
+      "pattern": "wsl_home",
+      "match_sha256": "e23b0301d62034e1e7f4038e8e06d26a30ddfafade1766f23f26c8027201c43f",
+      "reason": "Public upstream fixture/example or generic user tutorial path"
+    }
+  ],
+  "public_data_files": [
+    {
+      "path": "vendor/hermes/apps/desktop/src/components/chat/intro-copy.jsonl",
+      "sha256": "96c863aaa7b1803fe16d357d617c7c19bb181253ccfbb4dd9b4cf78390b6d03b",
+      "reason": "Public upstream sample data or synthetic evaluation; not a personal runtime database"
+    },
+    {
+      "path": "vendor/hermes/datagen-config-examples/example_browser_tasks.jsonl",
+      "sha256": "0db7f31351d38f052300e70f65f66f98c3001a4f273c3c4ff3062209e2083f93",
+      "reason": "Public upstream sample data or synthetic evaluation; not a personal runtime database"
+    },
+    {
+      "path": "vendor/hermes/evals/session_search_schema/results/pr95570/openai_gpt-5.6-luna.jsonl",
+      "sha256": "4288e860770540a3749717bc1824e73e19c2cad942c97c91e9bf3565a57303c4",
+      "reason": "Public upstream sample data or synthetic evaluation; not a personal runtime database"
+    },
+    {
+      "path": "vendor/hermes/evals/session_search_schema/results/pr95570/openai_gpt-5.6-terra.jsonl",
+      "sha256": "9929d06feb8467d59c4f3c327f977183a69284353e8436d8e71b2523b93b3075",
+      "reason": "Public upstream sample data or synthetic evaluation; not a personal runtime database"
+    },
+    {
+      "path": "vendor/hermes/evals/session_search_schema/results/pr95570/qwen_qwen3-coder-30b-a3b-instruct.jsonl",
+      "sha256": "3644e18f15717a50894c5ee665b97c79f91bf4305ea10554a96d529d165c9e57",
+      "reason": "Public upstream sample data or synthetic evaluation; not a personal runtime database"
+    }
+  ]
+}

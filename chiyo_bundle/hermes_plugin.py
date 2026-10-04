@@ -16,7 +16,9 @@ def configuration():
     return home,json.loads(path.read_text(encoding='utf8'))
 
 def allowed(config,platform,conversation_key):
-    if platform in ('cli','local'):return bool(config.get('cli_owner',False))
+    if platform == 'cli':
+        return config.get('cli_owner') is True and config.get('local_owner_uid') == (os.getuid() if hasattr(os,'getuid') else None)
+    if platform == 'local':return False
     return bool(conversation_key and ':dm:' in conversation_key and conversation_key in config.get('gateway_bindings',{}).get(platform,[]))
 
 def services():
@@ -28,22 +30,15 @@ def services():
             if home!=_home:raise RuntimeError('CHIYO v0.1 requires one personal profile per process')
             return _instance
         from .instance import Instance
-        saved_home=os.environ.get('HERMES_HOME')
+        # Pass a private configuration mapping; never change process environment.
+        environment=dict(os.environ)
         # The owner services never make a model call during assembly. Hermes owns
         # the actual credentials/model selection, and Shadow is off by default.
         defaults={'CHIYO_MODEL_API_KEY':'unused-owner-service','CHIYO_MODEL':'unused-owner-service',
             'CHIYO_MODEL_BASE_URL':'https://api.example.invalid/v1'}
-        old={k:os.environ.get(k) for k in defaults}
-        for k,v in defaults.items():os.environ.setdefault(k,v)
-        try:
-            _instance=Instance(home/'chiyo/state',owner=cfg['owner'],memory=bool(cfg.get('memory')),life=bool(cfg.get('life')),host_llm=_host_llm,cognition_shadow=bool(cfg.get('cognition_shadow')),world_socket=cfg.get('world_body_socket'),supply_socket=cfg.get('life_supply_socket'),supply_subject=cfg.get('life_supply_subject'))
-            _home=home
-        finally:
-            if saved_home is None:os.environ.pop('HERMES_HOME',None)
-            else:os.environ['HERMES_HOME']=saved_home
-            for k,v in old.items():
-                if v is None:os.environ.pop(k,None)
-                else:os.environ[k]=v
+        for k,v in defaults.items():environment.setdefault(k,v)
+        _instance=Instance(home/'chiyo/state',owner=cfg['owner'],memory=bool(cfg.get('memory')),life=bool(cfg.get('life')),host_llm=_host_llm,cognition_shadow=bool(cfg.get('cognition_shadow')),world_socket=cfg.get('world_body_socket'),supply_socket=cfg.get('life_supply_socket'),supply_subject=cfg.get('life_supply_subject'),environment=environment)
+        _home=home
         return _instance
 
 def close_services():
@@ -69,15 +64,14 @@ def source_scope(source):
     return platform,build_session_key(source,profile=getattr(source,'profile',None))
 
 def memory_tool_gate(tool_name,args,**kwargs):
-    # M37 is the only automatic memory route for this personal profile. Raw
-    # Hermes transcript search could otherwise bring a forgotten fact back.
-    if tool_name not in ('session_search','memory'):return None
+    # Arbitrary tools can read transcripts or delegate that read to another agent.
+    # Default memory profiles allow only the controlled context and human commands.
     try:
         home,cfg=configuration()
     except Exception:
         return {'action':'block','message':'Personal memory configuration is unavailable; historical memory tools are blocked.'}
-    if cfg.get('memory'):
-        return {'action':'block','message':'This profile uses CHIYO personal memory. Use /chiyo_memory for corrections; raw transcript memory search is disabled.'}
+    if cfg.get('memory') and (cfg.get('memory_tool_policy') != 'unrestricted' or tool_name in ('memory','session_search')):
+        return {'action':'block','message':'Personal memory mode blocks model tools that could read forgotten history. Use /chiyo_memory; unrestricted tools require an explicit profile setting and remove this protection.'}
     return None
 
 def memory_command(raw_args,*,source=None):
@@ -93,7 +87,7 @@ def memory_command(raw_args,*,source=None):
             source_context="hermes:"+platform+":"+hashlib.sha256(str(key or "cli").encode()).hexdigest())
         if receipt.get('status') not in ('inserted','duplicate'):return '记忆命令未入库，修改没有执行。'
         try:
-            reply=svc.native.memory_controls.command(text,ref)
+            reply=svc.native.memory_controls.command(text,ref).replace("/memory", "/chiyo_memory")
         except Exception as exc:
             LOG.error('chiyo.memory.command.failed error_class=%s',type(exc).__name__)
             return '记忆修改没有执行：目标 ID 或控制记录不可用。请检查 ID；记录损坏时先修复，再重试。'
@@ -197,7 +191,7 @@ def write_status_evidence():
 class ChiyoContextEngine(ContextCompressor):
     def __init__(self):
         super().__init__(model='unconfigured',quiet_mode=True,config_context_length=32000)
-        self._pending=None;self._authorized=False;self._service=None;self._error=None;self._delegated=False
+        self._pending=None;self._authorized=False;self._service=None;self._error=None;self._delegated=False;self._memory_configured=True
     @property
     def name(self):return 'chiyo'
     def __deepcopy__(self,memo):
@@ -206,6 +200,7 @@ class ChiyoContextEngine(ContextCompressor):
         clone=type(self)();memo[id(self)]=clone;return clone
     def on_session_start(self,session_id,**kwargs):
         self._session_id=session_id;self._platform=kwargs.get('platform','cli');home,cfg=configuration()
+        self._memory_configured=bool(cfg.get('memory'))
         self._delegated=self._delegated or bool(kwargs.get('parent_session_id'))
         self._authorized=not self._delegated and allowed(cfg,kwargs.get('platform','cli'),kwargs.get('conversation_id'))
         if self._authorized:
@@ -253,7 +248,7 @@ class ChiyoContextEngine(ContextCompressor):
         positions=[i for i,m in enumerate(messages) if m.get('role')=='user' and m.get('content')==raw]
         start=positions[-1] if positions else next((i for i in range(len(messages)-1,-1,-1) if messages[i].get('role')=='user'),len(messages))
         safe=[m for m in messages[:start] if m.get('role')=='system']+messages[start:]
-        if svc is None:return safe # configured owner unavailable: exclude old transcript
+        if svc is None:return safe if self._memory_configured else None
         try:
             with _lock:
                 projection=svc.native.memory_controls.projection()

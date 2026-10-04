@@ -835,6 +835,7 @@ class AgencyDecisionAuthority:
         caller_module: str,
         store_root: Path | str,
         namespace: str = NAMESPACE_ISOLATED_TEST,
+        environ: Optional[Mapping[str, str]] = None,
     ) -> AgencyDecisionCapability:
         if not isinstance(lease, ActivityAuthorityLease) or not lease.held:
             raise UnauthorizedAgencyMutationError(
@@ -844,7 +845,7 @@ class AgencyDecisionAuthority:
             raise UnauthorizedAgencyMutationError(
                 f"caller_module={caller_module!r} is not authorized to hold AgencyDecisionCapability"
             )
-        if namespace == NAMESPACE_PRODUCTION and not is_agency_enabled():
+        if namespace == NAMESPACE_PRODUCTION and not is_agency_enabled(environ):
             raise UnauthorizedAgencyMutationError(
                 "AG-1 production execution is disabled by kill switch (AGENCY_ENABLED=false)"
             )

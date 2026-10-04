@@ -198,7 +198,7 @@ def assert_no_test_support_imported() -> dict[str, Any]:
     return {"offenders": offenders, "tests_support_imports": len([o for o in offenders if o.startswith("support")])}
 
 
-def resolve_state_root(state_root: Path | str | None = None) -> Path:
+def resolve_state_root(state_root: Path | str | None = None, *, install_root=None) -> Path:
     """Resolve and vet the Life production state root. Fail closed."""
     root = Path(state_root or DEFAULT_STATE_ROOT).expanduser().resolve()
     if ac.is_production_path(root):
@@ -206,9 +206,10 @@ def resolve_state_root(state_root: Path | str | None = None) -> Path:
             f"refused: {root} is inside a live production home {[str(p) for p in ac.PRODUCTION_HOMES]}; "
             "the Life state root must not share World/Body/Memory state"
         )
-    if INSTALL_ROOT.resolve() not in root.parents and root != INSTALL_ROOT.resolve():
+    install = Path(install_root or INSTALL_ROOT).expanduser().resolve()
+    if install not in root.parents and root != install:
         raise ProductionRootRejected(
-            f"refused: {root} is outside the Life Runtime install root {INSTALL_ROOT}"
+            f"refused: {root} is outside the Life Runtime install root {install}"
         )
     root.mkdir(parents=True, exist_ok=True)
     mode = root.stat().st_mode & 0o777
@@ -273,9 +274,10 @@ class ProductionLifeRuntime:
         enable_goal_source: bool = True,
         apply_production_cutover: Optional[bool] = None,
         audit_journal_factory: Optional[Callable[[Path], Any]] = None,
+        install_root: Path | str | None = None,
     ) -> None:
         self.audit_journal_factory = audit_journal_factory
-        self.state_root = resolve_state_root(state_root)
+        self.state_root = resolve_state_root(state_root, install_root=install_root)
         self.cutover = production_cutover_requested() if apply_production_cutover is None else bool(apply_production_cutover)
         self.sandbox_files_dir = self.state_root / "sandbox_files"
         self.sandbox_files_dir.mkdir(parents=True, exist_ok=True)
@@ -486,6 +488,7 @@ class ProductionLifeRuntime:
             caller_module=CALLER_AGENCY_DECISION,
             store_root=self.state_root,
             namespace=NAMESPACE_AGENCY,
+            environ={ag1.AGENCY_ENABLED_ENV: 'true' if self.kill_switches.agency_enabled else 'false'},
         )
         self.cognition_adapter = cognition_adapter or DisabledCognitionAdapter()
         self.decision_service = ag2.AgencyDecisionService(
@@ -749,6 +752,7 @@ def build_production_life_runtime(
     enable_goal_source: bool = True,
     apply_production_cutover: Optional[bool] = None,
     audit_journal_factory: Optional[Callable[[Path], Any]] = None,
+    install_root: Path | str | None = None,
 ) -> ProductionLifeRuntime:
     """Assemble the V0.1 production runtime.  Caller owns ``close()``.
 
@@ -766,4 +770,5 @@ def build_production_life_runtime(
         enable_goal_source=enable_goal_source,
         apply_production_cutover=apply_production_cutover,
         audit_journal_factory=audit_journal_factory,
+        install_root=install_root,
     )
