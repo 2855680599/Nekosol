@@ -1,13 +1,11 @@
 /**
  * Nekosol DOCS - Clean Minimalist Application Controller
- * Handles Home / Docs View Switching, SPA Routing, Spotlight Cards, Command Copy Bar, Dynamic TOC, Search Modal
+ * Handles Home / Docs View Switching, SPA Routing, Command Copy Bar, Dynamic TOC, Search Modal
  */
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
-  initSpotlightCards();
   initCommandCopy();
-  initChronoCore();
   renderSidebar();
   initRouting();
   initSearch();
@@ -61,22 +59,6 @@ function updateThemeIcon(theme) {
 }
 
 /* ==========================================================================
-   2. 卡片聚光灯微动效 (Spotlight Card Hover Tracking)
-   ========================================================================== */
-function initSpotlightCards() {
-  const cards = document.querySelectorAll('.spotlight-card');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${x}px`);
-      card.style.setProperty('--mouse-y', `${y}px`);
-    });
-  });
-}
-
-/* ==========================================================================
    3. 命令行一键复制微交互 (Command Copy Bar)
    ========================================================================== */
 function initCommandCopy() {
@@ -103,205 +85,6 @@ function initCommandCopy() {
       }
     });
   });
-}
-
-/* ==========================================================================
-   4. 千代时空晶核 (Chrono-Core 3D Engine)
-   ========================================================================== */
-function initChronoCore() {
-  const canvas = document.getElementById('chrono-canvas');
-  if (!canvas) return;
-
-  const ctx = canvas.getContext('2d');
-  const wrap = canvas.parentElement;
-  let width = (canvas.width = wrap.clientWidth || 600);
-  let height = (canvas.height = wrap.clientHeight || 260);
-
-  window.addEventListener('resize', () => {
-    if (wrap.clientWidth > 0) {
-      width = canvas.width = wrap.clientWidth;
-      height = canvas.height = wrap.clientHeight;
-    }
-  });
-
-  // 3D 几何正十二面体 / 拓扑晶核点位计算
-  const phi = (1 + Math.sqrt(5)) / 2;
-  const baseVertices = [
-    [-1, -1, -1], [-1, -1, 1], [-1, 1, -1], [-1, 1, 1],
-    [1, -1, -1], [1, -1, 1], [1, 1, -1], [1, 1, 1],
-    [0, -1 / phi, -phi], [0, -1 / phi, phi], [0, 1 / phi, -phi], [0, 1 / phi, phi],
-    [-1 / phi, -phi, 0], [-1 / phi, phi, 0], [1 / phi, -phi, 0], [1 / phi, phi, 0],
-    [-phi, 0, -1 / phi], [phi, 0, -1 / phi], [-phi, 0, 1 / phi], [phi, 0, 1 / phi]
-  ];
-
-  // 提取线框连接 (近距离点对连接)
-  const edges = [];
-  for (let i = 0; i < baseVertices.length; i++) {
-    for (let j = i + 1; j < baseVertices.length; j++) {
-      const v1 = baseVertices[i];
-      const v2 = baseVertices[j];
-      const d = Math.hypot(v1[0] - v2[0], v1[1] - v2[1], v1[2] - v2[2]);
-      if (Math.abs(d - 2 / phi) < 0.05) {
-        edges.push([i, j]);
-      }
-    }
-  }
-
-  let rotX = 0.3;
-  let rotY = 0;
-  let targetRotX = 0.3;
-  let targetRotY = 0;
-  let isHovered = false;
-  let pulseRadius = 0;
-  let pulseMax = 0;
-
-  wrap.addEventListener('mousemove', e => {
-    const rect = wrap.getBoundingClientRect();
-    const nx = (e.clientX - rect.left) / rect.width - 0.5;
-    const ny = (e.clientY - rect.top) / rect.height - 0.5;
-    targetRotY = nx * 1.8;
-    targetRotX = -ny * 1.2;
-    isHovered = true;
-  });
-
-  wrap.addEventListener('mouseleave', () => {
-    isHovered = false;
-  });
-
-  wrap.addEventListener('click', () => {
-    pulseRadius = 10;
-    pulseMax = Math.max(width, height) * 0.75;
-  });
-
-  function project(p, size) {
-    const cosY = Math.cos(rotY);
-    const sinY = Math.sin(rotY);
-    const cosX = Math.cos(rotX);
-    const sinX = Math.sin(rotX);
-
-    // 绕 Y 轴
-    let x1 = p[0] * cosY - p[2] * sinY;
-    let z1 = p[0] * sinY + p[2] * cosY;
-
-    // 绕 X 轴
-    let y2 = p[1] * cosX - z1 * sinX;
-    let z2 = p[1] * sinX + z1 * cosX;
-
-    const fov = 340;
-    const scale = fov / (fov + z2 * 45);
-
-    return {
-      x: width / 2 + x1 * size * scale,
-      y: height / 2 + y2 * size * scale,
-      z: z2,
-      scale
-    };
-  }
-
-  let autoTime = 0;
-
-  function render() {
-    ctx.clearRect(0, 0, width, height);
-
-    autoTime += 0.012;
-    if (!isHovered) {
-      targetRotY += 0.007;
-      targetRotX = Math.sin(autoTime * 0.5) * 0.25;
-    }
-    rotX += (targetRotX - rotX) * 0.06;
-    rotY += (targetRotY - rotY) * 0.06;
-
-    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
-    const accentColor = isLight ? '2, 132, 199' : '56, 189, 248';
-    const dimColor = isLight ? '15, 23, 42' : '226, 232, 240';
-
-    // 1. 绘制生命活动同心能量光环 (Orbital Rings)
-    const ringRadii = [90, 130, 168];
-    const ringTilts = [0.25, -0.4, 0.65];
-    const ringSpeeds = [0.015, -0.01, 0.008];
-
-    for (let r = 0; r < ringRadii.length; r++) {
-      ctx.save();
-      ctx.translate(width / 2, height / 2);
-      ctx.rotate(rotY * 0.3 + ringTilts[r]);
-      ctx.scale(1, 0.32);
-
-      ctx.beginPath();
-      ctx.arc(0, 0, ringRadii[r], 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${accentColor}, ${0.12 - r * 0.02})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // 轨道上的微型运行卫星节点 (Typed Node)
-      const satAngle = autoTime * (ringSpeeds[r] * 60);
-      const sx = Math.cos(satAngle) * ringRadii[r];
-      const sy = Math.sin(satAngle) * ringRadii[r];
-      ctx.beginPath();
-      ctx.arc(sx, sy, 3, 0, Math.PI * 2);
-      ctx.fillStyle = `rgb(${accentColor})`;
-      ctx.shadowColor = `rgb(${accentColor})`;
-      ctx.shadowBlur = 8;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-
-      ctx.restore();
-    }
-
-    // 2. 点击爆发心跳扩散环 (Pulse Wave)
-    if (pulseRadius > 0 && pulseRadius < pulseMax) {
-      pulseRadius += (pulseMax - pulseRadius) * 0.08 + 1.2;
-      const alpha = Math.max(0, 1 - pulseRadius / pulseMax) * 0.45;
-      ctx.beginPath();
-      ctx.arc(width / 2, height / 2, pulseRadius, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(${accentColor}, ${alpha})`;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-
-    // 3. 核心 3D 拓扑晶核多面体绘制
-    const projected = baseVertices.map(v => project(v, 48));
-
-    // 绘制晶核外连线
-    ctx.lineWidth = 1.2;
-    for (let i = 0; i < edges.length; i++) {
-      const e = edges[i];
-      const p1 = projected[e[0]];
-      const p2 = projected[e[1]];
-      const avgZ = (p1.z + p2.z) / 2;
-      const alpha = Math.min(0.65, Math.max(0.15, (avgZ + 2.5) / 5));
-
-      ctx.beginPath();
-      ctx.moveTo(p1.x, p1.y);
-      ctx.lineTo(p2.x, p2.y);
-      ctx.strokeStyle = `rgba(${accentColor}, ${alpha})`;
-      ctx.stroke();
-    }
-
-    // 绘制晶体节点端点
-    for (let i = 0; i < projected.length; i++) {
-      const p = projected[i];
-      const alpha = Math.min(0.9, Math.max(0.2, (p.z + 2.5) / 5));
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, 2.2 * p.scale, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${dimColor}, ${alpha})`;
-      ctx.fill();
-    }
-
-    // 晶核中心发光微核 (Heartbeat Core)
-    const coreGlow = Math.sin(autoTime * 4) * 2 + 6;
-    ctx.beginPath();
-    ctx.arc(width / 2, height / 2, coreGlow, 0, Math.PI * 2);
-    ctx.fillStyle = `rgb(${accentColor})`;
-    ctx.shadowColor = `rgb(${accentColor})`;
-    ctx.shadowBlur = 16;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-
-    requestAnimationFrame(render);
-  }
-
-  requestAnimationFrame(render);
 }
 
 /* ==========================================================================
@@ -573,7 +356,7 @@ function initSearch() {
 
   function renderSearchResults(query) {
     if (!query) {
-      resultsContainer.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--c-text-3); font-size: 0.88rem;">键入关键词实时搜索千代文档...</div>';
+      resultsContainer.innerHTML = '<div style="padding: 24px; text-align: center; color: var(--c-text-3); font-size: 0.88rem;">键入关键词实时搜索 Nekosol 文档...</div>';
       return;
     }
 
