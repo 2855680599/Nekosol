@@ -1,4 +1,4 @@
-# CHIYO v0.1 使用教程网站
+# Nekosol v0.1 使用教程网站
 
 沿用作者提供的 chiyo-site 页面壳，替换为 17 篇真实使用与维护文档。直接打开 index.html，或在此目录运行 `python -m http.server 8766 --bind 127.0.0.1`。
 
