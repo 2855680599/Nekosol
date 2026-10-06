@@ -7,6 +7,12 @@ const DOCS_TREE = [
         "title": "项目定位与新增功能"
       },
       {
+        "id": "changelog",
+        "title": "版本动态与更新说明",
+        "badge": "NEW"
+      },
+
+      {
         "id": "quickstart",
         "title": "第一次使用，从这里开始"
       },
@@ -90,6 +96,26 @@ const DOCS_TREE = [
 ];
 
 const DOCS_CONTENT = {
+  "changelog": {
+    "title": "版本动态与更新说明",
+    "summary": "nyairo 框架最新版本变化、新增功能亮点与详细改动记录。",
+    "toc": [
+        {
+            "id": "changelog-v0-1-0-rc6",
+            "text": "v0.1.0-rc6 · 一条命令平滑更新与底层保护"
+        },
+        {
+            "id": "changelog-v0-1-0-rc5",
+            "text": "v0.1.0-rc5 · 自定义专属人设与隐私修复"
+        },
+        {
+            "id": "changelog-v0-1-0-rc4",
+            "text": "v0.1.0-rc4 · 首个公开体验版本"
+        }
+    ],
+    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">版本更新概览</div><p>这里记录 nyairo 框架每个版本的更新亮点与改动。当前最新版本为 <strong>v0.1.0-rc6</strong>，带来了全自动整包更新与数据保护机制。</p></div><h2 id=\"changelog-v0-1-0-rc6\">v0.1.0-rc6 · 一条命令平滑更新与底层保护</h2><p class=\"doc-date\" style=\"color: var(--c-text-3); font-size: 0.85rem; margin-bottom: 14px;\">发布时间：2026 年 10 月 6 日</p><p>在 rc6 中，我们为 Linux 和 Windows WSL 用户带来了更轻松的更新体验。从这个版本开始，你再也不用手动反复折腾环境了：</p><ul><li><strong>一条命令全自动更新</strong>：在终端输入 <code>nyairo update</code>，程序会自动升级到最新版本，并一起带上适配好的模型引擎；你自定义的人设（<code>SOUL.md</code>）、聊天记录、长期记忆和模型密钥全都在 <code>~/.nyairo</code> 目录完好保留，不用重新配置。</li><li><strong>后悔药：一键回滚</strong>：更新后如果觉得不习惯，输入 <code>nyairo update --rollback</code> 就能一秒退回上一个稳定版本，升级期间新聊的记录依然会被完整保留。</li><li><strong>意外中断保护</strong>：更新途中如果遇到断网或关机，输入 <code>nyairo update --recover</code> 即可一键恢复；底层引擎增加了整包保护，防止被误操作覆盖。</li><li><strong>老用户轻松搬家</strong>：还在使用 rc5 的小伙伴，通过一条迁移命令就能无痛接入这套省心的更新系统。</li></ul><div class=\"code-block\"><div class=\"code-header\"><span>更新命令</span><button class=\"copy-btn\" type=\"button\">复制</button></div><pre><code>nyairo update</code></pre></div><p>相关资源：<a href=\"https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc6\" target=\"_blank\" rel=\"noopener noreferrer\">GitHub Release 发行页面与校验包</a> · <a href=\"#update\">查看详细更新教程</a></p><h2 id=\"changelog-v0-1-0-rc5\">v0.1.0-rc5 · 自定义专属人设与隐私修复</h2><p class=\"doc-date\" style=\"color: var(--c-text-3); font-size: 0.85rem; margin-bottom: 14px;\">发布时间：2026 年 10 月 4 日</p><ul><li><strong>专属 AI 个体人设</strong>：新安装默认提供纯净中性模板，打开 <code>~/.nyairo/SOUL.md</code> 就能随心定义名字、说话语气和相处风格，打造独一无二的专属伙伴。</li><li><strong>对话遗忘问题修复</strong>：解决了特定情况下短对话可能漏掉上下文的缺陷，日常交流更加连贯自然。</li><li><strong>隐私权限安全加固</strong>：默认拦截了可能读取磁盘历史的工具，确保所有记忆只保存在你自己的设备本地。</li></ul><h2 id=\"changelog-v0-1-0-rc4\">v0.1.0-rc4 · 首个公开体验版本</h2><p class=\"doc-date\" style=\"color: var(--c-text-3); font-size: 0.85rem; margin-bottom: 14px;\">发布时间：2026 年 10 月 2 日</p><p>搭建了 nyairo 的核心骨架：长期记忆存储、独立生活状态记录、虚拟世界与身体感知三大基石，让 AI 从单次对话的工具人走向具有长久生活状态的个体。</p>"
+},
+
   "intro": {
     "title": "项目定位与新增功能",
     "summary": "认识框架的五项主要能力，以及它们在第一版中的实际范围。",

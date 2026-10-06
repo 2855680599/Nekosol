@@ -134,9 +134,9 @@ function routeHash() {
   const navHome = document.getElementById('nav-home');
   const navDocs = document.getElementById('nav-docs');
   const navQuickstart = document.getElementById('nav-quickstart');
-  const navStatus = document.getElementById('nav-status');
+  const navChangelog = document.getElementById('nav-changelog');
 
-  [navHome, navDocs, navQuickstart, navStatus].forEach(nav => {
+  [navHome, navDocs, navQuickstart, navChangelog].forEach(nav => {
     if (nav) nav.classList.remove('active');
   });
 
@@ -161,8 +161,8 @@ function routeHash() {
   }
   if (docId === 'quickstart' && navQuickstart) {
     navQuickstart.classList.add('active');
-  } else if ((docId === 'status-matrix' || docId === 'current-status') && navStatus) {
-    navStatus.classList.add('active');
+  } else if (docId === 'changelog' && navChangelog) {
+    navChangelog.classList.add('active');
   } else if (navDocs) {
     navDocs.classList.add('active');
   }
