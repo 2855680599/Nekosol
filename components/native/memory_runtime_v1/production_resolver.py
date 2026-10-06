@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import os
 import pathlib
 import re
@@ -48,6 +49,16 @@ from memory_runtime_v1.runtime import Authority, MemoryObject, Namespace  # noqa
 FAULT_ENV = "CHIYO_NATIVE_MEMORY_FAULT_INJECT"
 RESOLVER_TYPE = "PRODUCTION_NATIVE"
 RESOLVER_VERSION = "production-native-memory-resolver-v0"
+
+# Outcome of the most recent resolve attempt. The call still returns a tuple for
+# compatibility, so without these a caller cannot tell "there was nothing to
+# recall" from "the pipeline failed": both used to be ().
+RESOLVE_OK_WITH_RESULTS = "OK_WITH_RESULTS"
+RESOLVE_OK_EMPTY = "OK_EMPTY"
+RESOLVE_ERROR = "ERROR"
+# Deliberate policy refusal. Not an empty result and not a fault, so it is kept
+# distinct from both rather than being folded into either.
+RESOLVE_DENIED = "DENIED"
 
 SEALED_SHA256 = {
     "readonly_recall_adapter.py":
@@ -212,6 +223,11 @@ class ProductionNativeMemoryResolver:
         self._resolve_lock = threading.RLock()
         self.state = "UNAVAILABLE"
         self.reason = "not_initialised"
+        # Observability for NYA-AUDIT-012: an empty tuple must not be ambiguous.
+        self.last_resolve_status: str | None = None
+        self.last_resolve_reason: str | None = None
+        self.last_error_type: str | None = None
+        self.logger = logging.getLogger("chiyo.native-memory-resolver")
         self.component_sha256: dict[str, str | None] = {}
         self.m3_sha256: dict[str, str | None] = {}
         self._adapter = None
@@ -350,6 +366,13 @@ class ProductionNativeMemoryResolver:
         return {"event_id": str(newest["event_id"]), "age_seconds": round(age, 3),
                 "conversation_id": str(native_conversation_id)}
 
+    def _note(self, status: str, reason: str,
+              error_type: str | None = None) -> None:
+        """Record the outcome of the attempt that is about to return."""
+        self.last_resolve_status = status
+        self.last_resolve_reason = reason
+        self.last_error_type = error_type
+
     # ------------------------------------------------------------- resolve --- #
     def __call__(self, *, visible_turn_ids=None, **kwargs):
         lock=getattr(self,'_resolve_lock',None)
@@ -368,39 +391,65 @@ class ProductionNativeMemoryResolver:
                  messages: Any = None) -> tuple[MemoryObject, ...]:
         self.stats.invocations += 1
         if self.state != "READY":
+            # Not a normal empty result: the resolver never became usable, and a
+            # caller must not read this as "no recall was needed".
+            self._note(RESOLVE_ERROR, "RESOLVER_NOT_READY")
             return ()
         # test-only fault injection (default OFF): lets the canary exercise the hook's
         # NATIVE_ERROR_BYPASS / ordinary-request-survives path with a real failure
         _fault = self.environment.get(FAULT_ENV, "").strip().lower()
         if _fault in ("resolver_raise", "raise"):
             self.stats.fault_injections += 1
+            self._note(RESOLVE_ERROR, "FAULT_INJECTION_RESOLVER_RAISE", "RuntimeError")
             raise RuntimeError("fault injection: resolver_raise")
         try:
             mapping = self.map_identity(ids)
             if not mapping["ok"]:
                 self.stats.identity_denied += 1
+                self._note(RESOLVE_DENIED, "IDENTITY_DENIED")
                 return ()
             if self.live_text_gate_enabled and self._classify_intent is not None:
                 live_intent, live_reason = self._classify_intent(
                     str(current_user_text or ""))
                 if live_intent not in ("P1", "P2"):
                     self.gate_denied_live_text += 1
+                    self._note(RESOLVE_DENIED, "LIVE_TEXT_GATE_DENIED")
                     return ()
             trigger = self.resolve_current_turn(self._identity["native_conversation_id"])
             if trigger is None or (current_user_event_id is not None and
                                    str(trigger['event_id']) != str(current_user_event_id)):
                 self.stats.no_current_turn += 1
+                self._note(RESOLVE_OK_EMPTY, "NO_CURRENT_TURN")
                 return ()
             got = self._adapter.evaluate_trigger(trigger["event_id"])
             avail = got["availability"]
             if not str(avail.get("outcome", "")).startswith("SURFACE"):
                 self.stats.no_surface += 1
+                self._note(RESOLVE_OK_EMPTY, "NO_SURFACE")
                 return ()
             objects = self._consume(got, trigger, mapping, ids)
             self.stats.emitted_memory_objects += len(objects)
+            if objects:
+                self._note(RESOLVE_OK_WITH_RESULTS, "OK")
+            else:
+                self._note(RESOLVE_OK_EMPTY, "NO_OBJECTS_AFTER_CONSUME")
             return tuple(objects)
-        except Exception:
+        except Exception as exc:
             self.stats.errors += 1
+            # Failure must never look like an ordinary empty result. Record the
+            # class for the status projection and log type + subsystem + the
+            # correlation ids we already hold; no prompt or user text is logged.
+            self._note(RESOLVE_ERROR, "RESOLVER_EXCEPTION", type(exc).__name__)
+            try:
+                self.logger.error(
+                    "memory.resolver.resolve_failed subsystem=native_recall "
+                    "exception_type=%s conversation_id_set=%s user_event_id_set=%s",
+                    type(exc).__name__,
+                    bool(self._identity.get("native_conversation_id")),
+                    bool(current_user_event_id),
+                )
+            except Exception:
+                pass
             return ()
 
     def _consume(self, got: dict[str, Any], trigger: dict[str, Any],
@@ -498,6 +547,11 @@ class ProductionNativeMemoryResolver:
             "resolver_configured": True,
             "resolver_state": self.state,
             "resolver_reason": self.reason,
+            # Sanitised: a status word, a reason code and an exception class name.
+            # Never user text, prompts, keys or filesystem paths.
+            "last_resolve_status": self.last_resolve_status,
+            "last_resolve_reason": self.last_resolve_reason,
+            "last_error_type": self.last_error_type,
             "invocations": self.stats.invocations,
             "identity_denied": self.stats.identity_denied,
             "no_current_turn": self.stats.no_current_turn,
@@ -541,4 +595,6 @@ class ProductionNativeMemoryResolver:
 
 
 __all__ = ["ProductionNativeMemoryResolver", "RESOLVER_TYPE", "RESOLVER_VERSION",
-           "SEALED_SHA256", "conversation_id_for"]
+           "SEALED_SHA256", "conversation_id_for",
+           "RESOLVE_OK_WITH_RESULTS", "RESOLVE_OK_EMPTY", "RESOLVE_ERROR",
+           "RESOLVE_DENIED"]

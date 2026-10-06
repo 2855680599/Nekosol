@@ -131,16 +131,41 @@ def save_note(svc, grant_id, title, content):
     return rpc(request)
 
 
+def _storage_view(svc):
+    """M0 size / event count / formation cursor, or None when unavailable.
+
+    Read-only observation: it never counts as a retention action. ``svc`` is the
+    Instance itself, which owns storage_policy().
+    """
+    policy = getattr(svc, 'storage_policy', None)
+    if not callable(policy):
+        return None
+    try:
+        return policy()
+    except Exception:
+        return None
+
+
 def status_snapshot(svc):
     world = getattr(svc.native, 'world_body', None)
     memory = 'OFF'
+    memory_last_resolve = None
+    memory_reason = None
     if svc.memory:
         try:
             healthy = svc.native.memory_controls.projection().healthy
-            memory = 'READY' if healthy and svc.native.m37_resolver.state == 'READY' else 'UNAVAILABLE'
+            resolver = svc.native.m37_resolver
+            memory = 'READY' if healthy and resolver.state == 'READY' else 'UNAVAILABLE'
+            # A bare READY/UNAVAILABLE cannot distinguish "nothing was recalled"
+            # from "recall failed"; surface the last attempt's own verdict too.
+            memory_last_resolve = getattr(resolver, 'last_resolve_status', None)
+            memory_reason = (getattr(resolver, 'last_error_type', None)
+                             or getattr(resolver, 'last_resolve_reason', None))
         except Exception:
             memory = 'UNAVAILABLE'
-    result = {'memory': memory, 'life': life_view(svc),
+    result = {'memory': memory, 'memory_last_resolve': memory_last_resolve,
+              'memory_reason': memory_reason, 'storage': _storage_view(svc),
+              'life': life_view(svc),
               'supply': supply_view(svc), 'world_body': {'state': 'OFF'}}
     if world is not None:
         status = world.get_status()

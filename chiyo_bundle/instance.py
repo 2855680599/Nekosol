@@ -9,6 +9,23 @@ def install_paths():
     for p in [ROOT/'vendor/hermes',NATIVE,NATIVE/'src',NATIVE/'adapters']:
         sys.path.insert(0,str(p))
 
+def _readonly_scalar(path,sql):
+    """One read-only query against a state database; None when it is absent.
+
+    Opens with mode=ro so reporting can never create, journal or modify the file
+    it is describing (M0 in particular must stay untouched by observation).
+    """
+    import urllib.parse
+    if not path or not os.path.exists(str(path)):return None
+    encoded=urllib.parse.quote(str(path),safe='/:')
+    connection=sqlite3.connect('file:'+encoded+'?mode=ro',uri=True,timeout=5.0)
+    try:
+        row=connection.execute(sql).fetchone()
+        return row[0] if row else None
+    finally:
+        connection.close()
+
+
 class Instance:
     def __init__(self,state,*,owner='local-owner',memory=False,life=False,tools=False,host_llm=None,cognition_shadow=False,world_socket=None,supply_socket=None,supply_subject=None,environment=None):
         if not isinstance(owner,str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,127}',owner):raise ValueError('owner must be a 1–128 character ASCII identifier, starting with a letter or digit')
@@ -270,9 +287,41 @@ class Instance:
                 if self.requests is not None:
                     self.requests.close();self.requests=None
 
+    def storage_policy(self):
+        """Long-term storage policy, stated explicitly rather than implied.
+
+        M0 is the authoritative fact source and is kept indefinitely: it is
+        append-only (M0 itself refuses UPDATE and DELETE through database
+        triggers), so nothing here trims it. M1/M2/M3 are rebuildable derived
+        layers and may be cleared and reformed from M0 at any time. This is a
+        policy statement and an observability surface; it performs no deletion
+        and no archiving.
+        """
+        m0=self.paths.get('m0_db');m1=self.paths.get('m1_db')
+        events=None;size=None;cursor=None
+        try:
+            events=_readonly_scalar(m0,'SELECT COUNT(*) FROM evidence_events')
+            if m0 and os.path.exists(str(m0)):size=os.path.getsize(str(m0))
+            cursor=_readonly_scalar(m1,"SELECT value FROM formation_state WHERE key='formation_cursor_rowid'")
+        except Exception as exc:
+            return {'authority':'M0_APPEND_ONLY_INDEFINITE','derived_layers':'M1_M2_M3_REBUILDABLE',
+                'retention':'NONE_BY_DESIGN','archiving':'NOT_IMPLEMENTED','error':type(exc).__name__}
+        return {'authority':'M0_APPEND_ONLY_INDEFINITE','derived_layers':'M1_M2_M3_REBUILDABLE',
+            'retention':'NONE_BY_DESIGN','archiving':'NOT_IMPLEMENTED',
+            'm0_events':int(events) if events is not None else None,
+            'm0_bytes':int(size) if size is not None else None,
+            'formation_cursor':int(cursor) if cursor is not None else None}
+
     def health(self):
+        try:storage=self.storage_policy()
+        except Exception:storage=None
         return {'engine':'Hermes AIAgent','owner':self.owner,'memory_enabled':self.memory,
             'memory_control_healthy':self.native.memory_controls.projection().healthy if self.native.memory_controls else None,
             'memory_resolver_state':getattr(self.native.m37_resolver,'state',None),
+            # NYA-AUDIT-012: keep "no recall" distinguishable from a recall fault.
+            'memory_last_resolve':getattr(self.native.m37_resolver,'last_resolve_status',None),
+            'memory_last_resolve_reason':getattr(self.native.m37_resolver,'last_resolve_reason',None),
+            'memory_last_error_type':getattr(self.native.m37_resolver,'last_error_type',None),
+            'storage':storage,
             'life_loaded':bool(self.life_wrapper),'proactive_enabled':False,'autonomous_action_enabled':False,
             'hermes_version':'0.21.0','state_is_independent':True}

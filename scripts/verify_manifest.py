@@ -3,12 +3,24 @@ from pathlib import Path
 import argparse,hashlib,json,os
 ROOT=Path(__file__).resolve().parents[1]
 VALID_STATUSES={'AUTOMATED_QUALIFIED_EXPERIENCE_CANDIDATE','SOURCE_REVIEWED_TARGETED_TESTS_PASSED'}
+# Test-tool byproducts that must not count as shipped source. This list is kept
+# deliberately tiny and exact: every entry is a path a pinned tool provably
+# writes while `scripts/test.py` runs, and that the project's own .gitignore
+# already treats as generated (vendor/hermes/.gitignore lists .pytest_cache/ and
+# test_durations.json). It must never be widened to patterns such as
+# "**/.cache/**", "*.json" or ".*", which would hide real source.
+GENERATED_DIRECTORY_NAMES={'.pytest_cache'}
+GENERATED_FILES={'vendor/hermes/test_durations.json'}
 
 def installed_directory(relative):
  parts=relative.parts
  return (parts==('.git',) or '__pycache__' in parts or
+  any(part in GENERATED_DIRECTORY_NAMES for part in parts) or
   parts[:3] in (('vendor','hermes','.venv'),('vendor','hermes','venv')) or
   (len(parts)==3 and parts[:2]==('vendor','hermes') and parts[-1].endswith('.egg-info')))
+
+def generated_file(relative):
+ return relative.as_posix() in GENERATED_FILES
 
 def verify(root):
  root=Path(root).resolve()
@@ -27,7 +39,7 @@ def verify(root):
    elif path.is_symlink():actual.add(relative.as_posix());dirs.remove(directory)
   for name in names:
    relative=(base/name).relative_to(root)
-   if relative.as_posix() not in ('MANIFEST.json','.git'):actual.add(relative.as_posix())
+   if relative.as_posix() not in ('MANIFEST.json','.git') and not generated_file(relative):actual.add(relative.as_posix())
  extras=sorted(actual-set(files))
  lines=''.join(f'{sha}  {name}\n' for name,sha in sorted(files.items()))
  if hashlib.sha256(lines.encode()).hexdigest()!=data['tree_sha256']:errors.append('tree_sha256')

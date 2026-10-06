@@ -101,11 +101,20 @@ def status_command(raw_args='',*,source=None):
     from .presence import status_snapshot
     status=status_snapshot(svc);life=status['life'];supply=status['supply'];world=status['world_body']
     cog=life.get('cognition',{})
-    lines=['该个体当前模块状态', '记忆：'+status['memory'],
+    memory_line='记忆：'+status['memory']
+    if status.get('memory_last_resolve'):
+        memory_line+='；最近召回 '+str(status['memory_last_resolve'])
+        if status.get('memory_reason'):memory_line+='（'+str(status['memory_reason'])+'）'
+    lines=['该个体当前模块状态', memory_line,
         '生活：'+life['state']+'；当前状态 '+str(life.get('life_state','未知')),
         '世界身体：'+world['state']+'；位置 '+str(world.get('location','未知'))+'；姿态 '+str(world.get('pose','未知')),
         'Life Supply：'+supply['state']+'；待考虑事项 '+str(supply.get('opportunity_count',0)),
         '认知：'+cog.get('state','OFF')+'；模型调用 '+str(cog.get('provider_calls',0))+'；有效判断 '+str(cog.get('valid_outputs',0))]
+    storage=status.get('storage')
+    if storage:
+        lines.append('M0 events：'+str(storage.get('m0_events'))
+            +'；M0 database size：'+str(storage.get('m0_bytes'))
+            +' bytes；formation cursor：'+str(storage.get('formation_cursor')))
     for row in supply.get('opportunities',[]):lines.append('待考虑：'+row['topic'])
     for row in supply.get('artifacts',[]):lines.append('资源文档：'+row['title']+'；ID '+str(row['id']))
     if cog.get('last_decision'):lines.append('最近判断：'+json.dumps(cog['last_decision'],ensure_ascii=False))

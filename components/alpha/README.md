@@ -1,3 +1,28 @@
+> ### ⚠️ 身份声明：本目录不是生产运行时
+>
+> **Not the production runtime. Read this before changing anything here.**
+>
+> - **此目录不是生产运行时**，也不属于 nyairo 用户实际运行的那套 `components/life/` 实现。
+> - **不被 `chiyo_bundle` 装配。** `chiyo_bundle/` 与 `plugins/` 都不引用本目录；本目录的
+>   `chiyo/life_runtime/`（含其自带的 `memory_runtime_v1`）是**已分叉**的平行实现，与现役
+>   Life Runtime 不是同一份代码。
+> - **不参与正常功能修复。** 用户报告的生活 / 记忆问题，几乎都不在这里。
+> - **定位**：历史实现、验收脚本与对照（control）实现，用于 `scripts/test_alpha.py` 的
+>   Alpha A–E 验收与隔离对照。
+> - **要修改生产 Life Runtime，请去 [`components/life/`](../life/README.md)**，不要改这里。
+>
+> 现有目录里两份容易混淆的实现：
+>
+> | 用途 | 路径 |
+> | --- | --- |
+> | **生产 / 现役**（用户实际运行） | `components/life/` |
+> | 历史 / 验收 / 对照（本目录） | `components/alpha/chiyo/life_runtime/` |
+>
+> `scripts/test_alpha.py` 测的是**本目录的历史/对照实现**，不是生产运行时；它的通过不代表
+> 生产 Life Runtime 通过。详见 [FEATURES.md](../../FEATURES.md) 与 [TESTING.md](../../TESTING.md)。
+
+---
+
 # CHIYO
 
 **Persistent Digital Individual**

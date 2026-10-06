@@ -18,4 +18,17 @@
 
 新增体验命令：`/chiyo_status` 查询实际模块状态，`/chiyo_consider 请求` 提交明确的认知 Shadow 请求，`/chiyo_note 标题 | 正文` 保存资源文档，`/chiyo_note read ID` 读取文档。普通聊天不自动升级为行动请求。认知模型只接收有界的候选结构，判断是否响应、推迟等，不是自由任务规划；Shadow 不改变生活状态。
 
+## `components/alpha/` 不是生产运行时
+
+仓库里有两份容易混淆的 Life Runtime：
+
+| 用途 | 路径 |
+| --- | --- |
+| **生产 / 现役**（用户实际运行） | `components/life/` |
+| 历史 / 验收 / 对照（**不是运行时**） | `components/alpha/chiyo/life_runtime/` |
+
+`components/alpha/` 是已分叉的**历史与对照实现**，其中还带有一份平行的 `memory_runtime_v1`。它**不被 `chiyo_bundle` 装配**，也**不参与正常功能修复**：`chiyo_bundle/` 与 `plugins/` 都不引用它，`tests/test_alpha_identity.py` 用静态扫描加运行时 `sys.modules` 断言守住这条边界。`scripts/test_alpha.py` 验收的是这份对照实现，**它的通过不代表生产 Life Runtime 通过**。要修改生产 Life Runtime，请改 `components/life/`。
+
+功能状态与 `/chiyo_status`：状态行会同时给出记忆的 `最近召回` 结果（`OK_WITH_RESULTS` / `OK_EMPTY` / `ERROR` / `DENIED`），以及 `M0 events`、`M0 database size`、`formation cursor`，因此“本轮确实没有召回”和“记忆管线故障”不会再显示成同一种状态。M0 是权威事实源，永久保留、只追加；M1/M2/M3 是可重建的派生层，详见 [TESTING.md](TESTING.md)。
+
 Life Supply 的新 Open Inquiry 入库仍是 `INQUIRY_ADMISSION_OWNER_STUB`，不作为已交付功能；候选源接通后可以正常报告空集合，不凭空制造机会。资源文档可独立保存、读取。

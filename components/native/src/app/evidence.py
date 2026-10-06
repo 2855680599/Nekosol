@@ -495,76 +495,342 @@ class MetricsStore:
 
 
 class RetrySpool:
-    """Append-only local outbox; pending records are never rewritten."""
+    """Crash-safe local outbox for M0 evidence that could not be appended.
 
-    def __init__(self, root: str | Path):
+    Storage is one small SQLite database keyed by
+    ``(source_origin, source_ref_id)`` rather than two append-only JSONL files.
+
+    Why: the previous design had no bound at all and answered ``pending_count()``
+    by re-parsing ``pending.jsonl`` and ``committed.jsonl`` in full, so disk use
+    and call time both grew with the entire history. Here
+
+    * the mandated ``(source_origin, source_ref_id)`` unique index is the primary
+      key, so queueing the same event twice cannot create a second row;
+    * ``pending_count()`` is a COUNT over a status index;
+    * a retry pass can take a LIMIT-ed batch.
+
+    Durability is unchanged in kind: every mutation is one committed transaction
+    on a journaled database, so a crash leaves either the old or the new state
+    and never a half-written record. Nothing is dropped silently, and PENDING
+    rows are never pruned -- only COMMITTED rows, which by definition are already
+    durable in M0, are bounded by ``compact()``.
+
+    The legacy JSONL files are imported once by ``migrate_legacy()`` and are
+    renamed, never unlinked, and only after the migrated pending set has been
+    verified equal. If migration cannot be verified the legacy files stay in
+    place and continue to be read, so an upgrade can never hide an old pending
+    record.
+    """
+
+    PENDING = "PENDING"
+    COMMITTED = "COMMITTED"
+    DEFAULT_RETRY_BATCH = 200
+    DEFAULT_COMMITTED_RETENTION = 2000
+    PRUNE_EVERY = 200
+
+    def __init__(self, root: str | Path, *, migrate: bool = True):
         self.root = Path(root)
         _secure_dir(self.root)
+        self.db_path = self.root / "spool.sqlite"
+        # Legacy locations; only an upgrade reads them.
         self.pending_path = self.root / "pending.jsonl"
         self.committed_path = self.root / "committed.jsonl"
         self.lock_path = self.root / "spool.lock"
+        self._commits_since_prune = 0
+        self.migration: dict[str, Any] = {
+            "performed": False, "pending_records": 0,
+            "committed_records": 0, "verified": False,
+        }
+        self._initialize()
+        if migrate:
+            self.migrate_legacy()
 
-    @staticmethod
-    def _append_line(path: Path, data: dict[str, Any]) -> None:
-        with path.open("a", encoding="utf-8") as stream:
-            json.dump(data, stream, ensure_ascii=False, separators=(",", ":"))
-            stream.write("\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        os.chmod(path, 0o600)
+    def _connect(self) -> sqlite3.Connection:
+        connection = sqlite3.connect(self.db_path, timeout=5.0)
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA busy_timeout=5000")
+        configure_journal(connection)
+        return connection
+
+    def _initialize(self) -> None:
+        connection = self._connect()
+        try:
+            connection.execute(
+                "CREATE TABLE IF NOT EXISTS spool ("
+                " source_origin TEXT NOT NULL,"
+                " source_ref_id TEXT NOT NULL,"
+                " event_id TEXT,"
+                " payload TEXT NOT NULL,"
+                " created_at TEXT NOT NULL,"
+                " status TEXT NOT NULL CHECK(status IN ('PENDING','COMMITTED')),"
+                " commit_status TEXT,"
+                " committed_at TEXT,"
+                " attempts INTEGER NOT NULL DEFAULT 0,"
+                " last_error TEXT,"
+                " PRIMARY KEY (source_origin, source_ref_id))"
+            )
+            connection.execute(
+                "CREATE INDEX IF NOT EXISTS spool_status_idx ON spool(status, created_at)"
+            )
+            connection.commit()
+        finally:
+            connection.close()
+        os.chmod(self.db_path, 0o600)
+
+    # ------------------------------------------------------------- writing --- #
+    def _render(self, event: EvidenceEvent, error: str) -> str:
+        return json.dumps(
+            {"event": event.to_dict(), "queued_at": utc_now(), "error": error},
+            ensure_ascii=False, separators=(",", ":"),
+        )
 
     def queue(self, event: EvidenceEvent, error: str) -> None:
         with _sidecar_lock(self.lock_path):
-            self._append_line(
-                self.pending_path,
-                {"event": event.to_dict(), "queued_at": utc_now(), "error": error},
-            )
-
-    def _records(self) -> list[dict[str, Any]]:
-        if not self.pending_path.exists():
-            return []
-        return [
-            json.loads(line)
-            for line in self.pending_path.read_text(encoding="utf-8").splitlines()
-            if line.strip()
-        ]
-
-    def _committed_keys(self) -> set[tuple[str, str]]:
-        if not self.committed_path.exists():
-            return set()
-        keys: set[tuple[str, str]] = set()
-        for line in self.committed_path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            record = json.loads(line)
-            keys.add((str(record["source_origin"]), str(record["source_ref_id"])))
-        return keys
-
-    def pending_records(self) -> list[dict[str, Any]]:
-        committed = self._committed_keys()
-        result = []
-        for record in self._records():
-            event = record["event"]
-            key = (str(event["source_origin"]), str(event["source_refs"][0]["id"]))
-            if key not in committed:
-                result.append(record)
-        return result
+            connection = self._connect()
+            try:
+                connection.execute("BEGIN IMMEDIATE")
+                row = connection.execute(
+                    "SELECT status FROM spool WHERE source_origin=? AND source_ref_id=?",
+                    (event.source_origin, event.primary_source_ref_id),
+                ).fetchone()
+                if row is None:
+                    connection.execute(
+                        "INSERT INTO spool(source_origin, source_ref_id, event_id, payload,"
+                        " created_at, status, attempts, last_error)"
+                        " VALUES(?,?,?,?,?,?,0,?)",
+                        (event.source_origin, event.primary_source_ref_id, event.event_id,
+                         self._render(event, error), utc_now(), self.PENDING, error),
+                    )
+                elif row["status"] == self.PENDING:
+                    # Re-queueing a still-pending key bumps the attempt count
+                    # instead of appending a duplicate record.
+                    connection.execute(
+                        "UPDATE spool SET payload=?, attempts=attempts+1, last_error=?"
+                        " WHERE source_origin=? AND source_ref_id=?",
+                        (self._render(event, error), error,
+                         event.source_origin, event.primary_source_ref_id),
+                    )
+                # Already COMMITTED: nothing to do; replaying a done event is a no-op.
+                connection.commit()
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                connection.close()
 
     def mark_committed(self, event: EvidenceEvent, status: str) -> None:
         with _sidecar_lock(self.lock_path):
-            self._append_line(
-                self.committed_path,
-                {
-                    "source_origin": event.source_origin,
-                    "source_ref_id": event.primary_source_ref_id,
-                    "event_id": event.event_id,
-                    "status": status,
-                    "committed_at": utc_now(),
-                },
-            )
+            connection = self._connect()
+            try:
+                connection.execute("BEGIN IMMEDIATE")
+                row = connection.execute(
+                    "SELECT status FROM spool WHERE source_origin=? AND source_ref_id=?",
+                    (event.source_origin, event.primary_source_ref_id),
+                ).fetchone()
+                if row is None:
+                    # The previous design recorded the key even when nothing had
+                    # been queued, so an already-present event still counts as done.
+                    connection.execute(
+                        "INSERT INTO spool(source_origin, source_ref_id, event_id, payload,"
+                        " created_at, status, commit_status, committed_at, attempts)"
+                        " VALUES(?,?,?,?,?,?,?,?,0)",
+                        (event.source_origin, event.primary_source_ref_id, event.event_id,
+                         self._render(event, ""), utc_now(), self.COMMITTED, status, utc_now()),
+                    )
+                else:
+                    connection.execute(
+                        "UPDATE spool SET status=?, commit_status=?, committed_at=?, last_error=NULL"
+                        " WHERE source_origin=? AND source_ref_id=?",
+                        (self.COMMITTED, status, utc_now(),
+                         event.source_origin, event.primary_source_ref_id),
+                    )
+                connection.commit()
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                connection.close()
+        self._commits_since_prune += 1
+        if self._commits_since_prune >= self.PRUNE_EVERY:
+            self._commits_since_prune = 0
+            self.compact()
+
+    def compact(self, keep_committed: int | None = None) -> int:
+        """Drop COMMITTED history beyond the retention horizon; never PENDING."""
+        keep = int(self.DEFAULT_COMMITTED_RETENTION if keep_committed is None else keep_committed)
+        with _sidecar_lock(self.lock_path):
+            connection = self._connect()
+            try:
+                connection.execute("BEGIN IMMEDIATE")
+                removed = connection.execute(
+                    "DELETE FROM spool WHERE status=? AND committed_at < ("
+                    " SELECT committed_at FROM spool WHERE status=?"
+                    " ORDER BY committed_at DESC LIMIT 1 OFFSET ?)",
+                    (self.COMMITTED, self.COMMITTED, max(0, keep - 1)),
+                ).rowcount
+                connection.commit()
+                return int(removed or 0)
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                connection.close()
+
+    # ------------------------------------------------------------- reading --- #
+    def pending_records(self, limit: int | None = None) -> list[dict[str, Any]]:
+        connection = self._connect()
+        try:
+            sql = ("SELECT payload FROM spool WHERE status=? "
+                   "ORDER BY created_at, source_origin, source_ref_id")
+            if limit is None:
+                rows = connection.execute(sql, (self.PENDING,)).fetchall()
+            else:
+                rows = connection.execute(
+                    sql + " LIMIT ?", (self.PENDING, int(limit))).fetchall()
+        finally:
+            connection.close()
+        records = [json.loads(row["payload"]) for row in rows]
+        records.extend(self._legacy_pending_records())
+        return records
 
     def pending_count(self) -> int:
-        return len(self.pending_records())
+        connection = self._connect()
+        try:
+            count = connection.execute(
+                "SELECT COUNT(*) FROM spool WHERE status=?", (self.PENDING,)
+            ).fetchone()[0]
+        finally:
+            connection.close()
+        return int(count) + len(self._legacy_pending_records())
+
+    # ------------------------------------------------------------ migration --- #
+    @staticmethod
+    def _read_jsonl(path: Path) -> list[dict[str, Any]]:
+        if not path.exists():
+            return []
+        records = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                records.append(json.loads(line))
+            except json.JSONDecodeError:
+                # A corrupted single record must not hide the rest of the file.
+                continue
+        return records
+
+    @staticmethod
+    def _record_key(payload: dict[str, Any]) -> tuple[str, str]:
+        event = payload["event"]
+        return (str(event["source_origin"]),
+                str(event["source_refs"][0]["id"]))
+
+    def _legacy_pending_records(self) -> list[dict[str, Any]]:
+        """Pending records still only present in the legacy JSONL files.
+
+        Non-empty only before a verified migration, so an upgrade never hides an
+        old pending record behind the new store.
+        """
+        if not self.pending_path.exists():
+            return []
+        legacy_committed = {
+            (str(record["source_origin"]), str(record["source_ref_id"]))
+            for record in self._read_jsonl(self.committed_path)
+        }
+        result = []
+        for record in self._read_jsonl(self.pending_path):
+            try:
+                key = self._record_key(record)
+            except (KeyError, IndexError, TypeError):
+                continue
+            if key not in legacy_committed:
+                result.append(record)
+        return result
+
+    def migrate_legacy(self) -> dict[str, Any]:
+        """Import the legacy JSONL spool once. Idempotent; never deletes data."""
+        result = dict(self.migration)
+        if not self.pending_path.exists() and not self.committed_path.exists():
+            return result
+        pending = self._read_jsonl(self.pending_path)
+        committed = self._read_jsonl(self.committed_path)
+        expected = set()
+        committed_keys = {
+            (str(record["source_origin"]), str(record["source_ref_id"]))
+            for record in committed
+        }
+        for record in pending:
+            try:
+                key = self._record_key(record)
+            except (KeyError, IndexError, TypeError):
+                continue
+            if key not in committed_keys:
+                expected.add(key)
+
+        with _sidecar_lock(self.lock_path):
+            connection = self._connect()
+            try:
+                connection.execute("BEGIN IMMEDIATE")
+                for record in pending:
+                    try:
+                        key = self._record_key(record)
+                    except (KeyError, IndexError, TypeError):
+                        continue
+                    connection.execute(
+                        "INSERT OR IGNORE INTO spool(source_origin, source_ref_id, event_id,"
+                        " payload, created_at, status, attempts, last_error)"
+                        " VALUES(?,?,?,?,?,?,0,NULL)",
+                        (key[0], key[1], record["event"].get("event_id"),
+                         json.dumps(record, ensure_ascii=False, separators=(",", ":")),
+                         str(record.get("queued_at") or utc_now()), self.PENDING),
+                    )
+                for record in committed:
+                    key = (str(record["source_origin"]), str(record["source_ref_id"]))
+                    # Apply over any pending row for the same key first: a key
+                    # recorded as committed in the legacy file must end up
+                    # COMMITTED, not left PENDING by the insert above.
+                    updated = connection.execute(
+                        "UPDATE spool SET status=?, commit_status=?, committed_at=?,"
+                        " last_error=NULL WHERE source_origin=? AND source_ref_id=?",
+                        (self.COMMITTED, str(record.get("status") or ""),
+                         str(record.get("committed_at") or utc_now()), key[0], key[1]),
+                    ).rowcount
+                    if not updated:
+                        connection.execute(
+                            "INSERT OR IGNORE INTO spool(source_origin, source_ref_id, event_id,"
+                            " payload, created_at, status, commit_status, committed_at, attempts)"
+                            " VALUES(?,?,?,?,?,?,?,?,0)",
+                            (key[0], key[1], record.get("event_id"),
+                             json.dumps({"event": {}, "queued_at": record.get("committed_at"),
+                                         "error": ""}, ensure_ascii=False),
+                             str(record.get("committed_at") or utc_now()), self.COMMITTED,
+                             str(record.get("status") or ""),
+                             str(record.get("committed_at") or utc_now())),
+                        )
+                connection.commit()
+                migrated = {
+                    (str(row["source_origin"]), str(row["source_ref_id"]))
+                    for row in connection.execute(
+                        "SELECT source_origin, source_ref_id FROM spool WHERE status=?",
+                        (self.PENDING,))
+                }
+            except Exception:
+                connection.rollback()
+                raise
+            finally:
+                connection.close()
+
+        verified = migrated == expected
+        result.update(performed=True, pending_records=len(pending),
+                      committed_records=len(committed), verified=verified)
+        if verified:
+            # Rename, never unlink: the legacy bytes stay on disk either way.
+            for path in (self.pending_path, self.committed_path):
+                if path.exists():
+                    os.replace(path, path.with_name(path.name + ".migrated"))
+        self.migration = result
+        return result
+
 
 
 class EvidenceWriter:
@@ -650,11 +916,14 @@ class EvidenceWriter:
                 )
                 return "failed"
 
-    def retry_pending(self) -> dict[str, int]:
+    def retry_pending(self, batch_limit: int | None = None) -> dict[str, int]:
         inserted = 0
         duplicate = 0
         failed = 0
-        for record in self.spool.pending_records():
+        # Bounded batch: a large backlog is drained over several calls rather
+        # than by materialising every pending record at once.
+        limit = self.spool.DEFAULT_RETRY_BATCH if batch_limit is None else batch_limit
+        for record in self.spool.pending_records(limit):
             event = EvidenceEvent.from_dict(record["event"])
             try:
                 result = self._get_store().append(event)

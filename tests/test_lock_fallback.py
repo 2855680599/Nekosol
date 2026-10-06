@@ -12,7 +12,6 @@ puts the module in exactly the state a native Windows interpreter sees.
 Scope of the Windows fallback: thread-safe **within one process only**. These
 tests assert that, and deliberately do not claim cross-process safety.
 """
-import json
 import sys
 import tempfile
 import threading
@@ -125,19 +124,22 @@ class RetrySpoolLockTest(unittest.TestCase):
             spool = evidence.RetrySpool(Path(tmp))
             events = [make_event(i) for i in range(10)]
 
-            def worker(index):
-                spool.queue(events[index], "OSError")
-                spool.mark_committed(events[index], "inserted")
-
-            errors = run_threads(worker, len(events))
+            errors = run_threads(lambda i: spool.queue(events[i], "OSError"), len(events))
             self.assertEqual(errors, [])
-            pending = [line for line in spool.pending_path.read_text(encoding="utf8").splitlines() if line.strip()]
-            committed = [line for line in spool.committed_path.read_text(encoding="utf8").splitlines() if line.strip()]
-            # Every line must be intact JSON: interleaved writes would corrupt one.
-            for line in pending + committed:
-                json.loads(line)
-            self.assertEqual(len(pending), len(events))
-            self.assertEqual(len(committed), len(events))
+            self.assertEqual(spool.pending_count(), 10)
+            self.assertEqual(len(spool.pending_records()), 10)
+            # every queued payload must round-trip back into a usable event
+            for record in spool.pending_records():
+                self.assertEqual(
+                    evidence.EvidenceEvent.from_dict(record["event"]).event_id,
+                    record["event"]["event_id"])
+
+            # concurrent commit of the same keys must be idempotent
+            errors = run_threads(
+                lambda i: spool.mark_committed(events[i], "inserted"), len(events))
+            self.assertEqual(errors, [])
+            self.assertEqual(spool.pending_count(), 0)
+            self.assertEqual(spool.pending_records(), [])
 
     def test_queue_and_commit_under_fcntl(self):
         if evidence.fcntl is None:

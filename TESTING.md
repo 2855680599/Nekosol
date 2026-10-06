@@ -93,3 +93,21 @@ vendor/hermes/.venv/bin/python scripts/test.py
 ## rc6 更新验收
 
 本轮整包更新与失败恢复的实际结果见 `UPDATE_TEST_EVIDENCE.json`。rc5 隐私证据仍保留为 rc5 的结果，不作为 rc6 的新运行记录。没有宣称完整 Hermes 套件、Hermes 0.21.5 或真实生产机器升级已通过。
+
+## components/alpha 测的是什么
+
+`scripts/test_alpha.py` 运行的是 **`components/alpha/` 里历史 / 验收 / 对照（control）实现**，不是用户实际运行的生产实现。两者不是同一份代码：
+
+| 用途 | 路径 |
+| --- | --- |
+| 生产 / 现役 Life Runtime | `components/life/` |
+| 历史 / 验收 / 对照（含平行且已分叉的 `life_runtime` 与 `memory_runtime_v1`） | `components/alpha/chiyo/life_runtime/` |
+
+因此 **Alpha 脚本通过不等于生产 Life Runtime 通过**；反之，生产 Life 的问题也不应先去改 alpha。`chiyo_bundle/` 与 `plugins/` 不引用 alpha 目录，`tests/test_alpha_identity.py` 用静态扫描与运行时 `sys.modules` 两条断言守住了这条边界（它只用精确的路径 / 导入模式匹配，不会把发版标签里的 `alpha` 误判为依赖）。
+
+## M0 长期存储策略
+
+- **M0（`evidence.sqlite`）是权威事实源，永久保留、只追加。** M0 自己用数据库触发器（`evidence_no_update` / `evidence_no_delete`）拒绝 UPDATE 与 DELETE，本项目也**没有**任何定期清空、自动归档或裁剪 M0 的代码。
+- **M1 / M2 / M3 是可重建的派生层**，随时可以从 M0 重新形成（`EpisodeStore.clear_derived()` 连同 formation cursor 一起清空，因此重建会真的重跑，而不是变成空操作）。
+- 观测面：`/chiyo_status` 会显示 `M0 events`、`M0 database size`、`formation cursor`；`Instance.storage_policy()` 以只读方式（`mode=ro`）读取这些数字，观测本身不会修改被观测的数据库。
+- 未来若需要归档权威证据，必须先有独立设计与迁移方案；本轮只建立策略说明与观测，**不实现自动归档**。

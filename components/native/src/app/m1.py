@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from types import SimpleNamespace
-from typing import Any, Protocol
+from typing import Any, Iterable, Protocol
 import json
 import logging
 import secrets
@@ -69,6 +69,57 @@ class M0EvidenceReader:
         result = dict(row)
         result["source_refs"] = json.loads(result.pop("source_refs_json"))
         return result
+
+    # The columns the M1 formation path actually consumes, listed explicitly so
+    # the steady-state query never pays for SELECT *.
+    EVENT_COLUMNS = (
+        "event_id", "occurred_at", "memory_owner", "source_origin",
+        "delivery_status", "epistemic_role", "speaker", "content",
+        "conversation_id", "turn_id", "primary_source_ref_id",
+        "source_refs_json", "created_at",
+    )
+
+    def max_rowid(self) -> int:
+        """Highest M0 rowid, or 0 when M0 is empty."""
+        connection = self._connect()
+        try:
+            row = connection.execute(
+                "SELECT MAX(rowid) FROM evidence_events"
+            ).fetchone()
+            return int(row[0] or 0)
+        finally:
+            connection.close()
+
+    def list_events_since(
+        self, rowid: int, limit: int
+    ) -> list[tuple[int, dict[str, Any]]]:
+        """One incremental batch of M0 events strictly after ``rowid``.
+
+        Returns ``(m0_rowid, event)`` pairs ordered by rowid ascending. The
+        rowid is handed back separately rather than merged into the event, so
+        the event mapping keeps exactly the same keys as ``list_events()`` and
+        the boundary-judge payload is unchanged.
+
+        rowid is the cursor, not occurred_at. M0 forbids UPDATE and DELETE
+        through the evidence_no_update / evidence_no_delete triggers, so rowid
+        is a strictly increasing append sequence that can never be rewritten or
+        reused. occurred_at carries no such guarantee: a late-arriving event can
+        hold an earlier timestamp than one already consumed, so an occurred_at
+        cursor would silently skip it.
+        """
+        columns = ", ".join(self.EVENT_COLUMNS)
+        connection = self._connect()
+        try:
+            rows = connection.execute(
+                "SELECT rowid AS m0_rowid, " + columns + " FROM evidence_events "
+                "WHERE rowid > ? ORDER BY rowid ASC LIMIT ?",
+                (int(rowid), int(limit)),
+            ).fetchall()
+            return [
+                (int(row["m0_rowid"]), self._row_to_event(row)) for row in rows
+            ]
+        finally:
+            connection.close()
 
     def list_events(self) -> list[dict[str, Any]]:
         connection = self._connect()
@@ -331,17 +382,89 @@ class EpisodeStore:
                     "INSERT INTO schema_migrations(version, applied_at) VALUES(1, ?)",
                     (utc_now(),),
                 )
+            if connection.execute(
+                "SELECT 1 FROM schema_migrations WHERE version=2"
+            ).fetchone() is None:
+                # v2 adds the incremental formation cursor. M0 is append-only, so
+                # the highest consumed rowid is enough to resume without ever
+                # rescanning history. This runs for an existing store as well as a
+                # fresh one, and creates no new database.
+                connection.executescript(
+                    """
+                    CREATE TABLE IF NOT EXISTS formation_state (
+                        key TEXT PRIMARY KEY,
+                        value TEXT NOT NULL,
+                        updated_at TEXT NOT NULL
+                    );
+                    """
+                )
+                connection.execute(
+                    "INSERT INTO schema_migrations(version, applied_at) VALUES(2, ?)",
+                    (utc_now(),),
+                )
             connection.commit()
         finally:
             connection.close()
 
-    def processed_ids(self) -> set[str]:
+    def processed_ids(self, event_ids: Iterable[str] | None = None) -> set[str]:
+        """Already-formed event ids.
+
+        Passing ``event_ids`` restricts the lookup to those ids, which is a
+        bounded point query over at most a batch's worth of rows. The
+        incremental worker uses that form; loading the entire table is kept for
+        rebuild and verification callers, and is no longer on the steady-state
+        path. Either way this remains the second idempotency layer: the cursor
+        only decides where to resume, while processed_evidence decides whether an
+        individual event is done.
+        """
+        ids = list(event_ids) if event_ids is not None else None
         connection = self._connect()
         try:
-            return {
-                str(row[0])
-                for row in connection.execute("SELECT event_id FROM processed_evidence")
-            }
+            if ids is None:
+                rows = connection.execute("SELECT event_id FROM processed_evidence")
+            else:
+                if not ids:
+                    return set()
+                placeholders = ",".join("?" * len(ids))
+                rows = connection.execute(
+                    "SELECT event_id FROM processed_evidence WHERE event_id IN (%s)"
+                    % placeholders,
+                    ids,
+                )
+            return {str(row[0]) for row in rows}
+        finally:
+            connection.close()
+
+    # The formation cursor is the highest M0 rowid whose M1 formation is durably
+    # applied. It is a resume point only: processed_evidence remains the
+    # authority on which individual events are done, so the cursor can never
+    # cause an event to be skipped if it is ever conservative.
+    FORMATION_CURSOR_KEY = "formation_cursor_rowid"
+
+    def formation_cursor(self) -> int:
+        connection = self._connect()
+        try:
+            row = connection.execute(
+                "SELECT value FROM formation_state WHERE key=?",
+                (self.FORMATION_CURSOR_KEY,),
+            ).fetchone()
+            return int(row[0]) if row is not None else 0
+        finally:
+            connection.close()
+
+    def set_formation_cursor(self, rowid: int) -> None:
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            connection.execute(
+                "INSERT OR REPLACE INTO formation_state(key, value, updated_at) "
+                "VALUES(?, ?, ?)",
+                (self.FORMATION_CURSOR_KEY, str(int(rowid)), utc_now()),
+            )
+            connection.commit()
+        except Exception:
+            connection.rollback()
+            raise
         finally:
             connection.close()
 
@@ -500,6 +623,10 @@ class EpisodeStore:
             connection.execute("DELETE FROM processed_evidence")
             connection.execute("DELETE FROM episode_evidence")
             connection.execute("DELETE FROM episodes")
+            # The cursor is part of the derived state: leaving it behind would
+            # make the next formation pass a silent no-op and the rebuild would
+            # never happen.
+            connection.execute("DELETE FROM formation_state")
             connection.commit()
         finally:
             connection.close()
@@ -543,8 +670,13 @@ class EpisodeStore:
             version = connection.execute(
                 "SELECT MAX(version) FROM schema_migrations"
             ).fetchone()[0]
-            if version != 1:
-                issues.append("schema_version_not_1")
+            if version not in (1, 2):
+                issues.append("schema_version_unsupported")
+            formation_cursor = connection.execute(
+                "SELECT value FROM formation_state WHERE key=?",
+                (self.FORMATION_CURSOR_KEY,),
+            ).fetchone()
+            formation_cursor = int(formation_cursor[0]) if formation_cursor else 0
             episodes = connection.execute("SELECT * FROM episodes").fetchall()
             memberships = connection.execute("SELECT * FROM episode_evidence").fetchall()
             processed = connection.execute("SELECT * FROM processed_evidence").fetchall()
@@ -564,6 +696,8 @@ class EpisodeStore:
                     issues.append("membership_event_not_in_m0")
                 if not processed_ids <= source_events:
                     issues.append("processed_event_not_in_m0")
+                if formation_cursor > evidence.max_rowid():
+                    issues.append("formation_cursor_beyond_m0")
                 total_evidence = len(source_events)
             else:
                 total_evidence = None
@@ -578,6 +712,7 @@ class EpisodeStore:
                 "episode_count": len(episodes),
                 "membership_count": len(memberships),
                 "processed_count": len(processed),
+                "formation_cursor": formation_cursor,
                 "decision_count": len(decisions),
                 "total_evidence": total_evidence,
                 "assigned_evidence": assigned,
@@ -635,37 +770,77 @@ class EpisodeWorker:
             result.append(copy)
         return result
 
-    def process_once(self) -> dict[str, int]:
-        processed_ids = self.store.processed_ids()
+    # How many M0 events one batch may contain. Batching keeps a cold rebuild
+    # from holding a huge result set in memory without making the steady-state
+    # pass issue more than one extra query.
+    BATCH_SIZE = 200
+
+    def process_once(self, batch_size: int | None = None) -> dict[str, int]:
+        """Form M1 for every M0 event that is not formed yet.
+
+        The steady state reads only the events appended after the persisted
+        formation cursor, so a pass over one new turn costs one indexed rowid
+        range instead of a full scan of M0. History is never rewritten and M0 is
+        never modified.
+
+        The first pass on a store without a cursor performs one full backfill
+        from the beginning: that is the upgrade path, and it is allowed to be
+        slow once. Already-formed events are skipped through processed_evidence,
+        which stays in place as the second idempotency layer and as crash
+        recovery.
+
+        The cursor advances only after a whole batch has been applied. If any
+        event in a batch fails to store, that batch's cursor is not advanced and
+        the pass stops, so the cursor can never move past a failed event and the
+        event is retried on the next pass.
+        """
+        limit = int(batch_size or self.BATCH_SIZE)
         inserted = 0
         duplicate = 0
         failed = 0
-        for event in self.evidence.list_events():
-            event_id = str(event["event_id"])
-            if event_id in processed_ids:
-                continue
-            open_context = self._open_context()
-            started = time.perf_counter()
-            error = None
-            try:
-                if not open_context:
-                    decision = EpisodeDecision(
-                        "START_NEW", [], start_new=True, reason="first local event"
+        cursor = self.store.formation_cursor()
+        while True:
+            batch = self.evidence.list_events_since(cursor, limit)
+            if not batch:
+                return {"inserted": inserted, "duplicate": duplicate, "failed": failed}
+            processed_ids = self.store.processed_ids(
+                [str(event["event_id"]) for _rowid, event in batch])
+            batch_failed = False
+            for _rowid, event in batch:
+                event_id = str(event["event_id"])
+                if event_id in processed_ids:
+                    continue
+                open_context = self._open_context()
+                started = time.perf_counter()
+                error = None
+                try:
+                    if not open_context:
+                        decision = EpisodeDecision(
+                            "START_NEW", [], start_new=True, reason="first local event"
+                        )
+                    else:
+                        decision = self.judge.decide(event, open_context)
+                except Exception as exc:
+                    error = type(exc).__name__ + ": " + str(exc)
+                    fallback = ConservativeBoundaryJudge()
+                    decision = fallback.decide(event, open_context)
+                    self.logger.error(
+                        "m1.segment.failed event_id=%s error_class=%s",
+                        event_id,
+                        type(exc).__name__,
                     )
-                else:
-                    decision = self.judge.decide(event, open_context)
-            except Exception as exc:
-                error = type(exc).__name__ + ": " + str(exc)
-                fallback = ConservativeBoundaryJudge()
-                decision = fallback.decide(event, open_context)
-                self.logger.error(
-                    "m1.segment.failed event_id=%s error_class=%s",
-                    event_id,
-                    type(exc).__name__,
-                )
-            latency_ms = round((time.perf_counter() - started) * 1000, 3)
-            try:
-                result = self.store.apply_event(event, decision, latency_ms, error)
+                latency_ms = round((time.perf_counter() - started) * 1000, 3)
+                try:
+                    result = self.store.apply_event(event, decision, latency_ms, error)
+                except Exception as exc:
+                    failed += 1
+                    batch_failed = True
+                    self.logger.error(
+                        "m1.segment.store_failed event_id=%s error_class=%s",
+                        event_id,
+                        type(exc).__name__,
+                    )
+                    break
                 if result.status == "inserted":
                     inserted += 1
                     self.logger.info(
@@ -680,14 +855,13 @@ class EpisodeWorker:
                     )
                 else:
                     duplicate += 1
-            except Exception as exc:
-                failed += 1
-                self.logger.error(
-                    "m1.segment.store_failed event_id=%s error_class=%s",
-                    event_id,
-                    type(exc).__name__,
-                )
-        return {"inserted": inserted, "duplicate": duplicate, "failed": failed}
+            if batch_failed:
+                return {"inserted": inserted, "duplicate": duplicate, "failed": failed}
+            # The batch is ordered by rowid ascending, so its last rowid is the
+            # highest consumed one. It is always greater than the previous
+            # cursor, so the pass always makes progress.
+            cursor = batch[-1][0]
+            self.store.set_formation_cursor(cursor)
 
 
 def load_m1_config(path: str | Path) -> dict[str, Any]:

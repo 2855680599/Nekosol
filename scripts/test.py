@@ -19,6 +19,12 @@ import argparse, os, subprocess, sys, tempfile
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 MISSING_PYTEST='SKIPPED_MISSING_PYTEST'
+# Keep pytest from writing .pytest_cache inside the source tree: the verifier
+# walks the filesystem (it does not read .gitignore), so test byproducts left in
+# the tree would otherwise show up as unexpected_files. Passing this through the
+# environment also covers the per-file pytest subprocesses that
+# vendor/hermes/scripts/run_tests.sh spawns.
+PYTEST_NO_CACHE='-p no:cacheprovider'
 _PYTEST_CACHE={}
 def module_importable(python,module):
  """True/False when the answer is definitive for `module`, else None (unknown).
@@ -63,7 +69,7 @@ def main():
   ('world','components','world:world/service:world/service/bridge:world/scripts',['-m','unittest','discover','-s','world/service','-q'],None),
   ('life','components','',['check_life.py'],None),
   ('host-boundaries','','.:vendor/hermes',['-m','unittest','discover','-s','tests','-p','test_*.py','-q'],None),
-  ('cognition-faults','','.:vendor/hermes',['-m','pytest','tests/test_cognition_reliability.py','-q'],'pytest')]
+  ('cognition-faults','','.:vendor/hermes',['-m','pytest',PYTEST_NO_CACHE,'tests/test_cognition_reliability.py','-q'],'pytest')]
  results=[]
  def record(name,status,reason=''):
   print('STATUS %s %s%s'%(name,status,(' '+reason) if reason else ''),flush=True)
@@ -72,7 +78,7 @@ def main():
   return needs=='pytest' and pytest_available() is False
  with tempfile.TemporaryDirectory(prefix='chiyo-validation-') as home:
   env={k:v for k,v in os.environ.items() if k in ('PATH','LANG','TZ','SYSTEMROOT')}
-  env.update(HOME=home,HERMES_HOME=home,PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1')
+  env.update(HOME=home,HERMES_HOME=home,PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1',PYTEST_ADDOPTS=PYTEST_NO_CACHE)
   for name,subdir,paths,args,needs in suites:
    cwd=ROOT/subdir;env['PYTHONPATH']=os.pathsep.join(str(cwd/x) for x in paths.split(':') if x)
    print('SUITE',name,flush=True)
