@@ -37,13 +37,46 @@ bash scripts/run_tests.sh -j 8 --file-timeout 900 --file-retries 0
 
 安装 git、uv、Node.js 与 ripgrep；本轮 Node.js 22.19.0、ripgrep 15.1.0。源码 ZIP 不包含 Git 元数据。上游 update 类测试需要 Git 仓库，本轮只在隔离验收目录创建测试用 Git 历史；复测也需准备独立 Git 夹具，不能在个人运行目录里模拟更新。
 
+## 套件结果语义（PASS / FAIL / SKIP）
+
+`scripts/test.py` 对每个套件只给出三种结果之一，并打印 `STATUS <套件> <结果>`：
+
+- **PASS**：runner 退出码 0。
+- **FAIL**：runner 退出码非 0。断言失败、导入错误、用例收集失败、运行期异常一律记为 FAIL，不会被降级成 SKIP。
+- **SKIP**：**已证明**缺少可选依赖，目前唯一识别的情形是 pytest 缺失，记为 `SKIPPED_MISSING_PYTEST`。只有确定性的 `No module named 'pytest'` 才触发 SKIP；任何其他非零探测结果都按「不是已知缺失依赖」处理，套件照常执行，真实错误以 FAIL 呈现。
+
+整体退出码只由 FAIL 决定，SKIP 不算失败。
+
+### 普通安装（默认依赖，无 pytest）
+
+引导安装只装 `--extra messaging --extra web`，因此没有 pytest。可直接运行：
+
+```bash
+vendor/hermes/.venv/bin/python scripts/test.py
+```
+
+`closeout`、`native`、`memory`、`supply`、`world`、`life`、`host-boundaries` 会实际执行并给出 PASS/FAIL；`cognition-faults` 与 `Hermes` 输出 `SKIP SKIPPED_MISSING_PYTEST`（含义是「依赖缺失，没有运行」，不是「测试失败」）。
+
+### dev 环境（需要 `--extra dev`）
+
+`cognition-faults` 与 `Hermes` 需要 pytest：
+
+```bash
+cd vendor/hermes
+uv sync --frozen --python 3.13 --extra dev --extra messaging --extra web
+cd ../..
+vendor/hermes/.venv/bin/python scripts/test.py
+```
+
+此时这两个套件会真正执行，并按真实结果记为 PASS 或 FAIL，不会被标成 SKIP。
+
 2026-10-04 核对实际工作流后，GitHub 当前只有 Pages 网站构建与部署，运行时功能 CI 模板仍在 `ci/templates/`，尚未启用。网站发布成功不能代表组件、宿主、真实模型或平台测试通过。完整宿主、真实模型和真实平台需要分别验证；最终 ZIP 的冷安装与完整性按其实际哈希关联。
 
 ## rc5 本次复测
 
 本次源码修复的实际命令、结果和日志摘要记录在 `PRIVACY_TEST_EVIDENCE.json`，修复范围与保留边界见 `PRIVACY_REVIEW.md`。历史 45,071 记录不会被改写成本次新运行的结果；本次完成 534 项计数测试（504 项组件/边界 unittest、1 项认知故障测试、29 项官方宿主接线测试），另有真实 Life 装配检查；Alpha 五个脚本通过，N8 相关脚本保留 PARTIAL。完整宿主复跑因可选依赖和测试机资源压力没有完成，不宣称新一轮全量通过，也未发送真实 Telegram 测试消息。
 
-测试中仍观察到旧记忆组件的 SQLite ResourceWarning、Supply 的 fork 警告，以及认知故障注入预期的线程异常警告；通过数量不等于零警告或所有技术债已清除。四项负对照在旧代码下失败，新代码下通过；普通账号实际安装与公开下载复核分开记录。
+测试中仍观察到 Supply 的 fork 警告，以及认知故障注入预期的线程异常警告；通过数量不等于零警告或所有技术债已清除。旧记忆组件的 SQLite `ResourceWarning: unclosed database` 已修复：`Instance.close()` 现在会释放记忆解析器持有的 M0/M1/M2/M3 读连接（并且 `new_session()` 在替换会话存储后关闭旧实例），在 `-W error::ResourceWarning` 下不再出现。四项负对照在旧代码下失败，新代码下通过；普通账号实际安装与公开下载复核分开记录。
 
 ## 2026-10-04 引导安装器复核
 

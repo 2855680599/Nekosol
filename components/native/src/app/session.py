@@ -1,15 +1,77 @@
+"""Raw conversation storage owned only by Native Runtime.
+
+Locking scope
+-------------
+``persist_turn`` serialises the read-modify-replace of one conversation file
+with ``fcntl.flock`` on POSIX, which also excludes other processes. Native
+Windows has no ``fcntl`` module, so there only a per-path in-process
+``threading.RLock`` is taken: **thread-safe within a single process only**, with
+no cross-process guarantee for the same conversation file. The directory fsync
+barrier is also POSIX-only and is skipped on Windows (see
+``_fsync_directory``); the file itself is still fsynced before ``os.replace``.
+"""
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
-import fcntl
+import contextlib
 import json
 import os
 import re
 import tempfile
+import threading
+
+try:  # POSIX advisory locking; not available on native Windows.
+    import fcntl
+except ImportError:  # pragma: no cover - platform dependent
+    fcntl = None  # type: ignore[assignment]
 
 
 _ID_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$")
+
+_PROCESS_LOCKS: dict[str, threading.RLock] = {}
+_PROCESS_LOCKS_GUARD = threading.Lock()
+
+
+def _process_lock(path: Path) -> threading.RLock:
+    key = str(path)
+    with _PROCESS_LOCKS_GUARD:
+        lock = _PROCESS_LOCKS.get(key)
+        if lock is None:
+            lock = threading.RLock()
+            _PROCESS_LOCKS[key] = lock
+        return lock
+
+
+@contextlib.contextmanager
+def _locked(lock_path: Path):
+    """Hold the per-conversation lock for the duration of the block."""
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as handle:
+        if fcntl is None:
+            with _process_lock(lock_path):
+                yield
+            return
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
+        try:
+            yield
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+
+
+def _fsync_directory(path: Path) -> None:
+    """Best-effort directory fsync; POSIX only.
+
+    Windows has no ``os.O_DIRECTORY`` and cannot open a directory as a file
+    descriptor, so the barrier is skipped there instead of failing the turn.
+    """
+    if not hasattr(os, "O_DIRECTORY"):
+        return
+    dir_fd = os.open(path, os.O_DIRECTORY)
+    try:
+        os.fsync(dir_fd)
+    finally:
+        os.close(dir_fd)
 
 
 class PersistenceError(RuntimeError):
@@ -61,8 +123,7 @@ class ConversationStore:
         lock_path = self._lock_path(conversation_id)
         target = self._path(conversation_id)
         try:
-            with lock_path.open("a+", encoding="utf-8") as lock:
-                fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+            with _locked(lock_path):
                 current = self.load(conversation_id)
                 records = current + [
                     {
@@ -95,15 +156,10 @@ class ConversationStore:
                         os.fsync(temp.fileno())
                     os.chmod(temp_name, 0o600)
                     os.replace(temp_name, target)
-                    dir_fd = os.open(target.parent, os.O_DIRECTORY)
-                    try:
-                        os.fsync(dir_fd)
-                    finally:
-                        os.close(dir_fd)
+                    _fsync_directory(target.parent)
                 finally:
                     if os.path.exists(temp_name):
                         os.unlink(temp_name)
-                fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
         except Exception as exc:
             if isinstance(exc, PersistenceError):
                 raise

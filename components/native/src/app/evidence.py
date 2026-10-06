@@ -1,10 +1,25 @@
+"""Append-only M0 evidence storage and its sidecar lock helpers.
+
+Locking scope
+-------------
+``MetricsStore`` and ``RetrySpool`` serialise read-modify-write of their
+sidecar files with ``fcntl.flock`` on POSIX. Native Windows has no ``fcntl``
+module, so there the same critical sections take a per-path in-process
+``threading.RLock`` instead. On Windows these helpers are therefore
+**thread-safe within a single process only**: they give no protection against a
+second Python process writing the same ``metrics.json`` or spool files
+concurrently. On POSIX the existing cross-process guarantee is unchanged.
+
+The durability primitives (``tempfile.mkstemp`` + ``fsync`` + ``os.replace``)
+are platform independent and unchanged.
+"""
 from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
-import fcntl
+import contextlib
 import hashlib
 import json
 import logging
@@ -13,7 +28,50 @@ import secrets
 from app.sqlite_safety import configure_journal
 import sqlite3
 import tempfile
+import threading
 import uuid
+
+try:  # POSIX advisory file locking; not available on native Windows.
+    import fcntl
+except ImportError:  # pragma: no cover - platform dependent
+    fcntl = None  # type: ignore[assignment]
+
+_PROCESS_LOCKS: dict[str, threading.RLock] = {}
+_PROCESS_LOCKS_GUARD = threading.Lock()
+
+
+def _process_lock(path: Path) -> threading.RLock:
+    key = str(path)
+    with _PROCESS_LOCKS_GUARD:
+        lock = _PROCESS_LOCKS.get(key)
+        if lock is None:
+            lock = threading.RLock()
+            _PROCESS_LOCKS[key] = lock
+        return lock
+
+
+@contextlib.contextmanager
+def _sidecar_lock(lock_path: Path, *, shared: bool = False):
+    """Serialise access to one sidecar file.
+
+    ``fcntl`` is used when present, which also excludes other processes and
+    keeps the historical POSIX behaviour (``LOCK_SH`` for readers, ``LOCK_EX``
+    for read-modify-write). Without it (native Windows) only an in-process
+    re-entrant lock is taken, so ``shared`` makes no difference there; see the
+    module docstring for the exact guarantee that does and does not provide.
+    """
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+    with lock_path.open("a+", encoding="utf-8") as handle:
+        os.chmod(lock_path, 0o600)
+        if fcntl is None:
+            with _process_lock(lock_path):
+                yield handle
+            return
+        fcntl.flock(handle.fileno(), fcntl.LOCK_SH if shared else fcntl.LOCK_EX)
+        try:
+            yield handle
+        finally:
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 
 USER_ORIGIN = "USER_VISIBLE_INPUT"
@@ -420,29 +478,20 @@ class MetricsStore:
                 os.unlink(temp_name)
 
     def increment(self, key: str, amount: int = 1) -> None:
-        with self.lock_path.open("a+", encoding="utf-8") as lock:
-            os.chmod(self.lock_path, 0o600)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        with _sidecar_lock(self.lock_path):
             data = self._read()
             data[key] = data.get(key, 0) + amount
             self._write(data)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
     def set_value(self, key: str, value: int) -> None:
-        with self.lock_path.open("a+", encoding="utf-8") as lock:
-            os.chmod(self.lock_path, 0o600)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        with _sidecar_lock(self.lock_path):
             data = self._read()
             data[key] = int(value)
             self._write(data)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
     def snapshot(self) -> dict[str, int]:
-        with self.lock_path.open("a+", encoding="utf-8") as lock:
-            fcntl.flock(lock.fileno(), fcntl.LOCK_SH)
-            data = self._read()
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
-            return data
+        with _sidecar_lock(self.lock_path, shared=True):
+            return self._read()
 
 
 class RetrySpool:
@@ -465,14 +514,11 @@ class RetrySpool:
         os.chmod(path, 0o600)
 
     def queue(self, event: EvidenceEvent, error: str) -> None:
-        with self.lock_path.open("a+", encoding="utf-8") as lock:
-            os.chmod(self.lock_path, 0o600)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        with _sidecar_lock(self.lock_path):
             self._append_line(
                 self.pending_path,
                 {"event": event.to_dict(), "queued_at": utc_now(), "error": error},
             )
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
     def _records(self) -> list[dict[str, Any]]:
         if not self.pending_path.exists():
@@ -505,9 +551,7 @@ class RetrySpool:
         return result
 
     def mark_committed(self, event: EvidenceEvent, status: str) -> None:
-        with self.lock_path.open("a+", encoding="utf-8") as lock:
-            os.chmod(self.lock_path, 0o600)
-            fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
+        with _sidecar_lock(self.lock_path):
             self._append_line(
                 self.committed_path,
                 {
@@ -518,7 +562,6 @@ class RetrySpool:
                     "committed_at": utc_now(),
                 },
             )
-            fcntl.flock(lock.fileno(), fcntl.LOCK_UN)
 
     def pending_count(self) -> int:
         return len(self.pending_records())

@@ -35,6 +35,8 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 手动 Git / ZIP 安装、无人值守参数及平台准备见 [安装说明](INSTALL.md) 和 [中文教程](docs/USER_GUIDE.zh-CN.md)。原来的 `bash scripts/install.sh` 保留为源码目录内的依赖安装命令。
 
+在 Windows 上手动克隆还有一个前置要求：仓库内最深的跟踪路径约 173 个字符（位于 `vendor/hermes/`），未开启长路径支持时 `git clone` 会报告克隆成功但 `git checkout` 以 `Filename too long` 失败，工作树不完整。请先执行 `git config --global core.longpaths true`，或把仓库克隆到短路径（例如 `C:\nyairo`）。WSL 内部的 Linux 文件系统不受 Windows 这一限制的同样约束；但项目若实际位于 `/mnt/c/...`，仍会受宿主工具链影响。原生 Windows 尚未完成完整验收，见 [已知问题](KNOWN_ISSUES.md)。
+
 ## 第一版的实际范围
 
 当前公开安装标签和 Release ZIP 是 `v0.1.0-rc6` 体验候选。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
