@@ -454,6 +454,7 @@ function initMobileMenu() {
   document.addEventListener('click', (e) => {
     if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target) && (!backdrop || !backdrop.contains(e.target))) close();
   });
+}
 
 function escapeHtml(str) {
   if (!str) return '';
