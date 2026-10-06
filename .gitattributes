@@ -1,0 +1,68 @@
+# Line-ending policy for the nyairo repository.
+#
+# Why this file exists: the shipped source manifest (MANIFEST.json) records the
+# SHA-256 of every file's raw bytes, and scripts/verify_manifest.py re-hashes the
+# working tree. Without an explicit policy the bytes a clone receives depend on
+# the cloner's core.autocrlf: Git for Windows defaults to `true`, which turned
+# 1,527 text files into CRLF on checkout and made the source verifier report
+# 1,510 mismatches (rc=1). A single repo-wide rule makes every supported
+# checkout byte-identical, so the verifier passes on Windows and Linux alike.
+#
+# `text=auto` still lets Git auto-detect binary content; eol=lf makes the
+# working tree match the index on every platform (no phantom whole-file diffs).
+* text=auto eol=lf
+
+# PowerShell is the deliberate CRLF exception: PS 5.1 tooling expects CRLF.
+# vendor/hermes/.gitattributes already declares this for its own subtree (deeper
+# attribute files win, so that stays authoritative); repeated here so the
+# exception is explicit at the repository root. The 12 .ps1 files in the tree are
+# already pinned as CRLF in MANIFEST.json, so this rule matches the manifest.
+#
+# .cmd/.bat are deliberately NOT given eol=crlf. The only such file in the tree is
+# upstream's vendor/hermes/scripts/install.cmd: upstream stores it with LF and
+# MANIFEST.json pins those LF bytes, so forcing CRLF on checkout both deviates
+# from upstream and makes scripts/verify_manifest.py fail on every platform.
+# If a first-party .cmd/.bat is ever added and genuinely needs CRLF, add a
+# targeted path rule and regenerate MANIFEST.json in the same change.
+*.ps1  text eol=crlf
+
+# Text types this project ships, pinned to LF explicitly.
+*.sh      text eol=lf
+*.py      text eol=lf
+*.md      text eol=lf
+*.json    text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.toml    text eol=lf
+*.txt     text eol=lf
+*.js      text eol=lf
+*.mjs     text eol=lf
+*.cjs     text eol=lf
+*.css     text eol=lf
+*.html    text eol=lf
+*.svg     text eol=lf
+*.patch   text eol=lf
+*.example text eol=lf
+*.service text eol=lf
+*.sha256  text eol=lf
+
+# Binary types present in the tree, plus the archive/database artifact types
+# this project produces (.zip release packages, runtime .sqlite/.db stores).
+# Never apply eol conversion to these.
+*.png     binary
+*.jpg     binary
+*.jpeg    binary
+*.gif     binary
+*.webp    binary
+*.ico     binary
+*.icns    binary
+*.pdf     binary
+*.woff2   binary
+*.tflite  binary
+*.onnx    binary
+*.mp4     binary
+*.wav     binary
+*.zip     binary
+*.sqlite  binary
+*.sqlite3 binary
+*.db      binary

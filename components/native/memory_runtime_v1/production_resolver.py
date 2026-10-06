@@ -51,7 +51,7 @@ RESOLVER_VERSION = "production-native-memory-resolver-v0"
 
 SEALED_SHA256 = {
     "readonly_recall_adapter.py":
-        "6667ff66fe8105f28f436609f0cd8d744b185c0580e7f1642aafef0b873af78a",
+        "fe0f57efb43fee099fc449f580024f72e202bfeb704d78830c3d180dbd53fb26",
     "production_consumption_evaluator_v0_3.py":
         "141822d19049a8a5247b68885616cd0c156d616dea84d36ab099584605fc1b41",
     "production_consumption_evaluator_v0.py":
