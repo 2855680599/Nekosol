@@ -26,7 +26,7 @@ nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态�
 Windows 用户先打开 WSL / Ubuntu；Linux 用户打开终端。在普通账号下运行这一行：
 
 ```bash
-curl -fsSL https://www.nyairo.com/install.sh | bash
+curl -fsSL https://nyairo.com/install.sh | bash
 ```
 
 安装器自动准备 uv / Python、下载并校验 rc6、安装依赖和创建个人配置，再打开模型设置向导。选择模型并填写自己的连接信息后进入聊天；以后打开新终端运行 `nyairo` 即可。基础配置启用记忆与生活状态，并授权当前本地账号；模型工具默认受限，详见 [隐私修复与升级](PRIVACY_REVIEW.md)。

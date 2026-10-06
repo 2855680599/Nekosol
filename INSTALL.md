@@ -7,7 +7,7 @@
 Windows 用户先打开 WSL 2 / Ubuntu；Linux 用户打开自己的终端。使用普通账号运行：
 
 ```bash
-curl -fsSL https://www.nyairo.com/install.sh | bash
+curl -fsSL https://nyairo.com/install.sh | bash
 ```
 
 自动准备 uv 和 Python 3.13，下载并校验固定 rc6、安装依赖、创建独立个人配置，再打开 Hermes 模型设置向导并启动聊天。需要自己选择模型、填写密钥或服务地址。Ubuntu / Debian 如果没有 curl，先运行 `sudo apt update && sudo apt install -y curl`。
@@ -19,13 +19,13 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 服务器上只安装、不打开向导或聊天：
 
 ```bash
-curl -fsSL https://www.nyairo.com/install.sh | bash -s -- --no-setup --no-launch
+curl -fsSL https://nyairo.com/install.sh | bash -s -- --no-setup --no-launch
 ```
 
 自定义目录或只设置不启动聊天：
 
 ```bash
-curl -fsSL https://www.nyairo.com/install.sh | bash -s -- --prefix "$HOME/apps/nyairo" --profile "$HOME/.nyairo" --no-launch
+curl -fsSL https://nyairo.com/install.sh | bash -s -- --prefix "$HOME/apps/nyairo" --profile "$HOME/.nyairo" --no-launch
 ```
 
 程序与个人目录必须分开。基础安装授权当前本地账号，默认启用记忆与生活状态；其他服务仍需单独配置。引导脚本位于 [scripts/bootstrap.sh](scripts/bootstrap.sh)，网站 `/install.sh` 发布相同内容。公开脚本固定安装 rc6，不改写已经发布的标签或 ZIP。

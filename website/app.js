@@ -19,7 +19,7 @@ function initTheme() {
   const themeBtn = document.getElementById('theme-toggle');
   if (!themeBtn) return;
 
-  let savedTheme = 'dark'; try { savedTheme = localStorage.getItem('chiyo-theme') || 'dark'; } catch {}
+  let savedTheme = 'dark'; try { savedTheme = localStorage.getItem('nyairo-theme') || localStorage.getItem('chiyo-theme') || 'dark'; } catch {}
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateThemeIcon(savedTheme);
 
@@ -27,7 +27,7 @@ function initTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', nextTheme);
-    try { localStorage.setItem('chiyo-theme', nextTheme); } catch {}
+    try { localStorage.setItem('nyairo-theme', nextTheme); localStorage.setItem('chiyo-theme', nextTheme); } catch {}
     updateThemeIcon(nextTheme);
   });
 }
@@ -152,7 +152,13 @@ function routeHash() {
   if (homeView) homeView.style.display = 'none';
   if (docsView) docsView.style.display = 'flex';
 
-  const docId = docAnchorPage(rawHash);
+  let docId = docAnchorPage(rawHash);
+  if (typeof DOCS_CONTENT !== 'undefined' && !DOCS_CONTENT[docId]) {
+    docId = 'intro';
+    if (rawHash !== 'intro') {
+      history.replaceState(null, '', '#intro');
+    }
+  }
   if (docId === 'quickstart' && navQuickstart) {
     navQuickstart.classList.add('active');
   } else if ((docId === 'status-matrix' || docId === 'current-status') && navStatus) {
@@ -413,9 +419,14 @@ function initSearch() {
    ========================================================================== */
 function setMobileMenuState(open) {
   const button = document.getElementById('mobile-toggle');
-  if (!button) return;
-  button.setAttribute('aria-expanded', String(open));
-  button.setAttribute('aria-label', open ? '关闭教程目录' : '打开教程目录');
+  if (button) {
+    button.setAttribute('aria-expanded', String(open));
+    button.setAttribute('aria-label', open ? '关闭教程目录' : '打开教程目录');
+  }
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.classList.toggle('show', open);
+  }
 }
 
 function initMobileMenu() {
@@ -436,10 +447,13 @@ function initMobileMenu() {
     setMobileMenuState(open);
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebarEl.classList.contains('open')) { close(); toggleBtn.focus(); } });
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', close);
+  }
   document.addEventListener('click', (e) => {
-    if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target)) close();
+    if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target) && (!backdrop || !backdrop.contains(e.target))) close();
   });
-}
 
 function escapeHtml(str) {
   if (!str) return '';

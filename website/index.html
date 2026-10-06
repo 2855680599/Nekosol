@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-world-home">
+  <link rel="stylesheet" href="style.css?v=20261006-opt1">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -143,7 +143,7 @@
         <!-- 安装命令复制栏 -->
         <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
           <span class="cmd-prefix">$</span>
-          <code class="cmd-text">curl -fsSL https://www.nyairo.com/install.sh | bash</code>
+          <code class="cmd-text">curl -fsSL https://nyairo.com/install.sh | bash</code>
           <button class="cmd-copy-btn" id="hero-cmd-btn" aria-label="复制安装命令">
             <svg class="copy-icon-default" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
@@ -252,6 +252,8 @@
        视图 2: 文档阅读视图 (Docs View - 三栏流式布局)
        ======================================================================== -->
   <div id="view-docs" class="docs-layout" style="display: none;">
+    <!-- 移动端侧栏遮罩层 (Backdrop) -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
     <!-- 左侧边栏：文档目录树 -->
     <aside id="docs-sidebar" class="docs-sidebar">
       <!-- 由 app.js 动态渲染 DOCS_TREE -->
@@ -291,7 +293,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261004-nyairo-update-rc6"></script>
-  <script src="app.js?v=20261006-world-home"></script>
+  <script src="docs-data.js?v=20261006-opt1"></script>
+  <script src="app.js?v=20261006-opt1"></script>
 </body>
 </html>
