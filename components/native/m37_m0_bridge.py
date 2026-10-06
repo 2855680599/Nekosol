@@ -74,6 +74,15 @@ APPEND_TIMEOUT_S = 15.0
 
 SCHEMA = "chiyo-original-m37-m0-bridge-v1"
 
+# Persistent downgraded writer worker (NYA-AUDIT-005). Optional by design: if it
+# cannot be imported the bridge keeps using the original one-shot child.
+if str(INTEG_ROOT) not in sys.path:
+    sys.path.insert(0, str(INTEG_ROOT))
+try:
+    import m0_writer_worker
+except Exception:                                  # pragma: no cover - import guard
+    m0_writer_worker = None
+
 
 # --------------------------------------------------------------------------- #
 # binding (read, never invented)
@@ -258,9 +267,24 @@ def already_present(m0_db: Path, events: list[dict]) -> set[str]:
 
 
 def append_via_child(m0_db: Path, events: list[dict], *, writer_user=M0_WRITER_USER) -> list[dict]:
-    """Append events to M0 through a child process that runs as the store's owner."""
+    """Append events to M0 through a process running as the store's owner.
+
+    On POSIX the append goes to one long-lived writer worker instead of a fresh
+    interpreter per call; the worker is started with the same ``user=`` handoff
+    as before, so the privilege boundary is unchanged. Anywhere the worker is
+    unavailable (native Windows has no uid semantics) the original one-shot child
+    is used, unchanged.
+    """
     if not events:
         return []
+    if m0_writer_worker is not None and m0_writer_worker.available():
+        try:
+            worker = m0_writer_worker.worker_for(m0_db, writer_user=writer_user)
+            return worker.append_events_retrying(events)
+        except m0_writer_worker.WorkerError:
+            # Never report a successful write on a failed handoff; the caller
+            # owns the failure and the retry spool.
+            raise
     payload = json.dumps({"m0_db": str(m0_db), "events": events}, ensure_ascii=False)
     identity = {}
     if writer_user is not None:

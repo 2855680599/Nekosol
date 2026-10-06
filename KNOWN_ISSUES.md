@@ -27,3 +27,61 @@
 历史 v0.1.0-rc4 标签和 ZIP 保持原字节；主分支的改动不代表旧包中的问题自动消失。网站与 README 的说明更新也不等于运行时修复。
 
 rc5 的 Native HTTP 接口需要访问口令，默认只监听本机。日志不再输出上游错误正文或原始 Telegram 身份引用；受限私有账本仍保存去重所需的引用。清单与扫描证明已定义范围内的文件一致和规则通过，不证明发布者身份、凭据撤销或所有未知隐私问题都已排除。详见 [本次隐私复核](PRIVACY_REVIEW.md)。
+
+## P2-B 之后仍然存在的限制（2026-10-05）
+
+以下每一条都是当前代码里**真实存在**的边界，不是待办清单。已修好的问题不再列在这里。
+
+### 1. 原生 Windows 上没有降权 M0 writer
+
+M37 bridge 的写入安全边界是「进程以 M0 store owner 身份被 exec」（父进程用
+`subprocess user=<owner>` 启动）。这依赖 POSIX 的 uid/gid 语义；原生 Windows 没有等价物。
+因此持久化降权 writer 在原生 Windows **不支持**：`m0_writer_worker.available()` 返回假，
+bridge 自动回退到原来的 one-shot 子进程路径，而那条路径在原生 Windows 上同样不做降权
+（`os.getuid` 不存在，`M0_WRITER_USER` 为 `None`）。
+
+**没有**为了让 Windows「看起来支持」而取消 Linux 的 uid 边界。原生 Windows 仍然只适合
+WSL；见 [INSTALL.md](INSTALL.md) 的 Windows 章节。
+
+### 2. M1 现在按 M0 追加顺序（rowid）形成，不按 occurred_at
+
+NYA-AUDIT-004 把 M1 形成改成增量消费，游标是 `evidence_events.rowid`。选 rowid 的理由是
+M0 用 `evidence_no_update` / `evidence_no_delete` 触发器拒绝 UPDATE 与 DELETE，所以 rowid
+是永不重写、永不复用的追加序号；`occurred_at` 没有这个保证。
+
+代价：**事件不会因为时间戳更早而被跳过，但一个迟到事件的形成顺序会晚于「已先追加」的事件。**
+正常使用中事件按发生顺序追加，两者一致；只有在补写历史时才会观察到差异。既有 M1 契约测试
+（12 项）全部仍然通过。
+
+### 3. RetrySpool 换成 SQLite 后的权衡
+
+NYA-AUDIT-006 把 retry spool 从两个 append-only JSONL 换成有界的 `spool.sqlite`，换来：
+`pending_count()` 不再随历史线性变慢（10→5000 行时增长从 216x 降到 6.06x）、重复入队在
+主键上就不可能、COMMITTED 历史有界（`compact()`，默认保留 2000 条，`PENDING` 永不裁剪）。
+
+代价（实测）：**入队变慢**，5000 条从 12.6s 变为 51.9s，因为每条是一次独立已提交事务 + fsync；
+磁盘占用不是更小而是「有界」（5000 条 3.33MB → 3.91MB）。该路径只在 M0 写入失败时才走。
+
+### 4. M0 永久保留，本项目不自动归档
+
+M0（`evidence.sqlite`）是权威事实源，**只追加、永久保留**，本项目没有定期清空、自动归档或
+裁剪 M0 的代码。M1/M2/M3 是可重建派生层，`clear_derived()` 会连 formation cursor 一起清空，
+所以重建会真的重跑。
+
+`/chiyo_status` 显示 `M0 events`、`M0 database size`、`formation cursor`，通过只读连接
+（`mode=ro`）读取，观测不会修改被观测的数据库。若将来需要归档权威证据，必须先有独立设计与
+迁移方案；当前只有策略说明，没有实现。
+
+### 5. `components/alpha/` 是历史 / 对照实现，不是生产运行时
+
+`components/alpha/chiyo/life_runtime/`（含其自带的 `memory_runtime_v1`）是已分叉的平行实现，
+与现役的 `components/life/` 不是同一份代码；它不被 `chiyo_bundle` 装配，也不参与正常功能修复。
+`scripts/test_alpha.py` 验收的是这份对照实现，**它的通过不代表生产 Life Runtime 通过**。
+`tests/test_alpha_identity.py` 用静态扫描与运行时 `sys.modules` 断言守住这条边界。详见
+[components/alpha/README.md](components/alpha/README.md)。
+
+### 6. M3 形成仍是全表扫描
+
+`components/native/src/app/m3.py` 的 `M3Worker.process_once()` 与 M1 修复前是同一模式：
+把 `evidence_events` 全表读进内存，再用 `ids.index(cursor)` 定位。因此 **M3 仍带有历史线性成本**
+（NYA-AUDIT-004 只覆盖了 M1 的 `EpisodeWorker`）。这是已知的、尚未处理的性能边界。
