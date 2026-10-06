@@ -144,7 +144,7 @@ function routeHash() {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
-    document.title = 'nyairo · 数字个体框架';
+    document.title = 'nyairo · 以虚拟世界为核心的 AI 个体框架';
     window.scrollTo({ top: 0, behavior: 'instant' });
     return;
   }

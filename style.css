@@ -406,16 +406,16 @@ body {
 
 .hero-title-line { display: block; }
 .hero-title-line + .hero-title-line { margin-top: 0.06em; }
-.title-continuity { color: #91c5ff; }
-[data-theme="light"] .title-continuity { color: #245faf; }
-.title-memory {
+.title-world { color: #91c5ff; }
+[data-theme="light"] .title-world { color: #245faf; }
+.title-daily {
   font-family: "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
   font-weight: 700;
   color: #91c5ff;
   -webkit-text-stroke: 0.35px rgba(185, 220, 255, 0.45);
   text-shadow: 2px 3px 0 rgba(53, 110, 180, 0.22);
 }
-.title-memory::after {
+.title-daily::after {
   content: "";
   position: absolute;
   left: 3%;
@@ -428,7 +428,7 @@ body {
   opacity: 0.6;
 }
 @supports ((background-clip: text) or (-webkit-background-clip: text)) {
-  .title-continuity {
+  .title-world {
     background-image: linear-gradient(110deg, #80baff 10%, #bddfff 36%, #6fa7f5 58%, #80baff 86%);
     background-size: 220% 100%;
     -webkit-background-clip: text;
@@ -436,11 +436,11 @@ body {
     color: transparent;
     animation: title-pearl 8s ease-in-out infinite;
   }
-  [data-theme="light"] .title-continuity {
+  [data-theme="light"] .title-world {
     background-image: linear-gradient(110deg, #1e5db3 10%, #276bc4 36%, #164d9b 58%, #1e5db3 86%);
   }
 }
-[data-theme="light"] .title-memory {
+[data-theme="light"] .title-daily {
   color: #245faf;
   -webkit-text-stroke-color: rgba(36, 95, 175, 0.18);
   text-shadow: 2px 3px 0 rgba(36, 95, 175, 0.14);
@@ -1273,7 +1273,7 @@ a:focus-visible, button:focus-visible {
 .cmd-copy-btn.copied .copy-icon-success { display: inline-block !important; }
 
 /* Decorative title stays readable without motion or author colors. */
-@media (prefers-reduced-motion: reduce) { .title-continuity { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .title-world { animation: none; } }
 @media (forced-colors: active) {
   [data-theme] .title-keyword { background: none !important; color: CanvasText !important; -webkit-text-stroke: 0; text-shadow: none; animation: none; }
 }
@@ -1309,4 +1309,12 @@ a:focus-visible, button:focus-visible {
   .page-pager { gap: 12px; }
   .pager-title { overflow-wrap: anywhere; }
   .search-modal-input { min-width: 0; }
+}
+
+/* Virtual-world positioning and blue emphasis keep their natural reading order. */
+.banner-title { min-width: 0; }
+@media (max-width: 480px) {
+  .hero-status-banner { gap: 8px; max-width: 100%; }
+  .banner-title { font-size: 0.7rem; }
+  .banner-arrow { display: none; }
 }
