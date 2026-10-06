@@ -19,7 +19,7 @@
 Windows 用户先按 [Windows 安装](https://nyairo.com/#windows) 打开 WSL / Ubuntu；Linux 用户打开终端。用自己的普通账号，在这个窗口运行：
 
 ```bash
-curl -fsSL https://www.nyairo.com/install.sh | bash
+curl -fsSL https://nyairo.com/install.sh | bash
 ```
 
 不需要先下载 Git 仓库，也不用自己装 uv 或 Python。安装器会下载固定的 `v0.1.0-rc6`，核对文件，准备运行环境，再创建独立的个人配置，开启记忆与生活状态，并允许当前 Linux 账号通过本地命令行使用。
