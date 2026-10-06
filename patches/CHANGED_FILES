@@ -39,3 +39,6 @@ tests/tui_gateway/test_hosted_room_driver_runtime.py
 tools/browser_tool_lifecycle.py
 tools/process_registry.py
 tools/terminal_tool_background.py
+hermes_cli/update_contract.py
+.distribution.json
+tests/hermes_cli/test_distribution_update.py

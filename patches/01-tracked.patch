@@ -1,3 +1,4 @@
+diff --git a/agent/agent_init.py b/agent/agent_init.py
 --- a/agent/agent_init.py
 +++ b/agent/agent_init.py
 @@ -1973,6 +1973,7 @@
@@ -8,6 +9,7 @@
              )
          except Exception as _ce_err:
              _ra().logger.debug("Context engine on_session_start: %s", _ce_err)
+diff --git a/gateway/run.py b/gateway/run.py
 --- a/gateway/run.py
 +++ b/gateway/run.py
 @@ -4187,7 +4187,7 @@
@@ -19,6 +21,7 @@
  
      @staticmethod
      def _init_cached_agent_for_turn(agent: Any, interrupt_depth: int) -> None:
+diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
 --- a/gateway/run_agent_cache.py
 +++ b/gateway/run_agent_cache.py
 @@ -5,6 +5,7 @@
@@ -45,6 +48,7 @@
              cached = cls._HONCHO_CACHE_BUSTING_MEMO.get(memo_key)
              if cached is not None:
                  return dict(cached)
+diff --git a/gateway/run_inbound.py b/gateway/run_inbound.py
 --- a/gateway/run_inbound.py
 +++ b/gateway/run_inbound.py
 @@ -974,14 +974,17 @@
@@ -69,6 +73,7 @@
                      if asyncio.iscoroutine(result):
                          result = await result
                      return True, str(result) if result else None, command
+diff --git a/hermes_cli/config.py b/hermes_cli/config.py
 --- a/hermes_cli/config.py
 +++ b/hermes_cli/config.py
 @@ -1933,6 +1933,14 @@
@@ -86,6 +91,7 @@
  def read_raw_config() -> Dict[str, Any]:
      """Read config.yaml as-is (no defaults merged, no migration); ``{}`` if missing/unparseable.
      Cached on (mtime_ns, size); returns a deepcopy since callers mutate before ``save_config()``."""
+diff --git a/hermes_cli/plugins_dispatch.py b/hermes_cli/plugins_dispatch.py
 --- a/hermes_cli/plugins_dispatch.py
 +++ b/hermes_cli/plugins_dispatch.py
 @@ -19,6 +19,15 @@
@@ -104,6 +110,7 @@
  
  logger = logging.getLogger("hermes_cli.plugins")
  
+diff --git a/mcp_serve.py b/mcp_serve.py
 --- a/mcp_serve.py
 +++ b/mcp_serve.py
 @@ -49,11 +49,18 @@
@@ -139,6 +146,7 @@
          The routing index lives in the same file as the messages, so a new
          conversation and its first message land under a single mtime change (no
          dual-file race that could drop brand-new conversations).
+diff --git a/scripts/run_tests_parallel.py b/scripts/run_tests_parallel.py
 --- a/scripts/run_tests_parallel.py
 +++ b/scripts/run_tests_parallel.py
 @@ -399,7 +399,7 @@
@@ -150,6 +158,7 @@
      env["PYTEST_DEBUG_TEMPROOT"] = temproot
  
      subproc_start = time.monotonic()
+diff --git a/tests/agent/test_compression_worker_isolation_76354.py b/tests/agent/test_compression_worker_isolation_76354.py
 --- a/tests/agent/test_compression_worker_isolation_76354.py
 +++ b/tests/agent/test_compression_worker_isolation_76354.py
 @@ -83,7 +83,7 @@
@@ -224,6 +233,7 @@
  
      try:
          returned, _sp = agent._compress_context(
+diff --git a/tests/agent/test_vision_routing_31179.py b/tests/agent/test_vision_routing_31179.py
 --- a/tests/agent/test_vision_routing_31179.py
 +++ b/tests/agent/test_vision_routing_31179.py
 @@ -179,6 +179,12 @@
@@ -239,6 +249,7 @@
          _fresh_modules()
  
          from agent.auxiliary_client import resolve_vision_provider_client
+diff --git a/tests/computer_use/test_cua_no_overlay.py b/tests/computer_use/test_cua_no_overlay.py
 --- a/tests/computer_use/test_cua_no_overlay.py
 +++ b/tests/computer_use/test_cua_no_overlay.py
 @@ -86,7 +86,8 @@
@@ -251,6 +262,7 @@
              assert cua_backend._cua_no_overlay() is False
  
      @pytest.mark.linux_only
+diff --git a/tests/cron/test_parallel_pool.py b/tests/cron/test_parallel_pool.py
 --- a/tests/cron/test_parallel_pool.py
 +++ b/tests/cron/test_parallel_pool.py
 @@ -6,7 +6,6 @@
@@ -368,6 +380,7 @@
  
      def test_workdir_running_guard_prevents_double_dispatch(self, tmp_path, monkeypatch):
          """A workdir job already in _running_job_ids is skipped on next tick."""
+diff --git a/tests/gateway/test_browser_control_api.py b/tests/gateway/test_browser_control_api.py
 --- a/tests/gateway/test_browser_control_api.py
 +++ b/tests/gateway/test_browser_control_api.py
 @@ -71,6 +71,17 @@
@@ -481,6 +494,7 @@
              "/v1/browser-control/ws",
              protocols=[CONTROL_PROTOCOL, _ticket_protocol(registration["ticket"])],
          )
+diff --git a/tests/gateway/test_media_download_retry.py b/tests/gateway/test_media_download_retry.py
 --- a/tests/gateway/test_media_download_retry.py
 +++ b/tests/gateway/test_media_download_retry.py
 @@ -386,6 +386,18 @@
@@ -521,6 +535,7 @@
      """Tests for SlackAdapter._download_slack_file_bytes"""
  
      def test_success_returns_bytes(self):
+diff --git a/tests/gateway/test_multiplex_adapter_registry.py b/tests/gateway/test_multiplex_adapter_registry.py
 --- a/tests/gateway/test_multiplex_adapter_registry.py
 +++ b/tests/gateway/test_multiplex_adapter_registry.py
 @@ -956,7 +956,7 @@
@@ -543,6 +558,7 @@
  
          assert first == 0
          assert failed.disconnected is True
+diff --git a/tests/gateway/test_session_hygiene.py b/tests/gateway/test_session_hygiene.py
 --- a/tests/gateway/test_session_hygiene.py
 +++ b/tests/gateway/test_session_hygiene.py
 @@ -963,34 +963,44 @@
@@ -618,6 +634,7 @@
      StalledCompressAgent.last_instance.close.assert_called_once()
  
  @pytest.mark.asyncio
+diff --git a/tests/gateway/test_telegram_media_read_timeout.py b/tests/gateway/test_telegram_media_read_timeout.py
 --- a/tests/gateway/test_telegram_media_read_timeout.py
 +++ b/tests/gateway/test_telegram_media_read_timeout.py
 @@ -24,7 +24,17 @@
@@ -639,6 +656,7 @@
      a = TelegramAdapter(PlatformConfig(enabled=True, token="fake-token"))
      a._bot = MagicMock()
      a._metadata_thread_id = lambda metadata: None
+diff --git a/tests/gateway/test_unknown_command.py b/tests/gateway/test_unknown_command.py
 --- a/tests/gateway/test_unknown_command.py
 +++ b/tests/gateway/test_unknown_command.py
 @@ -178,6 +178,38 @@
@@ -680,9 +698,32 @@
  async def test_command_hook_rewrite_routes_to_plugin(monkeypatch):
      """A rewrite decision should re-resolve the command and route to the new one."""
      import gateway.run as gateway_run
+diff --git a/tests/hermes_cli/test_cmd_update.py b/tests/hermes_cli/test_cmd_update.py
 --- a/tests/hermes_cli/test_cmd_update.py
 +++ b/tests/hermes_cli/test_cmd_update.py
-@@ -89,10 +89,20 @@
+@@ -11,6 +11,21 @@
+ from hermes_cli import main_web_build
+ from hermes_cli import main_install_repair
+ from hermes_cli import update_cmd
++
++
++@pytest.fixture(autouse=True)
++def _mutable_source_checkout(tmp_path, monkeypatch):
++    """Git updater scenarios use an independent source install, not the managed bundle."""
++    from hermes_cli import main as hm
++    import sys
++    checkout = tmp_path / 'source-checkout'
++    checkout.mkdir()
++    subprocess.run(['git', 'init', '-q', str(checkout)], check=True)
++    desktop = checkout / 'apps/desktop'
++    desktop.mkdir(parents=True)
++    (desktop / 'package.json').write_text('{}')
++    monkeypatch.setattr(hm, 'PROJECT_ROOT', checkout)
++    monkeypatch.setattr(sys.modules[__name__], 'PROJECT_ROOT', checkout)
+ 
+ 
+ def _make_run_side_effect(branch="main", verify_ok=True, commit_count="0"):
+@@ -89,10 +104,20 @@
      conftest live-system guard and turns into a spurious ``sys.exit(1)``.
      Discovery returning nothing makes the phase a clean no-op for every test
      in this module (none of them assert on gateway restarts).
@@ -704,7 +745,7 @@
          yield
  
  
-@@ -834,12 +844,13 @@
+@@ -834,12 +859,13 @@
  
      @patch("shutil.which", return_value=None)
      @patch("subprocess.run")
@@ -719,6 +760,7 @@
  
          cmd_update(args)
  
+diff --git a/tests/hermes_cli/test_gateway_service.py b/tests/hermes_cli/test_gateway_service.py
 --- a/tests/hermes_cli/test_gateway_service.py
 +++ b/tests/hermes_cli/test_gateway_service.py
 @@ -1249,10 +1249,10 @@
@@ -734,6 +776,7 @@
          user_unit = gateway_cli.generate_systemd_unit(system=True, run_as_user="alice")
  
          assert root_unit == user_unit
+diff --git a/tests/hermes_cli/test_install_cua_driver.py b/tests/hermes_cli/test_install_cua_driver.py
 --- a/tests/hermes_cli/test_install_cua_driver.py
 +++ b/tests/hermes_cli/test_install_cua_driver.py
 @@ -239,7 +239,12 @@
@@ -750,6 +793,7 @@
          """A background refresh must neither wait on a hidden prompt nor
          inherit the explicit install command's 11-minute ceiling."""
          import subprocess
+diff --git a/tests/hermes_cli/test_kanban_init_lock_bounded.py b/tests/hermes_cli/test_kanban_init_lock_bounded.py
 --- a/tests/hermes_cli/test_kanban_init_lock_bounded.py
 +++ b/tests/hermes_cli/test_kanban_init_lock_bounded.py
 @@ -17,8 +17,8 @@
@@ -841,6 +885,7 @@
          release.set()
          t.join(timeout=5)
 +        assert not t.is_alive(), "holder did not stop after release"
+diff --git a/tests/hermes_cli/test_local_quickstart.py b/tests/hermes_cli/test_local_quickstart.py
 --- a/tests/hermes_cli/test_local_quickstart.py
 +++ b/tests/hermes_cli/test_local_quickstart.py
 @@ -52,7 +52,7 @@
@@ -861,6 +906,7 @@
      """Runtime present and model already staged: the response says so and
      the job goes straight to activation."""
      calls: list[str] = []
+diff --git a/tests/hermes_cli/test_model_switch_custom_providers.py b/tests/hermes_cli/test_model_switch_custom_providers.py
 --- a/tests/hermes_cli/test_model_switch_custom_providers.py
 +++ b/tests/hermes_cli/test_model_switch_custom_providers.py
 @@ -19,6 +19,13 @@
@@ -877,6 +923,7 @@
  
  _MOCK_VALIDATION = {
      "accepted": True,
+diff --git a/tests/hermes_cli/test_picker_prewarm.py b/tests/hermes_cli/test_picker_prewarm.py
 --- a/tests/hermes_cli/test_picker_prewarm.py
 +++ b/tests/hermes_cli/test_picker_prewarm.py
 @@ -10,6 +10,16 @@
@@ -904,6 +951,7 @@
      first_open = open_picker()
      assert len(calls) == 1, (
          "the endpoint must be live-probed at most once across boot prewarm "
+diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
 --- a/tests/hermes_cli/test_plugins.py
 +++ b/tests/hermes_cli/test_plugins.py
 @@ -1228,7 +1228,7 @@
@@ -939,6 +987,7 @@
          second = shell_hooks_mod.register_from_config(cfg, accept_hooks=True)
  
          assert second == []
+diff --git a/tests/hermes_cli/test_xai_provider_labels.py b/tests/hermes_cli/test_xai_provider_labels.py
 --- a/tests/hermes_cli/test_xai_provider_labels.py
 +++ b/tests/hermes_cli/test_xai_provider_labels.py
 @@ -4,8 +4,15 @@
@@ -958,6 +1007,7 @@
      assert get_label("xai") == "xAI"
      assert get_label("xai-oauth") == "xAI Grok OAuth (SuperGrok / Premium+)"
      assert get_label("grok-oauth") == "xAI Grok OAuth (SuperGrok / Premium+)"
+diff --git a/tests/openviking_plugin/test_openviking.py b/tests/openviking_plugin/test_openviking.py
 --- a/tests/openviking_plugin/test_openviking.py
 +++ b/tests/openviking_plugin/test_openviking.py
 @@ -1102,6 +1102,8 @@
@@ -978,6 +1028,7 @@
          probes = []
  
          class _StubClient:
+diff --git a/tests/test_atomic_replace_symlinks.py b/tests/test_atomic_replace_symlinks.py
 --- a/tests/test_atomic_replace_symlinks.py
 +++ b/tests/test_atomic_replace_symlinks.py
 @@ -268,7 +268,7 @@
@@ -989,6 +1040,7 @@
          assert link.is_symlink()
          assert real.read_text(encoding="utf-8") == "new\n"
          assert not tmp.exists()
+diff --git a/tests/test_install_macos_launcher.py b/tests/test_install_macos_launcher.py
 --- a/tests/test_install_macos_launcher.py
 +++ b/tests/test_install_macos_launcher.py
 @@ -63,6 +63,7 @@
@@ -999,6 +1051,7 @@
              _setup_path_function(),
              "setup_path",
          ]
+diff --git a/tests/test_mcp_serve.py b/tests/test_mcp_serve.py
 --- a/tests/test_mcp_serve.py
 +++ b/tests/test_mcp_serve.py
 @@ -1340,6 +1340,7 @@
@@ -1078,6 +1131,7 @@
      def test_poll_interval_is_200ms(self):
          """Verify the poll interval constant."""
          from mcp_serve import POLL_INTERVAL
+diff --git a/tests/test_model_tools_async_bridge.py b/tests/test_model_tools_async_bridge.py
 --- a/tests/test_model_tools_async_bridge.py
 +++ b/tests/test_model_tools_async_bridge.py
 @@ -254,8 +254,14 @@
@@ -1116,6 +1170,7 @@
      """Simulate the full registry.dispatch('vision_analyze') chain and
      verify the event loop stays alive afterwards — the exact scenario
      from issue #2104."""
+diff --git a/tests/tools/test_browser_open_timeout.py b/tests/tools/test_browser_open_timeout.py
 --- a/tests/tools/test_browser_open_timeout.py
 +++ b/tests/tools/test_browser_open_timeout.py
 @@ -110,6 +110,7 @@
@@ -1126,6 +1181,7 @@
          monkeypatch.setattr(bt_install, "_find_agent_browser", lambda: "agent-browser")
          monkeypatch.setattr("tools.browser_tool_install._requires_real_termux_browser_install", lambda _cmd: False)
          monkeypatch.setattr("tools.browser_tool_lifecycle._start_browser_cleanup_thread", lambda: None)
+diff --git a/tests/tools/test_browser_real_profile.py b/tests/tools/test_browser_real_profile.py
 --- a/tests/tools/test_browser_real_profile.py
 +++ b/tests/tools/test_browser_real_profile.py
 @@ -960,6 +960,8 @@
@@ -1137,6 +1193,7 @@
               patch("hermes_cli.browser_connect.snapshot_real_profile",
                     return_value=(str(tmp_path), None)) as snap, \
               patch.object(bt_real_profile, "_agent_browser_get_cdp",
+diff --git a/tests/tools/test_delegate_control_actions.py b/tests/tools/test_delegate_control_actions.py
 --- a/tests/tools/test_delegate_control_actions.py
 +++ b/tests/tools/test_delegate_control_actions.py
 @@ -639,52 +639,83 @@
@@ -1246,6 +1303,7 @@
  
  
  def test_attribution_line_uses_owner_task_id(monkeypatch):
+diff --git a/tests/tools/test_termux_api_detection.py b/tests/tools/test_termux_api_detection.py
 --- a/tests/tools/test_termux_api_detection.py
 +++ b/tests/tools/test_termux_api_detection.py
 @@ -188,6 +188,7 @@
@@ -1256,6 +1314,7 @@
          from tools.voice_mode import detect_audio_environment
          result = detect_audio_environment()
  
+diff --git a/tests/tui_gateway/test_compute_host_turn_protocol.py b/tests/tui_gateway/test_compute_host_turn_protocol.py
 --- a/tests/tui_gateway/test_compute_host_turn_protocol.py
 +++ b/tests/tui_gateway/test_compute_host_turn_protocol.py
 @@ -40,6 +40,10 @@
@@ -1269,6 +1328,7 @@
      monkeypatch.setattr(server, "_wire_callbacks", lambda sid: None)
      monkeypatch.setattr(server, "_sync_agent_model_with_config", lambda sid, session: None)
      monkeypatch.setattr(server, "_session_cwd", lambda session: str(tmp_path))
+diff --git a/tests/tui_gateway/test_hosted_room_driver_runtime.py b/tests/tui_gateway/test_hosted_room_driver_runtime.py
 --- a/tests/tui_gateway/test_hosted_room_driver_runtime.py
 +++ b/tests/tui_gateway/test_hosted_room_driver_runtime.py
 @@ -757,16 +757,18 @@
@@ -1397,6 +1457,7 @@
      started = time.monotonic()
      stopped = runtime.stop(timeout=0.5)
  
+diff --git a/tools/browser_tool_lifecycle.py b/tools/browser_tool_lifecycle.py
 --- a/tools/browser_tool_lifecycle.py
 +++ b/tools/browser_tool_lifecycle.py
 @@ -681,6 +681,8 @@
@@ -1408,6 +1469,7 @@
      _install._discover_homebrew_node_dirs.cache_clear()
      # Each resolved flag flips BEFORE its cache is nulled so a concurrent reader never
      # sees ``resolved=True`` with ``cache=None``.
+diff --git a/tools/process_registry.py b/tools/process_registry.py
 --- a/tools/process_registry.py
 +++ b/tools/process_registry.py
 @@ -345,6 +345,7 @@
@@ -1473,6 +1535,7 @@
  
      @staticmethod
      def _exit_fields(session: ProcessSession) -> dict:
+diff --git a/tools/terminal_tool_background.py b/tools/terminal_tool_background.py
 --- a/tools/terminal_tool_background.py
 +++ b/tools/terminal_tool_background.py
 @@ -173,7 +173,7 @@
@@ -1484,3 +1547,55 @@
              result_data["notify_on_complete"] = True
              if proc_session.watcher_platform:
                  _register_completion_watcher(process_registry, proc_session, session_key)
+diff --git a/hermes_cli/update_contract.py b/hermes_cli/update_contract.py
+--- a/hermes_cli/update_contract.py
++++ b/hermes_cli/update_contract.py
+@@ -8,6 +8,9 @@
+ from __future__ import annotations
+ 
+ import logging
++import json
++import shlex
++import stat
+ from dataclasses import dataclass
+ from pathlib import Path
+ from typing import Callable, Optional
+@@ -42,6 +45,38 @@
+     ``None`` means the install is eligible for in-place update (git checkout or unknown-but-
+     mutable). Never raises; on any internal error it falls back to the heuristic layer only.
+     """
++    # A code-scoped distribution owns its dependencies as a single release. This
++    # is independent of personal config and must precede mutable-checkout heuristics.
++    marker = Path(project_root) / '.distribution.json'
++    try:
++        observed = marker.lstat()
++    except FileNotFoundError:
++        observed = None
++    except OSError:
++        return UpdateRefusal('distribution-invalid', 'Distribution marker cannot be read; in-place update is disabled.', '')
++    if observed is not None:
++        try:
++            if not stat.S_ISREG(observed.st_mode):
++                raise ValueError('marker must be a regular file')
++            data = json.loads(marker.read_text(encoding='utf8'))
++            if not isinstance(data, dict):
++                raise ValueError('distribution marker must be an object')
++            if type(data.get('schema')) is not int or data['schema'] != 1:
++                raise ValueError('unsupported distribution schema')
++            script = data['update_script']
++            if not isinstance(script, str) or Path(script).is_absolute():
++                raise ValueError('update script must be relative to the code root')
++            target = (Path(project_root) / script).resolve(strict=True)
++            if not target.is_file():
++                raise ValueError('missing updater')
++            command = shlex.join(['bash', str(target)])
++            manager = data['manager']
++            if not isinstance(manager, str) or not manager.strip():
++                raise ValueError('missing distribution manager')
++            return UpdateRefusal('distribution', f'This Hermes belongs to {manager}. Update the complete distribution:\n  {command}\nYour HERMES_HOME remains in use.', command)
++        except (OSError, ValueError, KeyError, TypeError):
++            return UpdateRefusal('distribution-invalid', 'Distribution marker is invalid; in-place Hermes update is disabled. Reinstall a complete distribution release.', '')
++
+     # Layer 1: baked provenance marker — authoritative when present.
+     try:
+         from hermes_cli.image_provenance import read_image_provenance

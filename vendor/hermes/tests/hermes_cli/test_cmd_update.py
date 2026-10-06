@@ -13,6 +13,21 @@ from hermes_cli import main_install_repair
 from hermes_cli import update_cmd
 
 
+@pytest.fixture(autouse=True)
+def _mutable_source_checkout(tmp_path, monkeypatch):
+    """Git updater scenarios use an independent source install, not the managed bundle."""
+    from hermes_cli import main as hm
+    import sys
+    checkout = tmp_path / 'source-checkout'
+    checkout.mkdir()
+    subprocess.run(['git', 'init', '-q', str(checkout)], check=True)
+    desktop = checkout / 'apps/desktop'
+    desktop.mkdir(parents=True)
+    (desktop / 'package.json').write_text('{}')
+    monkeypatch.setattr(hm, 'PROJECT_ROOT', checkout)
+    monkeypatch.setattr(sys.modules[__name__], 'PROJECT_ROOT', checkout)
+
+
 def _make_run_side_effect(branch="main", verify_ok=True, commit_count="0"):
     """Build a side_effect function for subprocess.run that simulates git commands."""
 

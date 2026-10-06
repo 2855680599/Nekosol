@@ -1,0 +1,89 @@
+{
+  "schema": "nyairo/update-test-evidence@1",
+  "date": "2026-10-06",
+  "version": "0.1.0-rc6",
+  "base_main_commit": "888273b47dc141cf8f83ea16ce6b55547f3f27a8",
+  "status": "TARGETED_TESTS_AND_ISOLATED_ORDINARY_ACCOUNT_UPGRADE_PASSED",
+  "environment": {
+    "platform": "real Linux",
+    "python": "3.13.14",
+    "cold_install_uid": 994
+  },
+  "owned_runner": {
+    "command": "vendor/hermes/.venv/bin/python -B scripts/test.py",
+    "unittest_suites": {
+      "closeout": 17,
+      "native": 52,
+      "memory": 11,
+      "supply": 122,
+      "world": 251,
+      "host_boundaries_update_and_bootstrap": 71
+    },
+    "unittest_passed": 524,
+    "cognition_fault_passed": 1,
+    "life_assembly_checks": "PASS",
+    "official_context_engine_tests_passed": 29,
+    "failed_suites": []
+  },
+  "official_update_runner": {
+    "command": "bash scripts/run_tests.sh tests/hermes_cli/test_cmd_update.py tests/hermes_cli/test_distribution_update.py tests/hermes_cli/test_update_contract.py -j 1",
+    "files": 3,
+    "passed": 66,
+    "failed": 0
+  },
+  "counted_python_tests_passed": 620,
+  "linux_update_transactions": {
+    "command": "python -m unittest discover -s tests -p test_update.py -q",
+    "passed": 13,
+    "already_counted_in_owned_runner": true
+  },
+  "native_windows_boundaries": {
+    "passed": 4,
+    "linux_transactions_skipped": 9,
+    "not_a_native_windows_installer_qualification": true
+  },
+  "negative_control": {
+    "base_commit": "7acd545a13248fabbf8a095eb0d5dd73181da0cc",
+    "distribution_guard_tests_failed_on_base": 4
+  },
+  "isolated_ordinary_install_and_upgrade": {
+    "schema": "nyairo/managed-update-install-check@1",
+    "uid": 994,
+    "python": "3.13",
+    "candidate_source": "sealed pre-release source",
+    "cold_dependencies": true,
+    "rc5_to_rc6_migration": true,
+    "persona_config_and_chat_preserved": true,
+    "cli_startup": true,
+    "direct_hermes_update_exit": 2,
+    "rollback_program_only": true,
+    "post_upgrade_chat_preserved": true,
+    "private_backup_mode": "0600",
+    "check_command": true,
+    "release_archive_download_test": "pending public publication",
+    "real_memory_database_retained_across_upgrade_and_rollback": true,
+    "real_life_assembly_old_and_new": true,
+    "model_calls": 0
+  },
+  "retained_data_scope": "actual Memory evidence database and Life owner reload; persona, config, auth settings, chat fixture; no live model call",
+  "source_only_hermes_0_21_5_review": "HERMES_UPDATE_REVIEW.json; not promoted, no runtime qualification",
+  "limitations": [
+    "Full upstream Hermes suite not rerun",
+    "No real Telegram or model-provider call",
+    "No production service update or automatic service restart",
+    "Independent World/Supply code roots and external data must be upgraded/backed up separately",
+    "macOS and native Windows installer not qualified; WSL behavior shares Linux path but was not requalified on a Windows WSL host",
+    "Public final-tag/asset checks are attached as a separate release receipt after publication"
+  ],
+  "log_sha256": {
+    "actual-memory-life.log": "59db6a71d79caa2b3114d97857dc08c52b2e71c97e1306d1d3e5d3a268b7f845",
+    "cold-install.log": "fe9401eb05ef6c21b15995bc31d50ed43dbabb5173cb203f467cbb7b4577a537",
+    "components-final.log": "570927f7538b67391f9f3411310bf1b9bbd1c0592436ea6997a222015b85a683",
+    "components.log": "8184ca4c47f90eeab6c2c0c3ddfd9a6e6bcafd64acad00273947692260b430bd",
+    "hermes-update-final.log": "2f3f2dcecf4f2c0f20b199f4d7194059d9b5823bab6ee2874abaa6fd119ee69b",
+    "hermes-update.log": "7678b884d2785dad074ea7931f9ac7f360f88a421bdaf9b3c724d7d5556d8e85",
+    "negative-control.log": "968c0f8ab97b5391a43856bb6bae3028108aa7db82fdaca9e96db2929f5d5835",
+    "update-transactions.log": "59b93f387a2c159302a7210b843ce52f00e46b6d8ff14f8898c23425971bdc34"
+  },
+  "patch_reproduction": "CLEAN -> APPLIED -> PATCHED -> ROLLED_BACK -> CLEAN, exact isolated preimages"
+}

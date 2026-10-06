@@ -8,6 +8,9 @@ and exits 2 on CLI surfaces.
 from __future__ import annotations
 
 import logging
+import json
+import shlex
+import stat
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Optional
@@ -42,6 +45,38 @@ def evaluate_update_admission(project_root: Path) -> Optional[UpdateRefusal]:
     ``None`` means the install is eligible for in-place update (git checkout or unknown-but-
     mutable). Never raises; on any internal error it falls back to the heuristic layer only.
     """
+    # A code-scoped distribution owns its dependencies as a single release. This
+    # is independent of personal config and must precede mutable-checkout heuristics.
+    marker = Path(project_root) / '.distribution.json'
+    try:
+        observed = marker.lstat()
+    except FileNotFoundError:
+        observed = None
+    except OSError:
+        return UpdateRefusal('distribution-invalid', 'Distribution marker cannot be read; in-place update is disabled.', '')
+    if observed is not None:
+        try:
+            if not stat.S_ISREG(observed.st_mode):
+                raise ValueError('marker must be a regular file')
+            data = json.loads(marker.read_text(encoding='utf8'))
+            if not isinstance(data, dict):
+                raise ValueError('distribution marker must be an object')
+            if type(data.get('schema')) is not int or data['schema'] != 1:
+                raise ValueError('unsupported distribution schema')
+            script = data['update_script']
+            if not isinstance(script, str) or Path(script).is_absolute():
+                raise ValueError('update script must be relative to the code root')
+            target = (Path(project_root) / script).resolve(strict=True)
+            if not target.is_file():
+                raise ValueError('missing updater')
+            command = shlex.join(['bash', str(target)])
+            manager = data['manager']
+            if not isinstance(manager, str) or not manager.strip():
+                raise ValueError('missing distribution manager')
+            return UpdateRefusal('distribution', f'This Hermes belongs to {manager}. Update the complete distribution:\n  {command}\nYour HERMES_HOME remains in use.', command)
+        except (OSError, ValueError, KeyError, TypeError):
+            return UpdateRefusal('distribution-invalid', 'Distribution marker is invalid; in-place Hermes update is disabled. Reinstall a complete distribution release.', '')
+
     # Layer 1: baked provenance marker — authoritative when present.
     try:
         from hermes_cli.image_provenance import read_image_provenance

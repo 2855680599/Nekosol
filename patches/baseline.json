@@ -100,7 +100,7 @@
     {
       "path": "tests/hermes_cli/test_cmd_update.py",
       "clean_sha256": "dba4761769e18401f6069a4f12f16e747a7308ec8e7be7584703f685d2688da8",
-      "patched_sha256": "df2bbf8f1d7b85bc48f682e90c8e7b4843932b9a69eff8c71854c7f330541f79"
+      "patched_sha256": "bb9b4f5de0a35fde07ec97a24b2a952c3431f8d70ac2d5acb1c15a66278cf931"
     },
     {
       "path": "tests/hermes_cli/test_gateway_service.py",
@@ -211,8 +211,22 @@
       "path": "tools/terminal_tool_background.py",
       "clean_sha256": "460ac151968e0261f89586941608965e826719c99432c77e91297de5ba62396d",
       "patched_sha256": "081f4240f5f5ebded113e5ca9fe7a5615502fd33cbd2b26a5cc8148363f0b242"
+    },
+    {
+      "path": "hermes_cli/update_contract.py",
+      "clean_sha256": "85a39c3ddb40b7aae92ac229440a33b4393895e435f86c60b18a7ffcdcf73c43",
+      "patched_sha256": "53bfd0cb163ed932081cac7ba9fd88573de16442e51172dc25afe1cdec3f93b4"
     }
   ],
-  "new_modules": [],
-  "scope": "Generic CHIYO extension hooks plus isolated Hermes config-cache, WAL polling and background-process lifecycle fixes and test-harness/fixture repairs. See HERMES_FIXES.md for runtime versus test-only changes. R17 preserves exact registered plugin command names before Telegram hyphen fallback."
+  "new_modules": [
+    {
+      "path": ".distribution.json",
+      "patched_sha256": "4a4d17d545761e6c1078e1da5359d7738d2ec69d6d872daa61b4fe3c8eb4e00b"
+    },
+    {
+      "path": "tests/hermes_cli/test_distribution_update.py",
+      "patched_sha256": "e8812599c47a4fd9d1570d617a346f5f4db626571d66984653a1d29836ceb740"
+    }
+  ],
+  "scope": "Generic CHIYO extension hooks plus isolated Hermes config-cache, WAL polling and background-process lifecycle fixes and test-harness/fixture repairs. See HERMES_FIXES.md for runtime versus test-only changes. R17 preserves exact registered plugin command names before Telegram hyphen fallback. RC6 adds a generic code-scoped distribution update refusal and its regression tests; bundled Hermes is updated only with a qualified nyairo release."
 }

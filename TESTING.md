@@ -56,3 +56,7 @@ bash scripts/run_tests.sh -j 8 --file-timeout 900 --file-retries 0
 - `bash -n scripts/bootstrap.sh` 通过；`python3 -m unittest discover -s tests -p test_bootstrap_installer.py -v` 七项通过，覆盖无终端拒绝、无副作用帮助、拒绝覆盖无关入口/个人目录、目录分离、工具失败后清理，以及两个发布脚本一致。
 
 首次安装测试使用 `--no-setup --no-launch` 独立检查环境准备；交互模型设置及聊天接线另行检查。此处不宣称所有模型服务、消息平台或附加模块都已配置或重新验收。引导安装的个人目录是 `~/.nyairo`，手动教程的旧目录仍保留兼容。
+
+## rc6 更新验收
+
+本轮整包更新与失败恢复的实际结果见 `UPDATE_TEST_EVIDENCE.json`。rc5 隐私证据仍保留为 rc5 的结果，不作为 rc6 的新运行记录。没有宣称完整 Hermes 套件、Hermes 0.21.5 或真实生产机器升级已通过。

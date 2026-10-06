@@ -1,0 +1,188 @@
+{
+  "schema": "nyairo/hermes-update-source-review@1",
+  "date": "2026-10-04",
+  "selected_distribution_hermes": "0.21.0",
+  "selected_commit": "67807e64a66044db9e0a641d98c68a35c1760589",
+  "reviewed_upstream_version": "0.21.5",
+  "reviewed_upstream_tag": "v2026.9.24",
+  "reviewed_upstream_commit": "f97608f178d1ffeca59860195ab7da295f7c8e5f",
+  "method": "three-way source comparison of the 42 tracked-file patches in the RC6 candidate, via git merge-file; no upstream runtime tests",
+  "counts": {
+    "merged": 19,
+    "conflict": 14,
+    "unchanged": 6,
+    "removed": 3
+  },
+  "results": [
+    {
+      "status": "merged",
+      "path": "agent/agent_init.py"
+    },
+    {
+      "status": "conflict",
+      "path": "gateway/run.py"
+    },
+    {
+      "status": "conflict",
+      "path": "gateway/run_agent_cache.py"
+    },
+    {
+      "status": "conflict",
+      "path": "gateway/run_inbound.py"
+    },
+    {
+      "status": "merged",
+      "path": "hermes_cli/config.py"
+    },
+    {
+      "status": "merged",
+      "path": "hermes_cli/plugins_dispatch.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "mcp_serve.py"
+    },
+    {
+      "status": "conflict",
+      "path": "scripts/run_tests_parallel.py"
+    },
+    {
+      "status": "removed",
+      "path": "tests/agent/test_compression_worker_isolation_76354.py"
+    },
+    {
+      "status": "removed",
+      "path": "tests/agent/test_vision_routing_31179.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "tests/computer_use/test_cua_no_overlay.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/cron/test_parallel_pool.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "tests/gateway/test_browser_control_api.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/gateway/test_media_download_retry.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/gateway/test_multiplex_adapter_registry.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/gateway/test_session_hygiene.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "tests/gateway/test_telegram_media_read_timeout.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/gateway/test_unknown_command.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/hermes_cli/test_cmd_update.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/hermes_cli/test_gateway_service.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/hermes_cli/test_install_cua_driver.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "tests/hermes_cli/test_kanban_init_lock_bounded.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/hermes_cli/test_local_quickstart.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/hermes_cli/test_model_switch_custom_providers.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/hermes_cli/test_picker_prewarm.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/hermes_cli/test_plugins.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/hermes_cli/test_xai_provider_labels.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/openviking_plugin/test_openviking.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/test_atomic_replace_symlinks.py"
+    },
+    {
+      "status": "removed",
+      "path": "tests/test_install_macos_launcher.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/test_mcp_serve.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/test_model_tools_async_bridge.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/tools/test_browser_open_timeout.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/tools/test_browser_real_profile.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/tools/test_delegate_control_actions.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/tools/test_termux_api_detection.py"
+    },
+    {
+      "status": "merged",
+      "path": "tests/tui_gateway/test_compute_host_turn_protocol.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tests/tui_gateway/test_hosted_room_driver_runtime.py"
+    },
+    {
+      "status": "merged",
+      "path": "tools/browser_tool_lifecycle.py"
+    },
+    {
+      "status": "conflict",
+      "path": "tools/process_registry.py"
+    },
+    {
+      "status": "merged",
+      "path": "tools/terminal_tool_background.py"
+    },
+    {
+      "status": "unchanged",
+      "path": "hermes_cli/update_contract.py"
+    }
+  ],
+  "promoted": false,
+  "reason": "Conflicts and removed test paths require deliberate porting and new qualification. Never upgrade bundled Hermes independently."
+}

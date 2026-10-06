@@ -3,8 +3,8 @@
 set -euo pipefail
 
 main() {
-  local version=v0.1.0-rc5
-  local archive_sha=58d4272f4bb61fea8785789b181471e0826096562955dd1bee26401a776834b8
+  local version=v0.1.0-rc6
+  local archive_sha
   local prefix="${HOME:?}/.local/share/nyairo" profile="$HOME/.nyairo" owner=local-owner
   local setup=1 launch=1
   while (($#)); do
@@ -17,7 +17,7 @@ main() {
       --no-launch) launch=0; shift;;
       -h|--help)
         printf '%s\n' 'nyairo 一条命令引导安装（Linux / Windows WSL）' \
-          '默认：下载固定 rc5 → 准备 uv / Python → 安装依赖 → 创建个人配置 → 模型设置 → 聊天。' \
+          '默认：下载固定 rc6 → 准备 uv / Python → 安装依赖 → 创建个人配置 → 模型设置 → 聊天。' \
           '--prefix DIR    程序目录，默认 ~/.local/share/nyairo' \
           '--profile DIR   个人数据目录，默认 ~/.nyairo' \
           '--owner ID      本地身份标识，默认 local-owner' \
@@ -31,8 +31,8 @@ main() {
   [[ $prefix == /* && $profile == /* && $prefix != / && $profile != / ]] || { printf '程序和数据目录必须是完整绝对路径，且不能是 /。\n' >&2; return 2; }
   [[ $owner =~ ^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$ ]] || { printf '身份标识需用 1–128 位英文字母、数字、横线或下划线。\n' >&2; return 2; }
   local tool
-  for tool in curl tar sha256sum mktemp; do
-    command -v "$tool" >/dev/null || { printf '缺少 %s。Ubuntu 可先运行：sudo apt-get update && sudo apt-get install -y curl tar coreutils\n' "$tool" >&2; return 1; }
+  for tool in curl tar sha256sum mktemp flock; do
+    command -v "$tool" >/dev/null || { printf '缺少 %s。Ubuntu 可先运行：sudo apt-get update && sudo apt-get install -y curl tar coreutils util-linux\n' "$tool" >&2; return 1; }
   done
   # The script itself can arrive through a pipe. Wizard/chat input must use the terminal.
   if ((setup || launch)); then
@@ -84,17 +84,21 @@ main() {
   local python
   python=$("$uv" python find 3.13)
   printf '\n[2/5] 下载并核对 nyairo %s\n' "$version"
+  local asset="https://github.com/L1AN929/nyairo/releases/download/$version/nyairo-$version.zip"
+  curl -fsSL --retry 2 --connect-timeout 20 "$asset.sha256" -o "$temp/source.sha256"
+  archive_sha=$(awk 'NR==1 {print $1}' "$temp/source.sha256")
+  [[ $archive_sha =~ ^[0-9a-f]{64}$ ]] || { printf '发行校验值无效。\n' >&2; return 1; }
   if [[ -d $release ]]; then
     [[ ! -L $release && -f $state && $(cat "$state") == "$archive_sha" ]] || {
       printf '%s 已存在但没有匹配的安装记录，不会覆盖。请指定新的 --prefix。\n' "$release" >&2; return 1;
     }
   else
     [[ ! -e $release && ! -L $release ]] || { printf '程序路径已被其他文件占用。\n' >&2; return 1; }
-    curl -fsSL --retry 2 --connect-timeout 20 \
-      "https://codeload.github.com/L1AN929/nyairo/tar.gz/refs/tags/$version" -o "$temp/source.tar.gz"
-    printf '%s  %s\n' "$archive_sha" "$temp/source.tar.gz" | sha256sum -c -
+    curl -fsSL --retry 2 --connect-timeout 20 "$asset" -o "$temp/source.zip"
+    printf '%s  %s\n' "$archive_sha" "$temp/source.zip" | sha256sum -c -
     mkdir "$temp/source"
-    tar -xzf "$temp/source.tar.gz" --strip-components=1 -C "$temp/source"
+    # Python's ZIP extractor confines paths to this new private staging directory.
+    "$python" -m zipfile -e "$temp/source.zip" "$temp/source"
     mkdir -p "$prefix/releases"
     mv "$temp/source" "$release"
     printf '%s\n' "$archive_sha" > "$state"
@@ -110,13 +114,7 @@ main() {
     "$release/vendor/hermes/.venv/bin/python" "$release/scripts/setup_profile.py" \
       --home "$profile" --owner "$owner" --memory --life --allow-local-owner
   fi
-  {
-    printf '#!/usr/bin/env bash\n# nyairo managed launcher v1\nset -euo pipefail\n'
-    printf 'export HERMES_HOME=%q\n' "$profile"
-    printf 'exec bash %q "$@"\n' "$release/scripts/hermes.sh"
-  } > "$temp/nyairo"
-  chmod 700 "$temp/nyairo"
-  mv "$temp/nyairo" "$launcher"
+  HERMES_HOME="$profile" bash "$release/scripts/update.sh" --adopt --releases-dir "$prefix/releases"
   # Idempotent PATH setup makes the launcher available in a newly opened shell.
   local rc="$HOME/.bashrc" path_line='export PATH="$HOME/.local/bin:$PATH" # nyairo launcher'
   [[ ! -L $rc ]] || { printf '.bashrc 是链接，跳过 PATH 写入。入口完整路径：%s\n' "$launcher"; rc=''; }
