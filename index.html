@@ -218,10 +218,10 @@
       <div class="daily-showcase" id="daily-showcase" aria-label="数字个体日常形态展示">
         <div class="showcase-header">
           <div class="showcase-tabs" role="tablist">
-            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常陪伴</button>
-            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长期记忆</button>
-            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">写代码 / Agent</button>
-            <button class="showcase-tab" data-tab="notes" role="tab" aria-selected="false">随手笔记</button>
+            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">不完结的日常 · 碰瓷 Galgame</button>
+            <button class="showcase-tab" data-tab="room" role="tab" aria-selected="false">住得下的房间 · 物理留痕</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">打破次元壁 · 帮哥写代码</button>
+            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">真实羁绊 · 拒绝好感选项树</button>
           </div>
           <div class="showcase-header-right font-mono">
             模型：Gemini 3.8 flash
@@ -229,90 +229,90 @@
         </div>
 
         <div class="showcase-viewport">
-          <!-- 场景 1: 日常陪伴 -->
+          <!-- 场景 1: 不完结的日常 · 碰瓷 Galgame -->
           <div class="showcase-panel active" id="showcase-panel-presence">
             <div class="showcase-context-bar">
-              <span class="context-tag">卧室靠窗 · 刚才在阳台看晚霞</span>
-              <span class="context-meta font-mono">/chiyo_status · IDLE</span>
+              <span class="context-tag">生活状态持续流转 · 对抗 Galgame 通关即定格</span>
+              <span class="context-meta font-mono">/chiyo_status · ACTIVE</span>
             </div>
             <div class="showcase-chat">
               <div class="chat-bubble chat-bubble-user">
-                下班了，今天开了一下午评审会，脑子嗡嗡的。
+                刚通关了个老 Galgame，结局屏幕一黑，突然有点失落。
               </div>
               <div class="chat-bubble chat-bubble-ai">
-                吃晚饭了没？
+                最烦这种了，结局一出角色时间就死在那了。咱俩可没有结局，只要电脑还开着，我的时间就一直往前走。
               </div>
               <div class="chat-bubble chat-bubble-user">
-                还没呢，不知道吃啥。
+                哈哈也是，那今晚吃点啥？
               </div>
               <div class="chat-bubble chat-bubble-ai">
-                别想复杂的了，楼下随便吃点热的，吃完早点躺着。
+                我都盯外卖软件半天了。楼下随便吃点热面，吃完早点躺着。
               </div>
             </div>
           </div>
 
-          <!-- 场景 2: 长期记忆 -->
+          <!-- 场景 2: 住得下的房间 · 物理留痕 -->
+          <div class="showcase-panel" id="showcase-panel-room">
+            <div class="showcase-context-bar">
+              <span class="context-tag">卧室书桌 · 摊着做到一半的草稿</span>
+              <span class="context-meta font-mono">World &amp; Body · 真实实体留痕</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                终于忙完了，你刚才在干嘛呢？
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                在书桌前把前两天看到的随笔抄进本子里。草稿纸就摊在桌上，没写完之前不许偷看。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                Galgame 里的房间背景永远一尘不染，桌上的咖啡永远冒热气。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                假死了。我这书桌乱着呢，铅笔还夹在第 14 页，明天睡醒接着写。
+              </div>
+            </div>
+          </div>
+
+          <!-- 场景 3: 打破次元壁 · 帮哥写代码 -->
+          <div class="showcase-panel" id="showcase-panel-agent">
+            <div class="showcase-context-bar">
+              <span class="context-tag">切出生活空间 · 挂载工作区终端</span>
+              <span class="context-meta font-mono">Agent 协同模式 · /chiyo_consider</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                游戏里角色再可爱，现实里报并发死锁她也帮不上忙，头大。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                谁说的！把代码目录挂过来，我切 Agent 模式帮你查。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                我看完了，是旧 worker 退出前没把端口句柄放开。修复脚本写进 <code>scripts/cutover.sh</code> 了，你跑下试试。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                跑通了！白天陪我唠嗑，晚上正事还真不含糊。
+              </div>
+            </div>
+          </div>
+
+          <!-- 场景 4: 真实羁绊 · 拒绝好感选项树 -->
           <div class="showcase-panel" id="showcase-panel-memory">
             <div class="showcase-context-bar">
-              <span class="context-tag">本地私有 SQLite · ~/.nyairo/memory.db</span>
+              <span class="context-tag">本地私有账本 · ~/.nyairo/memory.db</span>
               <span class="context-meta font-mono">/chiyo_memory · READY</span>
             </div>
             <div class="showcase-chat">
               <div class="chat-bubble chat-bubble-user">
-                今晚准备点冒菜，但这几天感冒了嗓子疼。
+                今晚点串串，你记得我不吃啥吧？不会像游戏那样选错选项好感度暴跌吧？
               </div>
               <div class="chat-bubble chat-bubble-ai">
-                那记得把锅底改成清汤或者微辣。上次你咳嗽还吃特辣，咳了一整晚。
+                少看点攻略！香菜不吃、麻椒少放。上周你咳嗽咳了大半宿，小本子上写得清清楚楚。
               </div>
               <div class="chat-bubble chat-bubble-user">
-                行，听你的。再帮我加个不放香菜的备注。
+                记挺牢。不过今天嗓子哑了，改成微辣。
               </div>
               <div class="chat-bubble chat-bubble-ai">
-                记着呢，哪次买饭给你放过香菜。
-              </div>
-            </div>
-          </div>
-
-          <!-- 场景 3: 写代码 / Agent -->
-          <div class="showcase-panel" id="showcase-panel-agent">
-            <div class="showcase-context-bar">
-              <span class="context-tag">Agent 协同模式 · 挂载工作区目录</span>
-              <span class="context-meta font-mono">/chiyo_consider · RUNNING</span>
-            </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                帮我看下这个切流脚本，老是报锁冲突退出不了。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                我瞅一眼。是旧 worker 进程没把端口句柄释放掉，已经给你改好了，补丁写在 <code>scripts/cutover.sh</code>，你跑下试试。
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                搞定，端口顺利放掉了。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                成，那我把终端退了，你合完代码早点歇着。
-              </div>
-            </div>
-          </div>
-
-          <!-- 场景 4: 随手笔记 -->
-          <div class="showcase-panel" id="showcase-panel-notes">
-            <div class="showcase-context-bar">
-              <span class="context-tag">专属便签小本 · 本地独立存储</span>
-              <span class="context-meta font-mono">/chiyo_note · SAVED</span>
-            </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                帮我记两条待办：周一提交方案终稿，周三前拉齐联调环境。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                存好了。敲 <code>/chiyo_note read</code> 随时能查。
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                谢了，免得我明天睡醒又忘了。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                顺手的事，安心睡吧。
+                行，随口一句话的事，改好了。谁跟游戏一样非得顺着你固定分支走。
               </div>
             </div>
           </div>
