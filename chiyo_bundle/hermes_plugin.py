@@ -115,6 +115,14 @@ def status_command(raw_args='',*,source=None):
         lines.append('M0 events：'+str(storage.get('m0_events'))
             +'；M0 database size：'+str(storage.get('m0_bytes'))
             +' bytes；formation cursor：'+str(storage.get('formation_cursor')))
+    writer=status.get('m0_writer')
+    if writer:
+        writer_line='M0 writer：'+str(writer.get('state'))
+        if writer.get('restarts'):writer_line+='；重启 '+str(writer.get('restarts'))
+        if writer.get('queued'):writer_line+='；待重试 '+str(writer.get('queued'))
+        if writer.get('state') in ('DEGRADED','ERROR') and writer.get('error'):
+            writer_line+='；原因 '+str(writer.get('error'))
+        lines.append(writer_line)
     for row in supply.get('opportunities',[]):lines.append('待考虑：'+row['topic'])
     for row in supply.get('artifacts',[]):lines.append('资源文档：'+row['title']+'；ID '+str(row['id']))
     if cog.get('last_decision'):lines.append('最近判断：'+json.dumps(cog['last_decision'],ensure_ascii=False))

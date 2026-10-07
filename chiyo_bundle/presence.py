@@ -146,6 +146,18 @@ def _storage_view(svc):
         return None
 
 
+def _writer_view(svc):
+    """M0 writer health via the assembled bridge; the bridge sanitises it."""
+    bridge = getattr(svc.native, 'm37_bridge', None)
+    getter = getattr(bridge, 'writer_health', None)
+    if not callable(getter):
+        return None
+    try:
+        return getter()
+    except Exception:
+        return None
+
+
 def status_snapshot(svc):
     world = getattr(svc.native, 'world_body', None)
     memory = 'OFF'
@@ -165,6 +177,7 @@ def status_snapshot(svc):
             memory = 'UNAVAILABLE'
     result = {'memory': memory, 'memory_last_resolve': memory_last_resolve,
               'memory_reason': memory_reason, 'storage': _storage_view(svc),
+              'm0_writer': _writer_view(svc),
               'life': life_view(svc),
               'supply': supply_view(svc), 'world_body': {'state': 'OFF'}}
     if world is not None:

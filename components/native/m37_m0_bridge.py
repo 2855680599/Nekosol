@@ -74,6 +74,87 @@ APPEND_TIMEOUT_S = 15.0
 
 SCHEMA = "chiyo-original-m37-m0-bridge-v1"
 
+
+class M0WriterUnavailable(RuntimeError):
+    """The M0 append did not happen. Never raised after a successful write."""
+
+
+def _ensure_v0_path() -> None:
+    if str(NATIVE_V0_ROOT) not in sys.path:
+        sys.path.insert(0, str(NATIVE_V0_ROOT))
+
+
+def event_object(raw: dict):
+    """The identical field mapping child_append used, for queueing a failed event."""
+    _ensure_v0_path()
+    from app.evidence import EvidenceEvent, new_event_id
+    return EvidenceEvent(
+        event_id=new_event_id(),
+        occurred_at=raw["occurred_at"],
+        memory_owner="chiyo",
+        source_origin=raw["source_origin"],
+        delivery_status=raw["delivery_status"],
+        epistemic_role=raw["epistemic_role"],
+        speaker=raw["speaker"],
+        content=raw["content"],
+        conversation_id=raw["conversation_id"],
+        turn_id=raw["turn_id"],
+        source_refs=raw["source_refs"],
+        created_at=raw["created_at"],
+    )
+
+
+_SPOOLS: dict = {}
+
+
+def retry_spool(m0_db: Path):
+    """Parent-side spool for this M0.
+
+    Same directory convention as app.evidence.EvidenceWriter, so the writer that
+    later calls retry_pending() drains exactly what the bridge queued here. The
+    spool deliberately lives here and not in the downgraded worker.
+    """
+    _ensure_v0_path()
+    from app.evidence import RetrySpool
+    key = str(Path(m0_db).parent)
+    spool = _SPOOLS.get(key)
+    if spool is None:
+        spool = RetrySpool(Path(m0_db).parent / "evidence-retry")
+        _SPOOLS[key] = spool
+    return spool
+
+
+def _append_or_queue(m0_db: Path, raw: dict, *, writer_user) -> dict:
+    """Append one event, or queue it for retry and fail loudly.
+
+    Layering: the worker only ever "tries to write M0". Durability for a failed
+    write belongs to the parent, so the retry database is never inside the
+    downgraded worker.
+    """
+    try:
+        results = append_via_child(m0_db, [raw], writer_user=writer_user)
+    except Exception as exc:
+        queued = False
+        try:
+            retry_spool(m0_db).queue(event_object(raw), type(exc).__name__)
+            queued = True
+        except Exception as spool_exc:
+            # The spool itself failed: the evidence is now genuinely at risk.
+            LOGGER.error("m0.append.unsafe class=%s spool_class=%s",
+                         type(exc).__name__, type(spool_exc).__name__)
+        if m0_writer_worker is not None:
+            m0_writer_worker.record_failure(type(exc).__name__, queued=queued)
+        LOGGER.error("m0.append.degraded class=%s queued=%s",
+                     type(exc).__name__, queued)
+        # Fail closed with a status the caller can act on; never report a write
+        # that did not happen.
+        raise M0WriterUnavailable(
+            "M0 append failed (%s); queued_for_retry=%s" % (type(exc).__name__, queued)
+        ) from exc
+    if m0_writer_worker is not None:
+        m0_writer_worker.record_success()
+    return results[0] if results else {}
+
 # Persistent downgraded writer worker (NYA-AUDIT-005). Optional by design: if it
 # cannot be imported the bridge keeps using the original one-shot child.
 if str(INTEG_ROOT) not in sys.path:
@@ -285,6 +366,11 @@ def append_via_child(m0_db: Path, events: list[dict], *, writer_user=M0_WRITER_U
             # Never report a successful write on a failed handoff; the caller
             # owns the failure and the retry spool.
             raise
+    return _append_via_oneshot_child(m0_db, events, writer_user)
+
+
+def _append_via_oneshot_child(m0_db: Path, events: list[dict], writer_user) -> list[dict]:
+    """The original per-call child. Used when the persistent worker is unavailable."""
     payload = json.dumps({"m0_db": str(m0_db), "events": events}, ensure_ascii=False)
     identity = {}
     if writer_user is not None:
@@ -331,8 +417,8 @@ def write_user_event(conversation_id: str, user_text: str, source_ref: str,
         ],
     }
     if source_context:event["source_refs"].append({"kind":"hermes_personal_scope","id":source_context})
-    results = append_via_child(load_m0_path() if m0_db is None else Path(m0_db), [event], writer_user=writer_user)
-    return results[0] if results else {}
+    return _append_or_queue(load_m0_path() if m0_db is None else Path(m0_db), event,
+                            writer_user=writer_user)
 
 
 def run_cycle(m0_db: Path, binding: dict) -> dict:
@@ -379,8 +465,8 @@ def write_assistant_event(*, conversation_id: str, content: str, source_ref: str
         'conversation_id': conversation_id, 'turn_id': turn_id,
         'source_refs': [{'kind': 'native_telegram_output', 'id': source_ref},
                         {'kind': 'native_turn', 'id': turn_id}]}
-    results = append_via_child(load_m0_path() if m0_db is None else Path(m0_db), [event], writer_user=writer_user)
-    return results[0] if results else {'status': 'failed'}
+    return _append_or_queue(load_m0_path() if m0_db is None else Path(m0_db), event,
+                            writer_user=writer_user)
 
 
 class ConfiguredBridge:
@@ -399,6 +485,9 @@ class ConfiguredBridge:
         config = Path(self.environment.get('CHIYO_M3_CONFIG', str(NATIVE_M3_CONFIG)))
         return Path(json.loads(config.read_text(encoding='utf8'))['m0_db'])
 
+    def writer_health(self):
+        return writer_health()
+
     def write_user_event(self, **kwargs):
         return write_user_event(**kwargs, m0_db=self.load_m0_path(),
                                 writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
@@ -406,6 +495,31 @@ class ConfiguredBridge:
     def write_assistant_event(self, **kwargs):
         return write_assistant_event(**kwargs, binding=self.load_binding(), m0_db=self.load_m0_path(),
                                      writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
+
+
+def writer_health() -> dict:
+    """Sanitised M0 writer health for status surfaces (no paths, payloads or uids).
+
+    The reported state is derived from durable facts rather than a sticky flag:
+    DEGRADED means authoritative evidence is still waiting in the spool, so the
+    status returns to READY by itself once retry_pending() has drained it.
+    """
+    if m0_writer_worker is None:
+        # POSIX without the module is a real fault; elsewhere it is simply unsupported.
+        return {"state": "ERROR" if hasattr(os, "getuid") else "UNSUPPORTED",
+                "restarts": 0, "queued": 0, "pending": 0,
+                "error": "worker_module_unavailable"}
+    report = dict(m0_writer_worker.health())
+    if report.get("state") in ("UNSUPPORTED", "ERROR"):
+        return report
+    try:
+        pending = sum(spool.pending_count() for spool in _SPOOLS.values())
+    except Exception:
+        pending = 0
+    # "worker down but the evidence is safely queued" is DEGRADED, not ERROR.
+    report["state"] = "DEGRADED" if pending else "READY"
+    report["pending"] = pending
+    return report
 
 
 def main() -> int:

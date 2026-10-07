@@ -428,6 +428,11 @@ class M0WriterWorker:
                 return
             except Exception as exc:
                 last = exc
+                # close the failed attempt: otherwise every retry leaks a socket
+                try:
+                    connection.close()
+                except Exception:
+                    pass
                 time.sleep(0.02)
         raise WorkerError("could not connect to M0 writer worker: %s"
                           % (type(last).__name__ if last else "timeout"))
@@ -547,6 +552,59 @@ class M0WriterWorker:
 
 _POOL: dict[str, M0WriterWorker] = {}
 _POOL_LOCK = threading.Lock()
+
+# Bridge-level writer health. The worker module owns the *concept* "how healthy is
+# writing to M0"; it does not own the retry spool, which stays in the parent /
+# EvidenceWriter layer. The bridge reports outcomes here.
+_HEALTH_LOCK = threading.Lock()
+_HEALTH = {"state": READY, "last_error": None, "queued": 0, "recovered": 0}
+
+
+def record_success() -> None:
+    with _HEALTH_LOCK:
+        if _HEALTH["state"] != READY:
+            _HEALTH["recovered"] += 1
+        _HEALTH["state"] = READY
+        _HEALTH["last_error"] = None
+
+
+def record_failure(error_class: str, *, queued: bool) -> None:
+    """A failed append is DEGRADED when the evidence is safely queued for retry.
+
+    It is only ERROR when there is no durable fallback, because "worker down but
+    the authoritative evidence is waiting in the spool" is not the same failure
+    as "the write is simply lost".
+    """
+    with _HEALTH_LOCK:
+        _HEALTH["state"] = DEGRADED if queued else ERROR
+        _HEALTH["last_error"] = error_class
+        if queued:
+            _HEALTH["queued"] += 1
+
+
+def health() -> dict:
+    """Sanitised writer health.
+
+    Deliberately contains no socket path, home directory, payload, user text,
+    prompt, key or uid/gid detail; status words and exception class names only.
+    """
+    if not available():
+        return {"state": UNSUPPORTED, "restarts": 0, "queued": 0,
+                "recovered": 0, "error": None}
+    with _HEALTH_LOCK:
+        state = _HEALTH["state"]
+        error = _HEALTH["last_error"]
+        queued = _HEALTH["queued"]
+        recovered = _HEALTH["recovered"]
+    with _POOL_LOCK:
+        restarts = sum(worker.restarts for worker in _POOL.values())
+    return {"state": state, "restarts": restarts, "queued": queued,
+            "recovered": recovered, "error": error}
+
+
+def reset_health() -> None:
+    with _HEALTH_LOCK:
+        _HEALTH.update(state=READY, last_error=None, queued=0, recovered=0)
 
 
 def worker_for(m0_db, *, writer_user=None) -> M0WriterWorker:

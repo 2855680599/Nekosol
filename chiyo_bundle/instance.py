@@ -9,6 +9,18 @@ def install_paths():
     for p in [ROOT/'vendor/hermes',NATIVE,NATIVE/'src',NATIVE/'adapters']:
         sys.path.insert(0,str(p))
 
+def _m0_writer_health():
+    """Sanitised M0 writer health, or None when the bridge is not assembled.
+
+    The bridge decides what may be shown; this only forwards it.
+    """
+    try:
+        import m37_m0_bridge
+        return m37_m0_bridge.writer_health()
+    except Exception:
+        return None
+
+
 def _readonly_scalar(path,sql):
     """One read-only query against a state database; None when it is absent.
 
@@ -322,6 +334,6 @@ class Instance:
             'memory_last_resolve':getattr(self.native.m37_resolver,'last_resolve_status',None),
             'memory_last_resolve_reason':getattr(self.native.m37_resolver,'last_resolve_reason',None),
             'memory_last_error_type':getattr(self.native.m37_resolver,'last_error_type',None),
-            'storage':storage,
+            'storage':storage,'m0_writer':_m0_writer_health(),
             'life_loaded':bool(self.life_wrapper),'proactive_enabled':False,'autonomous_action_enabled':False,
             'hermes_version':'0.21.0','state_is_independent':True}
