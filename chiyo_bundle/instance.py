@@ -47,6 +47,9 @@ class Instance:
         os.chmod(self.state,0o700)
         self.owner=owner;self.memory=memory;self.life=life;self.counter=0;self.supply_subject=supply_subject
         self.requests=None;self.life_wrapper=None
+        # Startup recovery owner for M0 evidence that a previous run could not
+        # write (legacy retry spool). Assembled in _assemble, released in close.
+        self.evidence_writer=None
         self._closed=False
         # Serialises the request state machine (see chat()). One personal instance
         # serves one conversation at a time, so holding this re-entrant lock across
@@ -125,6 +128,18 @@ class Instance:
         self.native.provider=HermesCompletionProvider(self.native.model_cfg,tools=tools,api_key=key)
         if memory and getattr(self.native.m37_resolver,'state',None)!='READY':
             raise RuntimeError('memory resolver unavailable: '+getattr(self.native.m37_resolver,'reason','missing'))
+        if memory:
+            # Retry recovery owner, built eagerly at startup instead of lazily on
+            # the first evidence write. The bridge constructs its retry spool only
+            # inside _append_or_queue, so an upgrade that opens a state and does
+            # not chat left a legacy JSONL spool neither migrated nor drained.
+            # ``app.evidence.EvidenceWriter`` is that owner: its constructor
+            # migrates the legacy spool and then calls retry_pending(), so
+            # building it here *is* the whole startup recovery. It shares the
+            # <state>/memory/evidence-retry directory the bridge queues into, so
+            # nothing queued by the bridge can be missed.
+            from app.evidence import EvidenceWriter
+            self.evidence_writer=EvidenceWriter(self.state)
         if host_llm is not None:self.native._life_llm_facade=host_llm
         if life:
             install=self.state/'life';(install/'state').mkdir(parents=True,exist_ok=True,mode=0o700);os.chmod(install/'state',0o700)
@@ -295,6 +310,11 @@ class Instance:
                     self._close_resources(getattr(native,'m37_resolver',None),getattr(native,'m37_bridge',None),
                         getattr(native,'memory_controls',None),getattr(native,'store',None))
                     native.m37_resolver=None;native.m37_bridge=None;native.memory_controls=None
+                # The evidence writer keeps no long-lived sqlite connection and
+                # defines no close(), so _close_resources is a safe no-op here;
+                # the reference is dropped either way.
+                self._close_resources(getattr(self,'evidence_writer',None))
+                self.evidence_writer=None
             finally:
                 if self.requests is not None:
                     self.requests.close();self.requests=None

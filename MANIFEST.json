@@ -9,7 +9,7 @@
     "version": "0.21.0",
     "license": "MIT"
   },
-  "file_count": 12222,
+  "file_count": 12223,
   "files": {
     ".gitattributes": "2abdfc138a38212e3b4ad1be055915b68f9f634842ddfdb78d8927b6f418e238",
     ".gitignore": "c14b0c3ba6a8d9920e24a75e8843245c932e5ef4df36baf2dea749acf6f3e00c",
@@ -35,7 +35,7 @@
     "chiyo_bundle/__main__.py": "20843b9c1eafc15561798a475283199acc02d765ea186ce3b1af8cd29d2c889a",
     "chiyo_bundle/hermes_plugin.py": "b6ad944ab93079d5736a2b832e151c83bfdc79543048ac01265dd047c13e9fb0",
     "chiyo_bundle/host.py": "2d89b48d1f09459afee918df6199d8b7dfa4297ff8540ccb8578e44d0e342083",
-    "chiyo_bundle/instance.py": "099273e9ee3400c5fdc287afe84e3b73b9a13face0e5236fe5be4605f4d56684",
+    "chiyo_bundle/instance.py": "5e1a1528d8ede13bf9a396f4ae48c95941216b3f51d0eaa37d3423ebe73870cd",
     "chiyo_bundle/presence.py": "5454f9dbd66ce29e3299b0b6af09f28c5ca20ca3e8b8e27b121bcbb21e6525c6",
     "chiyo_bundle/receipts.py": "9972bd3d9971c77828eb4eb86a37a3179dc7075cbf44ba35c1b3d92e5b1647e8",
     "chiyo_bundle/world_read_service.py": "32ecec775a9d3cdf538975099a32f66f643715e330070d092febe6cc98917c72",
@@ -374,6 +374,7 @@
     "tests/test_filesystem_security.py": "0d3173737d3fb743d4affa642bc98dc35115944bea5c780037ef1a73070bb2f3",
     "tests/test_idle_writer.py": "45d3ce1094dbcf7ef54f64de29928b6088c400354403c45794acf4c1dffdb18d",
     "tests/test_instance_lifecycle.py": "5506580a44c65a3967594a9dfc49c7ba9905d88fde5e0be48ca57c1f2855ba25",
+    "tests/test_instance_retry_recovery.py": "e691ddf37290c971d1414515ea9a60e17a6e02d53adea290f9e30023a68637cf",
     "tests/test_instance_teardown.py": "e17875bc39b201935a03fc5d32f9321e150897ac50d13dcfa64ef6020964f5c8",
     "tests/test_lock_fallback.py": "f5344ee24629d6343e9ca96f9d3b156e18bfbdf0924508108bfb7dd46c456d3e",
     "tests/test_platform_scope.py": "30ba71e40be5821b985f0f83aec87ccc1786786a95fdaad533f28607b85dedae",
@@ -12234,7 +12235,7 @@
     "website/install.sh": "a3f8c0ffeff77c10b88cb8136c92b706537e0f6e2dd5d1fd11ea913e1ece3a11",
     "website/style.css": "73c16b843e0bd97af676940f2518636c5f477c9bca800b14bf9c49b5564221d4"
   },
-  "tree_sha256": "1a5866197ff912b4fa48f1e34649174277bd31cd3da82bd875697ce6be274e0c",
+  "tree_sha256": "c35f68172df1db4a95e3a6cf9e20ca6ef4fe7635593ba570c0ba30e452d47e27",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",
