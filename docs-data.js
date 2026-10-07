@@ -68,6 +68,11 @@ const DOCS_TREE = [
       {
         "id": "testing",
         "title": "文档站、验收与公开发布"
+      },
+      {
+        "id": "roadmap",
+        "title": "未来路线图与 v2.0 规划",
+        "badge": "v2.0"
       }
     ]
   },
@@ -488,5 +493,28 @@ const DOCS_CONTENT = {
       }
     ],
     "content": "<h2 id=\"quickstart-section-0\">准备好这三样东西</h2>\n<ul>\n<li><strong>一台能上网的电脑</strong>：Windows 用户先装好 Ubuntu 子系统（按下一章步骤操作即可），Linux 用户直接打开终端。</li>\n<li><strong>一个大模型账号与 Key</strong>：比如 DeepSeek 或 OpenAI 的 API Key，用来生成回复；你的长期记忆和生活状态全部保存在本地。</li>\n<li><strong>两三分钟时间</strong>：首次安装需要下载运行工具，保持网络连接顺畅就好。</li>\n</ul>\n\n<h2 id=\"quickstart-guided-0\">一行命令全自动安装</h2>\n<p>Windows 用户先打开 Ubuntu 终端；Linux 用户打开自己的终端窗口。直接复制下面这行命令粘贴进去，按回车：</p>\n<div class=\"code-block\">\n<div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div>\n<pre><code>curl -fsSL https://nyairo.com/install.sh | bash</code></pre>\n</div>\n<p>不需要你提前配置复杂的 Python 环境，脚本会自动帮你准备好一切，下载官方校验版本，并在 <code>~/.nyairo</code> 目录建立你专属的本地数据。</p>\n<p>当看到终端提示 <code>[5/5] 程序安装完成</code> 后，屏幕会自动打开模型设置引导：</p>\n<ol>\n<li>用键盘方向键选择你使用的模型服务提供商；</li>\n<li>填入你的 <strong>API Key</strong>（如果是自定义第三方中转，再填上对应的 Base URL 服务地址）；</li>\n<li>设置完成后回车，就会立刻进入聊天界面！发一句“你好”试试看，收到回复就代表一切搞定啦。</li>\n</ol>\n<div class=\"callout callout-info\"><div class=\"callout-title\">小提示</div><p>如果系统提示找不到 <code>curl</code>，Ubuntu / Debian 用户只需先运行 <code>sudo apt update &amp;&amp; sudo apt install -y curl</code> 安装一下即可。</p></div>\n\n<h2 id=\"quickstart-section-1\">怎么开始聊天与日常使用</h2>\n<p>安装完成后，以后平时想聊天非常方便：</p>\n<ul>\n<li><strong>直接开聊</strong>：打开新终端，直接输入 <code>nyairo</code> 回车，即可随时唤醒它聊天。</li>\n<li><strong>查看状态</strong>：在聊天中输入 <code>/chiyo_status</code>，能看到记忆显示 <strong>READY</strong>，说明长期记忆随时在线；生活显示 <strong>IDLE</strong>，说明它正安静待命陪你。</li>\n<li><strong>重新设置模型</strong>：如果以后想换别的模型或者更换 Key，在终端输入 <code>nyairo setup model</code> 就能重新打开向导。</li>\n<li><strong>连上手机聊天</strong>：输入 <code>nyairo setup messaging</code>，按照提示填入你的 Telegram 机器人 Token，就能掏出手机随时随地发消息互动啦！</li>\n</ul>\n\n<h2 id=\"quickstart-section-2\">给它起名字与更换性格人设</h2>\n<p>新安装默认提供干净的人设底板。你想给它换个好听的名字、傲娇或者温柔的性格？很简单：</p>\n<p>在终端里输入：</p>\n<div class=\"code-block\">\n<div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div>\n<pre><code>nano \"$HOME/.nyairo/SOUL.md\"</code></pre>\n</div>\n<p>用方向键移动光标，写下你希望它的称呼、说话语气和人设故事。改好后按 <strong>Ctrl + O</strong> 回车保存，再按 <strong>Ctrl + X</strong> 退出。重新启动 <code>nyairo</code>，它就会带着全新的性格跟你打招呼了！</p>"
+  },
+  "roadmap": {
+    "title": "未来路线图与 v2.0 规划",
+    "summary": "从当前的会话与代码 Agent，走向拥有独立房间、手机、真实作品与跨载体迁居的数字生命形态。",
+    "toc": [
+      {
+        "id": "rm-p1",
+        "text": "P1 当前版本：双重形态与基础闭环 (v0.1)"
+      },
+      {
+        "id": "rm-p2",
+        "text": "P2 第二版：日常生活版与随身手机 (v2.0)"
+      },
+      {
+        "id": "rm-p3",
+        "text": "P3 第三版：形成独特习惯与自主实践 (v3.0)"
+      },
+      {
+        "id": "rm-p4",
+        "text": "P4 远期愿景：跨载体迁居与数字生态 (v4.0+)"
+      }
+    ],
+    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">路线图定位</div><p>这里汇总了 nyairo 框架从第一版体验向第二版（v2.0）及更远期的进化路线。设计坚持<strong>渐进可用、真实可测、拒绝空中楼阁</strong>，每个阶段都对应明确的产品入口与工程证据。</p></div>\n\n<h2 id=\"rm-p1\">P1 当前版本：双重形态与基础闭环 (v0.1)</h2>\n<p>这是我们目前正在使用的稳定体验版，解决了最核心的技术骨架：</p>\n<ul>\n<li><strong>长期记忆持久化</strong>：记忆真正沉淀在本地数据库，跨会话自然召回，支持随时通过命令查看、纠偏与遗忘。</li>\n<li><strong>生活状态流转</strong>：关掉窗口或重启主机后生活记录不中断，维持连续待命状态。</li>\n<li><strong>虚拟世界与只读感知</strong>：连接环境服务，具备具体的空间坐标与身体姿态感知。</li>\n<li><strong>双重形态切换</strong>：日常是温情陪伴的虚拟个体；遇到正经开发任务时，一秒脱离虚拟世界切入 Agent 开发态，在本地 Workspace 自动推演并编写代码脚本。</li>\n</ul>\n\n<h2 id=\"rm-p2\">P2 第二版：日常生活版与随身手机 (v2.0)</h2>\n<p>在第二版规划中，千代的“现在”将更紧密地连接她的“过去”，拥有属于自己的生活实体：</p>\n<div class=\"table-scroll\">\n<table class=\"doc-table\">\n<thead>\n<tr>\n<th scope=\"col\" style=\"width: 25%;\">生活入口</th>\n<th scope=\"col\" style=\"width: 45%;\">具体能力与场景</th>\n<th scope=\"col\" style=\"width: 30%;\">设计原则</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>可持久的房间</strong></td>\n<td>拥有属于她的书桌与创作角；书本、便签和作品草稿成为可拿放、可查阅的真实实体，关机重启后从真实位置继续。</td>\n<td>不搞虚浮 3D 噱头，重在物件履历与状态延续</td>\n</tr>\n<tr>\n<td><strong>随身手机系统</strong></td>\n<td>逐步扩展相册（保存真实取得的截图与图片）、笔记（个人草稿与思考）、收藏（喜欢的条目与网页）及日程备忘。</td>\n<td>复用系统真实数据，手机是能力的自然生活呈现</td>\n</tr>\n<tr>\n<td><strong>私人作品创作</strong></td>\n<td>拥有独立的创作项目；独立保存版本，不依赖用户每轮强制回复推动，拥有自己的事情可以做。</td>\n<td>真实产出版本化，留在桌上的半页草稿可继续收尾</td>\n</tr>\n</tbody>\n</table>\n</div>\n\n<h2 id=\"rm-p3\">P3 第三版：形成独特习惯与自主实践 (v3.0)</h2>\n<p>让真实生活逐渐沉淀出“她自己的做事做法与偏好”：</p>\n<ul>\n<li><strong>真实失败与经验修正</strong>：一次尝试失败后能形成具体方法的修补提案，在反例中修正偏好，而不是空洞地自述“我成长了”。</li>\n<li><strong>自主目标与实践推演</strong>：从当下的关切、机会、资源和历史经历出发，主动提出阶段性愿望与实践，不再由统一的机械模板填满日程。</li>\n<li><strong>个性审美与风格建立</strong>：长期相处中形成稳定但可生长的习惯与审美偏好。</li>\n</ul>\n\n<h2 id=\"rm-p4\">P4 远期愿景：跨载体迁居与数字生态 (v4.0+)</h2>\n<p>数字生命长河中的延续性保障：</p>\n<ul>\n<li><strong>跨宿主与载体迁居（Host Migration）</strong>：换了电脑、换了操作系统或底层大模型时，她的记忆、作品积累、个性与你们之间的羁绊能够安全迁移，承认损失并保留根基。</li>\n<li><strong>多模态感知深入</strong>：更丰富的真实世界感知接口，让对话与互动更自然。</li>\n<li><strong>有限数字社会生态</strong>：在保证隐私与边界的前提下，探索数字原生空间的互动与可持续供给。</li>\n</ul>"
   }
 };
