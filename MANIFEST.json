@@ -9,7 +9,7 @@
     "version": "0.21.0",
     "license": "MIT"
   },
-  "file_count": 12224,
+  "file_count": 12225,
   "files": {
     ".gitattributes": "2abdfc138a38212e3b4ad1be055915b68f9f634842ddfdb78d8927b6f418e238",
     ".gitignore": "c14b0c3ba6a8d9920e24a75e8843245c932e5ef4df36baf2dea749acf6f3e00c",
@@ -172,8 +172,8 @@
     "components/native/integration/live_runtime_observer.py": "b475203f197eb0fd030dc889e2c35bc53e039a9a83f5fe0d65320878569878d2",
     "components/native/integration/world_body_client.py": "e7bd7ca8747e0e198fa25c4688484f7005049229d2eb4e36068fa25a47ead8fd",
     "components/native/integration/world_body_read_port.py": "5a68f51b6bf3f762f380ce3ca8f676766573cf2c1e2ff89ac52d93549bd9153c",
-    "components/native/m0_writer_worker.py": "2df332d1811c9a47d3d6eed050cdc6ece9b0fe6990dd36d6e3bbcd09d06c569c",
-    "components/native/m37_m0_bridge.py": "a521c0349b06e82d0d37a39647ae4c80c90e1f45d8f8214cbd410e1d4fa02e06",
+    "components/native/m0_writer_worker.py": "5e04791fdc2bf28980c1138b18fe98fc252db2c00e6ed9b684cb926d5cfa8de3",
+    "components/native/m37_m0_bridge.py": "1ab08ac9c63f782aebfdfcea0d4765d4f3708a9461670aba9780379148313f46",
     "components/native/memory_control.py": "dfc9749c5928ec5838b06802738380151647a513dace56c55bff2209a1e33e25",
     "components/native/memory_runtime_v1/README.md": "4bdac70b5f35194e32b14619136c8534b0a00ab3e72e0a58affd62c6a8758dfb",
     "components/native/memory_runtime_v1/__init__.py": "5ee9c4d11eb96b2653727eeaa840c69d7f0ea30dbe2de3d00ce66d64a34aa66a",
@@ -377,6 +377,7 @@
     "tests/test_instance_lifecycle.py": "5506580a44c65a3967594a9dfc49c7ba9905d88fde5e0be48ca57c1f2855ba25",
     "tests/test_instance_retry_recovery.py": "d9f222861f069cc19debff88d143d6c9e9f25267c49e8bfd3bf16630445c6d7a",
     "tests/test_instance_teardown.py": "e17875bc39b201935a03fc5d32f9321e150897ac50d13dcfa64ef6020964f5c8",
+    "tests/test_instance_writer_lifecycle.py": "db7de96e02828054bcfb12222aff6fc687f9664689fc9a89c1b79f92dd833fb9",
     "tests/test_lock_fallback.py": "f5344ee24629d6343e9ca96f9d3b156e18bfbdf0924508108bfb7dd46c456d3e",
     "tests/test_platform_scope.py": "30ba71e40be5821b985f0f83aec87ccc1786786a95fdaad533f28607b85dedae",
     "tests/test_presence_integration.py": "2591aebdd23d56b3f070b5e553b580b5a6b2c82485a054f846c936863cb3a82f",
@@ -12236,7 +12237,7 @@
     "website/install.sh": "a3f8c0ffeff77c10b88cb8136c92b706537e0f6e2dd5d1fd11ea913e1ece3a11",
     "website/style.css": "73c16b843e0bd97af676940f2518636c5f477c9bca800b14bf9c49b5564221d4"
   },
-  "tree_sha256": "5934f18d9962b0eb5daae1fef4595e4da77cb7895787d9c4553a183fb287ecd4",
+  "tree_sha256": "4bc9e4fb44258ac85d91a9696108c24e4ffd77959914bc4c27bfa1806fc67e62",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",

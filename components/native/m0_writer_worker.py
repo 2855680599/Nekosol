@@ -47,6 +47,17 @@ event fields are a closed whitelist. There is no arbitrary SQL, no shell, no
 subprocess, no caller-supplied path and no arbitrary module call: the worker
 imports the M0 append API once at startup and can do nothing else.
 
+Lifecycle
+---------
+One worker per (M0 path, writer uid) per process, held in ``_POOL``; the parent
+that starts it owns stopping it. ``m37_m0_bridge.ConfiguredBridge.close()`` -
+reached through ``Instance.close()`` - calls ``close_for()``, which asks the
+worker to stop through the protocol, lets it exit on its own, reaps it, closes
+the client socket and the child's pipes, and removes the socket file. Nothing
+else stops it, so an owner that only ever appends would leave the child running
+with its socket and pipes open; that is the leak ``close_for``/``close_all``
+exist to prevent.
+
 Idempotency
 -----------
 The worker calls the normal append API, so M0's existing unique index on
@@ -88,6 +99,9 @@ FAULT_ENV = "CHIYO_M0_WRITER_FAULT"
 STARTUP_TIMEOUT_S = 15.0
 REQUEST_TIMEOUT_S = 15.0
 CONNECT_TIMEOUT_S = 5.0
+#: how long a worker gets to exit on its own after the shutdown request, before
+#: it is reaped; a healthy worker returns from serve() in milliseconds.
+SHUTDOWN_GRACE_S = 2.0
 MAX_FRAME_BYTES = 1 << 20
 MAX_EVENTS_PER_REQUEST = 64
 
@@ -631,12 +645,25 @@ class M0WriterWorker:
             return self.append_events(events)
 
     def close(self) -> None:
-        """Idempotent shutdown; safe to call repeatedly."""
+        """Idempotent shutdown; safe to call repeatedly.
+
+        The worker is first asked to stop through the protocol, exactly as
+        before, and is then given a bounded grace period to leave on its own. It
+        needs one: the shutdown reply is sent before ``serve()`` returns, so
+        without this wait the parent killed the child microseconds after asking
+        it to stop, the child never reached its own cleanup, and every close
+        ended in a signal. ``_terminate()`` remains the fallback for a worker
+        that is wedged and does not exit within the grace period.
+        """
         with self._lock:
             if self._connection is not None and self._proc is not None \
                     and self._proc.poll() is None:
                 try:
                     self._request("shutdown")
+                except Exception:
+                    pass
+                try:
+                    self._proc.wait(timeout=SHUTDOWN_GRACE_S)
                 except Exception:
                     pass
             self._terminate()
@@ -710,15 +737,40 @@ def reset_health() -> None:
         _HEALTH.update(state=READY, last_error=None, queued=0, recovered=0)
 
 
+def key_for(m0_db, writer_user=None) -> str:
+    """The pool key for one (M0 path, writer uid).
+
+    One derivation, used by both the lookup and the release, so a worker can
+    never be registered under one key and looked for under another.
+    """
+    return "%s|%s" % (Path(m0_db).resolve(), writer_user)
+
+
 def worker_for(m0_db, *, writer_user=None) -> M0WriterWorker:
     """One worker per (M0 path, resolved owner) inside this process."""
-    key = "%s|%s" % (Path(m0_db).resolve(), writer_user)
+    key = key_for(m0_db, writer_user)
     with _POOL_LOCK:
         worker = _POOL.get(key)
         if worker is None:
             worker = M0WriterWorker(Path(m0_db), writer_user=writer_user)
             _POOL[key] = worker
         return worker
+
+
+def close_for(m0_db, *, writer_user=None) -> bool:
+    """Close and forget the worker for one (M0 path, resolved owner).
+
+    Returns whether a worker was actually released. Idempotent: a second call
+    finds nothing and returns False. Scoped to one store, so releasing the writer
+    of one instance can never stop the writer of another store in this process.
+    """
+    key = key_for(m0_db, writer_user)
+    with _POOL_LOCK:
+        worker = _POOL.pop(key, None)
+    if worker is None:
+        return False
+    worker.close()
+    return True
 
 
 def close_all() -> None:

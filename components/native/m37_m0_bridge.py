@@ -45,6 +45,15 @@ The runner's ledger lives in a root-only directory, so the poller runs as
 root; the M0 store is owned by ``chiyo-native-v0``, so the write itself is
 performed by a child process that drops to that user.  No production
 permission is changed.
+
+Lifecycle
+---------
+The persistent writer worker belongs to the bridge that started it, and
+``ConfiguredBridge.close()`` releases it (via ``m0_writer_worker.close_for``)
+together with this module's per-store spool cache.  ``Instance.close()`` already
+released whatever a bridge exposes, so the worker is now stopped by the same call
+that closes the instance; before ``ConfiguredBridge.close`` existed there was
+nothing to invoke and the worker outlived the instance.
 """
 from __future__ import annotations
 
@@ -485,16 +494,54 @@ class ConfiguredBridge:
         config = Path(self.environment.get('CHIYO_M3_CONFIG', str(NATIVE_M3_CONFIG)))
         return Path(json.loads(config.read_text(encoding='utf8'))['m0_db'])
 
+    def writer_user(self):
+        """The uid this bridge's M0 writer runs as, and the worker pool key half.
+
+        Derived in one place so the worker that gets started and the worker that
+        gets released are always the same object.
+        """
+        return self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os, 'getuid') else None)
+
     def writer_health(self):
         return writer_health()
 
     def write_user_event(self, **kwargs):
         return write_user_event(**kwargs, m0_db=self.load_m0_path(),
-                                writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
+                                writer_user=self.writer_user())
 
     def write_assistant_event(self, **kwargs):
         return write_assistant_event(**kwargs, binding=self.load_binding(), m0_db=self.load_m0_path(),
-                                     writer_user=self.environment.get('CHIYO_M0_WRITER_USER', os.getuid() if hasattr(os,'getuid') else None))
+                                     writer_user=self.writer_user())
+
+    def close(self):
+        """Release what this bridge started: its writer worker and its spool cache.
+
+        This is the lifecycle edge ``Instance.close()`` already looked for: the
+        instance releases whatever its bridge exposes, and until this method
+        existed there was nothing to call, so the persistent worker kept running
+        with its socket and pipes open until the process ended.
+
+        Idempotent and safe on a bridge that never wrote anything (no append means
+        no worker was constructed). Never raises: it runs inside Instance.close(),
+        which has to complete.
+        """
+        try:
+            m0_db = Path(self.load_m0_path())
+        except Exception as exc:                      # unresolvable config
+            LOGGER.warning("m37.bridge.close.unresolved_m0_path error_class=%s",
+                           type(exc).__name__)
+            return False
+        stopped = False
+        if m0_writer_worker is not None:
+            try:
+                stopped = m0_writer_worker.close_for(m0_db, writer_user=self.writer_user())
+            except Exception as exc:                  # a release failure is reported, not fatal
+                LOGGER.warning("m37.bridge.close.worker_failed error_class=%s",
+                               type(exc).__name__)
+        # The spool cache holds no open handle, but a closed bridge must not keep
+        # claiming a pending backlog either: writer_health() sums this dict.
+        _SPOOLS.pop(str(m0_db.parent), None)
+        return stopped
 
 
 def writer_health() -> dict:
