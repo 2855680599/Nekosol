@@ -68,19 +68,18 @@ function initCommandCopy() {
 
   const code = cmdPill.querySelector('.cmd-text');
   const btn = document.getElementById('hero-cmd-btn');
-  const feedback = document.getElementById('hero-copy-feedback');
-  if (!code || !btn || !feedback) return;
+  if (!code || !btn) return;
 
   cmdPill.addEventListener('click', async () => {
     const copied = await copyTextOrSelect(code);
-    feedback.textContent = copied ? '已复制安装命令' : '已选中命令，请按 Ctrl+C 或 Command+C 复制';
-    btn.setAttribute('aria-label', copied ? '已复制安装命令' : '已选中安装命令，请手动复制');
+    btn.setAttribute('aria-label', copied ? '已复制安装命令' : '请手动复制安装命令');
     btn.classList.toggle('copied', copied);
+    const feedback = document.getElementById('hero-copy-feedback');
+    if (feedback) feedback.textContent = '';
     setTimeout(() => {
-      feedback.textContent = '';
       btn.setAttribute('aria-label', '复制安装命令');
       btn.classList.remove('copied');
-    }, 2500);
+    }, 2000);
   });
 }
 
@@ -120,6 +119,62 @@ function renderSidebar() {
 /* ==========================================================================
    5. 双视图路由切换 (Home View vs Docs View)
    ========================================================================== */
+let ANCHOR_TO_DOC_MAP = null;
+
+function getAnchorToDocMap() {
+  if (ANCHOR_TO_DOC_MAP) return ANCHOR_TO_DOC_MAP;
+  ANCHOR_TO_DOC_MAP = {};
+  if (typeof DOCS_CONTENT === 'undefined') return ANCHOR_TO_DOC_MAP;
+
+  for (const [docKey, docData] of Object.entries(DOCS_CONTENT)) {
+    ANCHOR_TO_DOC_MAP[docKey] = docKey;
+    if (docData.content) {
+      const regex = /<h[1-6][^>]*\bid=(?:\\*["'])([^"'\\]+)(?:\\*["'])/gi;
+      let match;
+      while ((match = regex.exec(docData.content)) !== null) {
+        ANCHOR_TO_DOC_MAP[match[1]] = docKey;
+      }
+    }
+    if (Array.isArray(docData.toc)) {
+      docData.toc.forEach(item => {
+        if (item.id) ANCHOR_TO_DOC_MAP[item.id] = docKey;
+      });
+    }
+  }
+  return ANCHOR_TO_DOC_MAP;
+}
+
+function resolveDocAndAnchor(hash) {
+  if (!hash) return { docId: 'intro', anchor: null };
+  const map = getAnchorToDocMap();
+  if (map[hash]) {
+    return { docId: map[hash], anchor: hash === map[hash] ? null : hash };
+  }
+
+  // Common prefix heuristics
+  if (hash.startsWith('cli-')) return { docId: 'cli-reference', anchor: hash };
+  if (hash.startsWith('modules-')) return { docId: 'modules', anchor: hash };
+  if (hash.startsWith('tb-')) return { docId: 'troubleshooting', anchor: hash };
+  if (hash.startsWith('rm-')) return { docId: 'roadmap', anchor: hash };
+  if (hash.startsWith('changelog-')) return { docId: 'changelog', anchor: hash };
+  if (hash.startsWith('intro-')) return { docId: 'intro', anchor: hash };
+  if (hash.startsWith('quickstart-')) return { docId: 'quickstart', anchor: hash };
+  if (hash.startsWith('installation-')) return { docId: 'installation', anchor: hash };
+  if (hash.startsWith('windows-')) return { docId: 'windows', anchor: hash };
+  if (hash.startsWith('linux-')) return { docId: 'linux', anchor: hash };
+  if (hash.startsWith('configuration-')) return { docId: 'configuration', anchor: hash };
+  if (hash.startsWith('telegram-')) return { docId: 'telegram', anchor: hash };
+  if (hash.startsWith('update-')) return { docId: 'update', anchor: hash };
+  if (hash.startsWith('data-')) return { docId: 'data', anchor: hash };
+  if (hash.startsWith('testing-')) return { docId: 'testing', anchor: hash };
+  if (hash.startsWith('privacy-')) return { docId: 'privacy', anchor: hash };
+  if (hash.startsWith('release-')) return { docId: 'release', anchor: hash };
+  if (hash.startsWith('contributing-')) return { docId: 'contributing', anchor: hash };
+  if (hash.startsWith('status-matrix-')) return { docId: 'status-matrix', anchor: hash };
+
+  return { docId: 'intro', anchor: null };
+}
+
 function initRouting() {
   window.addEventListener('hashchange', () => {
     routeHash();
@@ -134,11 +189,9 @@ function routeHash() {
   const docsView = document.getElementById('view-docs');
   const navHome = document.getElementById('nav-home');
   const navDocs = document.getElementById('nav-docs');
-  const navQuickstart = document.getElementById('nav-quickstart');
-  const navChangelog = document.getElementById('nav-changelog');
   const navRoadmap = document.getElementById('nav-roadmap');
 
-  [navHome, navDocs, navQuickstart, navChangelog, navRoadmap].forEach(nav => {
+  [navHome, navDocs, navRoadmap].forEach(nav => {
     if (nav) nav.classList.remove('active');
   });
 
@@ -154,30 +207,18 @@ function routeHash() {
   if (homeView) homeView.style.display = 'none';
   if (docsView) docsView.style.display = 'flex';
 
-  let docId = docAnchorPage(rawHash);
-  if (typeof DOCS_CONTENT !== 'undefined' && !DOCS_CONTENT[docId]) {
-    docId = 'intro';
-    if (rawHash !== 'intro') {
-      history.replaceState(null, '', '#intro');
-    }
-  }
-  if (docId === 'quickstart' && navQuickstart) {
-    navQuickstart.classList.add('active');
-  } else if (docId === 'changelog' && navChangelog) {
-    navChangelog.classList.add('active');
-  } else if (docId === 'roadmap' && navRoadmap) {
+  const { docId, anchor } = resolveDocAndAnchor(rawHash);
+
+  if (docId === 'roadmap' && navRoadmap) {
     navRoadmap.classList.add('active');
   } else if (navDocs) {
     navDocs.classList.add('active');
   }
 
-  loadDoc(docId);
-  if (rawHash !== docId) {
-    document.getElementById(rawHash)?.scrollIntoView({ block: 'start', behavior: 'instant' });
-  }
+  loadDoc(docId, anchor);
 }
 
-function loadDoc(docId) {
+function loadDoc(docId, anchor = null) {
   const doc = DOCS_CONTENT[docId] || DOCS_CONTENT['intro'];
   const targetId = DOCS_CONTENT[docId] ? docId : 'intro';
 
@@ -235,7 +276,18 @@ function loadDoc(docId) {
   if (sidebarEl) sidebarEl.classList.remove('open');
   setMobileMenuState(false);
 
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (anchor) {
+    requestAnimationFrame(() => {
+      const targetEl = document.getElementById(anchor);
+      if (targetEl) {
+        targetEl.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+    });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
 }
 
 function renderPager(currentId) {
@@ -510,7 +562,7 @@ function initShowcaseTabs() {
           panel.style.display = 'grid';
           panel.style.animation = 'none';
           void panel.offsetWidth;
-          panel.style.animation = 'showcase-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+          panel.style.animation = 'showcase-fade-in 0.18s ease-out forwards';
         } else {
           panel.style.display = 'none';
         }
