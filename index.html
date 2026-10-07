@@ -4,18 +4,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
-  <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v24">
+  <meta name="description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。">
+  <meta name="keywords" content="nyairo, AI个体框架, 虚拟世界, 长期记忆, AI生活状态, AI伴侣, 开源AI, Agent, 自主智能体, CHIYO, 本地记忆, Gemini 3.8 flash">
+  <meta name="author" content="nyairo contributors">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://nyairo.com/">
+  <meta name="theme-color" content="#0b0d14">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+
+  <!-- 图标与样式 -->
+  <link rel="stylesheet" href="style.css?v=20261007-v25">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Open Graph 社交元数据 (Facebook, WeChat, Discord, Slack) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="nyairo">
   <meta property="og:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
-  <meta property="og:description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
+  <meta property="og:description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态与双重形态。">
   <meta property="og:url" content="https://nyairo.com/">
   <meta property="og:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card 社交卡片 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
+  <meta name="twitter:description" content="给 AI 一个世界，让它拥有属于自己的日常。长期记忆、持续生活状态、虚拟空间与 Agent 协同。">
+  <meta name="twitter:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
+
+  <!-- 结构化数据 (Schema.org JSON-LD，助力 Google / 百度 / Bing 富媒体收录) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://nyairo.com/#website",
+        "url": "https://nyairo.com/",
+        "name": "nyairo",
+        "description": "以虚拟世界为核心的开源 AI 个体框架",
+        "inLanguage": "zh-CN"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://nyairo.com/#software",
+        "name": "nyairo",
+        "url": "https://nyairo.com/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, Windows WSL2",
+        "description": "以虚拟世界为核心的开源 AI 个体框架。为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "downloadUrl": "https://github.com/L1AN929/nyairo/releases",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "nyairo contributors",
+          "url": "https://github.com/L1AN929/nyairo"
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -426,7 +484,27 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v24"></script>
-  <script src="app.js?v=20261006-v24"></script>
+  <script src="docs-data.js?v=20261007-v25"></script>
+  <script src="app.js?v=20261007-v25"></script>
+  <!-- 爬虫与无 JS 环境语义保全 (确保百度 / Google 等轻量爬虫完整索引全站要点) -->
+  <noscript>
+    <div class="noscript-seo" style="max-width: 900px; margin: 40px auto; padding: 24px; font-family: sans-serif; line-height: 1.7; border: 1px solid #334155; border-radius: 8px;">
+      <h2>nyairo 核心文档与使用导航</h2>
+      <p>nyairo 是一个以虚拟世界为核心的开源数字个体框架。一键全自动安装命令：<code>curl -fsSL https://nyairo.com/install.sh | bash</code></p>
+      <h3>核心特性与文档速览</h3>
+      <ul>
+        <li><a href="#intro">项目定位与核心能力</a>：四大核心能力、准备工作与架构说明。</li>
+        <li><a href="#quickstart">快速上手指南</a>：一键安装、API Key 设置与第一次对话。</li>
+        <li><a href="#installation">安装前准备与系统说明</a>：Linux 与 Windows WSL2 环境配置。</li>
+        <li><a href="#configuration">个性化设置与聊天指南</a>：自定义性格 SOUL.md 与模型参数。</li>
+        <li><a href="#cli-reference">日常命令与记忆管理</a>：/chiyo_status、/chiyo_memory、/chiyo_note 核心命令。</li>
+        <li><a href="#roadmap">未来规划与路线图</a>：真实住得下来的小房间、随身手机与无损搬家。</li>
+        <li><a href="#privacy">隐私与数据管理</a>：数据本地私有存储、SQLite 私有库与安全边界。</li>
+        <li><a href="#update">版本更新与无痛升级</a>：nyairo update 一键升级与回滚保障。</li>
+      </ul>
+      <p>开源代码仓库：<a href="https://github.com/L1AN929/nyairo">https://github.com/L1AN929/nyairo</a></p>
+    </div>
+  </noscript>
+
 </body>
 </html>
