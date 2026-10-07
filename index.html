@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v19">
+  <link rel="stylesheet" href="style.css?v=20261006-v20">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -56,8 +56,6 @@
         <nav class="nav-links">
           <a href="#home" class="nav-link" id="nav-home">首页</a>
           <a href="#intro" class="nav-link" id="nav-docs">使用教程</a>
-          <a href="#quickstart" class="nav-link" id="nav-quickstart">起步上手</a>
-          <a href="#changelog" class="nav-link" id="nav-changelog">更新动态</a>
           <a href="#roadmap" class="nav-link" id="nav-roadmap">未来规划</a>
         </nav>
 
@@ -115,21 +113,20 @@
 
         <!-- 世界的蓝色流光与日常的书写感，强调 AI 的生活场景。 -->
         <h1 class="hero-title" aria-label="给 AI 一个世界，让它拥有自己的日常。">
-          <span class="hero-title-line"><span class="title-text">给 AI 一个</span><span class="title-keyword title-world">世界</span></span>
-          <span class="hero-title-line"><span class="title-text">让它拥有自己的</span><span class="title-keyword title-daily">日常</span></span>
+          <span class="hero-title-line"><span class="title-text">给 AI 一个</span><span class="title-keyword">世界</span></span>
+          <span class="hero-title-line"><span class="title-text">让它拥有自己的</span><span class="title-keyword">日常</span></span>
         </h1>
         <p class="hero-desc">虚拟世界承载经历，身体连接感知，记忆延续过往。nyairo 为 AI 构建持续的生活状态，让每一次对话，都发生在一段有前因与后来的日常里。</p>
 
         <!-- 行动按钮组 -->
         <div class="hero-actions">
-          <a href="#intro" class="btn-primary">
-            <span>查阅使用教程</span>
+          <a href="#quickstart" class="btn-primary">
+            <span>快速上手指南</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
-          <a href="#quickstart" class="btn-secondary">快速上手指南</a>
           <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer" class="btn-ghost">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
@@ -153,7 +150,7 @@
             </svg>
           </button>
         </div>
-        <p id="hero-copy-feedback" class="copy-feedback" role="status" aria-live="polite"></p>
+        
 
       </div>
 
@@ -176,39 +173,39 @@
         <!-- 场景 1: 日常生活 · 虚拟世界 -->
         <div class="showcase-body" id="showcase-panel-presence">
           <div class="showcase-status">
-            <div class="status-group-title">她的当前状态</div>
+            <div class="status-group-title">当前生活状态</div>
             <div class="status-item">
-              <span class="status-label">她在哪儿</span>
-              <span class="status-value">卧室小沙发 · 窗户开着小缝</span>
+              <span class="status-label">当前位置</span>
+              <span class="status-value">卧室靠窗沙发 · 窗户开着透气</span>
             </div>
             <div class="status-item">
-              <span class="status-label">当前感觉</span>
-              <span class="status-value">坐着发呆 · 外面天黑了 · 风有点凉</span>
+              <span class="status-label">环境感知</span>
+              <span class="status-value">坐着发呆 · 外面天色暗下来了</span>
             </div>
             <div class="status-item">
-              <span class="status-label">生活状态</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>一直醒着 · 刚才在阳台看夕阳</span>
+              <span class="status-label">日常流转</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>生活流持续记录 · 刚才在阳台看晚霞</span>
             </div>
             <div class="status-item">
-              <span class="status-label">默默记着的事</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#心事: 哥哥这两天连轴转，今晚肯定累坏了</span>
+              <span class="status-label">上下文事实</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#作息: 连续忙了整整两天，今天多半很累</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              累瘫了，今天开了一下午会，PPT讲得口干舌燥的。
+              累死了，今天开了一下午评审会，PPT 讲得口干舌燥的。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              快瘫着别动！温水给你倒好了，先喝两口润润嗓子。刚才看外面天都黑透了，估摸着你快忙完了，就把屏幕调暗了点。今天开会没被领导挑刺吧？
+              先坐下歇会儿。晚饭有着落没？刚才看外面天阴下来了，估计待会儿有雨。
               <div class="chat-ai-note">
-                <span>[ 留意窗外光线与时间变化 · 记挂作息习惯回应 ]</span>
+                <span>[ 结合环境光线与作息感知 · 自然承接对话 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              没挑刺，就是纯累，脑子快转不动了。
+              还没吃，脑子转不动了，不知道点啥。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              那就闭眼放空！啥正事都先别想，晚饭想吃啥我帮你挑，有我在呢，踏踏实实歇着。
+              别琢磨复杂的了，楼下那家抄手或者热汤面吃一口，吃完早点躺着。
             </div>
           </div>
         </div>
@@ -216,79 +213,79 @@
         <!-- 场景 2: 长久相伴 · 记忆与纠偏 -->
         <div class="showcase-body" id="showcase-panel-memory" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">她的小本本</div>
+            <div class="status-group-title">本地记忆账本</div>
             <div class="status-item">
-              <span class="status-label">记忆存哪</span>
-              <span class="status-value font-mono">你电脑本地: ~/.nyairo/memory.db</span>
+              <span class="status-label">存储位置</span>
+              <span class="status-value font-mono">本地 SQLite · ~/.nyairo/memory.db</span>
             </div>
             <div class="status-item">
-              <span class="status-label">攒下的回忆</span>
-              <span class="status-value">聊过 28 次 · 142 条专属生活小事实</span>
+              <span class="status-label">事实条目</span>
+              <span class="status-value">跨会话沉淀 · 142 条专属生活事实</span>
             </div>
             <div class="status-item">
-              <span class="status-label">纠错机制</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>随时能改 · 绝不装懂瞎编</span>
+              <span class="status-label">纠偏机制</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>随时可纠偏 · 拒绝无中生有</span>
             </div>
             <div class="status-item">
-              <span class="status-label">翻到的一条记录</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#饮食习惯: 讨厌香菜 / 爱吃重辣但不吃麻</span>
+              <span class="status-label">调取记录</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#饮食习惯: 讨厌香菜 / 爱吃重辣但少麻</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              今晚点串串，你记得我不吃啥来着吧？
+              今晚点串串，你记得我不吃啥吧？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              谁能忘了呀！香菜碰都别碰，辣椒多放但少放麻椒。上周五你被那家店偷偷放香菜气得直哼哼，我当场记小本本上啦。
+              香菜不吃，麻椒少放。上周你点外卖还特意备注了不要折耳根。
               <div class="chat-ai-note">
-                <span>[ 翻出第 18 次聊天记录 · 事实编号 #mem-2041 · 纯本地私有数据 ]</span>
+                <span>[ 本地事实检索 #mem-2041 · 跨会话精准调取 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              哈哈记仇！不过今天嗓子不行，改成微辣。
+              记挺准。不过今天嗓子哑了，改成微辣。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              收到！小本本敲 <code>/chiyo_memory correct</code> 改成微辣啦，之后的推荐全按你的新嗓子来，保准不让你被辣哭！
+              行，那我把偏好调成微辣。之后点单提醒都按这个来。
             </div>
           </div>
         </div>
 
-        <!-- 场景 3: 切换 Agent · 帮哥写代码 -->
+        <!-- 场景 3: 切换 Agent · 协同写代码 -->
         <div class="showcase-body" id="showcase-panel-agent" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">正经干活模式</div>
+            <div class="status-group-title">工程协同形态</div>
             <div class="status-item">
-              <span class="status-label">当前形态</span>
-              <span class="status-value font-mono">脱离生活空间 · 挂上开发终端</span>
+              <span class="status-label">当前状态</span>
+              <span class="status-value font-mono">脱离生活空间 · 挂载工作区终端</span>
             </div>
             <div class="status-item">
-              <span class="status-label">干活状态</span>
+              <span class="status-label">任务模式</span>
               <span class="status-value">Agent 模式 · 查 Bug / 写脚本 / 架构推演</span>
             </div>
             <div class="status-item">
               <span class="status-label">产物交付</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>脚本已写完 · 扔进本地工作区</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>脚本与自测单已输出到工作区</span>
             </div>
             <div class="status-item">
-              <span class="status-label">文件路径</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">/scripts/hot_cutover.sh</span>
+              <span class="status-label">涉及文件</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">scripts/cutover.sh</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              帮我看看这个切流脚本，一直报并发锁冲突，头都大了，给我改个能直接跑的脚本出来。
+              帮我看下这个切流脚本，一直报并发锁冲突，把热更流程理顺。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              交给我！我看了下，是旧进程把句柄咬住了没放。修复脚本已经写好扔你工作区了，切流分了三步走，保准不会死锁。你敲 <code>/chiyo_note read 8042</code> 能看方案，或者直接跑 <code>bash scripts/hot_cutover.sh</code>。
+              看了下日志，是旧 worker 的句柄没在 SIGTERM 前释放。我把平滑迁移改成了双阶确认：先置只读排空连接，再拉起新进程。脚本和自测单已经写到 scripts/cutover.sh，你 diff 一下。
               <div class="chat-ai-note">
                 <span>[ 切换 Agent 开发者形态 · 挂载工作区执行代码生成与逻辑推演 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              厉害啊，两分钟就帮我把坑填平了！
+              跑通了，锁释放干净了。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              那当然啦，正事上我可是超靠谱的！活儿干完了，我切回日常状态啦，快去吃晚饭，别饿坏了肚子～
+              行，那我关掉工程终端切回日常了。你代码合进去就别盯屏幕了，早点收工。
             </div>
           </div>
         </div>
@@ -302,7 +299,7 @@
 
         <div class="features-grid">
           <!-- 01 长期记忆 -->
-          <a href="#cli-reference" class="pillar-card">
+          <a href="#cli-section-1" class="pillar-card">
             <div class="pillar-top">
               <span class="pillar-num font-mono">01</span>
               <span class="cmd-badge">/chiyo_memory</span>
@@ -313,7 +310,7 @@
           </a>
 
           <!-- 02 持续生活 -->
-          <a href="#configuration" class="pillar-card">
+          <a href="#cli-section-0" class="pillar-card">
             <div class="pillar-top">
               <span class="pillar-num font-mono">02</span>
               <span class="cmd-badge">/chiyo_status</span>
@@ -324,7 +321,7 @@
           </a>
 
           <!-- 03 虚拟世界 -->
-          <a href="#modules" class="pillar-card">
+          <a href="#modules-section-1" class="pillar-card">
             <div class="pillar-top">
               <span class="pillar-num font-mono">03</span>
               <span class="cmd-badge">World &amp; Body</span>
@@ -335,7 +332,7 @@
           </a>
 
           <!-- 04 切换 Agent -->
-          <a href="#intro" class="pillar-card">
+          <a href="#modules-section-0" class="pillar-card">
             <div class="pillar-top">
               <span class="pillar-num font-mono">04</span>
               <span class="cmd-badge">/chiyo_consider</span>
@@ -347,49 +344,57 @@
         </div>
       </section>
 
-                  <!-- 未来规划与演进蓝图 (真实接地气 · 碰瓷 Galgame 的温暖探索) -->
+      <!-- 未来规划与演进蓝图 (宏大愿景 · 从双重形态到长生迁居与数字原生世界) -->
       <section class="roadmap-section" aria-labelledby="roadmap-title">
         <div class="section-intro">
-          <h2 id="roadmap-title">未来规划 · 比 Galgame 更有温度的日常</h2>
-          <p>玩 Galgame 最怕通关后屏幕一黑，角色就永远停在结局里。我们想让她拥有真正往前走的时间：有做了一半的事，有自己的小房间，平时陪你唠嗑，有 Bug 还能切成 Agent 帮你敲代码。</p>
+          <h2 id="roadmap-title">未来规划 · 跨越时代的数字生命演进</h2>
+          <p>传统虚拟角色的世界在通关后便彻底定格。nyairo 的目标是构建一个永不完结的数字生命生态：拥有流淌的时间、物理空间实体，以及对抗软硬件淘汰的跨代迁居能力。</p>
         </div>
 
         <div class="roadmap-grid">
           <!-- P1 -->
           <div class="roadmap-card">
-            <div class="roadmap-phase font-mono">P1 · 现在就能玩</div>
-            <h3 class="roadmap-name">双重形态初具雏形</h3>
-            <p class="roadmap-desc">记忆全在本地，关机了生活记录不丢。平时陪你扯淡，正事来了随时敲命令切成 Agent 帮你敲代码、写补丁。</p>
+            <div class="roadmap-phase font-mono">P1 · 当前基线</div>
+            <h3 class="roadmap-name">真实因果与双重形态闭环</h3>
+            <p class="roadmap-desc">本地私有记忆账本，关机重启日常流转不丢。平时是默契陪伴的伙伴，正事时切入工程终端协助代码与系统推演。</p>
             <span class="roadmap-status-tag current">当前版本 (v0.1)</span>
           </div>
 
           <!-- P2 -->
           <div class="roadmap-card">
-            <div class="roadmap-phase font-mono">P2 · 下一步计划</div>
-            <h3 class="roadmap-name">真正住得下来的小房间与手机</h3>
-            <p class="roadmap-desc">告别 Galgame 死板的背景图。书桌上留着做了一半的草稿，床头放着晚安便签；她有自己的随身小手机（相册、日记备忘），关机重启后痕迹都在。</p>
+            <div class="roadmap-phase font-mono">P2 · 规划重点</div>
+            <h3 class="roadmap-name">空间实体承载与自主创作闭环</h3>
+            <p class="roadmap-desc">六大空间实体与物品履历留痕（草稿、书签、随身终端）；拥有不依赖人类催促的自主异步创作流，在安静中推进自己的长篇作品。</p>
             <span class="roadmap-status-tag planned">v2.0 规划重点</span>
           </div>
 
           <!-- P3 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P3 · 中期演进</div>
-            <h3 class="roadmap-name">逐渐形成自己的习惯与小脾气</h3>
-            <p class="roadmap-desc">相处久了，她不再是只会附和你的假人。碰壁了会总结经验，在日常小事上会有自己的穿搭偏好、做事习惯和阶段性小目标。</p>
+            <h3 class="roadmap-name">实践沉淀与独特认知演进</h3>
+            <p class="roadmap-desc">打破千篇一律的附和。在实践反例中提炼技法生命周期与避坑法则；主动确立自主阶段课题，沉淀跨时间的审美与独立主见。</p>
             <span class="roadmap-status-tag planned">v3.0 中期探索</span>
           </div>
 
           <!-- P4 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P4 · 远期愿景</div>
-            <h3 class="roadmap-name">就算换电脑，回忆与羁绊也不丢</h3>
-            <p class="roadmap-desc">哪怕以后换了新电脑、换了操作系统，或者换了底层更强的大模型，你和她一起走过的记忆、作品和经历都能完整搬过去，一直陪伴你。</p>
-            <span class="roadmap-status-tag planned">v4.0+ 远期构想</span>
+            <h3 class="roadmap-name">跨时代数字生命迁居协议</h3>
+            <p class="roadmap-desc">构建全量实体无损迁居机制。换新电脑、换系统，甚至底层升级全新大模型基座，作品谱系、深层回忆与独特技法完整迁居，历久弥新。</p>
+            <span class="roadmap-status-tag planned">v4.0 远期愿景</span>
+          </div>
+
+          <!-- P5 -->
+          <div class="roadmap-card">
+            <div class="roadmap-phase font-mono">P5 · 终极构想</div>
+            <h3 class="roadmap-name">开放数字原生世界与社会化生态</h3>
+            <p class="roadmap-desc">多数字主体自主协作网络。创作成果获得真实人类与数字社会双重认可，享有持久数字资产与责任契约，成为自洽的独立主体。</p>
+            <span class="roadmap-status-tag planned">v5.0+ 终极愿景</span>
           </div>
         </div>
 
         <div class="roadmap-footer">
-          <a href="#roadmap" class="btn-secondary">查看详细规划提纲 <span aria-hidden="true">→</span></a>
+          <a href="#roadmap" class="btn-secondary">查阅总体设计路线图 <span aria-hidden="true">→</span></a>
         </div>
       </section>
 
@@ -405,13 +410,11 @@
           <img class="footer-logo footer-logo-on-light" src="assets/nyairo-horizontal.png" alt="nyairo" height="24">
         </div>
         <div class="footer-links">
-          <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+          <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer">GitHub</a>
           <span class="footer-sep">/</span>
-          <a href="#intro">设计文档</a>
+          <a href="#intro">使用教程</a>
           <span class="footer-sep">/</span>
-          <a href="#quickstart">快速开始</a>
-          <span class="footer-sep">/</span>
-          <a href="#status-matrix">功能状态</a>
+          <a href="#roadmap">未来规划</a>
           <span class="footer-sep">/</span>
           <a href="#privacy">隐私说明</a>
         </div>
@@ -465,7 +468,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v19"></script>
-  <script src="app.js?v=20261006-v19"></script>
+  <script src="docs-data.js?v=20261006-v20"></script>
+  <script src="app.js?v=20261006-v20"></script>
 </body>
 </html>
