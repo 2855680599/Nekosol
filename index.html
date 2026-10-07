@@ -12,10 +12,10 @@
   <meta name="msvalidate.01" content="BA37E6CB8803A769BBD113FAD6A65095">
   <meta name="baidu-site-verification" content="codeva-x6HPLpgjNM">
   <meta name="theme-color" content="#0b0d14">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e4ecf6">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
 
   <!-- 图标与样式 -->
-  <link rel="stylesheet" href="style.css?v=20261007-world-examples">
+  <link rel="stylesheet" href="style.css?v=20261007-content-only">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -213,90 +213,68 @@
 
       </div>
 
-      <!-- Illustrative scenarios grounded in the first-version contracts. -->
-      <section class="showcase-section" aria-labelledby="showcase-title">
-        <div class="section-intro showcase-intro">
-          <p class="section-kicker">NYAIRO · 新增体验</p>
-          <h2 id="showcase-title">对话之外，它还有自己的世界</h2>
-          <p>位置、姿态、生活状态与过往经历，让一句回答有了来处。</p>
-        </div>
-        <div class="daily-showcase" id="daily-showcase">
-          <div class="showcase-header">
-            <div class="showcase-tabs" role="tablist" aria-label="nyairo 新增能力示例">
-              <button class="showcase-tab active" id="showcase-tab-world" data-tab="world" role="tab" aria-selected="true" aria-controls="showcase-panel-world" tabindex="0">虚拟世界</button>
-              <button class="showcase-tab" id="showcase-tab-body" data-tab="body" role="tab" aria-selected="false" aria-controls="showcase-panel-body" tabindex="-1">身体状态</button>
-              <button class="showcase-tab" id="showcase-tab-life" data-tab="life" role="tab" aria-selected="false" aria-controls="showcase-panel-life" tabindex="-1">生活连续性</button>
-              <button class="showcase-tab" id="showcase-tab-memory" data-tab="memory" role="tab" aria-selected="false" aria-controls="showcase-panel-memory" tabindex="-1">记忆纠正</button>
-            </div>
-            <span class="showcase-header-right">功能示意 · 非实时对话</span>
+      <!-- nyairo additions shown in the existing conversation-card layout. -->
+      <div class="daily-showcase" id="daily-showcase" aria-label="nyairo 新增能力示意">
+        <div class="showcase-header">
+          <div class="showcase-tabs" role="tablist" aria-label="新增能力示例">
+            <button class="showcase-tab active" id="showcase-tab-world" data-tab="world" role="tab" aria-selected="true" aria-controls="showcase-panel-world" tabindex="0">世界</button>
+            <button class="showcase-tab" id="showcase-tab-body" data-tab="body" role="tab" aria-selected="false" aria-controls="showcase-panel-body" tabindex="-1">身体</button>
+            <button class="showcase-tab" id="showcase-tab-life" data-tab="life" role="tab" aria-selected="false" aria-controls="showcase-panel-life" tabindex="-1">生活</button>
+            <button class="showcase-tab" id="showcase-tab-memory" data-tab="memory" role="tab" aria-selected="false" aria-controls="showcase-panel-memory" tabindex="-1">记忆</button>
           </div>
-          <div class="showcase-viewport">
-            <div class="showcase-panel active" id="showcase-panel-world" role="tabpanel" aria-labelledby="showcase-tab-world" tabindex="0">
-              <div class="showcase-scene">
-                <span class="scene-label font-mono">WORLD / LOCATION</span>
-                <div class="room-preview" aria-label="示例世界的位置：家里的卧室">
-                  <span class="room-caption">HOME</span>
-                  <div class="room-outline"><span class="location-pin" aria-hidden="true"></span><strong>卧室</strong><span class="room-coordinates font-mono">home / bedroom</span></div>
-                </div>
-                <p class="scene-caption">独立服务保存位置，对话读取当前观察。</p>
-              </div>
-              <div class="showcase-conversation">
-                <div class="showcase-context-bar"><span class="context-tag">一个具体的地方</span><a href="#modules-section-1">了解世界 →</a></div>
-                <div class="showcase-chat">
-                  <div class="chat-bubble chat-bubble-user">你现在在哪里？周围有什么？</div>
-                  <div class="chat-bubble chat-bubble-ai">当前记录的位置是家里的卧室。世界服务还没有提供可见物件，我只能确认这个位置。</div>
-                </div>
-                <p class="showcase-panel-note">第一版读取有限世界的观察信息；尚未开放聊天指令移动或自主探索。</p>
-              </div>
+          <div class="showcase-header-right font-mono">示意对话 · 非实时</div>
+        </div>
+        <div class="showcase-viewport">
+          <div class="showcase-panel active" id="showcase-panel-world" role="tabpanel" aria-labelledby="showcase-tab-world" tabindex="0">
+            <div class="showcase-context-bar">
+              <span class="context-tag">家 / 卧室 · 示例位置</span>
+              <span class="context-meta font-mono">World / Body · 只读</span>
             </div>
-            <div class="showcase-panel" id="showcase-panel-body" role="tabpanel" aria-labelledby="showcase-tab-body" tabindex="0" hidden>
-              <div class="showcase-scene">
-                <span class="scene-label font-mono">BODY / SNAPSHOT</span>
-                <div class="body-preview"><svg aria-hidden="true" width="58" height="106" viewBox="0 0 58 106" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="29" cy="14" r="9"/><path d="M29 26v41M29 34L10 52M29 34l19 18M29 67L16 94M29 67l13 27"/></svg><dl class="snapshot-fields"><div><dt>姿态</dt><dd>站立 <span class="font-mono">standing</span></dd></div><div><dt>双手</dt><dd>空闲 <span class="font-mono">free</span></dd></div></dl></div>
-                <p class="scene-caption">姿态与手部状态，来自同一份身体快照。</p>
-              </div>
-              <div class="showcase-conversation">
-                <div class="showcase-context-bar"><span class="context-tag">身体也有自己的状态</span><a href="#modules-section-1">了解身体 →</a></div>
-                <div class="showcase-chat">
-                  <div class="chat-bubble chat-bubble-user">你现在是站着还是坐着？手里有东西吗？</div>
-                  <div class="chat-bubble chat-bubble-ai">这份身体快照显示我正站着，双手空闲，没有持有物件。</div>
-                </div>
-                <p class="showcase-panel-note">可以读取姿态、持物情况及已提供的身体信号；服务不可用时不补写虚构状态。</p>
-              </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">你现在在哪里？</div>
+              <div class="chat-bubble chat-bubble-ai">在家里的卧室。</div>
+              <div class="chat-bubble chat-bubble-user">周围有什么东西？</div>
+              <div class="chat-bubble chat-bubble-ai">当前可见物件列表为空，还没有添加房间里的摆设。</div>
             </div>
-            <div class="showcase-panel" id="showcase-panel-life" role="tabpanel" aria-labelledby="showcase-tab-life" tabindex="0" hidden>
-              <div class="showcase-scene">
-                <span class="scene-label font-mono">LIFE / CONTINUITY</span>
-                <ol class="life-preview"><li><span>01</span><div><strong>收到你的消息</strong><small>记录真实入站事件</small></div></li><li><span>02</span><div><strong>保存生活状态</strong><small>事件与审计持续保留</small></div></li><li><span>03</span><div><strong>重启后恢复</strong><small>接续已保存的状态</small></div></li></ol>
-                <p class="scene-caption">独立保存生活状态，跨越单次聊天。</p>
-              </div>
-              <div class="showcase-conversation">
-                <div class="showcase-context-bar"><span class="context-tag">重启，不必重新开始</span><a href="#cli-section-0">查看实际状态 →</a></div>
-                <div class="showcase-chat">
-                  <div class="chat-bubble chat-bubble-user">重启程序以后，之前的生活状态还在吗？</div>
-                  <div class="chat-bubble chat-bubble-ai">Life 会恢复已经保存的状态和事件。没有正在执行的活动时，当前状态仍然可以是 IDLE。</div>
-                </div>
-                <p class="showcase-panel-note">持续保存不代表关机期间仍在活动；自主活动执行与主动联系尚未开放。</p>
-              </div>
+          </div>
+          <div class="showcase-panel" id="showcase-panel-body" role="tabpanel" aria-labelledby="showcase-tab-body" tabindex="0" hidden>
+            <div class="showcase-context-bar">
+              <span class="context-tag">站立 · 双手空闲</span>
+              <span class="context-meta font-mono">World / Body · 只读</span>
             </div>
-            <div class="showcase-panel" id="showcase-panel-memory" role="tabpanel" aria-labelledby="showcase-tab-memory" tabindex="0" hidden>
-              <div class="showcase-scene">
-                <span class="scene-label font-mono">MEMORY / CORRECTION</span>
-                <div class="memory-preview"><div class="memory-fact superseded"><span>旧事实</span><s>我更喜欢咖啡</s></div><span class="memory-arrow" aria-hidden="true">↓</span><div class="memory-fact"><span>纠正后采用</span><strong>我现在更喜欢红茶</strong></div></div>
-                <p class="scene-caption">经历可以积累，过时的事实也可以修正。</p>
-              </div>
-              <div class="showcase-conversation">
-                <div class="showcase-context-bar"><span class="context-tag">记住，也允许改变</span><a href="#cli-section-1">管理记忆 →</a></div>
-                <div class="showcase-chat">
-                  <div class="chat-bubble chat-bubble-user"><code>/chiyo_memory correct 记忆ID 我现在更喜欢红茶</code></div>
-                  <div class="chat-bubble chat-bubble-ai">纠正后，后续召回应采用“更喜欢红茶”的新事实。记忆 ID 需要先从 list 返回的条目中选取。</div>
-                </div>
-                <p class="showcase-panel-note">也可用 delete 停止采用某条记忆；原始聊天与审计仍保留，不能代替彻底擦除。</p>
-              </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">你现在站着还是坐着？</div>
+              <div class="chat-bubble chat-bubble-ai">身体记录显示我正站着。</div>
+              <div class="chat-bubble chat-bubble-user">手里有拿着什么吗？</div>
+              <div class="chat-bubble chat-bubble-ai">没有，当前双手都是空闲状态。</div>
+            </div>
+          </div>
+          <div class="showcase-panel" id="showcase-panel-life" role="tabpanel" aria-labelledby="showcase-tab-life" tabindex="0" hidden>
+            <div class="showcase-context-bar">
+              <span class="context-tag">Life 已启用 · 重启恢复</span>
+              <span class="context-meta font-mono">/chiyo_status</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">重启后，之前的状态呢？</div>
+              <div class="chat-bubble chat-bubble-ai">已保存的状态和事件还在。</div>
+              <div class="chat-bubble chat-bubble-user">关机时会自己活动吗？</div>
+              <div class="chat-bubble chat-bubble-ai">不会，第一版还没开放。</div>
+            </div>
+          </div>
+          <div class="showcase-panel" id="showcase-panel-memory" role="tabpanel" aria-labelledby="showcase-tab-memory" tabindex="0" hidden>
+            <div class="showcase-context-bar">
+              <span class="context-tag">纠正旧事实 · 原始记录保留</span>
+              <span class="context-meta font-mono">/chiyo_memory</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">我现在更喜欢红茶了。</div>
+              <div class="chat-bubble chat-bubble-ai">用 correct 纠正旧事实。</div>
+              <div class="chat-bubble chat-bubble-user">delete 会擦除原始记录吗？</div>
+              <div class="chat-bubble chat-bubble-ai">不会，只停止后续采用。</div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
       <section class="capabilities-section" aria-labelledby="capabilities-title">
         <div class="section-intro">
           <h2 id="capabilities-title">四大核心能力</h2>
@@ -313,13 +291,13 @@
           <a href="#modules-section-1" class="pillar-card">
             <div class="pillar-top"><span class="pillar-num font-mono">02</span><span class="cmd-badge">BODY</span></div>
             <h3 class="pillar-title">身体状态</h3>
-            <p class="pillar-desc">读取姿态、持物情况与身体信号。身体拥有独立状态，回答依据实际观察，而非临时编写的设定。</p>
+            <p class="pillar-desc">身体拥有独立状态，可读取姿态、持物情况与身体信号，为对话提供来自世界服务的观察信息。</p>
             <span class="pillar-link">了解身体 →</span>
           </a>
           <a href="#cli-section-0" class="pillar-card">
             <div class="pillar-top"><span class="pillar-num font-mono">03</span><span class="cmd-badge">LIFE</span></div>
             <h3 class="pillar-title">持续生活</h3>
-            <p class="pillar-desc">独立保存日常事件与生活状态，重启后接续已有记录。当前支持状态连续性，自主活动仍在后续规划中。</p>
+            <p class="pillar-desc">独立保存真实入站事件与生活状态，重启后接续已有记录。当前支持状态连续性，自主活动仍在后续规划中。</p>
             <span class="pillar-link">查看状态 →</span>
           </a>
           <a href="#cli-section-1" class="pillar-card">
@@ -336,7 +314,7 @@
       <section class="roadmap-section" aria-labelledby="roadmap-title">
         <div class="section-intro">
           <h2 id="roadmap-title">未来规划 · 真实住得下来的生活日常</h2>
-          <p>玩 Galgame 最怕通关后屏幕一黑，角色就永远停在结局里。nyairo 的目标是让她拥有真正流淌的时间：有属于自己的小房间，平时会主动关心你，需要时还能切成 Agent 协助工作。</p>
+          <p>玩 Galgame 最怕通关后屏幕一黑，角色就永远停在结局里。nyairo 的目标是让 AI 个体拥有持续的日常：自己的房间、可接续的经历，以及未来经过授权的自主活动与主动关切。</p>
         </div>
 
         <div class="roadmap-grid">
@@ -368,7 +346,7 @@
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P4 · 远期愿景</div>
             <h3 class="roadmap-name">换电脑不丢回忆的无损搬家</h3>
-            <p class="roadmap-desc">就算以后换了新电脑、换了操作系统，或者升级了底层更强的大模型，她的小房间、日记相册、作品与所有经历都能完整搬过去，长久陪伴。</p>
+            <p class="roadmap-desc">就算以后换了新电脑、换了操作系统，或者升级了底层更强的大模型，希望它的房间状态、日记相册、作品与经历能够一并迁移，延续已有的生活。</p>
             <span class="roadmap-status-tag planned">v4.0 远期愿景</span>
           </div>
         </div>
@@ -448,8 +426,8 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261007-world-examples"></script>
-  <script src="app.js?v=20261007-world-examples"></script>
+  <script src="docs-data.js?v=20261007-content-only"></script>
+  <script src="app.js?v=20261007-content-only"></script>
   <!-- 爬虫与无 JS 环境语义保全 (确保百度 / Google 等轻量爬虫完整索引全站要点) -->
   <noscript>
     <div class="noscript-seo" style="max-width: 900px; margin: 40px auto; padding: 24px; font-family: sans-serif; line-height: 1.7; border: 1px solid #334155; border-radius: 8px;">
