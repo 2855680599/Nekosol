@@ -1,0 +1,68 @@
+# 变更记录
+
+本文件记录**公开发行**中用户可见的变化。完整的历史验收数字与仍存在的边界见
+[TESTING.md](TESTING.md)、[KNOWN_ISSUES.md](KNOWN_ISSUES.md) 和 [PROJECT_NAME.md](PROJECT_NAME.md)。
+
+## v0.1.0-rc6 — 第一版（第一个公开发行候选）
+
+**第一版定位。** nyairo 是数字个体框架：第一版沿用完整 Hermes Agent 0.21.0（固定提交
+`67807e64a66044db9e0a641d98c68a35c1760589`，含 44 个宿主文件的适配补丁）的命令行、工具、
+技能与消息网关，在其上提供长期记忆、生活状态、世界与身体观察、认知 Shadow 判断、个人文档与
+资源。第一版的重点是**已有个人经历的连续性**：升级旧数据、重启恢复、增量消费都不丢历史，也不
+重复写入。
+
+### 用户可见的新增与修复
+
+* **旧版重试记录的启动回收（Legacy Retry startup recovery）** —— 打开一个个人数据目录时就会
+  迁移并回收旧版 append-only 重试记录，不再需要「先聊一句」才触发；回收先识别再落盘，已经
+  durable 的记录不会重复插入，未完成的会继续重试。
+* **M3 增量水位（M3 incremental watermark）** —— M3 的触发器发现改用 M0 只追加的 `rowid` 作为
+  消费水位（保存在 M3 自己的 `runtime_meta` 里，与不可变的起始锚点并存），稳态只读新增行；
+  迟到事件不再被静默漏掉。评测上下文仍按既有的全局序位计算，因此
+  `trigger_sequence` / `source_max_sequence` / `visible_digest` 等持久化契约保持不变。
+* **持久化 M0 写入器（persistent M0 writer）** —— M0 写入改为常驻的降权子进程，父进程经
+  AF_UNIX socket 与它通信，写入身份与聊天进程分离；失败时 fail-closed 并入队重试，下次打开时
+  由 recovery owner 回收。
+* **AF_UNIX 长路径加固（AF_UNIX long-path hardening）** —— socket 路径不再可能超过 `sun_path`
+  上限：默认自动选择足够短的私有目录（优先个人数据目录下的 `memory/m0-writer-runtime`，路径过长
+  时回退到 `$XDG_RUNTIME_DIR` 或临时目录下的 `nyairo-m0-writer-<uid>`），设置
+  `NYAIRO_M0_WRITER_SOCKET_DIR` 时仍以它为准，且新逻辑不使用截断或随机临时名。旧版本里靠手工
+  指定短目录才能启动的做法不再需要。
+* **worker 生命周期清理（worker lifecycle cleanup）** —— `Instance.close()` 之后不再残留 bridge
+  侧 worker、子进程或 socket，重复 close 安全；进程结束不再出现
+  `subprocess ... is still running` 或未关闭 socket 的 `ResourceWarning`。
+* **对外命名 NyAiro + Chiyo 兼容（NyAiro public naming + Chiyo compatibility）** —— 命令改为
+  `/nyairo_memory`、`/nyairo_status`、`/nyairo_consider`、`/nyairo_note`；环境变量以 `NYAIRO_*`
+  为准并优先于旧拼写，`CHIYO_*` 继续可用（含 `NYAIRO_M0_WRITER_SOCKET_DIR` 与
+  `CHIYO_M0_WRITER_SOCKET_DIR`）。旧命令名、Hermes 插件 id、个人数据目录（`<HERMES_HOME>/chiyo`）
+  与已落盘字段一律保留，旧配置和旧教程无需迁移；`千代` 是使用者的角色名，不受影响。
+* **Windows / CRLF / 全新克隆兼容（Windows / CRLF / fresh-clone compatibility）** —— 仓库统一
+  `* text=auto eol=lf`，`core.autocrlf` 为 `true` 或 `false` 时克隆出的字节一致；清单校验、
+  sealed 组件与完整套件在两个方向的全新克隆上都能通过（测试残留不影响清单校验）。Windows 手动
+  克隆仍需 `git config --global core.longpaths true` 或使用短路径，见 [INSTALL.md](INSTALL.md)。
+
+### 兼容性与升级
+
+* 个人数据目录仍是 `<HERMES_HOME>/chiyo`，插件 id 仍是 `chiyo`，已落盘的 M0 字段与 sealed 组件
+  不变：**升级不需要重建数据**。
+* 旧版数据升级以只读原件为基准验证：M0 / M1 / M2 / M3 不丢不重、`requests` 不回放、
+  resolver READY、零模型调用、旧重试记录被迁移（改名为 `*.migrated`，不删除）。
+* 升级后再续接 10 轮对话、以及再次重启，都是幂等的。
+* 已发布的历史标签与安装包保持原字节、历史文件名和校验；主分支的文档或代码更新不会自动改写
+  旧包。
+
+### 已知限制（Known Limitations）
+
+完整清单见 [KNOWN_ISSUES.md](KNOWN_ISSUES.md)。第一版最需要先知道的几条：
+
+1. **原生 Windows 不支持降权 M0 写入器** —— 它依赖 POSIX uid/gid 语义，原生 Windows 上会回退到
+   不做降权的旧路径。Windows 用户请使用 WSL。
+2. **个人数据目录不要太深** —— socket 会自动回退到短目录，但路径极深时写入会 fail-closed 并排队
+   重试；报错会指出路径长度限制和需要设置的变量。
+3. **自主活动执行、主动联系、网页聊天尚未开放** —— 认知只做 Shadow 判断，不执行动作、不主动发消息。
+4. **世界与身体、个人文档与资源需要独立服务与授权** —— 通用安装不会自动完成这些装配。
+5. **M3 只有触发器发现是增量的** —— 评测上下文仍与历史长度相关，整体耗时仍受完整历史加载限制。
+6. **记忆以用户入站为直接证据** —— 生成完成钩子不算平台送达回执；多模态消息暂不形成文本长期记忆。
+7. **平台与系统覆盖不均** —— Telegram 有真实实例收发记录；原生 Windows、macOS、官方完整容器方案
+   和全模块一键配置没有完成同等范围的验收。
+8. **公开发行的外部动作另行记录** —— 标签、推送、Release 资产与长期自然使用不由本清单代表。

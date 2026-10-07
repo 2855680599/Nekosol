@@ -1,5 +1,27 @@
 # 验收与复测
 
+## 第一版封版复核（2026-10-07）
+
+本节记录**当前候选**的验收，与下方的历史 R17 / R16 数字无关；后者只代表当时的候选，不代表当前主分支。
+
+| 项目 | 结果 | 说明 |
+| --- | --- | --- |
+| 原生套装（`components/native/src/tests`） | 156 / 156 通过 | 含 M0 写入器、M3、命名与资源回归 |
+| 宿主边界套装（`tests/`） | 128 / 128 通过 | 含命令路由、配置安全、更新器、安装器、隐私 |
+| `scripts/test.py` | `pass=9 fail=0 skip=0` | closeout / native / memory / supply / world / life / host-boundaries / cognition-faults / Hermes |
+| 清单校验（`scripts/verify_manifest.py`） | `valid=true`，`changed_or_missing=[]`，`unexpected_files=[]` | 重算 `tree_sha256` 与文件条目一致 |
+| sealed 组件 | 4 / 4 一致，CRLF 全 0 | |
+| 真实旧状态升级 | 32 / 32 通过 | 只读原件 + 两个独立进程，不丢不重、不回放、零模型调用 |
+| 升级后续接 10 轮 | 20 / 20 通过 | M0 80→100、M3 39→49、watermark 80→100 |
+| 重启幂等 | 通过 | 二次打开与 10 轮后重启都无事可做 |
+| 全新克隆（`core.autocrlf` false / true） | 两个方向均通过 | 清单校验有效、sealed 4/4、完整套件 9/9；测试残留不影响清单校验 |
+| 对外命名门 | `UNEXPLAINED_PUBLIC_CHIYO_REFERENCES = 0` | 用户可见面 131 处命中全部归类 |
+| ResourceWarning 门 | 0 | 相关套装以 `-W error::ResourceWarning` 运行；写入器生命周期无残留 |
+| 许可证 | `LICENSE_CONFIRMED` | Apache-2.0，见 [NOTICE.md](NOTICE.md) |
+
+公开候选的**外部动作**（打标签、推送、发布 Release 资产、签名）与长期自然使用不由本表代表。
+P0–P3-D 的施工记录与逐项证据留在私有验收目录，不随源码包发布。
+
 下列 R17 / R16 数字是相应历史候选的验收记录，不是当前 main 分支、每次文档更新或 GitHub Actions 的最新结果。当前版本与发行标签有差异时，分别核对提交、清单和实际运行结果。
 
 最新 R17（2026-10-04）：3,718 文件，**45,071 通过、0 失败、440 条件跳过**，1414.6 秒，8 并发、900 秒文件上限、关闭自动重试。下列早期过程只保留为历史说明，其中 R16 独立结果不可核验。
