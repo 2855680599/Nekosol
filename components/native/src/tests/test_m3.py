@@ -575,3 +575,284 @@ class M3WatermarkCoverageTests(unittest.TestCase):
                     "SELECT value FROM runtime_meta WHERE key='initial_user_event_id'"
                 ).fetchone()[0]
             self.assertEqual(anchor, "e1")
+
+
+# --------------------------------------------------------------------------- #
+# M3-A2.5 equivalence harness
+# --------------------------------------------------------------------------- #
+def _add_event_full(m0: Path, event_id: str, occurred_at: str, created_at: str,
+                    origin: str, content: str, conversation: str = "c",
+                    turn: str = "t1", delivery: str | None = None) -> None:
+    """Insert one M0 row with explicit ordering keys (for tie-breaker fixtures)."""
+    if origin == "USER_VISIBLE_INPUT":
+        default_delivery, role, speaker = "RECEIVED", "OBSERVED_EXTERNAL_EXPRESSION", "user"
+    else:
+        default_delivery, role, speaker = "DELIVERED", "SELF_EXPRESSION", "chiyo"
+    with closing(sqlite3.connect(m0)) as connection, connection:
+        connection.execute(
+            "INSERT INTO evidence_events VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (event_id, occurred_at, "chiyo", origin, delivery or default_delivery, role,
+             speaker, content, conversation, turn, event_id,
+             json.dumps([{"kind": "test", "id": event_id}]), created_at),
+        )
+
+
+def _old_discovery(reader, worker, anchor: str) -> dict[str, int]:
+    """Faithful copy of 58c159a's discovery loop.
+
+    It reimplements ONLY the scan/filter skeleton; build_trigger and _evaluate are
+    the real production methods, so the comparator cannot introduce a second set
+    of business rules.
+    """
+    all_events = reader.events()
+    ids = [str(item["event_id"]) for item in all_events]
+    if anchor not in ids:
+        raise RuntimeError("m3 initial cursor event not found")
+    cursor = ids.index(anchor)
+    counts = {"evaluated": 0, "duplicate": 0, "skipped_non_user": 0, "failed_closed": 0}
+    for event in all_events[cursor + 1:]:
+        if (event.get("source_origin") != "USER_VISIBLE_INPUT"
+                or event.get("delivery_status") != "RECEIVED"):
+            counts["skipped_non_user"] += 1
+            continue
+        try:
+            trigger = reader.build_trigger(event, all_events)
+            result = worker._evaluate(trigger, all_events)
+            counts["duplicate" if result == "duplicate" else "evaluated"] += 1
+        except Exception:
+            counts["failed_closed"] += 1
+    return counts
+
+
+def _snapshot(store_path: Path) -> dict[str, list]:
+    """Everything order-sensitive that must match between the two arms."""
+    with closing(sqlite3.connect(store_path)) as connection:
+        return {
+            "evaluations": connection.execute(
+                "SELECT trigger_evidence_id, trigger_sequence, trigger_occurred_at, "
+                "conversation_id, visible_history_digest, status FROM evaluations "
+                "ORDER BY trigger_sequence, trigger_evidence_id").fetchall(),
+            "candidates": connection.execute(
+                "SELECT candidate_id, source_max_sequence FROM candidates "
+                "ORDER BY candidate_id, source_max_sequence").fetchall(),
+            "eligibility": connection.execute(
+                "SELECT candidate_ref, eligible FROM eligibility_decisions "
+                "ORDER BY candidate_ref, eligible").fetchall(),
+            "processed": connection.execute(
+                "SELECT trigger_evidence_id FROM processed_triggers "
+                "ORDER BY trigger_evidence_id").fetchall(),
+        }
+
+
+def _run_arm(builder, *, new_arm: bool, extra=None):
+    with tempfile.TemporaryDirectory() as directory:
+        tmp_path = Path(directory)
+        reader, m0, anchor = builder(tmp_path)
+        store_path = tmp_path / "recall.sqlite"
+        store = M3Store(store_path)
+        store.ensure_cursor(anchor)
+        worker = M3Worker(reader, store)
+        counts = worker.process_once(anchor) if new_arm else _old_discovery(reader, worker, anchor)
+        if extra is not None:
+            extra(m0)
+            counts = worker.process_once(anchor) if new_arm else _old_discovery(reader, worker, anchor)
+        return _snapshot(store_path), counts
+
+
+def _fixture_plain(tmp_path: Path):
+    reader, _, m0 = _fixture(tmp_path)
+    return reader, m0, "e1"
+
+
+def _fixture_two_conversations(tmp_path: Path):
+    reader, _, m0 = _fixture(tmp_path)
+    _add_event_full(m0, "c2a", _stamp(2), _stamp(2), "USER_VISIBLE_INPUT", "另一个会话的事实", "c2", "t2")
+    _add_event_full(m0, "c2b", _stamp(3), _stamp(3), "CHIYO_VISIBLE_OUTPUT", "另一个会话的回复", "c2", "t3")
+    _add_event_full(m0, "c2c", _stamp(4), _stamp(4), "USER_VISIBLE_INPUT", "另一个会话的追问", "c2", "t4")
+    return reader, m0, "e1"
+
+
+def _fixture_multi_turn(tmp_path: Path):
+    reader, _, m0 = _fixture(tmp_path)
+    for index in range(4, 10):
+        _add_event(m0, f"m{index}", min(index, 9), "USER_VISIBLE_INPUT", f"第 {index} 轮用户输入")
+        _add_event(m0, f"r{index}", min(index, 9), "CHIYO_VISIBLE_OUTPUT", f"第 {index} 轮回复")
+    return reader, m0, "e1"
+
+
+def _fixture_same_occurred(tmp_path: Path):
+    """D: identical occurred_at, different created_at."""
+    reader, _, m0 = _fixture(tmp_path)
+    _add_event_full(m0, "d1", _stamp(5), _stamp(5), "USER_VISIBLE_INPUT", "同时刻较早写入")
+    _add_event_full(m0, "d2", _stamp(5), _stamp(6), "USER_VISIBLE_INPUT", "同时刻较晚写入")
+    return reader, m0, "e1"
+
+
+def _fixture_same_occurred_and_created(tmp_path: Path):
+    """E: identical occurred_at AND created_at; only event_id breaks the tie."""
+    reader, _, m0 = _fixture(tmp_path)
+    _add_event_full(m0, "e-zz", _stamp(6), _stamp(6), "USER_VISIBLE_INPUT", "同键 zz")
+    _add_event_full(m0, "e-aa", _stamp(6), _stamp(6), "USER_VISIBLE_INPUT", "同键 aa")
+    return reader, m0, "e1"
+
+
+def _fixture_mixed_origin(tmp_path: Path):
+    reader, _, m0 = _fixture(tmp_path)
+    _add_event(m0, "mix1", 4, "CHIYO_VISIBLE_OUTPUT", "助手输出一")
+    _add_event(m0, "mix2", 5, "USER_VISIBLE_INPUT", "用户输入二")
+    _add_event(m0, "mix3", 6, "CHIYO_VISIBLE_OUTPUT", "助手输出三")
+    _add_event(m0, "mix4", 7, "USER_VISIBLE_INPUT", "用户输入四")
+    return reader, m0, "e1"
+
+
+def _fixture_mixed_delivery(tmp_path: Path):
+    reader, _, m0 = _fixture(tmp_path)
+    _add_event_with_delivery(m0, "nd1", 4, "SENT", "用户输入未送达")
+    _add_event(m0, "ok1", 5, "USER_VISIBLE_INPUT", "用户输入已送达")
+    _add_event_with_delivery(m0, "nd2", 6, "FAILED", "用户输入发送失败")
+    return reader, m0, "e1"
+
+
+class M3EquivalenceTests(unittest.TestCase):
+    """Old discovery vs new watermark discovery, compared value by value."""
+
+    def _equivalent(self, builder, extra=None):
+        old_snapshot, _ = _run_arm(builder, new_arm=False, extra=extra)
+        new_snapshot, _ = _run_arm(builder, new_arm=True, extra=extra)
+        self.assertEqual(old_snapshot["evaluations"], new_snapshot["evaluations"],
+                         "trigger ids / sequence / occurred_at / digest / status differ")
+        self.assertEqual(old_snapshot["candidates"], new_snapshot["candidates"])
+        self.assertEqual(old_snapshot["eligibility"], new_snapshot["eligibility"])
+        self.assertEqual(old_snapshot["processed"], new_snapshot["processed"])
+        return old_snapshot, new_snapshot
+
+    def test_A_plain_sequential(self) -> None:
+        self._equivalent(_fixture_plain)
+
+    def test_B_two_conversations(self) -> None:
+        self._equivalent(_fixture_two_conversations)
+
+    def test_C_multi_turn(self) -> None:
+        self._equivalent(_fixture_multi_turn)
+
+    def test_D_same_occurred_at_different_created_at(self) -> None:
+        self._equivalent(_fixture_same_occurred)
+
+    def test_E_same_occurred_and_created_id_tiebreak(self) -> None:
+        self._equivalent(_fixture_same_occurred_and_created)
+
+    def test_F_user_assistant_mix(self) -> None:
+        self._equivalent(_fixture_mixed_origin)
+
+    def test_G_received_and_non_received_mix(self) -> None:
+        self._equivalent(_fixture_mixed_delivery)
+
+    def test_hard_flags(self) -> None:
+        """The three named assertions, over every fixture."""
+        for builder in (_fixture_plain, _fixture_two_conversations, _fixture_multi_turn,
+                        _fixture_same_occurred, _fixture_same_occurred_and_created,
+                        _fixture_mixed_origin, _fixture_mixed_delivery):
+            old_snapshot, new_snapshot = self._equivalent(builder)
+            self.assertEqual([row[1] for row in old_snapshot["evaluations"]],
+                             [row[1] for row in new_snapshot["evaluations"]],
+                             "TRIGGER_SEQUENCE_EQUIVALENT")
+            self.assertEqual([row[4] for row in old_snapshot["evaluations"]],
+                             [row[4] for row in new_snapshot["evaluations"]],
+                             "VISIBLE_DIGEST_EQUIVALENT")
+            self.assertEqual([row[1] for row in old_snapshot["candidates"]],
+                             [row[1] for row in new_snapshot["candidates"]],
+                             "SOURCE_MAX_SEQUENCE_EQUIVALENT")
+
+    def test_H_large_history_then_increment(self) -> None:
+        """1000+ events, ~990 consumed, then 10 new: same final business result."""
+        def builder(tmp_path: Path):
+            m0, m1, m2, epoch = _create_source_dbs(tmp_path)
+            for index in range(1, 991):
+                if index % 50 == 0:                       # sparse real triggers
+                    _add_event_full(m0, f"u{index}", _stamp(index % 10),
+                                    _stamp(index % 10), "USER_VISIBLE_INPUT",
+                                    f"用户事实 {index}")
+                else:
+                    _add_event_full(m0, f"a{index}", _stamp(index % 10),
+                                    _stamp(index % 10), "CHIYO_VISIBLE_OUTPUT",
+                                    f"助手输出 {index}")
+            _add_episode(m1, "ep-old", ["a1", "a2"])
+            reader = SourceReader(m0, m1, m2, epoch)
+            return reader, m0, "a1"
+
+        def add_ten(m0: Path):
+            for index in range(1001, 1011):
+                _add_event_full(m0, f"n{index}", _stamp(index % 10), _stamp(index % 10),
+                                "USER_VISIBLE_INPUT", f"新增用户事实 {index}")
+
+        old_snapshot, _ = _run_arm(builder, new_arm=False, extra=add_ten)
+        new_snapshot, _ = _run_arm(builder, new_arm=True, extra=add_ten)
+        self.assertEqual(old_snapshot["evaluations"], new_snapshot["evaluations"])
+        self.assertEqual(old_snapshot["candidates"], new_snapshot["candidates"])
+        self.assertEqual(old_snapshot["processed"], new_snapshot["processed"])
+        self.assertGreater(len(new_snapshot["processed"]), 0)
+
+        # discovery must return exactly the new rows on a large history
+        with tempfile.TemporaryDirectory() as directory:
+            tmp_path = Path(directory)
+            reader, m0, anchor = builder(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor(anchor)
+            M3Worker(reader, store).process_once(anchor)
+            watermark = store.consumed_rowid()
+            self.assertGreater(watermark, 900)                      # 990 already consumed
+            self.assertEqual(reader.trigger_candidates_since(watermark, 200), [])
+            add_ten(m0)
+            fresh = reader.trigger_candidates_since(watermark, 200)
+            self.assertEqual(len(fresh), 10)                        # only the new rows
+            self.assertTrue(all(rowid > watermark for rowid, _ in fresh))
+
+    def test_discovery_spy_returns_only_new_rows(self) -> None:
+        """Discovery reads only rows beyond the watermark; [] when nothing is new."""
+        with tempfile.TemporaryDirectory() as directory:
+            tmp_path = Path(directory)
+            reader, m0, anchor = _fixture_plain(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor(anchor)
+            worker = M3Worker(reader, store)
+            worker.process_once(anchor)
+            watermark = store.consumed_rowid()
+            self.assertEqual(reader.trigger_candidates_since(watermark, 200), [])
+            for index in (8, 9):
+                _add_event(m0, f"s{index}", index, "USER_VISIBLE_INPUT", f"新增 {index}")
+            fresh = reader.trigger_candidates_since(watermark, 200)
+            self.assertEqual(len(fresh), 2)
+            self.assertEqual([event["event_id"] for _, event in fresh], ["s8", "s9"])
+            self.assertTrue(all(rowid > watermark for rowid, _ in fresh))
+
+
+class M3LateEventEquivalenceTest(unittest.TestCase):
+    """The one expected discovery difference, reported on its own."""
+
+    def test_old_vs_new_discovery_of_a_late_event(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            tmp_path = Path(directory)
+            reader, _, m0 = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e3")
+            worker = M3Worker(reader, store)
+            # consume everything up to the anchor first
+            worker.process_once("e3")
+            base = store.consumed_rowid()
+            _add_event(m0, "late", 1, "USER_VISIBLE_INPUT", "迟到但更早发生")
+
+            all_events = reader.events()
+            ids = [str(item["event_id"]) for item in all_events]
+            old_sees = "late" in ids[ids.index("e3") + 1:]
+            new_batch = reader.trigger_candidates_since(base, 200)
+            new_sees = [event["event_id"] for _, event in new_batch] == ["late"]
+            self.assertFalse(old_sees)      # OLD: the tail scan cannot reach it
+            self.assertTrue(new_sees)       # NEW: discovered
+
+            # neither arm evaluates it: its global sequence precedes the anchor
+            old_counts = _old_discovery(reader, worker, "e3")
+            new_counts = worker.process_once("e3")
+            self.assertEqual(old_counts["evaluated"], 0)
+            self.assertEqual(new_counts["evaluated"], 0)
+            self.assertEqual(new_counts["skipped_before_anchor"], 1)
+            self.assertEqual(old_counts["evaluated"], new_counts["evaluated"])
