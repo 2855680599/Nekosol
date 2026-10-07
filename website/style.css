@@ -83,19 +83,13 @@ body {
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
-  background-image: 
-    radial-gradient(ellipse 70% 520px at 50% 0%, rgba(99, 145, 255, 0.13), transparent 75%),
-    radial-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 100% 100%, 28px 28px;
-  background-repeat: no-repeat, repeat;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 [data-theme="light"] body {
-  background-image: 
-    radial-gradient(ellipse 70% 520px at 50% 0%, rgba(40, 110, 240, 0.08), transparent 75%),
-    radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.035) 1px, transparent 1px);
 }
-
 
 /* ==========================================================================
    顶栏导航 (Navbar)
@@ -1459,40 +1453,68 @@ a:focus-visible, button:focus-visible {
    首页丰富组件: 日常场景展示、三步上手、常见问题
    ========================================================================== */
 
-/* 1. 日常场景紧凑精致卡片 */
+/* ==========================================================================
+   纯 Agent 交互控制台面板 (Pure Agent Glass Showcase)
+   纯净石墨灰阶 · 通透毛玻璃 · 严谨终端质感 · 零彩色渐变
+   ========================================================================== */
 .daily-showcase {
-  max-width: 820px;
-  margin: 32px auto 44px;
-  background: var(--c-bg-card);
-  border: 1px solid rgba(130, 175, 255, 0.2);
-  border-radius: 16px;
+  max-width: 860px;
+  margin: 30px auto 46px;
+  background: rgba(18, 18, 22, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5), 0 0 30px -8px rgba(99, 145, 255, 0.12);
+  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.7);
   backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+[data-theme="light"] .daily-showcase {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.08);
 }
 
 .showcase-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 18px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--c-border);
-  background: var(--c-bg-subtle);
+  background: rgba(255, 255, 255, 0.02);
   font-family: var(--font-mono);
-  font-size: 0.74rem;
-  color: var(--c-text-3);
+  font-size: 0.75rem;
 }
 
+.showcase-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.showcase-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="light"] .showcase-dot {
+  background: rgba(0, 0, 0, 0.14);
+}
 
 .showcase-tabs {
   display: flex;
-  gap: 6px;
-  background: rgba(0, 0, 0, 0.22);
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.35);
   padding: 3px;
   border-radius: 8px;
   border: 1px solid var(--c-border);
   overflow-x: auto;
-  max-width: 70%;
+}
+
+[data-theme="light"] .showcase-tabs {
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .showcase-tab {
@@ -1500,9 +1522,9 @@ a:focus-visible, button:focus-visible {
   border: 1px solid transparent;
   border-radius: 6px;
   color: var(--c-text-3);
-  font-size: 0.74rem;
+  font-size: 0.76rem;
   font-weight: 500;
-  padding: 4px 10px;
+  padding: 4px 11px;
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: var(--font-sans);
@@ -1511,68 +1533,58 @@ a:focus-visible, button:focus-visible {
 
 .showcase-tab:hover {
   color: var(--c-text-1);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .showcase-tab.active {
-  color: #79b8ff;
-  background: rgba(90, 140, 255, 0.14);
-  border-color: rgba(100, 150, 255, 0.3);
+  color: #f4f4f5;
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.18);
   font-weight: 600;
-  box-shadow: 0 0 12px -2px rgba(90, 140, 255, 0.16);
-}
-
-[data-theme="light"] .showcase-tabs {
-  background: rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="light"] .showcase-tab.active {
-  color: #1e5eb3;
-  background: rgba(30, 94, 179, 0.08);
-  border-color: rgba(30, 94, 179, 0.2);
+  color: #18181b;
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.12);
 }
 
-.showcase-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.showcase-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.18);
-}
-
-[data-theme="light"] .showcase-dot {
-  background: rgba(0, 0, 0, 0.15);
+.showcase-version {
+  color: var(--c-text-3);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
 }
 
 .showcase-body {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 270px 1fr;
+  min-height: 250px;
 }
 
 .showcase-status {
-  padding: 20px 18px;
+  padding: 22px 18px;
   border-right: 1px solid var(--c-border);
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .showcase-status {
+  background: rgba(0, 0, 0, 0.015);
 }
 
 .status-group-title {
   font-size: 0.7rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--c-text-3);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .status-item {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  margin-bottom: 14px;
+  margin-bottom: 13px;
 }
 
 .status-label {
@@ -1581,7 +1593,7 @@ a:focus-visible, button:focus-visible {
 }
 
 .status-value {
-  font-size: 0.84rem;
+  font-size: 0.83rem;
   color: var(--c-text-1);
   font-weight: 500;
 }
@@ -1591,54 +1603,69 @@ a:focus-visible, button:focus-visible {
   align-items: center;
   gap: 6px;
   font-size: 0.76rem;
-  color: var(--c-success);
+  color: var(--c-text-2);
 }
 
 .status-badge-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--c-success);
-  box-shadow: 0 0 8px var(--c-success);
+  background: #22c55e;
+  box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
 }
 
 .showcase-chat {
-  padding: 20px 22px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 13px;
   justify-content: center;
 }
 
 .chat-bubble {
-  max-width: 86%;
-  padding: 10px 15px;
-  border-radius: 12px;
-  font-size: 0.88rem;
-  line-height: 1.55;
+  max-width: 88%;
+  padding: 11px 16px;
+  border-radius: 10px;
+  font-size: 0.89rem;
+  line-height: 1.6;
 }
 
 .chat-bubble-user {
   align-self: flex-end;
-  background: var(--c-accent-soft);
-  border: 1px solid var(--c-border-hover);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--c-text-1);
+}
+
+[data-theme="light"] .chat-bubble-user {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .chat-bubble-ai {
   align-self: flex-start;
-  background: var(--c-bg-subtle);
+  background: rgba(255, 255, 255, 0.025);
   border: 1px solid var(--c-border);
   color: var(--c-text-1);
+}
+
+.chat-bubble-ai code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
 .chat-ai-note {
   font-size: 0.72rem;
   color: var(--c-text-3);
-  margin-top: 5px;
+  margin-top: 6px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  font-family: var(--font-mono);
 }
 
 @media (max-width: 768px) {
@@ -1648,5 +1675,8 @@ a:focus-visible, button:focus-visible {
   .showcase-status {
     border-right: none;
     border-bottom: 1px solid var(--c-border);
+  }
+  .showcase-tabs {
+    max-width: 100%;
   }
 }
