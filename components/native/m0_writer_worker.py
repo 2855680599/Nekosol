@@ -30,6 +30,18 @@ created in a runtime directory next to the store, mode ``0600``. Frames are a
 ``op`` and ``request_id``; responses carry ``request_id``, ``status`` and either
 ``result`` or ``error``. The append path never parses stdout.
 
+Socket location
+---------------
+``AF_UNIX`` addresses are limited by ``sun_path`` (108 bytes on Linux, including
+its NUL), so a deep enough store directory cannot hold a bindable socket: the
+worker child died in ``bind()`` and every append degraded into the retry spool.
+The rule is now "the same file name, in the first directory that fits": the
+readable directory next to the store while it fits, otherwise a short private
+per-uid directory (see ``socket_path_candidates``). The name never changes, so
+the parent and the worker always agree, and no path is ever truncated. An
+explicit ``CHIYO_M0_WRITER_SOCKET_DIR`` remains the operator's override and is
+the only candidate in that case.
+
 Operations are a closed set - ``ping``, ``append_events``, ``shutdown`` - and the
 event fields are a closed whitelist. There is no arbitrary SQL, no shell, no
 subprocess, no caller-supplied path and no arbitrary module call: the worker
@@ -60,6 +72,7 @@ import socket
 import struct
 import subprocess
 import sys
+import tempfile
 import threading
 import time
 from pathlib import Path
@@ -106,20 +119,110 @@ def available() -> bool:
     return os.environ.get(MODE_ENV, "persistent").strip().lower() != "off"
 
 
-def _socket_dir(m0_db: Path) -> Path:
+#: ``struct sockaddr_un.sun_path`` is 108 bytes on Linux and 104 on macOS/BSD, and
+#: the name has to be NUL-terminated inside that buffer: a path of 108 bytes is
+#: already un-bindable on Linux (measured: 107 binds, 108 fails with ENAMETOOLONG).
+#: One conservative limit is used so a socket that works here is not silently
+#: unusable on another POSIX host; vendor/hermes/gateway/control_socket.py makes
+#: the same choice for its own socket.
+SUN_PATH_SAFE_LIMIT = 100
+
+#: Short, private, per-uid socket directory, used when the store's own directory
+#: is too deep for sun_path.
+PRIVATE_SOCKET_DIR = "nyairo-m0-writer-%d"
+
+
+def _uid() -> int:
+    getter = getattr(os, "getuid", None)
+    return int(getter()) if callable(getter) else 0
+
+
+def _fits_sun_path(path: Path) -> bool:
+    """Whether ``path`` can be bound as an AF_UNIX address, with a safety margin."""
+    return len(os.fsencode(str(path))) <= SUN_PATH_SAFE_LIMIT
+
+
+def _ensure_private_dir(path: Path) -> Path:
+    """Create one socket directory, private to the writer, and return it."""
+    path.mkdir(parents=True, exist_ok=True)
+    os.chmod(path, 0o700)
+    return path
+
+
+def _native_socket_dir(m0_db: Path) -> Path:
+    """The preferred, readable directory: an explicit override, else the store's own."""
     override = os.environ.get(SOCKET_DIR_ENV)
-    base = Path(override) if override else (Path(m0_db).resolve().parent / "m0-writer-runtime")
-    base.mkdir(parents=True, exist_ok=True)
-    os.chmod(base, 0o700)
-    return base
+    if override:
+        return Path(override)
+    return Path(m0_db).resolve().parent / "m0-writer-runtime"
+
+
+def _fallback_socket_dirs() -> list[Path]:
+    """Short private directories for stores whose own directory does not fit.
+
+    ``XDG_RUNTIME_DIR`` first (the per-user runtime location with the right
+    permissions by construction), then the process temp directory, then ``/tmp``
+    as a last resort. None of them depends on the store's depth, so all of them
+    are short enough for sun_path in practice; the caller still checks.
+    """
+    name = PRIVATE_SOCKET_DIR % _uid()
+    directories: list[Path] = []
+    for root in (os.environ.get("XDG_RUNTIME_DIR"), tempfile.gettempdir(), "/tmp"):
+        if not root:
+            continue
+        candidate = Path(root) / name
+        if candidate not in directories:
+            directories.append(candidate)
+    return directories
+
+
+def socket_name_for(m0_db: Path, *, pid: int | None = None) -> str:
+    """The socket file name for one (store, writer uid, parent process).
+
+    SHA-256 of the resolved store path and the writer uid: deterministic, never
+    Python's randomised ``hash()``, and different stores cannot collide even when
+    they share one fallback directory. The name is the same in every candidate
+    directory, so only the location ever changes.
+    """
+    tag = hashlib.sha256(
+        ("%s|%s" % (Path(m0_db).resolve(), _uid())).encode("utf-8")
+    ).hexdigest()[:16]
+    return "m0-writer-%s-%d.sock" % (tag, os.getpid() if pid is None else pid)
+
+
+def socket_path_candidates(m0_db: Path, *, pid: int | None = None) -> list[Path]:
+    """Every path the socket may occupy, in priority order; no side effects.
+
+    An explicit ``CHIYO_M0_WRITER_SOCKET_DIR`` is authoritative and is therefore
+    the *only* candidate: a configuration that cannot bind then fails loudly
+    instead of being moved somewhere the operator did not ask for. Without an
+    override the readable directory next to the store wins whenever it fits, and
+    the short private directories follow.
+    """
+    name = socket_name_for(m0_db, pid=pid)
+    override = os.environ.get(SOCKET_DIR_ENV)
+    directories = [Path(override)] if override else (
+        [_native_socket_dir(Path(m0_db))] + _fallback_socket_dirs())
+    return [directory / name for directory in directories]
 
 
 def socket_path_for(m0_db: Path, *, pid: int | None = None) -> Path:
-    """Deterministic per-process socket path (no cross-process ambiguity)."""
-    tag = hashlib.sha256(
-        ("%s|%s" % (Path(m0_db).resolve(), os.getuid())).encode("utf-8")
-    ).hexdigest()[:16]
-    return _socket_dir(Path(m0_db)) / ("m0-writer-%s-%d.sock" % (tag, os.getpid() if pid is None else pid))
+    """The deterministic socket path for a store, creating its private directory.
+
+    Inside sun_path this is the readable runtime directory next to the store,
+    unchanged; beyond it, the same file name in a short private directory, so a
+    deep state keeps working with nothing configured.
+    """
+    candidates = socket_path_candidates(m0_db, pid=pid)
+    chosen = next((path for path in candidates if _fits_sun_path(path)), None)
+    if chosen is None:
+        raise WorkerError(
+            "no AF_UNIX socket path fits %d bytes for %s: %s"
+            % (SUN_PATH_SAFE_LIMIT, Path(m0_db).resolve(),
+               ", ".join(str(path) for path in candidates))
+            + ("; shorten %s" % SOCKET_DIR_ENV if os.environ.get(SOCKET_DIR_ENV) else ""))
+    _ensure_private_dir(chosen.parent)
+    return chosen
 
 
 # --------------------------------------------------------------------------- #

@@ -41,6 +41,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -370,6 +371,65 @@ class InstanceStartupRecoveryTest(unittest.TestCase):
             finally:
                 second.close()
         self.assertEqual(calls, [], "the provider was called while opening a state")
+
+    # ------------------------------------------------------------------ F ---- #
+    def test_deep_state_path_confirms_a_turn_without_queueing_evidence(self):
+        """NYA-AUDIT-013: a state too deep for sun_path must not degrade into the spool.
+
+        The pre-fix socket location was ``<state>/memory/m0-writer-runtime/
+        m0-writer-<tag>-<pid>.sock``; past sun_path the worker child died in
+        ``bind()``, the bridge queued the event for retry and ``confirm_visible``
+        raised ``M0WriterUnavailable``. Nothing here sets
+        ``CHIYO_M0_WRITER_SOCKET_DIR``: the default layout has to be safe.
+        """
+        import m0_writer_worker as mww
+        import m37_m0_bridge as bridge
+        self.addCleanup(bridge._SPOOLS.clear)
+        self.addCleanup(mww.close_all)
+
+        deep = self.tmp
+        for index in range(3):
+            deep = deep / ("deep-state-segment-%02d-" % index + "x" * 20)
+        self.state = deep / "state"
+        self.assertFalse(os.environ.get("CHIYO_M0_WRITER_SOCKET_DIR"),
+                         "this test is about the default layout")
+
+        db = self.state / "memory" / "evidence.sqlite"
+        native = mww.socket_path_candidates(db, pid=os.getpid())[0]
+        self.assertFalse(mww._fits_sun_path(native),
+                         "fixture is not deep enough to exercise the defect: %s" % native)
+        chosen = mww.socket_path_for(db)
+        self.assertTrue(mww._fits_sun_path(chosen))
+
+        replies: list = []
+
+        def fake_complete(messages):
+            replies.append(messages[-1]["content"])
+            return SimpleNamespace(content="deep path reply", usage={}, finish_reason="stop")
+
+        with patch("chiyo_bundle.host.HermesCompletionProvider.complete", side_effect=fake_complete):
+            inst = self._open()
+            try:
+                response = inst.chat("turn on a deep state", request_id="deep-turn-1")
+                self.assertEqual(response["reply"], "deep path reply")
+                # must not raise M0WriterUnavailable
+                inst.confirm_visible("deep-turn-1")
+                self.assertEqual(inst.requests.execute(
+                    "SELECT status FROM requests WHERE id='deep-turn-1'").fetchone()[0], "VISIBLE")
+                self.assertEqual(inst.health()["m0_writer"]["state"], "READY")
+                rows = m0_rows(inst.state / "memory" / "evidence.sqlite")
+                self.assertEqual(sorted(origin for origin, _ in rows),
+                                 ["CHIYO_VISIBLE_OUTPUT", "USER_VISIBLE_INPUT"])
+                # nothing was ever queued: the spool holds no record at all
+                self.assertEqual(spool_rows(self._spool_dir() / "spool.sqlite"), {})
+                self.assertEqual(inst.evidence_writer.spool.pending_count(), 0)
+                # and the socket really lives in the short fallback directory
+                self.assertFalse((inst.state / "memory" / "m0-writer-runtime").exists())
+                self.assertEqual(mww.socket_path_for(inst.state / "memory" / "evidence.sqlite"),
+                                 chosen)
+            finally:
+                inst.close()
+        self.assertEqual(len(replies), 1)
 
 
 if __name__ == "__main__":
