@@ -174,12 +174,22 @@ class M2Tests(unittest.TestCase):
     def test_m1_and_m0_readers_are_read_only(self):
         temp, root, m0, reader, m1, m1_reader, m2 = self.setup_fixture()
         try:
-            with self.assertRaises(sqlite3.OperationalError):
-                reader._connect().execute("CREATE TABLE forbidden_m0(x TEXT)")
+            # Both probe connections are closed on every path: the forbidden
+            # statement raises, so an unclosed handle here would only be found by
+            # the garbage collector -- as an "unclosed database" ResourceWarning
+            # attributed to whatever line happens to be running by then.
+            m0_connection = reader._connect()
+            try:
+                with self.assertRaises(sqlite3.OperationalError):
+                    m0_connection.execute("CREATE TABLE forbidden_m0(x TEXT)")
+            finally:
+                m0_connection.close()
             connection = m1_reader._connect()
-            with self.assertRaises(sqlite3.OperationalError):
-                connection.execute("CREATE TABLE forbidden_m1(x TEXT)")
-            connection.close()
+            try:
+                with self.assertRaises(sqlite3.OperationalError):
+                    connection.execute("CREATE TABLE forbidden_m1(x TEXT)")
+            finally:
+                connection.close()
         finally:
             temp.cleanup()
 

@@ -51,11 +51,21 @@ def digest(value: Any) -> str:
 
 
 def connect_ro(path: Path) -> sqlite3.Connection:
+    """Read-only connection.
+
+    The connection is closed again if its own setup fails, so no error path --
+    a fail-closed PRAGMA, a locked or removed source, an injected fault -- can
+    leave a handle behind for the garbage collector to warn about.
+    """
     encoded = quote(str(path), safe="/:")
     connection = sqlite3.connect("file:" + encoded + "?mode=ro", uri=True, timeout=5.0)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA query_only=ON")
-    connection.execute("PRAGMA busy_timeout=5000")
+    try:
+        connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA query_only=ON")
+        connection.execute("PRAGMA busy_timeout=5000")
+    except BaseException:
+        connection.close()
+        raise
     return connection
 
 
@@ -293,9 +303,18 @@ class M3Store:
             self.path.chmod(0o600)
 
     def _connect(self) -> sqlite3.Connection:
+        """Read-write connection to the derived shadow store.
+
+        Closed again when its own setup fails, exactly like ``connect_ro``: no
+        error path may leave a connection to the collector.
+        """
         connection = sqlite3.connect(self.path, timeout=5.0)
-        connection.row_factory = sqlite3.Row
-        connection.execute("PRAGMA busy_timeout=5000")
+        try:
+            connection.row_factory = sqlite3.Row
+            connection.execute("PRAGMA busy_timeout=5000")
+        except BaseException:
+            connection.close()
+            raise
         return connection
 
     def _initialize(self) -> None:
