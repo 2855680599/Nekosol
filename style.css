@@ -1508,14 +1508,25 @@ a:focus-visible, button:focus-visible {
 }
 
 .showcase-dot {
-  width: 9px;
-  height: 9px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
+  display: inline-block;
 }
 
-[data-theme="light"] .showcase-dot {
-  background: rgba(0, 0, 0, 0.14);
+.dot-red {
+  background: #ff5f56;
+  box-shadow: 0 0 6px rgba(255, 95, 86, 0.4);
+}
+
+.dot-yellow {
+  background: #ffbd2e;
+  box-shadow: 0 0 6px rgba(255, 189, 46, 0.4);
+}
+
+.dot-green {
+  background: #27c93f;
+  box-shadow: 0 0 6px rgba(39, 201, 63, 0.4);
 }
 
 .showcase-tabs {
@@ -1540,7 +1551,7 @@ a:focus-visible, button:focus-visible {
   color: var(--c-text-3);
   font-size: 0.78rem;
   font-weight: 500;
-  padding: 5px 12px;
+  padding: 5px 13px;
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: var(--font-sans);
@@ -1553,50 +1564,67 @@ a:focus-visible, button:focus-visible {
 }
 
 .showcase-tab.active {
-  color: #f4f4f5;
-  background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.16);
   font-weight: 600;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="light"] .showcase-tab.active {
-  color: #18181b;
+  color: #0f172a;
   background: #ffffff;
   border-color: rgba(0, 0, 0, 0.1);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-/* 低调安静的模型标记，不做刺眼的大胶囊 */
-.showcase-model-plain {
+/* 右侧低调平实的模型与版本标签 */
+.showcase-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 0.75rem;
   color: var(--c-text-3);
-  font-family: var(--font-sans);
-  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
-[data-theme="light"] .showcase-model-plain {
+.showcase-model-plain {
   color: var(--c-text-3);
 }
 
-/* 单栏通透卡片主体 */
-.showcase-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 290px;
-  animation: showcase-fade-in 0.18s ease-out forwards;
+.showcase-header-sep {
+  opacity: 0.4;
 }
 
-@keyframes showcase-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(2px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.showcase-version {
+  color: var(--c-text-3);
+  font-size: 0.72rem;
+}
+
+/* 核心无抖动视口容器：固定高度 + 硬件加速叠层淡入淡出 */
+.showcase-viewport {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.showcase-panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(6px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.showcase-panel.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 /* 顶部情境状态条 */
@@ -1604,10 +1632,10 @@ a:focus-visible, button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 9px 24px;
+  padding: 8px 22px;
   background: rgba(0, 0, 0, 0.18);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   color: var(--c-text-3);
   gap: 12px;
 }
@@ -1628,26 +1656,22 @@ a:focus-visible, button:focus-visible {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
-}
-
-[data-theme="light"] .context-dot {
-  background: #0284c7;
-  box-shadow: 0 0 6px rgba(2, 132, 199, 0.5);
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.6);
+  animation: live-pulse 2.2s ease-in-out infinite;
 }
 
 .context-meta {
   color: var(--c-text-3);
-  font-size: 0.72rem;
+  font-size: 0.71rem;
 }
 
-/* 优雅居中自然对话区 */
+/* 对话气泡流 */
 .showcase-chat {
-  padding: 24px 28px;
+  padding: 16px 24px;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 10px;
   flex: 1;
   justify-content: center;
   max-width: 760px;
@@ -1657,18 +1681,18 @@ a:focus-visible, button:focus-visible {
 
 .chat-bubble {
   max-width: 82%;
-  padding: 10px 16px;
+  padding: 9px 15px;
   border-radius: 12px;
-  font-size: 0.91rem;
-  line-height: 1.6;
+  font-size: 0.9rem;
+  line-height: 1.58;
   position: relative;
   word-break: break-word;
 }
 
 .chat-bubble-user {
   align-self: flex-end;
-  background: rgba(56, 189, 248, 0.11);
-  border: 1px solid rgba(56, 189, 248, 0.22);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.24);
   border-top-right-radius: 3px;
   color: var(--c-text-1);
 }
@@ -1691,24 +1715,53 @@ a:focus-visible, button:focus-visible {
   background: #ffffff;
   border-color: rgba(0, 0, 0, 0.08);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+  color: var(--c-text-1);
 }
 
-.chat-file-chip {
-  margin-top: 8px;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.32);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 6px;
+.chat-bubble-ai code {
   font-family: var(--font-mono);
-  font-size: 0.76rem;
-  color: #38bdf8;
-  line-height: 1.4;
+  font-size: 0.82em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
 }
 
-[data-theme="light"] .chat-file-chip {
-  background: #f1f5f9;
+/* 拟真输入栏 */
+.showcase-input-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.82rem;
+  color: var(--c-text-3);
+}
+
+[data-theme="light"] .showcase-input-bar {
+  background: rgba(0, 0, 0, 0.02);
+  border-top-color: rgba(0, 0, 0, 0.06);
+}
+
+.showcase-input-placeholder {
+  font-size: 0.8rem;
+  color: var(--c-text-3);
+  user-select: none;
+}
+
+.showcase-input-action {
+  font-size: 0.72rem;
+  color: var(--c-text-3);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+[data-theme="light"] .showcase-input-action {
+  background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
-  color: #0284c7;
 }
 
 @media (max-width: 640px) {
@@ -1716,20 +1769,23 @@ a:focus-visible, button:focus-visible {
     flex-direction: column;
     align-items: flex-start;
   }
+  .showcase-viewport {
+    height: 330px;
+  }
   .showcase-chat {
-    padding: 16px 14px;
+    padding: 14px 14px;
   }
   .chat-bubble {
     max-width: 92%;
   }
   .showcase-context-bar {
+    padding: 7px 14px;
+  }
+  .showcase-input-bar {
     padding: 8px 14px;
   }
 }
 
-/* ==========================================================================
-   未来演进路线图样式 (Roadmap Grid)
-   ========================================================================== */
 .roadmap-section {
   margin: 52px auto 0;
   max-width: 100%;

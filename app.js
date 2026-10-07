@@ -556,16 +556,9 @@ function initShowcaseTabs() {
         t.classList.toggle('active', isCurrent);
         t.setAttribute('aria-selected', String(isCurrent));
       });
-      const panels = document.querySelectorAll('.showcase-body');
+      const panels = document.querySelectorAll('.showcase-panel');
       panels.forEach(panel => {
-        if (panel.id === `showcase-panel-${targetKey}`) {
-          panel.style.display = 'flex';
-          panel.style.animation = 'none';
-          void panel.offsetWidth;
-          panel.style.animation = 'showcase-fade-in 0.18s ease-out forwards';
-        } else {
-          panel.style.display = 'none';
-        }
+        panel.classList.toggle('active', panel.id === `showcase-panel-${targetKey}`);
       });
     });
   });
