@@ -171,6 +171,7 @@ function resolveDocAndAnchor(hash) {
   if (hash.startsWith('release-')) return { docId: 'release', anchor: hash };
   if (hash.startsWith('contributing-')) return { docId: 'contributing', anchor: hash };
   if (hash.startsWith('status-matrix-')) return { docId: 'status-matrix', anchor: hash };
+  if (hash.startsWith('thanks-')) return { docId: 'acknowledgments', anchor: hash };
 
   return { docId: 'intro', anchor: null };
 }
