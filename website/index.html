@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v15">
+  <link rel="stylesheet" href="style.css?v=20261006-v16">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -294,75 +294,59 @@
       </div>
 
       <section class="capabilities-section" aria-labelledby="capabilities-title">
-        <div class="section-intro"><h2 id="capabilities-title">让 AI 真正拥有属于自己的生活与世界</h2><p>不再是一次性问答的冷冰冰工具。它拥有记忆、感知、身体与日常生活，真正陪你走过每一天。</p></div>
-        <div class="features-grid">
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-            <div class="card-tag">WORLD / BODY / LIFE</div>
-            <h3 class="card-title">世界、身体与生活</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#modules-section-1">
-                <span class="cmd-badge">/chiyo_status</span>
-                <h4>虚拟世界与身体</h4>
-                <p class="card-desc">它不是漂在空中的纯文字，而是在具体的虚拟场景里拥有具体位置和姿态，让每一次交流都身临其境。</p>
-                <p class="card-state">支持连接世界服务 · 观察姿态与身体信号</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#configuration-section-3">
-                <span class="cmd-badge">life_ledger</span>
-                <h4>独立生活 · 持续状态</h4>
-                <p class="card-desc">关掉窗口也不会丢失状态；它有自己的日常记录，重启电脑后生活继续，随时能告诉你它刚才在做什么。</p>
-                <p class="card-state">一键安装默认开启 · 跨会话与重启自动延续</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-5 2 4 4 0 0 0-1 7 4 4 0 0 0 6 6V4z"/><path d="M15 4a3 3 0 0 1 5 2 4 4 0 0 1 1 7 4 4 0 0 1-6 6V4z"/></svg></div>
-            <div class="card-tag">MEMORY / COGNITION</div>
-            <h3 class="card-title">记忆与认知</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#cli-reference">
-                <span class="cmd-badge">/chiyo_memory</span>
-                <h4>长期记忆</h4>
-                <p class="card-desc">昨天聊过的心事，隔几天再聊依然记得；说错了你随时能纠正它，不想留下的回忆也能让它立刻忘记。</p>
-                <p class="card-state">一键安装默认开启 · 随时查看、纠正或遗忘</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#modules-section-0">
-                <span class="cmd-badge">/chiyo_consider</span>
-                <h4>认知观察</h4>
-                <p class="card-desc">当你遇到纠结的事向它请教时，它会像贴心军师一样帮你推演利弊，把前因后果与建议清晰解释给你听。</p>
-                <p class="card-state">按需一键开启 · 认真分析并列出详细原因</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
-            <div class="card-tag">WORKSPACE / IDENTITY</div>
-            <h3 class="card-title">个人空间与身份</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#modules-section-2">
-                <span class="cmd-badge">/chiyo_note</span>
-                <h4>个人文档与资源</h4>
-                <p class="card-desc">拥有属于它和你的专属书房与工作台，可以存放你们共同的备忘笔记、资料和随手记事。</p>
-                <p class="card-state">个人私有空间 · 独立笔记保存与读取</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#privacy">
-                <span class="cmd-badge">SOUL.md</span>
-                <h4>身份与数据边界</h4>
-                <p class="card-desc">你所有的聊天记录、人设和记忆全都在你自己的电脑本地目录下，绝不偷偷上传，完全属于你自己。</p>
-                <p class="card-state">纯本地保存 · 严密保护你的私人回忆</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
+        <div class="section-intro">
+          <h2 id="capabilities-title">四大核心能力</h2>
+          <p>从单次问答工具，走向有生活、有记忆、能帮你写代码的真实数字个体。</p>
         </div>
-        <p class="capabilities-note">日常随时输入 <code>/chiyo_status</code> 就能查看各模块状态。想了解更多细节可以看<a href="#changelog">最新版本动态</a>与<a href="#intro">功能介绍</a>。</p>
+
+        <div class="features-grid">
+          <!-- 01 长期记忆 -->
+          <a href="#cli-reference" class="pillar-card">
+            <div class="pillar-top">
+              <span class="pillar-num font-mono">01</span>
+              <span class="cmd-badge">/chiyo_memory</span>
+            </div>
+            <h3 class="pillar-title">长期记忆</h3>
+            <p class="pillar-desc">跨越会话记住重要经历，随时能查、能纠正、能遗忘，彻底告别模型幻觉与遗忘。</p>
+            <span class="pillar-link">查看用法 →</span>
+          </a>
+
+          <!-- 02 持续生活 -->
+          <a href="#configuration" class="pillar-card">
+            <div class="pillar-top">
+              <span class="pillar-num font-mono">02</span>
+              <span class="cmd-badge">/chiyo_status</span>
+            </div>
+            <h3 class="pillar-title">持续生活</h3>
+            <p class="pillar-desc">拥有自己的日常状态流。关掉窗口或重启电脑后生活状态不丢，时刻待命陪伴。</p>
+            <span class="pillar-link">查看用法 →</span>
+          </a>
+
+          <!-- 03 虚拟世界 -->
+          <a href="#modules" class="pillar-card">
+            <div class="pillar-top">
+              <span class="pillar-num font-mono">03</span>
+              <span class="cmd-badge">World &amp; Body</span>
+            </div>
+            <h3 class="pillar-title">虚拟世界与身体</h3>
+            <p class="pillar-desc">在虚拟空间里拥有具体位置与姿态，感知光线与环境变化，让交流真正身临其境。</p>
+            <span class="pillar-link">查看用法 →</span>
+          </a>
+
+          <!-- 04 切换 Agent -->
+          <a href="#intro" class="pillar-card">
+            <div class="pillar-top">
+              <span class="pillar-num font-mono">04</span>
+              <span class="cmd-badge">/chiyo_consider</span>
+            </div>
+            <h3 class="pillar-title">切换 Agent 模式</h3>
+            <p class="pillar-desc">需要解决复杂技术任务时，脱离生活空间挂载工作区，自动生成脚本、写代码并推演。</p>
+            <span class="pillar-link">查看用法 →</span>
+          </a>
+        </div>
       </section>
-            <section class="start-strip" aria-labelledby="start-title">
+
+      <section class="start-strip" aria-labelledby="start-title">
         <div><h2 id="start-title">第一次使用，从一句你好开始</h2><p>一行命令装好 → 填入你的模型 Key → 收到第一句回复，就是这么简单。</p></div>
         <a href="#quickstart" class="btn-secondary">跟着教程安装 <span aria-hidden="true">→</span></a>
       </section>
@@ -434,7 +418,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v15"></script>
-  <script src="app.js?v=20261006-v15"></script>
+  <script src="docs-data.js?v=20261006-v16"></script>
+  <script src="app.js?v=20261006-v16"></script>
 </body>
 </html>
