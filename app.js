@@ -551,34 +551,37 @@ async function copyDocumentationText(code, btn) {
 function initShowcaseTabs() {
   const tabs = [...document.querySelectorAll('.showcase-tab')];
   if (!tabs.length) return;
-  const activate = (tab, focus = false) => {
-    const targetKey = tab.getAttribute('data-tab');
-    const controlsId = tab.getAttribute('aria-controls');
+
+  const activate = (targetKey, focus = false) => {
     tabs.forEach(t => {
-      const selected = t === tab;
-      t.classList.toggle('active', selected);
-      t.setAttribute('aria-selected', String(selected));
-      t.tabIndex = selected ? 0 : -1;
-      const panel = document.getElementById(`showcase-panel-${t.getAttribute('data-tab')}`) || 
-                    (t.getAttribute('aria-controls') ? document.getElementById(t.getAttribute('aria-controls')) : null);
+      const isCurrent = t.getAttribute('data-tab') === targetKey;
+      t.classList.toggle('active', isCurrent);
+      t.setAttribute('aria-selected', String(isCurrent));
+      t.tabIndex = isCurrent ? 0 : -1;
+      const key = t.getAttribute('data-tab');
+      const panel = document.getElementById(`showcase-panel-${key}`);
       if (panel) {
-        panel.hidden = !selected;
-        panel.classList.toggle('active', selected);
+        panel.removeAttribute('hidden');
+        panel.classList.toggle('active', isCurrent);
       }
+      if (focus && isCurrent) t.focus();
     });
-    if (focus) tab.focus();
   };
+
   tabs.forEach((tab, index) => {
-    tab.addEventListener('click', () => activate(tab));
-    tab.addEventListener('keydown', e => {
-      let target;
-      if (e.key === 'ArrowRight') target = (index + 1) % tabs.length;
-      if (e.key === 'ArrowLeft') target = (index - 1 + tabs.length) % tabs.length;
-      if (e.key === 'Home') target = 0;
-      if (e.key === 'End') target = tabs.length - 1;
-      if (target === undefined) return;
+    tab.addEventListener('click', (e) => {
       e.preventDefault();
-      activate(tabs[target], true);
+      activate(tab.getAttribute('data-tab'));
+    });
+    tab.addEventListener('keydown', e => {
+      let targetIdx;
+      if (e.key === 'ArrowRight') targetIdx = (index + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') targetIdx = (index - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') targetIdx = 0;
+      if (e.key === 'End') targetIdx = tabs.length - 1;
+      if (targetIdx === undefined) return;
+      e.preventDefault();
+      activate(tabs[targetIdx].getAttribute('data-tab'), true);
     });
   });
 }

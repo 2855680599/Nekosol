@@ -21,6 +21,9 @@
   --c-accent: #38bdf8;
   --c-accent-hover: #60a5fa;
   --c-accent-soft: rgba(56, 189, 248, 0.12);
+  --c-violet: #a78bfa;
+  --c-violet-hover: #c084fc;
+  --c-violet-soft: rgba(167, 139, 250, 0.12);
   --c-success: #34d399;
   --c-warning: #fbbf24;
 
@@ -55,6 +58,9 @@
   --c-accent: #0284c7;
   --c-accent-hover: #0369a1;
   --c-accent-soft: rgba(2, 132, 199, 0.08);
+  --c-violet: #7c3aed;
+  --c-violet-hover: #6d28d9;
+  --c-violet-soft: rgba(124, 58, 237, 0.08);
 
   --c-text-1: #0f172a;
   --c-text-2: #334155;
@@ -416,7 +422,7 @@ body {
   margin: 0 0.08em;
   font-weight: 800;
   white-space: nowrap;
-  background: linear-gradient(115deg, #ffffff 0%, #e0f2fe 22%, #38bdf8 48%, #60a5fa 74%, #ffffff 96%);
+  background: linear-gradient(115deg, #ffffff 0%, #bae6fd 20%, #38bdf8 44%, #a78bfa 72%, #ffffff 96%);
   background-size: 240% 100%;
   -webkit-background-clip: text;
   background-clip: text;
@@ -677,6 +683,39 @@ body {
   justify-content: center;
   transition: all 0.2s ease;
   flex-shrink: 0;
+}
+
+/* 融入极光紫罗兰调性，让卡片各具鲜活色彩 */
+.pillar-card:nth-child(1) .pillar-icon-box {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.32);
+  color: #a78bfa;
+}
+
+.pillar-card:nth-child(1):hover .pillar-icon-box {
+  background: rgba(167, 139, 250, 0.24);
+  border-color: rgba(167, 139, 250, 0.55);
+  color: #c4b5fd;
+}
+
+.pillar-card:nth-child(1) .pillar-num {
+  color: #a78bfa;
+}
+
+.pillar-card:nth-child(3) .pillar-icon-box {
+  background: rgba(167, 139, 250, 0.12);
+  border-color: rgba(167, 139, 250, 0.32);
+  color: #a78bfa;
+}
+
+.pillar-card:nth-child(3):hover .pillar-icon-box {
+  background: rgba(167, 139, 250, 0.24);
+  border-color: rgba(167, 139, 250, 0.55);
+  color: #c4b5fd;
+}
+
+.pillar-card:nth-child(3) .pillar-num {
+  color: #a78bfa;
 }
 
 [data-theme="light"] .pillar-icon-box {
@@ -1705,6 +1744,7 @@ a:focus-visible, button:focus-visible {
   position: relative;
   height: 310px;
   overflow: hidden;
+  contain: layout style paint;
 }
 
 .showcase-panel {
@@ -1714,13 +1754,16 @@ a:focus-visible, button:focus-visible {
   flex-direction: column;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.15s ease;
+  transform: scale(0.99) translateY(3px);
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.24s ease;
   pointer-events: none;
+  will-change: opacity, transform;
 }
 
 .showcase-panel.active {
   opacity: 1;
   visibility: visible;
+  transform: scale(1) translateY(0);
   pointer-events: auto;
 }
 
@@ -1977,19 +2020,33 @@ a:focus-visible, button:focus-visible {
 }
 
 .rm-tag {
-  font-size: 0.71rem;
+  font-size: 0.73rem;
   font-weight: 500;
-  padding: 2px 7px;
-  border-radius: 4px;
+  padding: 3px 9px;
+  border-radius: 6px;
   background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.2);
   color: #7dd3fc;
+  letter-spacing: 0.01em;
+  transition: all 0.15s ease;
+}
+
+.rm-tag:nth-child(2) {
+  background: rgba(167, 139, 250, 0.1);
+  border-color: rgba(167, 139, 250, 0.24);
+  color: #c4b5fd;
 }
 
 [data-theme="light"] .rm-tag {
   background: rgba(2, 132, 199, 0.06);
-  border-color: rgba(2, 132, 199, 0.16);
+  border-color: rgba(2, 132, 199, 0.18);
   color: #0369a1;
+}
+
+[data-theme="light"] .rm-tag:nth-child(2) {
+  background: rgba(124, 58, 237, 0.06);
+  border-color: rgba(124, 58, 237, 0.18);
+  color: #7c3aed;
 }
 
 .roadmap-footer {
