@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v9">
+  <link rel="stylesheet" href="style.css?v=20261006-v10">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -156,8 +156,8 @@
 
       </div>
 
-                        <!-- 纯 Agent 模式交互展示面板 (无角色扮演 · 严谨自主智能体) -->
-      <div class="daily-showcase" id="daily-showcase" aria-label="自主智能体状态与交互展示">
+                              <!-- 核心多维形态展示面板 (虚拟世界生活 + 长期记忆 + 严肃代码 Agent) -->
+      <div class="daily-showcase" id="daily-showcase" aria-label="数字个体双重形态展示">
         <div class="showcase-header">
           <div class="showcase-dots">
             <span class="showcase-dot"></span>
@@ -165,129 +165,129 @@
             <span class="showcase-dot"></span>
           </div>
           <div class="showcase-tabs" role="tablist">
-            <button class="showcase-tab active" data-tab="cognition" role="tab" aria-selected="true">认知推演 · 决策账本</button>
-            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长期记忆 · 事实对齐</button>
-            <button class="showcase-tab" data-tab="continuity" role="tab" aria-selected="false">状态延续 · 进程恢复</button>
+            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常生活 · 虚拟世界</button>
+            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久陪伴 · 记忆与纠偏</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 写代码与推演</button>
           </div>
-          <span class="showcase-version font-mono">AUTONOMOUS RUNTIME</span>
+          <span class="showcase-version font-mono">v0.1.0-rc6</span>
         </div>
 
-        <!-- 场景 1: 认知推演 · 决策账本 -->
-        <div class="showcase-body" id="showcase-panel-cognition">
+        <!-- 场景 1: 日常生活 · 虚拟世界 -->
+        <div class="showcase-body" id="showcase-panel-presence">
           <div class="showcase-status">
-            <div class="status-group-title">Agent 运行时状态</div>
+            <div class="status-group-title">虚拟世界与身体感知</div>
             <div class="status-item">
-              <span class="status-label">执行空间 (Environment)</span>
-              <span class="status-value font-mono">Workspace: Sandbox / Worktree-01</span>
+              <span class="status-label">所处空间 (World)</span>
+              <span class="status-value">居所起居室 · 阳台露台</span>
             </div>
             <div class="status-item">
-              <span class="status-label">认知通道 (Cognitive Shadow)</span>
-              <span class="status-value">Active · 架构推演与风险评估</span>
+              <span class="status-label">身体信号 (Interoception)</span>
+              <span class="status-value">站姿 · 外部微风 (感知微凉)</span>
             </div>
             <div class="status-item">
-              <span class="status-label">生命周期 (Life Ledger)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>已完成分析 · 凭据登记入账本</span>
+              <span class="status-label">生活状态 (Life Ledger)</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>自然运行中 · 刚刚照料完花草</span>
             </div>
             <div class="status-item">
-              <span class="status-label">关联事实 (Fact Binding)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#ctx: 网关热迁移 / 零停机切流方案</span>
+              <span class="status-label">心意留存 (Implicit Recall)</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#state: 记得哥哥最近工作辛苦，习惯晚睡</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              /chiyo_consider 针对这次网关热切流方案，推演潜在风险与执行顺序。
+              今天终于忙完了，你在干嘛呢？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              已完成深度推演：主要风险在于旧写入者未完全停止时的并发脏写。建议采用三阶段方案：首先封锁旧入口并核验持久化账本哈希，随后进行只读回放，最后原子切流；完整分析已沉淀至本地 Workspace，使用 <code>/chiyo_note read 8042</code> 即可查阅。
+              欢迎回家！刚才在露台看夕阳呢，天色慢慢暗下来了，风有点凉。辛苦了一整天，快坐下歇会儿，想聊点什么或者听点好玩的？
               <div class="chat-ai-note">
-                <span>[ 触发 Shadow 认知观察 · 推演决策凭证已登记至执行账本 ]</span>
+                <span>[ 感知虚拟露台物理环境 · 结合生活审计与作息记忆回应 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              分析得很严密，就按这个方案执行。
+              哈哈好呀，刚才开会讲得口干舌燥的。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              明白。已将本次裁决结论作为事实边界锁定，后续相关执行动作将严格遵守该约束。
+              快喝口温水缓一缓。今天有什么开心的或者想吐槽的，我都在这儿听着呢。
             </div>
           </div>
         </div>
 
-        <!-- 场景 2: 长期记忆 · 事实对齐 -->
+        <!-- 场景 2: 长久陪伴 · 记忆与纠偏 -->
         <div class="showcase-body" id="showcase-panel-memory" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">Agent 运行时状态</div>
+            <div class="status-group-title">长期记忆与事实沉淀</div>
             <div class="status-item">
               <span class="status-label">存储引擎 (Storage Engine)</span>
               <span class="status-value font-mono">SQLite: ~/.nyairo/memory.db</span>
             </div>
             <div class="status-item">
-              <span class="status-label">事实沉淀 (Fact Retention)</span>
-              <span class="status-value">跨会话事实检索 · 严格隔离本地</span>
+              <span class="status-label">沉淀规模 (Fact Retention)</span>
+              <span class="status-value">跨越 28 轮历史会话 · 本地严密隔离</span>
             </div>
             <div class="status-item">
-              <span class="status-label">约束状态 (Alignment State)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>动态纠偏支持 · 随时抹除幻觉</span>
+              <span class="status-label">纠偏能力 (Correction Support)</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>随时校正事实 · 拒绝模型幻觉</span>
             </div>
             <div class="status-item">
-              <span class="status-label">记忆召回 (Retrieved Fact)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#recall: 模块命名规则 / 审计字段约定</span>
+              <span class="status-label">唤醒事实 (Retrieved Fact)</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#fact: 上周约定的旅行目的地与细节</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              上周我们敲定的那个事件审计表结构，你还记得吗？
+              还记得上周我说想去哪个海边看日落吗？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              记得。你在第 14 次会话中确定将审计表命名为 <code>audit_journal_v2</code>，包含事件哈希、操作者标识与时间戳三个必填字段。
+              当然记得呀！你在第 14 次会话里提到过想去青岛的海边看夕阳，还说特别想去栈桥吹风。
               <div class="chat-ai-note">
-                <span>[ 检索跨会话经历事实 · ID: #mem-3082 · 严格限定本地读取 ]</span>
+                <span>[ 检索真实跨会话经历事实 · ID: #mem-3082 · 纯本地私有读取 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              结构要微调一下，把操作者标识改成可选字段。
+              路线改了，这次打算先去威海看海草房。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              收到。已执行 <code>/chiyo_memory correct mem-3082</code> 更新事实定义：操作者标识变更为可选；之后的会话推演将严格以新标准为准，旧假设已作废。
+              收到！我这就执行 <code>/chiyo_memory correct mem-3082</code> 把目的地更新为威海海草房，以后的行程准备和攻略全以你的新想法为准，不会记混旧路线的！
             </div>
           </div>
         </div>
 
-        <!-- 场景 3: 状态延续 · 进程恢复 -->
-        <div class="showcase-body" id="showcase-panel-continuity" style="display: none;">
+        <!-- 场景 3: 切换 Agent · 写代码与推演 -->
+        <div class="showcase-body" id="showcase-panel-agent" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">Agent 运行时状态</div>
+            <div class="status-group-title">自主 Agent 执行态</div>
             <div class="status-item">
-              <span class="status-label">守护进程 (Daemon Mode)</span>
-              <span class="status-value font-mono">Systemd: nyairo-gateway.service</span>
+              <span class="status-label">执行空间 (Environment)</span>
+              <span class="status-value font-mono">脱离虚拟空间 · 挂载工作区</span>
             </div>
             <div class="status-item">
-              <span class="status-label">任务恢复 (Process Recovery)</span>
-              <span class="status-value">已读取检查点 · 保持状态连续</span>
+              <span class="status-label">智能体状态 (Agent Mode)</span>
+              <span class="status-value">Active · 代码生成与架构推演</span>
             </div>
             <div class="status-item">
-              <span class="status-label">生活账本 (Reality Ledger)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>断点已对齐 · 无孤儿进程残留</span>
+              <span class="status-label">生命周期 (Life Ledger)</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>已完成交付 · 脚本与决策入账本</span>
             </div>
             <div class="status-item">
-              <span class="status-label">执行上下文 (Context Cache)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#state: 待命接管 / 长任务清单归档</span>
+              <span class="status-label">产物路径 (Deliverables)</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">Workspace: /scripts/deploy_cutover.sh</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              刚才服务器重启了，之前的长任务进行到哪了？
+              /chiyo_consider 帮我把刚才那个网关热迁移的自动化脚本写一下，顺便推演一下切流风险。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              系统重启后已自动读取恢复点：重启前第 17 项全量模块检查已跑通，结果已写入审计日志；目前停留在待命阶段，未产生孤儿进程，随时可以继续下一阶段构建。
+              收到，立刻进入开发模式！已为你推演并发脏写风险，生成了安全三阶段迁移脚本并写入 Workspace；你可以直接使用 <code>/chiyo_note read 8042</code> 查看或运行 <code>bash scripts/deploy_cutover.sh</code> 部署。
               <div class="chat-ai-note">
-                <span>[ 检测进程重启事件 · 校验崩溃恢复检查点与执行日志 ]</span>
+                <span>[ 触发 Shadow 认知观察 · 生成自动化执行脚本并落盘至本地工作区 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              好的，先不用继续跑，帮我整理一份目前的依赖清单。
+              干得漂亮，代码写得很规范！
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              明白，已暂停待命调度，正在从本地 Workspace 读取前置检查依赖并生成清单。
+              嘿嘿，正事交给我你就放心吧！活儿干完了，我随时可以切回日常状态继续陪你哦~
             </div>
           </div>
         </div>
@@ -428,7 +428,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v9"></script>
-  <script src="app.js?v=20261006-v9"></script>
+  <script src="docs-data.js?v=20261006-v10"></script>
+  <script src="app.js?v=20261006-v10"></script>
 </body>
 </html>

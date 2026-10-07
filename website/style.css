@@ -1454,25 +1454,25 @@ a:focus-visible, button:focus-visible {
    ========================================================================== */
 
 /* ==========================================================================
-   纯 Agent 交互控制台面板 (Pure Agent Glass Showcase)
-   纯净石墨灰阶 · 通透毛玻璃 · 严谨终端质感 · 零彩色渐变
+   双重生命形态展示面板 (Dual-Nature Showcase Panel)
+   纯正石墨灰阶 · 极简通透毛玻璃 · 顶光内阴影 · 纯净和谐
    ========================================================================== */
 .daily-showcase {
   max-width: 860px;
-  margin: 30px auto 46px;
-  background: rgba(18, 18, 22, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin: 32px auto 48px;
+  background: rgba(22, 22, 26, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.7);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.08) inset, 0 24px 52px -12px rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 [data-theme="light"] .daily-showcase {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.8) inset, 0 16px 36px -10px rgba(0, 0, 0, 0.08);
 }
 
 .showcase-header {
@@ -1480,10 +1480,15 @@ a:focus-visible, button:focus-visible {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   background: rgba(255, 255, 255, 0.02);
   font-family: var(--font-mono);
   font-size: 0.75rem;
+}
+
+[data-theme="light"] .showcase-header {
+  border-bottom-color: rgba(0, 0, 0, 0.06);
+  background: rgba(0, 0, 0, 0.015);
 }
 
 .showcase-dots {
@@ -1506,15 +1511,16 @@ a:focus-visible, button:focus-visible {
 .showcase-tabs {
   display: flex;
   gap: 4px;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.28);
   padding: 3px;
   border-radius: 8px;
-  border: 1px solid var(--c-border);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   overflow-x: auto;
 }
 
 [data-theme="light"] .showcase-tabs {
   background: rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.06);
 }
 
 .showcase-tab {
@@ -1524,7 +1530,7 @@ a:focus-visible, button:focus-visible {
   color: var(--c-text-3);
   font-size: 0.76rem;
   font-weight: 500;
-  padding: 4px 11px;
+  padding: 5px 12px;
   cursor: pointer;
   transition: all 0.15s ease;
   font-family: var(--font-sans);
@@ -1539,35 +1545,38 @@ a:focus-visible, button:focus-visible {
 .showcase-tab.active {
   color: #f4f4f5;
   background: rgba(255, 255, 255, 0.09);
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.15);
   font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
 
 [data-theme="light"] .showcase-tab.active {
   color: #18181b;
   background: #ffffff;
-  border-color: rgba(0, 0, 0, 0.12);
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
 .showcase-version {
   color: var(--c-text-3);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   letter-spacing: 0.02em;
 }
 
 .showcase-body {
   display: grid;
-  grid-template-columns: 270px 1fr;
+  grid-template-columns: 275px 1fr;
   min-height: 250px;
 }
 
 .showcase-status {
   padding: 22px 18px;
-  border-right: 1px solid var(--c-border);
-  background: rgba(0, 0, 0, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(0, 0, 0, 0.12);
 }
 
 [data-theme="light"] .showcase-status {
+  border-right-color: rgba(0, 0, 0, 0.06);
   background: rgba(0, 0, 0, 0.015);
 }
 
@@ -1632,21 +1641,26 @@ a:focus-visible, button:focus-visible {
 
 .chat-bubble-user {
   align-self: flex-end;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--c-text-1);
 }
 
 [data-theme="light"] .chat-bubble-user {
   background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.09);
 }
 
 .chat-bubble-ai {
   align-self: flex-start;
   background: rgba(255, 255, 255, 0.025);
-  border: 1px solid var(--c-border);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   color: var(--c-text-1);
+}
+
+[data-theme="light"] .chat-bubble-ai {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .chat-bubble-ai code {
