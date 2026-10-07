@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
-  <meta name="description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。">
-  <meta name="keywords" content="nyairo, AI个体框架, 虚拟世界, 长期记忆, AI生活状态, AI伴侣, 开源AI, Agent, 自主智能体, CHIYO, 本地记忆, Gemini 3.8 flash">
+  <meta name="description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建有限世界、身体观察、持续生活状态与个人长期记忆。">
+  <meta name="keywords" content="nyairo, AI个体框架, 虚拟世界, 身体状态, 长期记忆, AI生活状态, 开源AI, 本地记忆">
   <meta name="author" content="nyairo contributors">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://nyairo.com/">
   <meta name="msvalidate.01" content="BA37E6CB8803A769BBD113FAD6A65095">
   <meta name="theme-color" content="#0b0d14">
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#e4ecf6">
 
   <!-- 图标与样式 -->
-  <link rel="stylesheet" href="style.css?v=20261007-v25">
+  <link rel="stylesheet" href="style.css?v=20261007-world-examples">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -24,7 +24,7 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="nyairo">
   <meta property="og:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
-  <meta property="og:description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态与双重形态。">
+  <meta property="og:description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态、身体观察与个人长期记忆。">
   <meta property="og:url" content="https://nyairo.com/">
   <meta property="og:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
   <meta property="og:image:width" content="1200">
@@ -35,7 +35,7 @@
   <!-- Twitter Card 社交卡片 -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
-  <meta name="twitter:description" content="给 AI 一个世界，让它拥有属于自己的日常。长期记忆、持续生活状态、虚拟空间与 Agent 协同。">
+  <meta name="twitter:description" content="给 AI 一个世界，让它拥有属于自己的日常。虚拟世界、身体状态、持续生活与个人长期记忆。">
   <meta name="twitter:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
 
   <!-- 结构化数据 (Schema.org JSON-LD，助力 Google / 百度 / Bing 富媒体收录) -->
@@ -58,7 +58,7 @@
         "url": "https://nyairo.com/",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Linux, Windows WSL2",
-        "description": "以虚拟世界为核心的开源 AI 个体框架。为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。",
+        "description": "以虚拟世界为核心的开源 AI 个体框架。为 AI 构建有限世界、身体观察、持续生活状态与个人长期记忆。",
         "license": "https://www.apache.org/licenses/LICENSE-2.0",
         "downloadUrl": "https://github.com/L1AN929/nyairo/releases",
         "offers": {
@@ -194,7 +194,6 @@
           </a>
         </div>
 
-        <p class="hero-install-note">在 Linux 或 Windows WSL 终端粘贴下面这行，几分钟全自动装好，填上你的模型 Key 就能开聊！<a href="#quickstart">查看新手指南</a></p>
         <!-- 安装命令复制栏 -->
         <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
           <span class="cmd-prefix">$</span>
@@ -213,160 +212,123 @@
 
       </div>
 
-                                          <!-- 核心多维形态展示面板 (真活人感 · 虚拟生活 / 真实记忆 / 帮哥写代码) -->
-      <div class="daily-showcase" id="daily-showcase" aria-label="数字个体日常形态展示">
-        <div class="showcase-header">
-          <div class="showcase-tabs" role="tablist">
-            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常陪伴</button>
-            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长期记忆</button>
-            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">写代码 / Agent</button>
-            <button class="showcase-tab" data-tab="notes" role="tab" aria-selected="false">随手笔记</button>
-          </div>
-          <div class="showcase-header-right font-mono">
-            模型：Gemini 3.8 flash
-          </div>
+      <!-- Illustrative scenarios grounded in the first-version contracts. -->
+      <section class="showcase-section" aria-labelledby="showcase-title">
+        <div class="section-intro showcase-intro">
+          <p class="section-kicker">NYAIRO · 新增体验</p>
+          <h2 id="showcase-title">对话之外，它还有自己的世界</h2>
+          <p>位置、姿态、生活状态与过往经历，让一句回答有了来处。</p>
         </div>
-
-        <div class="showcase-viewport">
-          <!-- 场景 1: 日常陪伴 -->
-          <div class="showcase-panel active" id="showcase-panel-presence">
-            <div class="showcase-context-bar">
-              <span class="context-tag">卧室靠窗 · 刚才在阳台看晚霞</span>
-              <span class="context-meta font-mono">/chiyo_status · IDLE</span>
+        <div class="daily-showcase" id="daily-showcase">
+          <div class="showcase-header">
+            <div class="showcase-tabs" role="tablist" aria-label="nyairo 新增能力示例">
+              <button class="showcase-tab active" id="showcase-tab-world" data-tab="world" role="tab" aria-selected="true" aria-controls="showcase-panel-world" tabindex="0">虚拟世界</button>
+              <button class="showcase-tab" id="showcase-tab-body" data-tab="body" role="tab" aria-selected="false" aria-controls="showcase-panel-body" tabindex="-1">身体状态</button>
+              <button class="showcase-tab" id="showcase-tab-life" data-tab="life" role="tab" aria-selected="false" aria-controls="showcase-panel-life" tabindex="-1">生活连续性</button>
+              <button class="showcase-tab" id="showcase-tab-memory" data-tab="memory" role="tab" aria-selected="false" aria-controls="showcase-panel-memory" tabindex="-1">记忆纠正</button>
             </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                下班了，今天开了一下午评审会，脑子嗡嗡的。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                吃晚饭了没？
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                还没呢，不知道吃啥。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                别想复杂的了，楼下随便吃点热的，吃完早点躺着。
-              </div>
-            </div>
+            <span class="showcase-header-right">功能示意 · 非实时对话</span>
           </div>
-
-          <!-- 场景 2: 长期记忆 -->
-          <div class="showcase-panel" id="showcase-panel-memory">
-            <div class="showcase-context-bar">
-              <span class="context-tag">本地私有 SQLite · ~/.nyairo/memory.db</span>
-              <span class="context-meta font-mono">/chiyo_memory · READY</span>
-            </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                今晚准备点冒菜，但这几天感冒了嗓子疼。
+          <div class="showcase-viewport">
+            <div class="showcase-panel active" id="showcase-panel-world" role="tabpanel" aria-labelledby="showcase-tab-world" tabindex="0">
+              <div class="showcase-scene">
+                <span class="scene-label font-mono">WORLD / LOCATION</span>
+                <div class="room-preview" aria-label="示例世界的位置：家里的卧室">
+                  <span class="room-caption">HOME</span>
+                  <div class="room-outline"><span class="location-pin" aria-hidden="true"></span><strong>卧室</strong><span class="room-coordinates font-mono">home / bedroom</span></div>
+                </div>
+                <p class="scene-caption">独立服务保存位置，对话读取当前观察。</p>
               </div>
-              <div class="chat-bubble chat-bubble-ai">
-                那记得把锅底改成清汤或者微辣。上次你咳嗽还吃特辣，咳了一整晚。
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                行，听你的。再帮我加个不放香菜的备注。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                记着呢，哪次买饭给你放过香菜。
+              <div class="showcase-conversation">
+                <div class="showcase-context-bar"><span class="context-tag">一个具体的地方</span><a href="#modules-section-1">了解世界 →</a></div>
+                <div class="showcase-chat">
+                  <div class="chat-bubble chat-bubble-user">你现在在哪里？周围有什么？</div>
+                  <div class="chat-bubble chat-bubble-ai">当前记录的位置是家里的卧室。世界服务还没有提供可见物件，我只能确认这个位置。</div>
+                </div>
+                <p class="showcase-panel-note">第一版读取有限世界的观察信息；尚未开放聊天指令移动或自主探索。</p>
               </div>
             </div>
-          </div>
-
-          <!-- 场景 3: 写代码 / Agent -->
-          <div class="showcase-panel" id="showcase-panel-agent">
-            <div class="showcase-context-bar">
-              <span class="context-tag">Agent 协同模式 · 挂载工作区目录</span>
-              <span class="context-meta font-mono">/chiyo_consider · RUNNING</span>
-            </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                帮我看下这个切流脚本，老是报锁冲突退出不了。
+            <div class="showcase-panel" id="showcase-panel-body" role="tabpanel" aria-labelledby="showcase-tab-body" tabindex="0" hidden>
+              <div class="showcase-scene">
+                <span class="scene-label font-mono">BODY / SNAPSHOT</span>
+                <div class="body-preview"><svg aria-hidden="true" width="58" height="106" viewBox="0 0 58 106" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="29" cy="14" r="9"/><path d="M29 26v41M29 34L10 52M29 34l19 18M29 67L16 94M29 67l13 27"/></svg><dl class="snapshot-fields"><div><dt>姿态</dt><dd>站立 <span class="font-mono">standing</span></dd></div><div><dt>双手</dt><dd>空闲 <span class="font-mono">free</span></dd></div></dl></div>
+                <p class="scene-caption">姿态与手部状态，来自同一份身体快照。</p>
               </div>
-              <div class="chat-bubble chat-bubble-ai">
-                我瞅一眼。是旧 worker 进程没把端口句柄释放掉，已经给你改好了，补丁写在 <code>scripts/cutover.sh</code>，你跑下试试。
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                搞定，端口顺利放掉了。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                成，那我把终端退了，你合完代码早点歇着。
+              <div class="showcase-conversation">
+                <div class="showcase-context-bar"><span class="context-tag">身体也有自己的状态</span><a href="#modules-section-1">了解身体 →</a></div>
+                <div class="showcase-chat">
+                  <div class="chat-bubble chat-bubble-user">你现在是站着还是坐着？手里有东西吗？</div>
+                  <div class="chat-bubble chat-bubble-ai">这份身体快照显示我正站着，双手空闲，没有持有物件。</div>
+                </div>
+                <p class="showcase-panel-note">可以读取姿态、持物情况及已提供的身体信号；服务不可用时不补写虚构状态。</p>
               </div>
             </div>
-          </div>
-
-          <!-- 场景 4: 随手笔记 -->
-          <div class="showcase-panel" id="showcase-panel-notes">
-            <div class="showcase-context-bar">
-              <span class="context-tag">专属便签小本 · 本地独立存储</span>
-              <span class="context-meta font-mono">/chiyo_note · SAVED</span>
+            <div class="showcase-panel" id="showcase-panel-life" role="tabpanel" aria-labelledby="showcase-tab-life" tabindex="0" hidden>
+              <div class="showcase-scene">
+                <span class="scene-label font-mono">LIFE / CONTINUITY</span>
+                <ol class="life-preview"><li><span>01</span><div><strong>收到你的消息</strong><small>记录真实入站事件</small></div></li><li><span>02</span><div><strong>保存生活状态</strong><small>事件与审计持续保留</small></div></li><li><span>03</span><div><strong>重启后恢复</strong><small>接续已保存的状态</small></div></li></ol>
+                <p class="scene-caption">独立保存生活状态，跨越单次聊天。</p>
+              </div>
+              <div class="showcase-conversation">
+                <div class="showcase-context-bar"><span class="context-tag">重启，不必重新开始</span><a href="#cli-section-0">查看实际状态 →</a></div>
+                <div class="showcase-chat">
+                  <div class="chat-bubble chat-bubble-user">重启程序以后，之前的生活状态还在吗？</div>
+                  <div class="chat-bubble chat-bubble-ai">Life 会恢复已经保存的状态和事件。没有正在执行的活动时，当前状态仍然可以是 IDLE。</div>
+                </div>
+                <p class="showcase-panel-note">持续保存不代表关机期间仍在活动；自主活动执行与主动联系尚未开放。</p>
+              </div>
             </div>
-            <div class="showcase-chat">
-              <div class="chat-bubble chat-bubble-user">
-                帮我记两条待办：周一提交方案终稿，周三前拉齐联调环境。
+            <div class="showcase-panel" id="showcase-panel-memory" role="tabpanel" aria-labelledby="showcase-tab-memory" tabindex="0" hidden>
+              <div class="showcase-scene">
+                <span class="scene-label font-mono">MEMORY / CORRECTION</span>
+                <div class="memory-preview"><div class="memory-fact superseded"><span>旧事实</span><s>我更喜欢咖啡</s></div><span class="memory-arrow" aria-hidden="true">↓</span><div class="memory-fact"><span>纠正后采用</span><strong>我现在更喜欢红茶</strong></div></div>
+                <p class="scene-caption">经历可以积累，过时的事实也可以修正。</p>
               </div>
-              <div class="chat-bubble chat-bubble-ai">
-                存好了。敲 <code>/chiyo_note read</code> 随时能查。
-              </div>
-              <div class="chat-bubble chat-bubble-user">
-                谢了，免得我明天睡醒又忘了。
-              </div>
-              <div class="chat-bubble chat-bubble-ai">
-                顺手的事，安心睡吧。
+              <div class="showcase-conversation">
+                <div class="showcase-context-bar"><span class="context-tag">记住，也允许改变</span><a href="#cli-section-1">管理记忆 →</a></div>
+                <div class="showcase-chat">
+                  <div class="chat-bubble chat-bubble-user"><code>/chiyo_memory correct 记忆ID 我现在更喜欢红茶</code></div>
+                  <div class="chat-bubble chat-bubble-ai">纠正后，后续召回应采用“更喜欢红茶”的新事实。记忆 ID 需要先从 list 返回的条目中选取。</div>
+                </div>
+                <p class="showcase-panel-note">也可用 delete 停止采用某条记忆；原始聊天与审计仍保留，不能代替彻底擦除。</p>
               </div>
             </div>
           </div>
         </div>
-      </div><section class="capabilities-section" aria-labelledby="capabilities-title">
+      </section>
+      <section class="capabilities-section" aria-labelledby="capabilities-title">
         <div class="section-intro">
           <h2 id="capabilities-title">四大核心能力</h2>
-          <p>从单次问答工具，走向有生活、有记忆、能帮你写代码的真实数字个体。</p>
+          <p>虚拟世界、身体、持续生活与记忆，是 nyairo 在聊天和工具能力之外构建的四个核心方向。</p>
         </div>
 
         <div class="features-grid">
-          <!-- 01 长期记忆 -->
-          <a href="#cli-section-1" class="pillar-card">
-            <div class="pillar-top">
-              <span class="pillar-num font-mono">01</span>
-              <span class="cmd-badge">/chiyo_memory</span>
-            </div>
-            <h3 class="pillar-title">长期记忆</h3>
-            <p class="pillar-desc">跨越会话记住重要经历，随时能查、能纠正、能遗忘，彻底告别模型幻觉与遗忘。</p>
-            <span class="pillar-link">查看用法 →</span>
-          </a>
-
-          <!-- 02 持续生活 -->
-          <a href="#cli-section-0" class="pillar-card">
-            <div class="pillar-top">
-              <span class="pillar-num font-mono">02</span>
-              <span class="cmd-badge">/chiyo_status</span>
-            </div>
-            <h3 class="pillar-title">持续生活</h3>
-            <p class="pillar-desc">拥有自己的日常状态流。关掉窗口或重启电脑后生活状态不丢，时刻待命陪伴。</p>
-            <span class="pillar-link">查看用法 →</span>
-          </a>
-
-          <!-- 03 虚拟世界 -->
           <a href="#modules-section-1" class="pillar-card">
-            <div class="pillar-top">
-              <span class="pillar-num font-mono">03</span>
-              <span class="cmd-badge">World &amp; Body</span>
-            </div>
-            <h3 class="pillar-title">虚拟世界与身体</h3>
-            <p class="pillar-desc">在虚拟空间里拥有具体位置与姿态，感知光线与环境变化，让交流真正身临其境。</p>
-            <span class="pillar-link">查看用法 →</span>
+            <div class="pillar-top"><span class="pillar-num font-mono">01</span><span class="cmd-badge">WORLD</span></div>
+            <h3 class="pillar-title">虚拟世界</h3>
+            <p class="pillar-desc">在有限世界里拥有具体位置与可见环境，让对话有场景。第一版接入世界服务，提供只读观察。</p>
+            <span class="pillar-link">了解世界 →</span>
           </a>
-
-          <!-- 04 切换 Agent -->
-          <a href="#modules-section-0" class="pillar-card">
-            <div class="pillar-top">
-              <span class="pillar-num font-mono">04</span>
-              <span class="cmd-badge">/chiyo_consider</span>
-            </div>
-            <h3 class="pillar-title">切换 Agent 模式</h3>
-            <p class="pillar-desc">需要解决复杂技术任务时，脱离生活空间挂载工作区，自动生成脚本、写代码并推演。</p>
-            <span class="pillar-link">查看用法 →</span>
+          <a href="#modules-section-1" class="pillar-card">
+            <div class="pillar-top"><span class="pillar-num font-mono">02</span><span class="cmd-badge">BODY</span></div>
+            <h3 class="pillar-title">身体状态</h3>
+            <p class="pillar-desc">读取姿态、持物情况与身体信号。身体拥有独立状态，回答依据实际观察，而非临时编写的设定。</p>
+            <span class="pillar-link">了解身体 →</span>
+          </a>
+          <a href="#cli-section-0" class="pillar-card">
+            <div class="pillar-top"><span class="pillar-num font-mono">03</span><span class="cmd-badge">LIFE</span></div>
+            <h3 class="pillar-title">持续生活</h3>
+            <p class="pillar-desc">独立保存日常事件与生活状态，重启后接续已有记录。当前支持状态连续性，自主活动仍在后续规划中。</p>
+            <span class="pillar-link">查看状态 →</span>
+          </a>
+          <a href="#cli-section-1" class="pillar-card">
+            <div class="pillar-top"><span class="pillar-num font-mono">04</span><span class="cmd-badge">MEMORY</span></div>
+            <h3 class="pillar-title">经历与记忆</h3>
+            <p class="pillar-desc">从个人经历中召回相关内容，支持查看、纠正和停止采用。让记忆随经历更新，并保留明确的数据边界。</p>
+            <span class="pillar-link">管理记忆 →</span>
           </a>
         </div>
+        <p class="capabilities-note">此外，可按需连接<a href="#modules-section-0">认知观察</a>与<a href="#modules-section-2">个人文档空间</a>。认知判断只作观察，文档保存需要资源服务与授权。<a href="#status-matrix">查看完整功能状态</a>。</p>
       </section>
 
       <!-- 未来规划与演进蓝图 (真实生活功能 · 实体小房间、随身手机、主动关切到无损迁居) -->
@@ -380,8 +342,8 @@
           <!-- P1 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P1 · 当前基础</div>
-            <h3 class="roadmap-name">本地记忆与双重形态闭环</h3>
-            <p class="roadmap-desc">记忆全在本地 SQLite，关机重启日常记录不丢。平时是默契的生活伙伴，遇到棘手开发任务时一键切成 Agent 协同写代码。</p>
+            <h3 class="roadmap-name">世界、生活与记忆的基础连接</h3>
+            <p class="roadmap-desc">个人记忆与生活状态本地保存，重启后继续读取；连接独立世界服务后，可观察位置、姿态与身体信号。自主活动尚未开放。</p>
             <span class="roadmap-status-tag current">当前版本 (v0.1)</span>
           </div>
 
@@ -416,7 +378,7 @@
       </section>
 
       <section class="start-strip" aria-labelledby="start-title">
-        <div><h2 id="start-title">第一次使用，从一句你好开始</h2><p>一行命令装好 → 填入你的模型 Key → 收到第一句回复，就是这么简单。</p></div>
+        <div><h2 id="start-title">第一次使用，从一句你好开始</h2><p>按教程安装 → 配置模型与个人设置 → 开始对话，再按需连接世界与其他模块。</p></div>
         <a href="#quickstart" class="btn-secondary">跟着教程安装 <span aria-hidden="true">→</span></a>
       </section>
 
@@ -485,13 +447,13 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261007-v25"></script>
-  <script src="app.js?v=20261007-v25"></script>
+  <script src="docs-data.js?v=20261007-world-examples"></script>
+  <script src="app.js?v=20261007-world-examples"></script>
   <!-- 爬虫与无 JS 环境语义保全 (确保百度 / Google 等轻量爬虫完整索引全站要点) -->
   <noscript>
     <div class="noscript-seo" style="max-width: 900px; margin: 40px auto; padding: 24px; font-family: sans-serif; line-height: 1.7; border: 1px solid #334155; border-radius: 8px;">
       <h2>nyairo 核心文档与使用导航</h2>
-      <p>nyairo 是一个以虚拟世界为核心的开源数字个体框架。一键全自动安装命令：<code>curl -fsSL https://nyairo.com/install.sh | bash</code></p>
+      <p>nyairo 是一个以虚拟世界为核心的开源数字个体框架。Linux / WSL 安装入口：<code>curl -fsSL https://nyairo.com/install.sh | bash</code></p>
       <h3>核心特性与文档速览</h3>
       <ul>
         <li><a href="#intro">项目定位与核心能力</a>：四大核心能力、准备工作与架构说明。</li>

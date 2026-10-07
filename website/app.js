@@ -545,21 +545,33 @@ async function copyDocumentationText(code, btn) {
    9. 首页日常场景 Tab 切换器 (Showcase Tabs)
    ========================================================================== */
 function initShowcaseTabs() {
-  const tabs = document.querySelectorAll('.showcase-tab');
+  const tabs = [...document.querySelectorAll('.showcase-tab')];
   if (!tabs.length) return;
-
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      const targetKey = tab.getAttribute('data-tab');
-      tabs.forEach(t => {
-        const isCurrent = t === tab;
-        t.classList.toggle('active', isCurrent);
-        t.setAttribute('aria-selected', String(isCurrent));
-      });
-      const panels = document.querySelectorAll('.showcase-panel');
-      panels.forEach(panel => {
-        panel.classList.toggle('active', panel.id === `showcase-panel-${targetKey}`);
-      });
+  const activate = (tab, focus = false) => {
+    tabs.forEach(t => {
+      const selected = t === tab;
+      t.classList.toggle('active', selected);
+      t.setAttribute('aria-selected', String(selected));
+      t.tabIndex = selected ? 0 : -1;
+      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      if (panel) {
+        panel.hidden = !selected;
+        panel.classList.toggle('active', selected);
+      }
+    });
+    if (focus) tab.focus();
+  };
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', () => activate(tab));
+    tab.addEventListener('keydown', e => {
+      let target;
+      if (e.key === 'ArrowRight') target = (index + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') target = (index - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') target = 0;
+      if (e.key === 'End') target = tabs.length - 1;
+      if (target === undefined) return;
+      e.preventDefault();
+      activate(tabs[target], true);
     });
   });
 }
