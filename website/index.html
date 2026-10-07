@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v7">
+  <link rel="stylesheet" href="style.css?v=20261006-v8">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -156,18 +156,24 @@
 
       </div>
 
-            <!-- 日常场景与对话感知展示面板 -->
-      <div class="daily-showcase" aria-label="日常状态与真实对话场景展示">
+                  <!-- 日常场景与对话感知展示面板 (多场景切换) -->
+      <div class="daily-showcase" id="daily-showcase" aria-label="日常状态与真实对话场景展示">
         <div class="showcase-header">
           <div class="showcase-dots">
             <span class="showcase-dot"></span>
             <span class="showcase-dot"></span>
             <span class="showcase-dot"></span>
           </div>
-          <span>LIVE PRESENCE &amp; MEMORY DEMO</span>
-          <span>v0.1.0-rc6</span>
+          <div class="showcase-tabs" role="tablist">
+            <button class="showcase-tab active" data-tab="continuity" role="tab" aria-selected="true">日常 · 生活连续与记忆</button>
+            <button class="showcase-tab" data-tab="world" role="tab" aria-selected="false">世界 · 空间与身体感知</button>
+            <button class="showcase-tab" data-tab="cognition" role="tab" aria-selected="false">认知 · 深度推演与工作台</button>
+          </div>
+          <span class="showcase-version font-mono">v0.1.0-rc6</span>
         </div>
-        <div class="showcase-body">
+
+        <!-- 场景 1: 日常 · 生活连续与记忆 -->
+        <div class="showcase-body" id="showcase-panel-continuity">
           <div class="showcase-status">
             <div class="status-group-title">世界坐标与身体感知</div>
             <div class="status-item">
@@ -195,7 +201,7 @@
               欢迎回来。看窗外天色暗下来了，你不在的时候，我把昨晚聊到的模块排错日志整理好了，记在个人文档里；你先歇会儿，待会儿随时能看。
               <div class="chat-ai-note">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                <span>基于环境光信号 · 结合生活审计与昨夜情境事实召回 (#mem-8041)</span>
+                <span>基于环境光物理信号 · 结合生活审计与昨夜情境事实召回 (#mem-8041)</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
@@ -203,6 +209,88 @@
             </div>
             <div class="chat-bubble chat-bubble-ai">
               收到，那我立刻用 <code>/chiyo_memory correct</code> 把昨天的旧方案纠正掉，之后的分析全以你的新方案为准，不会被旧假设干扰。
+            </div>
+          </div>
+        </div>
+
+        <!-- 场景 2: 世界 · 空间与身体感知 -->
+        <div class="showcase-body" id="showcase-panel-world" style="display: none;">
+          <div class="showcase-status">
+            <div class="status-group-title">世界坐标与身体感知</div>
+            <div class="status-item">
+              <span class="status-label">虚拟世界 (World)</span>
+              <span class="status-value">居所起居室 · 阳台露台</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">身体信号 (Interoception)</span>
+              <span class="status-value">站姿 · 环境微风 | 温度 21℃</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">生活连续性 (Life Ledger)</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>活动中 · 正在露台观察天象</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">情境记忆 (Episodic Recall)</span>
+              <span class="status-value font-mono" style="font-size: 0.76rem; color: var(--c-text-2);">#fact: 关注今晚的夜空流星观测</span>
+            </div>
+          </div>
+          <div class="showcase-chat">
+            <div class="chat-bubble chat-bubble-user">
+              你现在在哪儿呢？吃过晚饭了吗？
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              在露台这边看天空呢，风吹过来凉凉的，我已经把绿植浇完水了。今晚夜空的云层慢慢散开了，还记得上周你跟我说的流星观测吗？感觉待会儿视野会很好。
+              <div class="chat-ai-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                <span>基于虚拟空间与身体姿态 · 结合生活节奏与上周天文观测回忆</span>
+              </div>
+            </div>
+            <div class="chat-bubble chat-bubble-user">
+              哈哈你居然先走到露台去了，等我一下，我也拿上外套过去。
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              好呀，我在这边等你。外面气温降下来了，出来记得多披一件。
+            </div>
+          </div>
+        </div>
+
+        <!-- 场景 3: 认知 · 深度推演与工作台 -->
+        <div class="showcase-body" id="showcase-panel-cognition" style="display: none;">
+          <div class="showcase-status">
+            <div class="status-group-title">世界坐标与身体感知</div>
+            <div class="status-item">
+              <span class="status-label">虚拟世界 (World)</span>
+              <span class="status-value">档案工作台 · 双屏终端</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">身体信号 (Interoception)</span>
+              <span class="status-value">专注状态 · 认知观察通道开启</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">生活连续性 (Life Ledger)</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>推演完成 · 架构决策已存入账本</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">情境记忆 (Episodic Recall)</span>
+              <span class="status-value font-mono" style="font-size: 0.76rem; color: var(--c-text-2);">#policy: 本地 Workspace 凭证封闭</span>
+            </div>
+          </div>
+          <div class="showcase-chat">
+            <div class="chat-bubble chat-bubble-user">
+              /chiyo_consider 针对这次系统切流，你帮我推演一下风险和执行顺序。
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              已完成推演：主要风险在于旧写入者未完全停止时的并发脏写。建议分三步：先封锁旧写入入口，核验持久化账本哈希，再平滑接通新端口；完整推演报告已保存至 Workspace，用 <code>/chiyo_note read 8042</code> 即可查阅。
+              <div class="chat-ai-note">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+                <span>触发 Shadow 认知分析 · 调取私有 Workspace 文档服务</span>
+              </div>
+            </div>
+            <div class="chat-bubble chat-bubble-user">
+              分析得很严密，就按这个方案执行。
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              明白，我已经把这个决策依据记入生活账本，随时可以回溯审计。
             </div>
           </div>
         </div>
@@ -343,7 +431,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v7"></script>
-  <script src="app.js?v=20261006-v7"></script>
+  <script src="docs-data.js?v=20261006-v8"></script>
+  <script src="app.js?v=20261006-v8"></script>
 </body>
 </html>

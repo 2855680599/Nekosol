@@ -1483,6 +1483,55 @@ a:focus-visible, button:focus-visible {
   color: var(--c-text-3);
 }
 
+
+.showcase-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.22);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border);
+  overflow-x: auto;
+  max-width: 70%;
+}
+
+.showcase-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: var(--c-text-3);
+  font-size: 0.74rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.showcase-tab:hover {
+  color: var(--c-text-1);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.showcase-tab.active {
+  color: #79b8ff;
+  background: rgba(90, 140, 255, 0.14);
+  border-color: rgba(100, 150, 255, 0.3);
+  font-weight: 600;
+  box-shadow: 0 0 12px -2px rgba(90, 140, 255, 0.16);
+}
+
+[data-theme="light"] .showcase-tabs {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .showcase-tab.active {
+  color: #1e5eb3;
+  background: rgba(30, 94, 179, 0.08);
+  border-color: rgba(30, 94, 179, 0.2);
+}
+
 .showcase-dots {
   display: flex;
   gap: 6px;
