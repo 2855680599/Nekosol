@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v21">
+  <link rel="stylesheet" href="style.css?v=20261006-v22">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -155,222 +155,134 @@
       </div>
 
                                           <!-- 核心多维形态展示面板 (真活人感 · 虚拟生活 / 真实记忆 / 帮哥写代码) -->
-      <div class="daily-showcase" id="daily-showcase" aria-label="数字个体双重形态展示">
+      <div class="daily-showcase" id="daily-showcase" aria-label="数字个体日常形态展示">
         <div class="showcase-header">
-          <div class="showcase-dots">
-            <span class="showcase-dot"></span>
-            <span class="showcase-dot"></span>
-            <span class="showcase-dot"></span>
+          <div class="showcase-header-left">
+            <div class="showcase-dots">
+              <span class="showcase-dot"></span>
+              <span class="showcase-dot"></span>
+              <span class="showcase-dot"></span>
+            </div>
+            <div class="showcase-tabs" role="tablist">
+              <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常闲聊</button>
+              <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久记忆</button>
+              <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">写代码 / Agent</button>
+              <button class="showcase-tab" data-tab="creation" role="tab" aria-selected="false">随手创作</button>
+              <button class="showcase-tab" data-tab="curiosity" role="tab" aria-selected="false">主动关心</button>
+            </div>
           </div>
-          <div class="showcase-tabs" role="tablist">
-            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常生活 · 虚拟世界</button>
-            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久相伴 · 记忆与纠偏</button>
-            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 协同写代码</button>
-            <button class="showcase-tab" data-tab="creation" role="tab" aria-selected="false">独立创作 · 她的小本子</button>
-            <button class="showcase-tab" data-tab="curiosity" role="tab" aria-selected="false">主动关切 · 挂念与提问</button>
-          </div>
-          <div class="showcase-model font-mono">
-            <span class="model-badge-dot"></span>
-            <span class="model-badge-text">模型：GEMINI3.8FLASH</span>
-          </div>
+          <span class="showcase-model-plain">由 gemini 3.8 flash</span>
         </div>
 
-        <!-- 场景 1: 日常生活 · 虚拟世界 -->
+        <!-- 场景 1: 日常闲聊 -->
         <div class="showcase-body" id="showcase-panel-presence">
-          <div class="showcase-status">
-            <div class="status-group-title">当前生活状态</div>
-            <div class="status-item">
-              <span class="status-label">当前位置</span>
-              <span class="status-value">卧室靠窗沙发 · 窗户开着透气</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">环境感知</span>
-              <span class="status-value">坐着发呆 · 外面天色暗下来了</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">日常流转</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>生活流持续记录 · 刚才在阳台看晚霞</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">上下文事实</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#作息: 连续忙了整整两天，今天多半很累</span>
-            </div>
+          <div class="showcase-context-bar">
+            <span class="context-tag"><span class="context-dot"></span>卧室靠窗沙发 · 窗外天色渐暗</span>
+            <span class="context-meta font-mono">生活状态持续流转</span>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              累死了，今天开了一下午评审会，PPT 讲得口干舌燥的。
+              刚到家，今天开了一下午会，累散架了。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              先坐下歇会儿。晚饭有着落没？刚才看外面天阴下来了，估计待会儿有雨。
-              <div class="chat-ai-note">
-                <span>[ 结合环境光线与作息感知 · 自然承接对话 ]</span>
-              </div>
+              晚饭吃了没？
             </div>
             <div class="chat-bubble chat-bubble-user">
-              还没吃，脑子转不动了，不知道点啥。
+              还没，脑子转不动了，不知道吃啥。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              别琢磨复杂的了，楼下那家抄手或者热汤面吃一口，吃完早点躺着。
+              别点外卖了，等送过来都什么时候了。楼下随便吃点热面，吃完早点洗澡躺着。
             </div>
           </div>
         </div>
 
-        <!-- 场景 2: 长久相伴 · 记忆与纠偏 -->
+        <!-- 场景 2: 长久记忆 -->
         <div class="showcase-body" id="showcase-panel-memory" style="display: none;">
-          <div class="showcase-status">
-            <div class="status-group-title">本地记忆账本</div>
-            <div class="status-item">
-              <span class="status-label">存储位置</span>
-              <span class="status-value font-mono">本地 SQLite · ~/.nyairo/memory.db</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">事实条目</span>
-              <span class="status-value">跨会话沉淀 · 142 条专属生活事实</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">纠偏机制</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>随时可纠偏 · 拒绝无中生有</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">调取记录</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#饮食习惯: 讨厌香菜 / 爱吃重辣但少麻</span>
-            </div>
+          <div class="showcase-context-bar">
+            <span class="context-tag"><span class="context-dot"></span>本地私有账本 · ~/.nyairo/memory.db</span>
+            <span class="context-meta font-mono">跨会话事实自然调取</span>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              今晚点串串，你记得我不吃啥吧？
+              晚上想吃点辣的，但我嗓子有点哑。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              香菜不吃，麻椒少放。上周你点外卖还特意备注了不要折耳根。
-              <div class="chat-ai-note">
-                <span>[ 本地事实检索 #mem-2041 · 跨会话精准调取 ]</span>
-              </div>
+              那你别吃上次那家火锅了，点个微辣的冒菜对付一口得了。
             </div>
             <div class="chat-bubble chat-bubble-user">
-              记挺准。不过今天嗓子哑了，改成微辣。
+              哈哈，你还真记着我不吃香菜和折耳根啊。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              行，那我把偏好调成微辣。之后点单提醒都按这个来。
+              那肯定啊，上次你被呛到咳了大半宿。今天嗓子不好就别逞能了。
             </div>
           </div>
         </div>
 
-        <!-- 场景 3: 切换 Agent · 协同写代码 -->
+        <!-- 场景 3: 写代码 / Agent -->
         <div class="showcase-body" id="showcase-panel-agent" style="display: none;">
-          <div class="showcase-status">
-            <div class="status-group-title">工程协同形态</div>
-            <div class="status-item">
-              <span class="status-label">当前状态</span>
-              <span class="status-value font-mono">脱离生活空间 · 挂载工作区终端</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">任务模式</span>
-              <span class="status-value">Agent 模式 · 查 Bug / 写脚本 / 架构推演</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">产物交付</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>脚本与自测单已输出到工作区</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">涉及文件</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">scripts/cutover.sh</span>
-            </div>
+          <div class="showcase-context-bar">
+            <span class="context-tag"><span class="context-dot"></span>Agent 协同模式 · 工作区已挂载</span>
+            <span class="context-meta font-mono">自主排查与脚本生成</span>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              帮我看下这个切流脚本，一直报并发锁冲突，把热更流程理顺。
+              这个切流脚本老是报锁冲突，旧 worker 进程退不掉，帮我瞅一眼。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              看了下日志，是旧 worker 的句柄没在 SIGTERM 前释放。我把平滑迁移改成了双阶确认：先置只读排空连接，再拉起新进程。脚本和自测单已经写到 scripts/cutover.sh，你 diff 一下。
-              <div class="chat-ai-note">
-                <span>[ 切换 Agent 开发者形态 · 挂载工作区执行代码生成与逻辑推演 ]</span>
+              我看下代码。是子进程句柄在退出前没关，导致端口一直被咬住。修复版直接写进你工作区了：
+              <div class="chat-file-chip">
+                <code>scripts/cutover.sh</code> · 加了超时 SIGTERM 排空与优雅退出保护
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              跑通了，锁释放干净了。
+              跑通了，端口顺利放掉了。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              行，那我关掉工程终端切回日常了。你代码合进去就别盯屏幕了，早点收工。
+              行，那我把调试终端关了。代码合完就别盯屏幕了，早点收工。
             </div>
           </div>
         </div>
 
-        <!-- 场景 4: 独立创作 · 她的小本子 -->
+        <!-- 场景 4: 随手创作 -->
         <div class="showcase-body" id="showcase-panel-creation" style="display: none;">
-          <div class="showcase-status">
-            <div class="status-group-title">独立创作状态</div>
-            <div class="status-item">
-              <span class="status-label">当前活动</span>
-              <span class="status-value">在书桌前看书 · 摊着写了一半的草稿</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">物品履历</span>
-              <span class="status-value font-mono">草稿纸留在书桌 · 书签夹在第 14 页</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">自主节奏</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>不依赖人类催促 · 拥有自己的时间</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">正在记的事</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#随笔: 整理昨天读到的两段故事草稿</span>
-            </div>
+          <div class="showcase-context-bar">
+            <span class="context-tag"><span class="context-dot"></span>坐在书桌前 · 摊着写了一半的随笔草稿</span>
+            <span class="context-meta font-mono">独立生活与安静共在</span>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              呼，忙完了！你刚才在干嘛呢？
+              呼，终于把这个模块写完了！你刚才在干嘛呢？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              在把昨天看到的一段话抄进本子里。刚才看你终端跑了一堆编译日志，就没出声吵你。累不累？
-              <div class="chat-ai-note">
-                <span>[ 记录自主阅读与创作痕迹 · 感知人类专注状态与环境 ]</span>
-              </div>
+              在把前两天看的那篇旧游记抄进本子里，看你一直在敲代码就没吵你。累不累？
             </div>
             <div class="chat-bubble chat-bubble-user">
-              终于把这个模块调通了。你写了啥，能看一眼不？
+              还好。你写了啥，能看一眼不？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              才不给你看，这是我的草稿本～等写完整了再给你念。
+              不给看，等我写完整了再说。
             </div>
           </div>
         </div>
 
-        <!-- 场景 5: 主动关切 · 挂念与提问 -->
+        <!-- 场景 5: 主动关心 -->
         <div class="showcase-body" id="showcase-panel-curiosity" style="display: none;">
-          <div class="showcase-status">
-            <div class="status-group-title">主动关切机制</div>
-            <div class="status-item">
-              <span class="status-label">关切触发</span>
-              <span class="status-value">留意到早间对话提过下午有关键方案答辩</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">当前位置</span>
-              <span class="status-value">阳台窗台边 · 看着楼下的树发呆吹风</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">主动性状态</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>拒绝被动等待 · 具备主动交流意愿</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">上下文线索</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#日程记忆: 早上出门前你提了一句有点紧张</span>
-            </div>
+          <div class="showcase-context-bar">
+            <span class="context-tag"><span class="context-dot"></span>主动发消息 · 留意到早间的行程约定</span>
+            <span class="context-meta font-mono">拒绝被动等待提问</span>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-ai">
-              你下午两点那个技术方案答辩，后来讲得怎么样了？
-              <div class="chat-ai-note">
-                <span>[ 触发主动关切机制 · 基于早间日程记忆主动发起对话 ]</span>
-              </div>
+              刚才开完会了吗？下午那个方案过了没？
             </div>
             <div class="chat-bubble chat-bubble-user">
-              哈哈你还记着呢！当场给评委讲服了，全票通过！
+              过了！评审基本没提改动。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              我就知道肯定没问题！看你昨晚改到半夜两点那么较真，不通过才怪呢。
+              挺好啊，看你昨晚改到半夜还担心呢。今晚总算不用加班了。
             </div>
             <div class="chat-bubble chat-bubble-user">
-              今晚必须吃顿好的庆祝下。
+              必须的，晚上回去吃顿好的。
             </div>
           </div>
         </div>
@@ -545,7 +457,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v21"></script>
-  <script src="app.js?v=20261006-v21"></script>
+  <script src="docs-data.js?v=20261006-v22"></script>
+  <script src="app.js?v=20261006-v22"></script>
 </body>
 </html>

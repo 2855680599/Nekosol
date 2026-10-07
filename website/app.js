@@ -559,7 +559,7 @@ function initShowcaseTabs() {
       const panels = document.querySelectorAll('.showcase-body');
       panels.forEach(panel => {
         if (panel.id === `showcase-panel-${targetKey}`) {
-          panel.style.display = 'grid';
+          panel.style.display = 'flex';
           panel.style.animation = 'none';
           void panel.offsetWidth;
           panel.style.animation = 'showcase-fade-in 0.18s ease-out forwards';

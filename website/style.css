@@ -1482,16 +1482,23 @@ a:focus-visible, button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 10px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.02);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 [data-theme="light"] .showcase-header {
   border-bottom-color: rgba(0, 0, 0, 0.06);
   background: rgba(0, 0, 0, 0.015);
+}
+
+.showcase-header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
 }
 
 .showcase-dots {
@@ -1531,7 +1538,7 @@ a:focus-visible, button:focus-visible {
   border: 1px solid transparent;
   border-radius: 6px;
   color: var(--c-text-3);
-  font-size: 0.76rem;
+  font-size: 0.78rem;
   font-weight: 500;
   padding: 5px 12px;
   cursor: pointer;
@@ -1560,46 +1567,24 @@ a:focus-visible, button:focus-visible {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-.showcase-model {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(56, 189, 248, 0.08);
-  border: 1px solid rgba(56, 189, 248, 0.24);
-  color: #38bdf8;
-  font-size: 0.72rem;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 999px;
-  letter-spacing: 0.03em;
+/* 低调安静的模型标记，不做刺眼的大胶囊 */
+.showcase-model-plain {
+  font-size: 0.75rem;
+  color: var(--c-text-3);
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
-[data-theme="light"] .showcase-model {
-  background: rgba(2, 132, 199, 0.07);
-  border-color: rgba(2, 132, 199, 0.25);
-  color: #0284c7;
+[data-theme="light"] .showcase-model-plain {
+  color: var(--c-text-3);
 }
 
-.model-badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #38bdf8;
-  box-shadow: 0 0 6px rgba(56, 189, 248, 0.7);
-  animation: live-pulse 2s ease-in-out infinite;
-}
-
-[data-theme="light"] .model-badge-dot {
-  background: #0284c7;
-  box-shadow: 0 0 6px rgba(2, 132, 199, 0.6);
-}
-
+/* 单栏通透卡片主体 */
 .showcase-body {
-  display: grid;
-  grid-template-columns: 290px 1fr;
-  min-height: 295px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  min-height: 290px;
   animation: showcase-fade-in 0.18s ease-out forwards;
 }
 
@@ -1614,190 +1599,133 @@ a:focus-visible, button:focus-visible {
   }
 }
 
-.showcase-status {
-  padding: 22px 20px;
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
-  background: rgba(0, 0, 0, 0.14);
-}
-
-[data-theme="light"] .showcase-status {
-  border-right-color: rgba(0, 0, 0, 0.06);
-  background: rgba(0, 0, 0, 0.015);
-}
-
-.status-group-title {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: var(--c-text-3);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-}
-
-.status-item {
+/* 顶部情境状态条 */
+.showcase-context-bar {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  margin-bottom: 13px;
-}
-
-.status-label {
-  font-size: 0.72rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 24px;
+  background: rgba(0, 0, 0, 0.18);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  font-size: 0.76rem;
   color: var(--c-text-3);
+  gap: 12px;
 }
 
-.status-value {
-  font-size: 0.83rem;
-  color: var(--c-text-1);
-  font-weight: 500;
+[data-theme="light"] .showcase-context-bar {
+  background: rgba(0, 0, 0, 0.025);
+  border-bottom-color: rgba(0, 0, 0, 0.05);
 }
 
-.status-badge {
+.context-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.76rem;
+  gap: 7px;
   color: var(--c-text-2);
 }
 
-.status-badge-dot {
+.context-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
-  animation: live-pulse 2.2s ease-in-out infinite;
+  background: #38bdf8;
+  box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
 }
 
-@keyframes live-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(0.9);
-    box-shadow: 0 0 2px rgba(34, 197, 94, 0.2);
-  }
+[data-theme="light"] .context-dot {
+  background: #0284c7;
+  box-shadow: 0 0 6px rgba(2, 132, 199, 0.5);
 }
 
+.context-meta {
+  color: var(--c-text-3);
+  font-size: 0.72rem;
+}
+
+/* 优雅居中自然对话区 */
 .showcase-chat {
-  padding: 22px 24px;
+  padding: 24px 28px;
   display: flex;
   flex-direction: column;
   gap: 13px;
+  flex: 1;
   justify-content: center;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .chat-bubble {
-  max-width: 90%;
-  padding: 12px 18px;
+  max-width: 82%;
+  padding: 10px 16px;
   border-radius: 12px;
-  font-size: 0.9rem;
-  line-height: 1.62;
+  font-size: 0.91rem;
+  line-height: 1.6;
   position: relative;
+  word-break: break-word;
 }
 
 .chat-bubble-user {
   align-self: flex-end;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: rgba(56, 189, 248, 0.11);
+  border: 1px solid rgba(56, 189, 248, 0.22);
   border-top-right-radius: 3px;
   color: var(--c-text-1);
 }
 
 [data-theme="light"] .chat-bubble-user {
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #18181b;
+  background: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.2);
+  color: var(--c-text-1);
 }
 
 .chat-bubble-ai {
   align-self: flex-start;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-top-left-radius: 3px;
   color: var(--c-text-1);
 }
 
 [data-theme="light"] .chat-bubble-ai {
-  background: rgba(0, 0, 0, 0.025);
+  background: #ffffff;
   border-color: rgba(0, 0, 0, 0.08);
-  color: #27272a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
 }
 
-.chat-bubble-ai code {
-  font-family: var(--font-mono);
-  font-size: 0.82em;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-[data-theme="light"] .chat-bubble-ai code {
-  background: rgba(0, 0, 0, 0.06);
-  border-color: rgba(0, 0, 0, 0.12);
-  color: #18181b;
-}
-
-.chat-ai-note {
-  font-size: 0.73rem;
-  color: var(--c-text-3);
+.chat-file-chip {
   margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  padding-top: 6px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.07);
-}
-
-[data-theme="light"] .chat-ai-note {
-  border-top-color: rgba(0, 0, 0, 0.08);
-}
-  margin-top: 6px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-}
-
-@media (max-width: 768px) {
-  .showcase-body {
-    grid-template-columns: 1fr;
-  }
-  .showcase-status {
-    border-right: none;
-    border-bottom: 1px solid var(--c-border);
-  }
-  .showcase-tabs {
-    max-width: 100%;
-  }
-}
-
-
-/* 实用命令指示微胶囊 */
-.cmd-badge {
-  display: inline-flex;
-  align-items: center;
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.05);
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.32);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  color: var(--c-text-3);
-  margin-bottom: 6px;
-  width: fit-content;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: #38bdf8;
+  line-height: 1.4;
 }
 
-[data-theme="light"] .cmd-badge {
-  background: rgba(0, 0, 0, 0.04);
+[data-theme="light"] .chat-file-chip {
+  background: #f1f5f9;
   border-color: rgba(0, 0, 0, 0.08);
+  color: #0284c7;
 }
 
+@media (max-width: 640px) {
+  .showcase-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .showcase-chat {
+    padding: 16px 14px;
+  }
+  .chat-bubble {
+    max-width: 92%;
+  }
+  .showcase-context-bar {
+    padding: 8px 14px;
+  }
+}
 
 /* ==========================================================================
    未来演进路线图样式 (Roadmap Grid)
