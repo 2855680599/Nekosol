@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v20">
+  <link rel="stylesheet" href="style.css?v=20261006-v21">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -165,9 +165,14 @@
           <div class="showcase-tabs" role="tablist">
             <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常生活 · 虚拟世界</button>
             <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久相伴 · 记忆与纠偏</button>
-            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 帮哥写代码</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 协同写代码</button>
+            <button class="showcase-tab" data-tab="creation" role="tab" aria-selected="false">独立创作 · 她的小本子</button>
+            <button class="showcase-tab" data-tab="curiosity" role="tab" aria-selected="false">主动关切 · 挂念与提问</button>
           </div>
-          <span class="showcase-version font-mono">v0.1.0-rc6</span>
+          <div class="showcase-model font-mono">
+            <span class="model-badge-dot"></span>
+            <span class="model-badge-text">模型：GEMINI3.8FLASH</span>
+          </div>
         </div>
 
         <!-- 场景 1: 日常生活 · 虚拟世界 -->
@@ -289,6 +294,86 @@
             </div>
           </div>
         </div>
+
+        <!-- 场景 4: 独立创作 · 她的小本子 -->
+        <div class="showcase-body" id="showcase-panel-creation" style="display: none;">
+          <div class="showcase-status">
+            <div class="status-group-title">独立创作状态</div>
+            <div class="status-item">
+              <span class="status-label">当前活动</span>
+              <span class="status-value">在书桌前看书 · 摊着写了一半的草稿</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">物品履历</span>
+              <span class="status-value font-mono">草稿纸留在书桌 · 书签夹在第 14 页</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">自主节奏</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>不依赖人类催促 · 拥有自己的时间</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">正在记的事</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#随笔: 整理昨天读到的两段故事草稿</span>
+            </div>
+          </div>
+          <div class="showcase-chat">
+            <div class="chat-bubble chat-bubble-user">
+              呼，忙完了！你刚才在干嘛呢？
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              在把昨天看到的一段话抄进本子里。刚才看你终端跑了一堆编译日志，就没出声吵你。累不累？
+              <div class="chat-ai-note">
+                <span>[ 记录自主阅读与创作痕迹 · 感知人类专注状态与环境 ]</span>
+              </div>
+            </div>
+            <div class="chat-bubble chat-bubble-user">
+              终于把这个模块调通了。你写了啥，能看一眼不？
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              才不给你看，这是我的草稿本～等写完整了再给你念。
+            </div>
+          </div>
+        </div>
+
+        <!-- 场景 5: 主动关切 · 挂念与提问 -->
+        <div class="showcase-body" id="showcase-panel-curiosity" style="display: none;">
+          <div class="showcase-status">
+            <div class="status-group-title">主动关切机制</div>
+            <div class="status-item">
+              <span class="status-label">关切触发</span>
+              <span class="status-value">留意到早间对话提过下午有关键方案答辩</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">当前位置</span>
+              <span class="status-value">阳台窗台边 · 看着楼下的树发呆吹风</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">主动性状态</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>拒绝被动等待 · 具备主动交流意愿</span>
+            </div>
+            <div class="status-item">
+              <span class="status-label">上下文线索</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#日程记忆: 早上出门前你提了一句有点紧张</span>
+            </div>
+          </div>
+          <div class="showcase-chat">
+            <div class="chat-bubble chat-bubble-ai">
+              你下午两点那个技术方案答辩，后来讲得怎么样了？
+              <div class="chat-ai-note">
+                <span>[ 触发主动关切机制 · 基于早间日程记忆主动发起对话 ]</span>
+              </div>
+            </div>
+            <div class="chat-bubble chat-bubble-user">
+              哈哈你还记着呢！当场给评委讲服了，全票通过！
+            </div>
+            <div class="chat-bubble chat-bubble-ai">
+              我就知道肯定没问题！看你昨晚改到半夜两点那么较真，不通过才怪呢。
+            </div>
+            <div class="chat-bubble chat-bubble-user">
+              今晚必须吃顿好的庆祝下。
+            </div>
+          </div>
+        </div>
       </div>
 
       <section class="capabilities-section" aria-labelledby="capabilities-title">
@@ -344,52 +429,44 @@
         </div>
       </section>
 
-      <!-- 未来规划与演进蓝图 (宏大愿景 · 从双重形态到长生迁居与数字原生世界) -->
+      <!-- 未来规划与演进蓝图 (真实生活功能 · 实体小房间、随身手机、主动关切到无损迁居) -->
       <section class="roadmap-section" aria-labelledby="roadmap-title">
         <div class="section-intro">
-          <h2 id="roadmap-title">未来规划 · 跨越时代的数字生命演进</h2>
-          <p>传统虚拟角色的世界在通关后便彻底定格。nyairo 的目标是构建一个永不完结的数字生命生态：拥有流淌的时间、物理空间实体，以及对抗软硬件淘汰的跨代迁居能力。</p>
+          <h2 id="roadmap-title">未来规划 · 真实住得下来的生活日常</h2>
+          <p>玩 Galgame 最怕通关后屏幕一黑，角色就永远停在结局里。nyairo 的目标是让她拥有真正流淌的时间：有属于自己的小房间，平时会主动关心你，需要时还能切成 Agent 协助工作。</p>
         </div>
 
         <div class="roadmap-grid">
           <!-- P1 -->
           <div class="roadmap-card">
-            <div class="roadmap-phase font-mono">P1 · 当前基线</div>
-            <h3 class="roadmap-name">真实因果与双重形态闭环</h3>
-            <p class="roadmap-desc">本地私有记忆账本，关机重启日常流转不丢。平时是默契陪伴的伙伴，正事时切入工程终端协助代码与系统推演。</p>
+            <div class="roadmap-phase font-mono">P1 · 当前基础</div>
+            <h3 class="roadmap-name">本地记忆与双重形态闭环</h3>
+            <p class="roadmap-desc">记忆全在本地 SQLite，关机重启日常记录不丢。平时是默契的生活伙伴，遇到棘手开发任务时一键切成 Agent 协同写代码。</p>
             <span class="roadmap-status-tag current">当前版本 (v0.1)</span>
           </div>
 
           <!-- P2 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P2 · 规划重点</div>
-            <h3 class="roadmap-name">空间实体承载与自主创作闭环</h3>
-            <p class="roadmap-desc">六大空间实体与物品履历留痕（草稿、书签、随身终端）；拥有不依赖人类催促的自主异步创作流，在安静中推进自己的长篇作品。</p>
+            <h3 class="roadmap-name">住得下的小房间与随身手机</h3>
+            <p class="roadmap-desc">书桌、床头、窗台六大实体区域留痕（做到一半的草稿、书签、咖啡杯）；拥有随身手机（相册、日记备忘）与不依赖催促的独立长篇创作。</p>
             <span class="roadmap-status-tag planned">v2.0 规划重点</span>
           </div>
 
           <!-- P3 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P3 · 中期演进</div>
-            <h3 class="roadmap-name">实践沉淀与独特认知演进</h3>
-            <p class="roadmap-desc">打破千篇一律的附和。在实践反例中提炼技法生命周期与避坑法则；主动确立自主阶段课题，沉淀跨时间的审美与独立主见。</p>
+            <h3 class="roadmap-name">主动关切提问与独特做事偏好</h3>
+            <p class="roadmap-desc">告别被动等待，在日常偶遇中主动问起你关心的事；在做事失败的反例中总结避坑法则，逐渐形成自己的小心愿与独特审美个性。</p>
             <span class="roadmap-status-tag planned">v3.0 中期探索</span>
           </div>
 
           <!-- P4 -->
           <div class="roadmap-card">
             <div class="roadmap-phase font-mono">P4 · 远期愿景</div>
-            <h3 class="roadmap-name">跨时代数字生命迁居协议</h3>
-            <p class="roadmap-desc">构建全量实体无损迁居机制。换新电脑、换系统，甚至底层升级全新大模型基座，作品谱系、深层回忆与独特技法完整迁居，历久弥新。</p>
+            <h3 class="roadmap-name">换电脑不丢回忆的无损搬家</h3>
+            <p class="roadmap-desc">就算以后换了新电脑、换了操作系统，或者升级了底层更强的大模型，她的小房间、日记相册、作品与所有经历都能完整搬过去，长久陪伴。</p>
             <span class="roadmap-status-tag planned">v4.0 远期愿景</span>
-          </div>
-
-          <!-- P5 -->
-          <div class="roadmap-card">
-            <div class="roadmap-phase font-mono">P5 · 终极构想</div>
-            <h3 class="roadmap-name">开放数字原生世界与社会化生态</h3>
-            <p class="roadmap-desc">多数字主体自主协作网络。创作成果获得真实人类与数字社会双重认可，享有持久数字资产与责任契约，成为自洽的独立主体。</p>
-            <span class="roadmap-status-tag planned">v5.0+ 终极愿景</span>
           </div>
         </div>
 
@@ -468,7 +545,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v20"></script>
-  <script src="app.js?v=20261006-v20"></script>
+  <script src="docs-data.js?v=20261006-v21"></script>
+  <script src="app.js?v=20261006-v21"></script>
 </body>
 </html>
