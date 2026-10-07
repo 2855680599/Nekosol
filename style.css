@@ -1656,7 +1656,13 @@ a:focus-visible, button:focus-visible {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.11);
   border-top-right-radius: 3px;
-  color: #f4f4f5;
+  color: var(--c-text-1);
+}
+
+[data-theme="light"] .chat-bubble-user {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #18181b;
 }
 
 .chat-bubble-ai {
@@ -1664,7 +1670,28 @@ a:focus-visible, button:focus-visible {
   background: rgba(255, 255, 255, 0.025);
   border: 1px solid rgba(255, 255, 255, 0.07);
   border-top-left-radius: 3px;
-  color: #e4e4e7;
+  color: var(--c-text-1);
+}
+
+[data-theme="light"] .chat-bubble-ai {
+  background: rgba(0, 0, 0, 0.025);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #27272a;
+}
+
+.chat-bubble-ai code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+[data-theme="light"] .chat-bubble-ai code {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: #18181b;
 }
 
 .chat-ai-note {
@@ -1679,35 +1706,9 @@ a:focus-visible, button:focus-visible {
   border-top: 1px dashed rgba(255, 255, 255, 0.07);
 }
 
-[data-theme="light"] .chat-bubble-user {
-  background: rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.09);
+[data-theme="light"] .chat-ai-note {
+  border-top-color: rgba(0, 0, 0, 0.08);
 }
-
-.chat-bubble-ai {
-  align-self: flex-start;
-  background: rgba(255, 255, 255, 0.025);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  color: var(--c-text-1);
-}
-
-[data-theme="light"] .chat-bubble-ai {
-  background: rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.chat-bubble-ai code {
-  font-family: var(--font-mono);
-  font-size: 0.82em;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-.chat-ai-note {
-  font-size: 0.72rem;
-  color: var(--c-text-3);
   margin-top: 6px;
   display: flex;
   align-items: center;

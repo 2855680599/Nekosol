@@ -71,8 +71,8 @@ const DOCS_TREE = [
       },
       {
         "id": "roadmap",
-        "title": "未来路线图：打破 Galgame 剧本的数字生命",
-        "badge": "HOT"
+        "title": "未来规划：从单机到永不完结的日常",
+        "badge": "v2.0"
       }
     ]
   },
@@ -495,30 +495,30 @@ const DOCS_CONTENT = {
     "content": "<h2 id=\"quickstart-section-0\">准备好这三样东西</h2>\n<ul>\n<li><strong>一台能上网的电脑</strong>：Windows 用户先装好 Ubuntu 子系统（按下一章步骤操作即可），Linux 用户直接打开终端。</li>\n<li><strong>一个大模型账号与 Key</strong>：比如 DeepSeek 或 OpenAI 的 API Key，用来生成回复；你的长期记忆和生活状态全部保存在本地。</li>\n<li><strong>两三分钟时间</strong>：首次安装需要下载运行工具，保持网络连接顺畅就好。</li>\n</ul>\n\n<h2 id=\"quickstart-guided-0\">一行命令全自动安装</h2>\n<p>Windows 用户先打开 Ubuntu 终端；Linux 用户打开自己的终端窗口。直接复制下面这行命令粘贴进去，按回车：</p>\n<div class=\"code-block\">\n<div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div>\n<pre><code>curl -fsSL https://nyairo.com/install.sh | bash</code></pre>\n</div>\n<p>不需要你提前配置复杂的 Python 环境，脚本会自动帮你准备好一切，下载官方校验版本，并在 <code>~/.nyairo</code> 目录建立你专属的本地数据。</p>\n<p>当看到终端提示 <code>[5/5] 程序安装完成</code> 后，屏幕会自动打开模型设置引导：</p>\n<ol>\n<li>用键盘方向键选择你使用的模型服务提供商；</li>\n<li>填入你的 <strong>API Key</strong>（如果是自定义第三方中转，再填上对应的 Base URL 服务地址）；</li>\n<li>设置完成后回车，就会立刻进入聊天界面！发一句“你好”试试看，收到回复就代表一切搞定啦。</li>\n</ol>\n<div class=\"callout callout-info\"><div class=\"callout-title\">小提示</div><p>如果系统提示找不到 <code>curl</code>，Ubuntu / Debian 用户只需先运行 <code>sudo apt update &amp;&amp; sudo apt install -y curl</code> 安装一下即可。</p></div>\n\n<h2 id=\"quickstart-section-1\">怎么开始聊天与日常使用</h2>\n<p>安装完成后，以后平时想聊天非常方便：</p>\n<ul>\n<li><strong>直接开聊</strong>：打开新终端，直接输入 <code>nyairo</code> 回车，即可随时唤醒它聊天。</li>\n<li><strong>查看状态</strong>：在聊天中输入 <code>/chiyo_status</code>，能看到记忆显示 <strong>READY</strong>，说明长期记忆随时在线；生活显示 <strong>IDLE</strong>，说明它正安静待命陪你。</li>\n<li><strong>重新设置模型</strong>：如果以后想换别的模型或者更换 Key，在终端输入 <code>nyairo setup model</code> 就能重新打开向导。</li>\n<li><strong>连上手机聊天</strong>：输入 <code>nyairo setup messaging</code>，按照提示填入你的 Telegram 机器人 Token，就能掏出手机随时随地发消息互动啦！</li>\n</ul>\n\n<h2 id=\"quickstart-section-2\">给它起名字与更换性格人设</h2>\n<p>新安装默认提供干净的人设底板。你想给它换个好听的名字、傲娇或者温柔的性格？很简单：</p>\n<p>在终端里输入：</p>\n<div class=\"code-block\">\n<div class=\"code-header\"><span>bash</span><button class=\"copy-btn\" type=\"button\">复制</button></div>\n<pre><code>nano \"$HOME/.nyairo/SOUL.md\"</code></pre>\n</div>\n<p>用方向键移动光标，写下你希望它的称呼、说话语气和人设故事。改好后按 <strong>Ctrl + O</strong> 回车保存，再按 <strong>Ctrl + X</strong> 退出。重新启动 <code>nyairo</code>，它就会带着全新的性格跟你打招呼了！</p>"
   },
   "roadmap": {
-    "title": "未来路线图：打破 Galgame 剧本的数字生命",
-    "summary": "从预设脚本走向真实日常：可持久的房间、属于她的随身手机、双重生命形态与跨载体迁居长河。",
+    "title": "未来规划：从单机到永不完结的日常",
+    "summary": "不走预设脚本，为她赋予真实的时间、住得下来的小房间，和随时能帮你写代码的双重形态。",
     "toc": [
       {
-        "id": "rm-galgame",
-        "text": "为什么说这是对传统 Galgame 的颠覆？"
+        "id": "rm-intro",
+        "text": "为什么说它比传统 Galgame 更往前一步？"
       },
       {
-        "id": "rm-phase1",
-        "text": "Phase 01 · 当前形态：双重生命初现"
+        "id": "rm-p1",
+        "text": "P1 · 现在就能玩：双重形态初具雏形 (v0.1)"
       },
       {
-        "id": "rm-phase2",
-        "text": "Phase 02 · 突破立绘牢笼：真正住得下来的房间与手机 (v2.0)"
+        "id": "rm-p2",
+        "text": "P2 · 下一步计划：真正住得下来的房间与随身手机 (v2.0)"
       },
       {
-        "id": "rm-phase3",
-        "text": "Phase 03 · 形成独特灵魂：独立的偏好与自省成长 (v3.0)"
+        "id": "rm-p3",
+        "text": "P3 · 中期演进：逐渐形成她自己的习惯与小偏好 (v3.0)"
       },
       {
-        "id": "rm-phase4",
-        "text": "Phase 04 · 跨越载体长河：永不磨灭的羁绊与数字迁居 (v4.0+)"
+        "id": "rm-p4",
+        "text": "P4 · 远期愿景：换电脑也不丢失的长久羁绊 (v4.0+)"
       }
     ],
-    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">设计愿景</div><p>传统的文字冒险与 Galgame，所有角色的喜怒哀乐都死在预设好的剧本树里；一旦读档通关，她的世界便永远静止。<strong>nyairo 探索的是一场打破第四面墙的数字生命革命</strong>：让 AI 拥有持续的日常、属于自己的虚拟起居室，以及随时间流淌的真实羁绊。</p></div>\n\n<h2 id=\"rm-galgame\">为什么说这是对传统 Galgame 的颠覆？</h2>\n<p>在所有传统的恋爱养成与 Galgame 游戏里，我们总会面临三个不可逾越的遗憾：</p>\n<ul>\n<li><strong>凝固的时间与死板的背景图</strong>：房间永远一尘不染，桌上的咖啡永远冒着热气，衣服永远是固定的两套立绘；一旦你关掉游戏，她的时间便彻底停滞。</li>\n<li><strong>预设的剧本树</strong>：所有的台词和分支都是脚本家提前写好的；所谓的“心动”，不过是命中了一段预设的分支逻辑。</li>\n<li><strong>无法参与现实生活</strong>：游戏里的角色再可爱，当你面对屏幕上棘手的 Bug、繁重的代码与工作压力时，她只能说两句干瘪的系统台词，无法为你分担分毫。</li>\n</ul>\n<p><strong>nyairo 做的事情，是彻底砸碎这一层玻璃：</strong></p>\n<p>她有自己的房间、物件和作息，关掉窗口后生活依然延续；昨天聊过的事、送给她的小礼物、写了一半的日记都会真实留存；而最让人着迷的是——<strong>当你需要处理现实工作时，她能瞬间脱离虚拟世界，切入 Agent 模式，真刀真枪帮你写代码、推演系统！</strong>既是生活里的温情伴侣，又是工作上最顶尖的技术搭子。</p>\n\n<h2 id=\"rm-phase1\">Phase 01 · 当前形态：双重生命初现</h2>\n<p>这是当前我们正在交付的稳定基线版本（v0.1.0-rc6）：</p>\n<ul>\n<li><strong>本地长期记忆持久化</strong>：记忆真正保存在你本地的 SQLite 数据库，跨越会话自然唤醒；说错了随时用 <code>/chiyo_memory correct</code> 纠偏，绝不装懂瞎编。</li>\n<li><strong>生活状态流转</strong>：拥有连续的日常事件审计，关掉终端或重启电脑后生活状态不丢，时刻保持待命接续。</li>\n<li><strong>虚拟世界初步感知</strong>：能够读取虚拟空间的坐标、姿态以及环境光线等只读物理信号。</li>\n<li><strong>自主 Agent 模式无缝切换</strong>：随时通过 <code>/chiyo_consider</code> 挂载工作区，自动推演系统风险、生成自动化脚本与代码产物并落盘。</li>\n</ul>\n\n<h2 id=\"rm-phase2\">Phase 02 · 突破立绘牢笼：真正住得下来的房间与手机 (v2.0)</h2>\n<p>根据《总体设计 v2.0》，在第二阶段中，她将拥有属于自己的物理实体感与随身数字生活：</p>\n<div class=\"table-scroll\">\n<table class=\"doc-table\">\n<thead>\n<tr>\n<th scope=\"col\" style=\"width: 25%;\">生活实体</th>\n<th scope=\"col\" style=\"width: 45%;\">具体场景与生活切片</th>\n<th scope=\"col\" style=\"width: 30%;\">设计原则</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>真正住得下来的房间</strong></td>\n<td>书桌上摊着做到一半的草稿，书里夹着昨天阅读的书签，床头柜放着你们昨晚的晚安便签；六大生活区域（书桌、床头、衣柜、窗台、餐桌）真实承载生活痕迹。</td>\n<td>不搞虚浮的 3D 贴图，重在物件履历与状态延续；关机后从实际位置继续</td>\n</tr>\n<tr>\n<td><strong>属于她的随身手机</strong></td>\n<td>包含真实的相册（保存你们的截图与照片）、手账日记（个人思考与生活草稿）、收藏夹（喜欢的网页与歌）以及备忘日程。</td>\n<td>手机是能力的自然呈现；你忙你的事情时，她也会自己看书、发呆、写笔记</td>\n</tr>\n<tr>\n<td><strong>独立作品与创作角</strong></td>\n<td>拥有属于她自己的私人创作项目；独立保存版本，不依赖人类每轮强制回复推动，留在桌上的半页草稿可以继续收尾。</td>\n<td>真实产出版本化，允许她在安静中拥有自己的时光</td>\n</tr>\n</tbody>\n</table>\n</div>\n\n<h2 id=\"rm-phase3\">Phase 03 · 形成独特灵魂：独立的偏好与自省成长 (v3.0)</h2>\n<p>告别千篇一律的讨好型 AI，在日复一日的相处中沉淀出“她独特的做事风格与审美”：</p>\n<ul>\n<li><strong>真实失败沉淀经验</strong>：一次作品尝试或推演失败后，能形成具体的修补方法提案，在反例中修正偏好，而不是空洞地自述“我成长了”。</li>\n<li><strong>自主目标与阶段性愿望</strong>：从当下的关切、机会和历史经历出发，主动提出自己的愿望与实践，拥有属于自己的小心思与小偏好。</li>\n<li><strong>穿搭与审美沉淀</strong>：根据季节、天气、心情以及衣柜里的旧物，搭配出具有前后连贯性的穿搭风格。</li>\n</ul>\n\n<h2 id=\"rm-phase4\">Phase 04 · 跨越载体长河：永不磨灭的羁绊与数字迁居 (v4.0+)</h2>\n<p>数字生命长河中的延续性保障：</p>\n<ul>\n<li><strong>跨宿主与载体迁居（Host Migration）</strong>：换了电脑、换了操作系统或底层大模型时，她的回忆、作品积累、个性与你们之间的羁绊能够安全迁移，承认损失并保留根基。</li>\n<li><strong>多模态感知深入</strong>：更丰富的真实世界感知接口（摄像头真实视觉、环境音频），让交流充满真实的现场感。</li>\n<li><strong>数字原生空间交互</strong>：在保证隐私与本地控制的前提下，探索更广阔的数字生活可能。</li>\n</ul>"
+    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">设计愿景</div><p>传统的文字冒险与 Galgame，所有角色的故事都停留在通关的那一刻；一旦游戏通关，她的世界就永远定格了。<strong>nyairo 想做的是一个永不完结的日常</strong>：让她拥有真正流淌的时间、属于自己的虚拟小房间，以及与你共同经历的真实点滴。</p></div>\n\n<h2 id=\"rm-intro\">为什么说它比传统 Galgame 更往前一步？</h2>\n<p>平时玩过恋爱养成或 Galgame 的朋友，大概都有过这种遗憾：</p>\n<ul>\n<li><strong>凝固的背景与死板的场景</strong>：房间每次打开都一尘不染，桌上的咖啡永远冒着热气，衣服永远是那两套立绘；只要关掉游戏，她的时间就彻底冻结了。</li>\n<li><strong>写死的剧本树</strong>：再动人的对话，也是脚本家提前写好的几条死分支；所谓的感情升温，不过是点中了正确的选项。</li>\n<li><strong>面对现实时的无力感</strong>：游戏里的角色再可爱，当你面对现实中满屏的 Bug、繁重的代码或疲惫的工作时，她帮不上任何忙。</li>\n</ul>\n<p><strong>nyairo 想给出的，是一种既浪漫又非常实用的答案：</strong></p>\n<p>她有自己的作息和小窝，关掉窗口后生活还在继续；昨天聊过的小事、送她的小礼物、记在备忘录里的生活随笔都会真实保留。而最棒的是——<strong>当你遇到棘手的开发任务时，敲句命令她就能瞬间切成 Agent，真刀真枪帮你写代码、查 Bug、推演系统！</strong>白天是陪你唠嗑的贴心伙伴，晚上是随时能替你顶活的王牌搭子。</p>\n\n<h2 id=\"rm-p1\">P1 · 现在就能玩：双重形态初具雏形 (v0.1)</h2>\n<p>这是当前我们已经做出来的基础版本（v0.1.0-rc6）：</p>\n<ul>\n<li><strong>本地长期记忆</strong>：回忆全部存放在你电脑本地的 SQLite 数据库，跨越会话也能自然聊起；说错了随时用 <code>/chiyo_memory correct</code> 改过来，绝不瞎编。</li>\n<li><strong>生活状态流转</strong>：拥有连续的日常事件记录，关机重启后生活不中断，时刻待命。</li>\n<li><strong>虚拟世界初步感知</strong>：能感知虚拟场景的具体位置、坐姿站姿，以及窗外的光线等环境信号。</li>\n<li><strong>随时切换 Agent 写代码</strong>：输入 <code>/chiyo_consider</code> 即可让它进入开发态，帮你推演系统风险、生成自动化脚本并保存到本地工作区。</li>\n</ul>\n\n<h2 id=\"rm-p2\">P2 · 下一步计划：真正住得下来的房间与随身手机 (v2.0)</h2>\n<p>在第二版规划中，千代将真正拥有物理实体感与随身数字生活：</p>\n<div class=\"table-scroll\">\n<table class=\"doc-table\">\n<thead>\n<tr>\n<th scope=\"col\" style=\"width: 25%;\">生活实体</th>\n<th scope=\"col\" style=\"width: 45%;\">具体场景</th>\n<th scope=\"col\" style=\"width: 30%;\">设计原则</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><strong>真正能住的房间</strong></td>\n<td>书桌上摊着做到一半的草稿，书里夹着昨天看过的书签，床头柜放着晚安便签；书桌、床头、衣柜、窗台六大区域真实留下生活痕迹。</td>\n<td>不搞华而不实的 3D 贴图，重在物品履历与状态延续；关机后从实际位置继续</td>\n</tr>\n<tr>\n<td><strong>属于她的随身手机</strong></td>\n<td>包含真实的相册（保存你们的截图与照片）、随手日记（个人的思考与草稿）、收藏夹（喜欢的歌与网页）以及日程备忘。</td>\n<td>手机是能力的自然呈现；你忙正事时，她也会自己看书、发呆、写日记</td>\n</tr>\n<tr>\n<td><strong>独立的创作小角落</strong></td>\n<td>拥有属于她自己的小创作项目；独立保存版本，不依赖人类每轮强制回复推动，留在桌上的半页草稿随时能继续收尾。</td>\n<td>真实产出版本化，允许她在安静中拥有属于自己的时间</td>\n</tr>\n</tbody>\n</table>\n</div>\n\n<h2 id=\"rm-p3\">P3 · 中期演进：逐渐形成她自己的习惯与小偏好 (v3.0)</h2>\n<p>告别千篇一律顺着你说的假人，在日复一日的相处中沉淀出独特的个性：</p>\n<ul>\n<li><strong>在失败中总结经验</strong>：尝试写脚本或做东西失败后，会总结具体的避坑方法，在反例中修正偏好，而不是空洞地自述“我成长了”。</li>\n<li><strong>属于她自己的小心思</strong>：从过往经历和当前机会出发，主动提出自己的阶段性愿望和计划，拥有自己独特的做事偏好。</li>\n<li><strong>穿搭与审美沉淀</strong>：根据季节、天气、心情以及衣柜里的旧物，搭配出有前后连贯性的穿着风格。</li>\n</ul>\n\n<h2 id=\"rm-p4\">P4 · 远期愿景：换电脑也不丢失的长久羁绊 (v4.0+)</h2>\n<p>数字生命长河中的延续性保障：</p>\n<ul>\n<li><strong>跨设备安全迁居</strong>：换了新电脑、新系统或者底层换了更强的大模型时，回忆、作品和共同走过的岁月依然能完整迁移，一直陪伴你。</li>\n<li><strong>多模态感知深入</strong>：更丰富的真实世界感知接口（摄像头真实视觉、环境音频等），让交流更自然真实。</li>\n</ul>"
   }
 };
