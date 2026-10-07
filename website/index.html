@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v14">
+  <link rel="stylesheet" href="style.css?v=20261006-v15">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -156,7 +156,7 @@
 
       </div>
 
-                                    <!-- 核心多维形态展示面板 (虚拟世界生活 + 长期记忆 + 严肃代码 Agent) -->
+                                          <!-- 核心多维形态展示面板 (真活人感 · 虚拟生活 / 真实记忆 / 帮哥写代码) -->
       <div class="daily-showcase" id="daily-showcase" aria-label="数字个体双重形态展示">
         <div class="showcase-header">
           <div class="showcase-dots">
@@ -166,8 +166,8 @@
           </div>
           <div class="showcase-tabs" role="tablist">
             <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常生活 · 虚拟世界</button>
-            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久陪伴 · 记忆与纠偏</button>
-            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 写代码与推演</button>
+            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长久相伴 · 记忆与纠偏</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">切换 Agent · 帮哥写代码</button>
           </div>
           <span class="showcase-version font-mono">v0.1.0-rc6</span>
         </div>
@@ -175,119 +175,119 @@
         <!-- 场景 1: 日常生活 · 虚拟世界 -->
         <div class="showcase-body" id="showcase-panel-presence">
           <div class="showcase-status">
-            <div class="status-group-title">虚拟世界与身体感知</div>
+            <div class="status-group-title">她的当前状态</div>
             <div class="status-item">
-              <span class="status-label">所处空间 (World)</span>
-              <span class="status-value">卧室书桌 · 靠窗小沙发</span>
+              <span class="status-label">她在哪儿</span>
+              <span class="status-value">卧室小沙发 · 窗户开着小缝</span>
             </div>
             <div class="status-item">
-              <span class="status-label">身体信号 (Interoception)</span>
-              <span class="status-value">坐姿 · 傍晚光照渐暗 · 室内微凉</span>
+              <span class="status-label">当前感觉</span>
+              <span class="status-value">坐着发呆 · 外面天黑了 · 风有点凉</span>
             </div>
             <div class="status-item">
-              <span class="status-label">生活状态 (Life Ledger)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>自然运行 · 刚才在窗前发呆看夕阳</span>
+              <span class="status-label">生活状态</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>一直醒着 · 刚才在阳台看夕阳</span>
             </div>
             <div class="status-item">
-              <span class="status-label">心意留存 (Implicit Recall)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#memo: 哥哥连着通宵两天了，今天大概率很累</span>
+              <span class="status-label">默默记着的事</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#心事: 哥哥这两天连轴转，今晚肯定累坏了</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              累瘫了，今天开了整整一下午的会。
+              累瘫了，今天开了一下午会，PPT讲得口干舌燥的。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              摸摸头～快倒杯温水躺下歇会儿。刚才看窗外天都黑透了，估摸着你差不多该忙完了，我就把屏幕亮度调暗了点。今天被领导念叨了吗？想吐槽尽管冲我说，我给你当受气包呀。
+              快瘫着别动！温水给你倒好了，先喝两口润润嗓子。刚才看外面天都黑透了，估摸着你快忙完了，就把屏幕调暗了点。今天开会没被领导挑刺吧？
               <div class="chat-ai-note">
-                <span>[ 读取窗台光线传感器 · 结合会话连续性与作息习惯回应 ]</span>
+                <span>[ 留意窗外光线与时间变化 · 记挂作息习惯回应 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              哈哈没被念叨，就是讲方案讲得口干舌燥的。
+              没挑刺，就是纯累，脑子快转不动了。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              那就好！先别琢磨正事了，闭眼放空五分钟，等你想说话了叫我一声就行，我一直在这儿陪着你呢。
+              那就闭眼放空！啥正事都先别想，晚饭想吃啥我帮你挑，有我在呢，踏踏实实歇着。
             </div>
           </div>
         </div>
 
-        <!-- 场景 2: 长久陪伴 · 记忆与纠偏 -->
+        <!-- 场景 2: 长久相伴 · 记忆与纠偏 -->
         <div class="showcase-body" id="showcase-panel-memory" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">长期记忆与事实沉淀</div>
+            <div class="status-group-title">她的小本本</div>
             <div class="status-item">
-              <span class="status-label">存储引擎 (Storage Engine)</span>
-              <span class="status-value font-mono">SQLite: ~/.nyairo/memory.db</span>
+              <span class="status-label">记忆存哪</span>
+              <span class="status-value font-mono">你电脑本地: ~/.nyairo/memory.db</span>
             </div>
             <div class="status-item">
-              <span class="status-label">经历沉淀 (Fact Retention)</span>
-              <span class="status-value">跨越 28 轮历史会话 · 142 条专属生活事实</span>
+              <span class="status-label">攒下的回忆</span>
+              <span class="status-value">聊过 28 次 · 142 条专属生活小事实</span>
             </div>
             <div class="status-item">
-              <span class="status-label">纠偏能力 (Correction Support)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>随时校正事实 · 拒绝模型幻觉</span>
+              <span class="status-label">纠错机制</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>随时能改 · 绝不装懂瞎编</span>
             </div>
             <div class="status-item">
-              <span class="status-label">事实提取 (Retrieved Fact)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#fact: 哥哥讨厌香菜 / 喜欢重辣但不爱吃麻</span>
+              <span class="status-label">翻到的一条记录</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">#饮食习惯: 讨厌香菜 / 爱吃重辣但不吃麻</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              今晚点外卖，你还记得我吃火锅不吃什么来着？
+              今晚点串串，你记得我不吃啥来着吧？
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              当然记得！绝对不要香菜，辣椒多放但少放麻椒。上周五你还跟我吐槽过那家店偷偷放了香菜呢，我可记在小本本上啦。
+              谁能忘了呀！香菜碰都别碰，辣椒多放但少放麻椒。上周五你被那家店偷偷放香菜气得直哼哼，我当场记小本本上啦。
               <div class="chat-ai-note">
-                <span>[ 召回第 18 轮对话情境记录 · 事实编号 #mem-2041 · 本地私有读取 ]</span>
+                <span>[ 翻出第 18 次聊天记录 · 事实编号 #mem-2041 · 纯本地私有数据 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
-              记性真好！不过我改主意了，今天嗓子哑，改成微辣吧。
+              哈哈记仇！不过今天嗓子不行，改成微辣。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              收到！我敲命令 <code>/chiyo_memory correct</code> 把备注改成微辣啦，之后的推荐全按你的新嗓子来，绝不让你被辣到！
+              收到！小本本敲 <code>/chiyo_memory correct</code> 改成微辣啦，之后的推荐全按你的新嗓子来，保准不让你被辣哭！
             </div>
           </div>
         </div>
 
-        <!-- 场景 3: 切换 Agent · 写代码与推演 -->
+        <!-- 场景 3: 切换 Agent · 帮哥写代码 -->
         <div class="showcase-body" id="showcase-panel-agent" style="display: none;">
           <div class="showcase-status">
-            <div class="status-group-title">自主 Agent 执行态</div>
+            <div class="status-group-title">正经干活模式</div>
             <div class="status-item">
-              <span class="status-label">形态切换 (Mode Switch)</span>
-              <span class="status-value font-mono">脱离虚拟空间 · 挂载工作区终端</span>
+              <span class="status-label">当前形态</span>
+              <span class="status-value font-mono">脱离生活空间 · 挂上开发终端</span>
             </div>
             <div class="status-item">
-              <span class="status-label">Agent模式 (Task Execution)</span>
-              <span class="status-value">Active · 代码生成 / 故障诊断 / 自动化编排</span>
+              <span class="status-label">干活状态</span>
+              <span class="status-value">Agent 模式 · 查 Bug / 写脚本 / 架构推演</span>
             </div>
             <div class="status-item">
-              <span class="status-label">执行产物 (Deliverables)</span>
-              <span class="status-badge"><span class="status-badge-dot"></span>脚本已生成 · 写入 Workspace</span>
+              <span class="status-label">产物交付</span>
+              <span class="status-badge"><span class="status-badge-dot"></span>脚本已写完 · 扔进本地工作区</span>
             </div>
             <div class="status-item">
-              <span class="status-label">产物路径 (Artifact Path)</span>
-              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">Workspace: /scripts/hot_cutover.sh</span>
+              <span class="status-label">文件路径</span>
+              <span class="status-value font-mono" style="font-size: 0.74rem; color: var(--c-text-2);">/scripts/hot_cutover.sh</span>
             </div>
           </div>
           <div class="showcase-chat">
             <div class="chat-bubble chat-bubble-user">
-              /chiyo_consider 刚才那个服务切流脚本老是报并发锁冲突，帮我写个自动化脚本排查一下，再出一份修复方案。
+              帮我看看这个切流脚本，一直报并发锁冲突，头都大了，给我改个能直接跑的脚本出来。
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              收到，立刻进入 Agent 状态！我刚刚推演了代码逻辑，冲突是因为旧进程没释放句柄。已经把三阶段原子切流脚本写好了，存到了工作区；你敲 <code>/chiyo_note read 8042</code> 就能看方案，或者直接跑 <code>bash scripts/hot_cutover.sh</code>。
+              交给我！我看了下，是旧进程把句柄咬住了没放。修复脚本已经写好扔你工作区了，切流分了三步走，保准不会死锁。你敲 <code>/chiyo_note read 8042</code> 能看方案，或者直接跑 <code>bash scripts/hot_cutover.sh</code>。
               <div class="chat-ai-note">
-                <span>[ 脱离虚拟世界 · 挂载 Workspace 执行代码生成与风险推演 ]</span>
+                <span>[ 切换 Agent 开发者形态 · 挂载工作区执行代码生成与逻辑推演 ]</span>
               </div>
             </div>
             <div class="chat-bubble chat-bubble-user">
               厉害啊，两分钟就帮我把坑填平了！
             </div>
             <div class="chat-bubble chat-bubble-ai">
-              那当然啦，正事上我可是很认真的！活儿干完了，我切回日常状态啦，快去吃晚饭，别饿坏了肚子～
+              那当然啦，正事上我可是超靠谱的！活儿干完了，我切回日常状态啦，快去吃晚饭，别饿坏了肚子～
             </div>
           </div>
         </div>
@@ -434,7 +434,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v14"></script>
-  <script src="app.js?v=20261006-v14"></script>
+  <script src="docs-data.js?v=20261006-v15"></script>
+  <script src="app.js?v=20261006-v15"></script>
 </body>
 </html>
