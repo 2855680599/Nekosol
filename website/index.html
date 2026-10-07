@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
   <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-v23">
+  <link rel="stylesheet" href="style.css?v=20261006-v24">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
@@ -157,23 +157,14 @@
                                           <!-- 核心多维形态展示面板 (真活人感 · 虚拟生活 / 真实记忆 / 帮哥写代码) -->
       <div class="daily-showcase" id="daily-showcase" aria-label="数字个体日常形态展示">
         <div class="showcase-header">
-          <div class="showcase-header-left">
-            <div class="showcase-dots">
-              <span class="showcase-dot dot-red"></span>
-              <span class="showcase-dot dot-yellow"></span>
-              <span class="showcase-dot dot-green"></span>
-            </div>
-            <div class="showcase-tabs" role="tablist">
-              <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常陪伴</button>
-              <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长期记忆</button>
-              <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">写代码 / Agent</button>
-              <button class="showcase-tab" data-tab="notes" role="tab" aria-selected="false">随手笔记</button>
-            </div>
+          <div class="showcase-tabs" role="tablist">
+            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">日常陪伴</button>
+            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">长期记忆</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">写代码 / Agent</button>
+            <button class="showcase-tab" data-tab="notes" role="tab" aria-selected="false">随手笔记</button>
           </div>
-          <div class="showcase-header-right">
-            <span class="showcase-model-plain">由 gemini 3.8 flash</span>
-            <span class="showcase-header-sep">/</span>
-            <span class="showcase-version font-mono">v0.1.0-rc6</span>
+          <div class="showcase-header-right font-mono">
+            模型：Gemini 3.8 flash
           </div>
         </div>
 
@@ -181,7 +172,7 @@
           <!-- 场景 1: 日常陪伴 -->
           <div class="showcase-panel active" id="showcase-panel-presence">
             <div class="showcase-context-bar">
-              <span class="context-tag"><span class="context-dot"></span>卧室靠窗 · 刚才在阳台看晚霞</span>
+              <span class="context-tag">卧室靠窗 · 刚才在阳台看晚霞</span>
               <span class="context-meta font-mono">/chiyo_status · IDLE</span>
             </div>
             <div class="showcase-chat">
@@ -203,7 +194,7 @@
           <!-- 场景 2: 长期记忆 -->
           <div class="showcase-panel" id="showcase-panel-memory">
             <div class="showcase-context-bar">
-              <span class="context-tag"><span class="context-dot"></span>本地私有 SQLite · ~/.nyairo/memory.db</span>
+              <span class="context-tag">本地私有 SQLite · ~/.nyairo/memory.db</span>
               <span class="context-meta font-mono">/chiyo_memory · READY</span>
             </div>
             <div class="showcase-chat">
@@ -225,7 +216,7 @@
           <!-- 场景 3: 写代码 / Agent -->
           <div class="showcase-panel" id="showcase-panel-agent">
             <div class="showcase-context-bar">
-              <span class="context-tag"><span class="context-dot"></span>Agent 协同模式 · 挂载工作区目录</span>
+              <span class="context-tag">Agent 协同模式 · 挂载工作区目录</span>
               <span class="context-meta font-mono">/chiyo_consider · RUNNING</span>
             </div>
             <div class="showcase-chat">
@@ -247,7 +238,7 @@
           <!-- 场景 4: 随手笔记 -->
           <div class="showcase-panel" id="showcase-panel-notes">
             <div class="showcase-context-bar">
-              <span class="context-tag"><span class="context-dot"></span>专属便签小本 · 本地独立存储</span>
+              <span class="context-tag">专属便签小本 · 本地独立存储</span>
               <span class="context-meta font-mono">/chiyo_note · SAVED</span>
             </div>
             <div class="showcase-chat">
@@ -265,12 +256,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- 拟真应用底部输入栏 -->
-        <div class="showcase-input-bar">
-          <span class="showcase-input-placeholder">输入消息，或者输入 /chiyo_status、/chiyo_memory...</span>
-          <div class="showcase-input-action font-mono">Enter ↵</div>
         </div>
       </div><section class="capabilities-section" aria-labelledby="capabilities-title">
         <div class="section-intro">
@@ -441,7 +426,7 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261006-v23"></script>
-  <script src="app.js?v=20261006-v23"></script>
+  <script src="docs-data.js?v=20261006-v24"></script>
+  <script src="app.js?v=20261006-v24"></script>
 </body>
 </html>
