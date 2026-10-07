@@ -80,8 +80,44 @@ M0（`evidence.sqlite`）是权威事实源，**只追加、永久保留**，本
 `tests/test_alpha_identity.py` 用静态扫描与运行时 `sys.modules` 断言守住这条边界。详见
 [components/alpha/README.md](components/alpha/README.md)。
 
-### 6. M3 形成仍是全表扫描
+### 6. M3 的 Trigger Discovery 已增量化，Evaluation Context 仍为 O(history)
 
-`components/native/src/app/m3.py` 的 `M3Worker.process_once()` 与 M1 修复前是同一模式：
-把 `evidence_events` 全表读进内存，再用 `ids.index(cursor)` 定位。因此 **M3 仍带有历史线性成本**
-（NYA-AUDIT-004 只覆盖了 M1 的 `EpisodeWorker`）。这是已知的、尚未处理的性能边界。
+`components/native/src/app/m3.py` 的 `M3Worker.process_once()` 现在把「发现新 trigger」与
+「评测」分成两件事：
+
+- **Trigger discovery**：以 append-only M0 的 `evidence_events.rowid` 作为消费高水位
+  （存放在 M3 自己的 `runtime_meta.m3_consumed_rowid`，与不可变的 `initial_user_event_id`
+  起始锚点并存，两者互不影响）。历史消费完成后，稳态只读取 `rowid > watermark` 的新增行。
+- **Evaluation context**：`build_trigger` / `episode_candidates` / `_evaluate` 仍然接收完整的
+  `(occurred_at, created_at, event_id)` 全历史上下文，因为 `trigger_sequence` /
+  `source_max_sequence` / `visible_digest` 是从**绝对全局序位**推导出的持久化契约，
+  收窄上下文就会改变这些字段的取值。
+
+实测（WSL2 / Python 3.13.16 / SQLite 3.53.1；每个规模 5 次取 median，首次 warmup 丢弃；
+场景为历史已消费完成后新增 1 条真实 user trigger）：
+
+| 历史 | 旧 discovery | 新 discovery | 倍数 |
+| --- | --- | --- | --- |
+| 100 | 0.31 ms | 0.045 ms | 6.9x |
+| 600 | 1.64 ms | 0.050 ms | 32.5x |
+| 1200 | 3.53 ms | 0.124 ms | 28.4x |
+| 3200 | 9.25 ms | 0.132 ms | 69.8x |
+| 6400 | 18.87 ms | 0.118 ms | 160x |
+
+旧 discovery 随历史近似线性增长（历史 x64 对应耗时 x61）；新 discovery 在 3200 与 6400 档之间
+不再增长。查询计划由 `SCAN evidence_events` + `USE TEMP B-TREE FOR ORDER BY` 变为
+`SEARCH evidence_events USING INTEGER PRIMARY KEY (rowid>?)`。
+
+**但整体并未因此变快**：`process_once()` 仍要先做一次全历史加载供评测使用，6400 档的 overall
+实测为 19.3 ms（旧）对 19.9 ms（新），基本重合。因此准确表述是：
+
+- Trigger discovery：O(new events)
+- Evaluation context：结构上仍 O(history)
+- Overall process_once：当前仍受完整历史加载限制
+
+**不要读成「M3 整体已变成 O(new events)」** —— M3 的历史线性成本只解决了一半，
+evaluation context 仍是主要成本。
+
+late-event 行为：rowid 新而业务时间更早的事件现在能被 discovery 看见（旧的全表扫描会把它排在
+anchor 左侧而静默漏掉），但如果它的全局 sequence 位于 initial anchor 之前，仍会按既有 anchor
+规则跳过评测。这是 discovery 漏处理的修复，**不是 anchor 业务语义的变化**。
