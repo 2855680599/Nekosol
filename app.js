@@ -184,7 +184,11 @@ function initRouting() {
 }
 
 function routeHash() {
+  const urlParams = new URLSearchParams(location.search);
+  const queryDoc = (urlParams.get('doc') || urlParams.get('p') || '').trim();
   const rawHash = location.hash.replace('#', '').trim();
+  const target = rawHash || queryDoc;
+
   const homeView = document.getElementById('view-home');
   const docsView = document.getElementById('view-docs');
   const navHome = document.getElementById('nav-home');
@@ -195,7 +199,7 @@ function routeHash() {
     if (nav) nav.classList.remove('active');
   });
 
-  if (!rawHash || rawHash === 'home') {
+  if (!target || target === 'home') {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
@@ -207,7 +211,7 @@ function routeHash() {
   if (homeView) homeView.style.display = 'none';
   if (docsView) docsView.style.display = 'flex';
 
-  const { docId, anchor } = resolveDocAndAnchor(rawHash);
+  const { docId, anchor } = resolveDocAndAnchor(target);
 
   if (docId === 'roadmap' && navRoadmap) {
     navRoadmap.classList.add('active');
