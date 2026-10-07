@@ -23,7 +23,7 @@
     "PRIVACY_REVIEW.md": "522971376bfec132b4856a50c5957fbed99e56fc2feaed8822b06572c45e174d",
     "PRIVACY_TEST_EVIDENCE.json": "511bc84d12a9eaeed38b62e30a9d256df43c7c3c3df2b38011a0c8d264c7d5a2",
     "PROJECT_NAME.md": "dcc86ef9a98b3cd64b43c5955906f43257190012e3d568e06196b8975d08a395",
-    "README.md": "c9e8bacdfe7fb96f754c7840ee8b8108233d6ea51ea0875b9e05b6a9d4be537e",
+    "README.md": "742d71ac9ec2b2e55b1a0555ee27188da258d8389ad78470efa98394b73029a6",
     "REVIEW_REPORT.md": "831175e4f83262b188b3cb8eba4ec4c6e0d3baa7aec684205220e49c1b5d188e",
     "SECURITY.md": "ad5e70a432a9d0c579caf609768072f2ff2c023d6ffa84f1c675fad1053538a3",
     "TESTING.md": "dfe6c087b6f46de021fbd38e246726a1bbfdb26f91a9cc75da9fd96152920483",
@@ -12225,7 +12225,7 @@
     "website/robots.txt": "0c1da109ffbbc130df3d153cee7fc2637af65586c4fed36dc748ef98f85de08f",
     "website/sitemap.xml": "68fc102d84312ffae37a47898cf02e17e8b570ad0b175c55345cbdc322351585"
   },
-  "tree_sha256": "83e606b39465ca17a8d16c5da9dca9c070cf0f58920b83e432782810bb779d6c",
+  "tree_sha256": "3504f3d20b18d09f4ab5803af92194b949026d5f0c09f10872593c4573943ad3",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "LICENSE_CONFIRMED; runtime/tests identical to qualified R17; privacy/cold-install/actual Git publication receipts external; days of experience remain",
   "project_name": "nyairo",
