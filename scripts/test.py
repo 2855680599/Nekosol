@@ -76,7 +76,7 @@ def main():
   results.append((name,status,reason))
  def missing(needs):
   return needs=='pytest' and pytest_available() is False
- with tempfile.TemporaryDirectory(prefix='chiyo-validation-') as home:
+ with tempfile.TemporaryDirectory(prefix='nyairo-validation-') as home:
   env={k:v for k,v in os.environ.items() if k in ('PATH','LANG','TZ','SYSTEMROOT')}
   env.update(HOME=home,HERMES_HOME=home,PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1',PYTEST_ADDOPTS=PYTEST_NO_CACHE)
   for name,subdir,paths,args,needs in suites:

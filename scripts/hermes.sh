@@ -14,4 +14,12 @@ if [[ -f "$state/install.json" && "$(uname -s)" == Linux ]]; then
   fi
 fi
 export PYTHONPATH="$root${PYTHONPATH:+:$PYTHONPATH}"
+# Public NYAIRO_* configuration names win over the legacy CHIYO_* spelling, which
+# stays supported. Exporting the legacy twin of every NYAIRO_* variable is what
+# lets the whole process tree honour a public name -- including the components
+# that read os.environ directly instead of a passed mapping.
+for _public in ${!NYAIRO_*}; do
+  export "CHIYO_${_public#NYAIRO_}=${!_public}"
+done
+unset _public
 exec "$root/vendor/hermes/.venv/bin/hermes" "$@"

@@ -25,7 +25,11 @@ class PlatformScopeTests(unittest.TestCase):
         platform,key=source_scope(source)
         config={'gateway_bindings':{platform:[key]},'cognition_shadow':False}
         runner=SimpleNamespace(_draining=False,_hm_quick_commands=lambda:{})
-        cases={'chiyo_status':('','还没有启用'),'chiyo_memory':('list','没有启用'),
+        # The public names are nyairo_*; the chiyo_* names stay registered as
+        # compatibility aliases and must route identically through the gateway.
+        cases={'nyairo_status':('','还没有启用'),'nyairo_memory':('list','没有启用'),
+            'nyairo_consider':('request','没有启用'),'nyairo_note':('title | content','尚未接通'),
+            'chiyo_status':('','还没有启用'),'chiyo_memory':('list','没有启用'),
             'chiyo_consider':('request','没有启用'),'chiyo_note':('title | content','尚未接通')}
         with patch('hermes_cli.plugins.get_plugin_command_handler',side_effect=commands.get),\
              patch('chiyo_bundle.hermes_plugin.configuration',return_value=(ROOT,config)),\
@@ -36,9 +40,11 @@ class PlatformScopeTests(unittest.TestCase):
                     result=asyncio.run(GatewayInboundMixin._hm_dispatch_quick_and_plugin_commands(runner,event,source,event.get_command()))
                     self.assertTrue(result[0]);self.assertIn(expected,result[1])
             stranger=SessionSource(platform=Platform.TELEGRAM,chat_type='dm',user_id='stranger',chat_id='other-room')
-            event=MessageEvent(text='/chiyo_status',source=stranger,message_id='fixture-denied')
-            result=asyncio.run(GatewayInboundMixin._hm_dispatch_quick_and_plugin_commands(runner,event,stranger,event.get_command()))
-            self.assertTrue(result[0]);self.assertIn('拒绝',result[1])
+            for name in ('nyairo_status','chiyo_status'):
+                with self.subTest(denied=name):
+                    event=MessageEvent(text='/'+name,source=stranger,message_id='fixture-denied-'+name)
+                    result=asyncio.run(GatewayInboundMixin._hm_dispatch_quick_and_plugin_commands(runner,event,stranger,event.get_command()))
+                    self.assertTrue(result[0]);self.assertIn('拒绝',result[1])
     def test_plugin_registers_a_Telegram_compatible_memory_command(self):
         import importlib.util
         from types import SimpleNamespace
@@ -49,8 +55,12 @@ class PlatformScopeTests(unittest.TestCase):
             register_command=lambda name,handler,**kwargs:commands.update({name:handler}),
             register_hook=lambda *args:None,on_unload=lambda callback:None)
         module.register(ctx)
+        # the previous and the current spelling, each with its hyphen fallback
+        self.assertRegex('nyairo_memory',r'^[a-z0-9_]{1,32}$')
+        self.assertIs(commands['nyairo_memory'],commands['nyairo-memory'])
         self.assertRegex('chiyo_memory',r'^[a-z0-9_]{1,32}$')
         self.assertIs(commands['chiyo_memory'],commands['chiyo-memory'])
+        self.assertIs(commands['chiyo_memory'],commands['nyairo_memory'])
     def test_three_platforms_are_owner_bound_without_id_equality(self):
         for name in ('qqbot','weixin','feishu','telegram'):
             platform=Platform(name)

@@ -4,7 +4,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]/'components/alpha'
 def main():
  rows=[]
- with tempfile.TemporaryDirectory(prefix='chiyo-alpha-validation-') as home:
+ with tempfile.TemporaryDirectory(prefix='nyairo-alpha-validation-') as home:
   env={k:v for k,v in os.environ.items() if k in ('PATH','LANG','TZ')}
   env.update(HOME=home,PYTHONPATH=str(ROOT),PYTHONDONTWRITEBYTECODE='1',PYTHONUTF8='1')
   for name in ('a_clean_install','b_core_demo','c_contact_demo','d_semantics','e_safety','f_regression'):

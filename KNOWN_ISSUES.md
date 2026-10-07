@@ -68,7 +68,7 @@ M0（`evidence.sqlite`）是权威事实源，**只追加、永久保留**，本
 裁剪 M0 的代码。M1/M2/M3 是可重建派生层，`clear_derived()` 会连 formation cursor 一起清空，
 所以重建会真的重跑。
 
-`/chiyo_status` 显示 `M0 events`、`M0 database size`、`formation cursor`，通过只读连接
+`/nyairo_status` 显示 `M0 events`、`M0 database size`、`formation cursor`，通过只读连接
 （`mode=ro`）读取，观测不会修改被观测的数据库。若将来需要归档权威证据，必须先有独立设计与
 迁移方案；当前只有策略说明，没有实现。
 

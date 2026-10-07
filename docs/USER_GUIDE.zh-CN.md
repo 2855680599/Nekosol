@@ -36,9 +36,9 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 ### 继续阅读手动教程时，用对目录
 
-后面的 Git / ZIP 手动路线使用 `~/apps/chiyo-v0.1` 和 `~/.chiyo-v1`；一条命令安装使用上述新目录。已经完成引导安装，就跳过手动下载和创建配置，不要再建立第二套个人数据。
+后面的 Git / ZIP 手动路线使用 `~/apps/nyairo-v0.1` 和 `~/.nyairo`；一条命令安装使用上述新目录。已经完成引导安装，就跳过手动下载和创建配置，不要再建立第二套个人数据。
 
-阅读后面的模块、更新或备份示例时，将程序路径 `~/apps/chiyo-v0.1` 换成 `~/.local/share/nyairo/releases/v0.1.0-rc6`，将个人路径 `~/.chiyo-v1` 换成 `~/.nyairo`。`bash scripts/hermes.sh` 可直接换成 `nyairo`；需要在程序目录执行的其他脚本仍先进入实际程序目录。
+阅读后面的模块、更新或备份示例时，把示例里的程序目录换成你自己的程序目录（引导安装默认是 `~/.local/share/nyairo/releases/v0.1.0-rc6`），把示例里的个人数据目录换成你自己的（默认 `~/.nyairo`）。更早的教程写 `~/apps/nyairo-v0.1` 和 `~/.chiyo-v1`，那是同一套数据的旧目录名，仍然可用，不必迁移。`bash scripts/hermes.sh` 可直接换成 `nyairo`；需要在程序目录执行的其他脚本仍先进入实际程序目录。
 
 ### 手动安装的路线（可选）
 
@@ -48,13 +48,13 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 4. 能正常聊天后，再按 [接入 Telegram](https://nyairo.com/#telegram) 设置自己的机器人。
 5. 查看 [日常命令](https://nyairo.com/#cli-reference)，试着查看、纠正和删除记忆。
 
-从 Git 和 ZIP 安装都使用同一个程序文件夹：`$HOME/apps/chiyo-v0.1`。后面的启动命令也使用它，跟着本文安装时无需改名字。
+从 Git 和 ZIP 安装都使用同一个程序文件夹：`$HOME/apps/nyairo-v0.1`。后面的启动命令也使用它，跟着本文安装时无需改名字。
 
 ### 第一次成功时，会看到什么
 
 安装完成只是第一步。能收到模型的真实回复，才说明聊天已经跑起来。
 
-输入 `/chiyo_status` 查看状态。记忆显示 READY 表示已准备好；生活显示 IDLE 表示当前没有正在进行的活动。其他功能显示 OFF 时，可以先继续聊天，之后按 [额外功能](https://nyairo.com/#modules) 配置。
+输入 `/nyairo_status` 查看状态。记忆显示 READY 表示已准备好；生活显示 IDLE 表示当前没有正在进行的活动。其他功能显示 OFF 时，可以先继续聊天，之后按 [额外功能](https://nyairo.com/#modules) 配置。
 
 第一次先体验聊天、记忆和生活状态。世界身体、资源文档和“只给建议”的认知功能，需要另外设置。
 
@@ -62,7 +62,7 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 - **终端**：输入命令的窗口。Windows 的 PowerShell 和 Ubuntu 的终端是两个不同窗口。
 - **配置文件**：保存你的模型、账号和功能设置的文件。
-- **个人数据文件夹**：保存聊天记录、记忆和设置的地方。本文用 `$HOME/.chiyo-v1`。
+- **个人数据文件夹**：保存聊天记录、记忆和设置的地方。本文用 `$HOME/.nyairo`。
 - **模型密钥 / API Key**：模型服务给你的访问凭证，按它的说明填写，不要发给别人。
 - **profile**：下文旧文件或提示里可能出现这个词，它指的就是这一套个人设置和数据。
 
@@ -165,9 +165,9 @@ wsl --list --verbose
 选择 ZIP 时，Windows 的 C 盘在 Ubuntu 中通常写作 `/mnt/c`。下面用下载文件夹举例，**把用户名和 ZIP 文件名换成自己的**：
 
 ```bash
-mkdir -p "$HOME/apps/chiyo-v0.1"
-unzip "/mnt/c/Users/你的Windows用户名/Downloads/你下载的发行包.zip" -d "$HOME/apps/chiyo-v0.1"
-cd "$HOME/apps/chiyo-v0.1"
+mkdir -p "$HOME/apps/nyairo-v0.1"
+unzip "/mnt/c/Users/你的Windows用户名/Downloads/你下载的发行包.zip" -d "$HOME/apps/nyairo-v0.1"
+cd "$HOME/apps/nyairo-v0.1"
 ```
 
 解压后的这个文件夹应该直接包含 `scripts`、`vendor`、`components` 和 `MANIFEST.json`。然后按下一章的 ZIP 步骤安装、检查文件。
@@ -201,9 +201,9 @@ sudo apt install -y git curl unzip ripgrep less nano
 这里使用 **uv** 下载合适的 Python 并安装程序需要的依赖。按 [uv 官方安装说明](https://docs.astral.sh/uv/getting-started/installation/)，先下载并查看安装脚本，再运行：
 
 ```bash
-curl -LsSf https://astral.sh/uv/install.sh -o /tmp/chiyo-uv-install.sh
-less /tmp/chiyo-uv-install.sh
-sh /tmp/chiyo-uv-install.sh
+curl -LsSf https://astral.sh/uv/install.sh -o /tmp/nyairo-uv-install.sh
+less /tmp/nyairo-uv-install.sh
+sh /tmp/nyairo-uv-install.sh
 ```
 
 查看脚本的窗口里，按 **q** 退出，再执行最后一行。完成后，按安装器提示重新打开终端。检查工具，再安装 Python：
@@ -229,8 +229,8 @@ export UV_PYTHON=3.13
 ```bash
 mkdir -p "$HOME/apps"
 git clone --branch v0.1.0-rc6 --depth 1 \
-  https://github.com/L1AN929/nyairo.git "$HOME/apps/chiyo-v0.1"
-cd "$HOME/apps/chiyo-v0.1"
+  https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-v0.1"
+cd "$HOME/apps/nyairo-v0.1"
 bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 ```
@@ -256,9 +256,9 @@ sha256sum 你下载的发行包.zip
 然后解压、安装并检查程序文件：
 
 ```bash
-mkdir -p "$HOME/apps/chiyo-v0.1"
-unzip 你下载的发行包.zip -d "$HOME/apps/chiyo-v0.1"
-cd "$HOME/apps/chiyo-v0.1"
+mkdir -p "$HOME/apps/nyairo-v0.1"
+unzip 你下载的发行包.zip -d "$HOME/apps/nyairo-v0.1"
+cd "$HOME/apps/nyairo-v0.1"
 bash scripts/install.sh
 vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 ```
@@ -285,7 +285,7 @@ ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；�
 下面仍然在 Ubuntu / Linux 终端里操作。保持使用自己的普通 Linux 账号，进入刚才下载或解压的位置：
 
 ```bash
-cd "$HOME/apps/chiyo-v0.1"
+cd "$HOME/apps/nyairo-v0.1"
 ```
 
 如果你自行选了其他安装位置，把这一行改成那个文件夹。运行 `ls` 应能看到 `scripts` 和 `vendor`；看不到时，先找到真正的程序文件夹。
@@ -296,10 +296,10 @@ cd "$HOME/apps/chiyo-v0.1"
 
 ```bash
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
-  --home "$HOME/.chiyo-v1" \
+  --home "$HOME/.nyairo" \
   --owner local-owner \
   --memory --life --allow-local-owner
-export HERMES_HOME="$HOME/.chiyo-v1"
+export HERMES_HOME="$HOME/.nyairo"
 ```
 
 看到 **Profile ready** 就表示个人设置已经建好。后面要继续使用同一个终端、同一个数据文件夹。
@@ -330,7 +330,7 @@ bash scripts/update.sh --adopt
 进入聊天后，先发一句普通消息。能收到模型回复，再输入：
 
 ```text
-/chiyo_status
+/nyairo_status
 ```
 
 记忆显示 **READY** 表示已经准备好；生活显示 **IDLE** 表示当前没有正在进行的活动。附加功能显示 OFF，可以之后再配置。
@@ -342,8 +342,8 @@ bash scripts/update.sh --adopt
 重新打开 Ubuntu / Linux 终端，复制下面三行即可；不用再安装，也不用再创建个人设置：
 
 ```bash
-cd "$HOME/apps/chiyo-v0.1"
-export HERMES_HOME="$HOME/.chiyo-v1"
+cd "$HOME/apps/nyairo-v0.1"
+export HERMES_HOME="$HOME/.nyairo"
 ~/.local/bin/nyairo
 ```
 
@@ -356,12 +356,12 @@ rc5 在没有现有 `SOUL.md` 时会创建中性模板。nyairo 是框架，千�
 第一次建立数据文件夹后，可以在开始聊天前打开它：
 
 ```bash
-nano "$HOME/.chiyo-v1/SOUL.md"
+nano "$HOME/.nyairo/SOUL.md"
 ```
 
 用自己的名字和人格描述替换默认文字。按 **Ctrl+O** 保存，回车确认，再按 **Ctrl+X** 退出。已经在聊天时，修改后重新启动程序。
 
-已有的 `SOUL.md` 会被保留。改名字不需要改 `/chiyo_*` 命令名；这些历史名称保留着，是为了让旧配置继续能用。
+已有的 `SOUL.md` 会被保留。改名字不需要改命令名：命令现在使用 `/nyairo_*`，旧 `/chiyo_*` 名称作为兼容别名继续可用，所以旧配置、旧教程和旧习惯都不会失效。
 
 ### 这些参数是什么意思
 
@@ -375,7 +375,7 @@ nano "$HOME/.chiyo-v1/SOUL.md"
 
 ## 06 接入 Telegram
 
-引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的 `.chiyo-v1` 请换成 `.nyairo`，启动命令可换成 `nyairo`。
+引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的旧目录写法（`~/.chiyo-v1`）与默认的 `~/.nyairo` 是同一套个人数据；启动命令可换成 `nyairo`。
 
 ### 第一步：准备自己的机器人
 
@@ -386,8 +386,8 @@ nano "$HOME/.chiyo-v1/SOUL.md"
 在 Ubuntu / Linux 终端里进入程序文件夹，启动连接设置：
 
 ```bash
-cd "$HOME/apps/chiyo-v0.1"
-export HERMES_HOME="$HOME/.chiyo-v1"
+cd "$HOME/apps/nyairo-v0.1"
+export HERMES_HOME="$HOME/.nyairo"
 ~/.local/bin/nyairo gateway setup
 ```
 
@@ -418,7 +418,7 @@ print(build_session_key(source))
 复制最后打印的结果，再打开自己的配置文件：
 
 ```bash
-nano "$HOME/.chiyo-v1/chiyo/config.json"
+nano "$HOME/.nyairo/chiyo/config.json"
 ```
 
 找到 `gateway_bindings`，只修改这一项。下面是**局部示例**，把括号里的提示文字换成刚才打印的真实结果；其他设置都保留：
@@ -440,15 +440,15 @@ nano "$HOME/.chiyo-v1/chiyo/config.json"
 运行连接程序：
 
 ```bash
-export HERMES_HOME="$HOME/.chiyo-v1"
+export HERMES_HOME="$HOME/.nyairo"
 ~/.local/bin/nyairo gateway run
 ```
 
 这个窗口先保持打开。一个 token 同时只交给一个正在收消息的程序；旧 Hermes、nyairo 或独立 Native 同时使用它，可能出现 Telegram 409 冲突。
 
 1. 找到自己的机器人，发一句普通消息，确认它会回复。
-2. 发 `/chiyo_status`，确认返回 nyairo 模块状态，而不是 Unknown command。
-3. 发 `/chiyo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
+2. 发 `/nyairo_status`，确认返回 nyairo 模块状态，而不是 Unknown command。
+3. 发 `/nyairo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
 4. 告诉它一个小事实，换新会话后再问，提问时不要重复答案。
 5. 重启自己的连接程序，再检查同一套个人数据和状态是否仍然可用。
 
@@ -471,17 +471,17 @@ export HERMES_HOME="$HOME/.chiyo-v1"
 
 ```bash
 vendor/hermes/.venv/bin/python scripts/setup_profile.py \
-  --home "$HOME/.chiyo-shadow-v1" \
+  --home "$HOME/.nyairo-shadow-v1" \
   --owner local-owner --memory --life --allow-local-owner --cognition-shadow
 ```
 
-这会使用单独的数据文件夹 `$HOME/.chiyo-shadow-v1`。之后启动时，把 `HERMES_HOME` 也设置到这个位置，不能继续指向原来的文件夹。
+这会使用单独的数据文件夹 `$HOME/.nyairo-shadow-v1`。之后启动时，把 `HERMES_HOME` 也设置到这个位置，不能继续指向原来的文件夹。
 
 如果已有设置，就不要重跑创建命令。需要修改两处：
 - 个人 `chiyo/config.json` 里的 `cognition_shadow` 改为 `true`。
 - 个人 `config.yaml` 里的 `plugins.entries.chiyo.llm.enabled` 改为 `true`，保留其他设置。
 
-重新启动后，用 `/chiyo_consider 你的请求` 提问，再用 `/chiyo_status` 看结果。模型预算用完、服务出错或审计不可用时，它应告诉你实际原因。额外判断也可能产生模型费用。
+重新启动后，用 `/nyairo_consider 你的请求` 提问，再用 `/nyairo_status` 看结果。模型预算用完、服务出错或审计不可用时，它应告诉你实际原因。额外判断也可能产生模型费用。
 
 ### 读取位置和姿态：世界与身体
 
@@ -492,16 +492,16 @@ vendor/hermes/.venv/bin/python scripts/setup_profile.py \
 ```bash
 export PYTHONPATH="$PWD:$PWD/vendor/hermes"
 vendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service init \
-  --home "$HOME/.chiyo-world-v1"
+  --home "$HOME/.nyairo-world-v1"
 ```
 
 再开一个 Ubuntu / Linux 终端，进入同一个程序文件夹，用**同一个 Linux 账号**启动世界服务：
 
 ```bash
-cd "$HOME/apps/chiyo-v0.1"
+cd "$HOME/apps/nyairo-v0.1"
 export PYTHONPATH="$PWD:$PWD/vendor/hermes"
 vendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service run \
-  --home "$HOME/.chiyo-world-v1"
+  --home "$HOME/.nyairo-world-v1"
 ```
 
 这个窗口先保持运行。然后在个人 `chiyo/config.json` 里，把 `world_body_socket` 填成真实连接文件的完整位置，例如 `/home/你的Linux用户名/.chiyo-world-v1/run/read.sock`，再重新启动聊天。
@@ -514,7 +514,7 @@ vendor/hermes/.venv/bin/python -m chiyo_bundle.world_read_service run \
 
 Life Supply 用来在自己的工作区保存、读取独立文档。已经设置好的实例可以使用；普通安装的这部分仍需要管理员处理账号、服务与授权。
 
-**下面是设置检查表，还不是经过验证的双账号完整安装教程。**只运行基础安装脚本，还不能直接用 `/chiyo_note` 保存文档。
+**下面是设置检查表，还不是经过验证的双账号完整安装教程。**只运行基础安装脚本，还不能直接用 `/nyairo_note` 保存文档。
 
 1. 给资源服务准备独立的数据文件夹和连接文件位置，分别填入 `LIFE_SUPPLY_DATA_ROOT`、`LIFE_SUPPLY_SOCKET`。
 2. 让“负责批准权限的管理账号”和“聊天程序使用的账号”分开，均不使用 root。对应的设置是 `LIFE_SUPPLY_OPERATOR_UIDS`、`LIFE_SUPPLY_SERVICE_UIDS`；`LIFE_SUPPLY_ALLOWED_SUBJECTS` 指定允许使用资源的个人身份。
@@ -539,7 +539,7 @@ Life Supply 用来在自己的工作区保存、读取独立文档。已经设�
 ### 查看真实状态
 
 ```text
-/chiyo_status
+/nyairo_status
 ```
 
 检查 Memory、Life、World/Body、Life Supply 与认知的实际状态。Life 为 IDLE 表示没有正式活动，不是系统为了保持在线必须编造一项生活行为。
@@ -547,20 +547,20 @@ Life Supply 用来在自己的工作区保存、读取独立文档。已经设�
 ### 记忆操作
 
 ```text
-/chiyo_memory list
-/chiyo_memory correct ID 新内容
-/chiyo_memory delete ID
+/nyairo_memory list
+/nyairo_memory correct ID 新内容
+/nyairo_memory delete ID
 ```
 
 ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删除停止召回并排除旧上下文，原始审计保留。纠正产生的新事实也能独立删除。当前会保守排除旧短期历史，因此该段里其他未删除的话题也可能不再进入短期上下文。
 
-旧 rc4 的提示文案有一个错误，rc5 已修复：不带参数输入 `/chiyo_memory` 或输入错误格式时，可能提示使用 `/memory list/delete/correct`。在 Hermes CLI 与消息网关中，请使用上面的 `/chiyo_memory` 命令；Hermes 自带的 `/memory` 是另一套审批命令。独立 Native 运行器的命令名称仍以其自身说明为准。
+旧 rc4 的提示文案有一个错误，rc5 已修复：不带参数输入 `/nyairo_memory` 或输入错误格式时，可能提示使用 `/memory list/delete/correct`。在 Hermes CLI 与消息网关中，请使用上面的 `/nyairo_memory` 命令；Hermes 自带的 `/memory` 是另一套审批命令。独立 Native 运行器的命令名称仍以其自身说明为准。
 
 ### 资源文档
 
 ```text
-/chiyo_note 旅行计划 | 周末想去海边
-/chiyo_note read 文档ID
+/nyairo_note 旅行计划 | 周末想去海边
+/nyairo_note read 文档ID
 ```
 
 保存后记下返回的 ID，再读取。相同标题与正文重试使用同一操作编号，避免重复创建。删除聊天记忆不删除资源文档，它们是独立的内容。
@@ -568,8 +568,8 @@ ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删�
 ### 认知观察
 
 ```text
-/chiyo_consider 请考虑响应这个请求
-/chiyo_status
+/nyairo_consider 请考虑响应这个请求
+/nyairo_status
 ```
 
 查看有效判断、理由和实际模型调用；不要把“建议响应”理解为“已经发送消息”或“已经执行活动”。
@@ -596,7 +596,7 @@ ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删�
 ~/.local/bin/nyairo update
 ```
 
-统一入口已经记住首次登记的个人目录。引导安装默认是 `$HOME/.nyairo`；手动教程使用 `$HOME/.chiyo-v1`。账号、模型、人设、聊天和记忆继续使用原来的数据，不需要重新创建。要明确选择另一套个人数据时，先运行 `export HERMES_HOME="你的个人目录完整路径"`。
+统一入口已经记住首次登记的个人目录。引导安装默认是 `$HOME/.nyairo`；更早的手动教程使用 `$HOME/.chiyo-v1`，那是同一套个人数据的旧目录名。账号、模型、人设、聊天和记忆继续使用原来的数据，不需要重新创建。要明确选择另一套个人数据时，先运行 `export HERMES_HOME="你的个人目录完整路径"`。
 
 默认检查当前最新的公开体验候选。正式稳定版发布后，可以用 `~/.local/bin/nyairo update --channel stable` 只选择稳定版；目前可能提示该频道没有完整发行包。
 
@@ -614,13 +614,13 @@ ID 使用 list 返回的真实值。纠正会改变后续采用的事实；删�
 
 rc5 没有这个入口。先退出聊天并停止自己的服务，确认原来的个人目录还在。不要重跑创建个人设置的脚本。
 
-下面以旧程序在 `$HOME/apps/chiyo-v0.1`、个人数据在 `$HOME/.chiyo-v1` 为例。在 **Ubuntu / Linux 终端**输入：
+下面以旧程序在 `$HOME/apps/nyairo-v0.1`、个人数据在 `$HOME/.nyairo` 为例。在 **Ubuntu / Linux 终端**输入：
 
 ```bash
-export HERMES_HOME="$HOME/.chiyo-v1"
+export HERMES_HOME="$HOME/.nyairo"
 git clone --branch v0.1.0-rc6 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-rc6"
 cd "$HOME/apps/nyairo-rc6"
-bash scripts/update.sh --migrate-from "$HOME/apps/chiyo-v0.1"
+bash scripts/update.sh --migrate-from "$HOME/apps/nyairo-v0.1"
 ```
 
 新目录必须尚不存在。最后一条命令会检查两份程序、安装新依赖、备份个人目录、更新标准插件副本并切换入口。原来的程序目录保留，可用于回退。ZIP 用户也可以把 **Release 附件中的** `nyairo-v0.1.0-rc6.zip` 校验后解压到新目录，再执行同一条迁移命令。
@@ -668,7 +668,7 @@ World / Supply 独立服务目录、个人目录里链接到外部的文件，�
 只进入新目录，不会改变原来的后台服务。接入统一入口后，把自己服务里的 `ExecStart` 改为固定入口，例如：
 
 ```ini
-Environment=HERMES_HOME=/home/你的账号/.chiyo-v1
+Environment=HERMES_HOME=/home/你的账号/.nyairo
 ExecStart=/home/你的账号/.local/bin/nyairo gateway run
 ```
 
@@ -704,16 +704,16 @@ rc6 的内置 Hermes 仍是 **0.21.0**，固定提交 `67807e64a66044db9e0a641d9
 
 ### 一份可执行的停机备份例子
 
-引导安装用户先退出聊天和网关，再运行 `tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo`。下面的 `.chiyo-v1` 例子用于手动安装。
+引导安装用户先退出聊天和网关，再运行 `tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo`。下面的例子用手动安装的目录名；把它们换成你自己的个人数据目录即可。
 
 先停止自己的进程或 systemd 服务，确认没有同目录写入者。以下只备份手册中的基础个人目录；如果还启用了 World 与 Supply，也必须分别备份它们的真实目录。
 
 ```bash
-export HERMES_HOME="$HOME/.chiyo-v1"
-mkdir -p "$HOME/chiyo-backups"
-chmod 700 "$HOME/chiyo-backups"
-backup_file="$HOME/chiyo-backups/profile-$(date +%Y%m%d-%H%M%S).tar.gz"
-tar -czf "$backup_file" -C "$HOME" .chiyo-v1
+export HERMES_HOME="$HOME/.nyairo"
+mkdir -p "$HOME/nyairo-backups"
+chmod 700 "$HOME/nyairo-backups"
+backup_file="$HOME/nyairo-backups/profile-$(date +%Y%m%d-%H%M%S).tar.gz"
+tar -czf "$backup_file" -C "$HOME" .nyairo
 chmod 600 "$backup_file"
 tar -tzf "$backup_file" >/dev/null
 ```
@@ -732,7 +732,7 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 ### 提示 Unknown command：命令没认出来
 
-先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](https://nyairo.com/#cli-reference) 的格式输入；nyairo 的命令使用 `/chiyo_*` 名称。
+先确认自己找的是哪个机器人、使用哪个版本。试试按 [日常命令](https://nyairo.com/#cli-reference) 的格式输入；nyairo 的命令使用 `/nyairo_*` 名称；旧 `/chiyo_*` 名称仍然兼容。
 
 旧 R16 版本存在下划线命令无法正确转交给插件的问题，R17 已修复；它不是用户输入错误。其他情况下，也可能是插件没加载、启动了另一个数据文件夹，或后台仍在运行旧版本。
 
@@ -746,11 +746,11 @@ Linux UID 和本机 socket 不会因为拷贝目录就自动适配。电脑间�
 
 ### 感觉它没有记住
 
-先用 `/chiyo_status` 看记忆是否为 READY。测试时，先由你发一条文字事实，换新会话再问；不要在问题里把答案一起说出来。
+先用 `/nyairo_status` 看记忆是否为 READY。测试时，先由你发一条文字事实，换新会话再问；不要在问题里把答案一起说出来。
 
 确认两次启动使用同一个 `HERMES_HOME`，否则可能正在读另一套数据。当前图片、语音等多模态消息不会按这条文字入口形成长期记忆。
 
-旧 rc4 不带参数输入 `/chiyo_memory` 时，可能给出错误的 `/memory` 帮助提示；rc5 已修复。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](https://nyairo.com/#cli-reference) 中的 `/chiyo_memory`。
+旧 rc4 不带参数输入 `/nyairo_memory` 时，可能给出错误的 `/memory` 帮助提示；rc5 已修复。在 Hermes 和机器人中，查看、纠正和删除这里的记忆，请使用 [日常命令](https://nyairo.com/#cli-reference) 中的 `/nyairo_memory`。
 
 ### 世界或资源文档显示不可用
 
@@ -778,15 +778,15 @@ Linux 通常可以用 **systemd**，它是系统自带的后台程序管理工�
 
 ```ini
 [Unit]
-Description=CHIYO Hermes gateway
+Description=nyairo Hermes gateway
 After=network-online.target
 Wants=network-online.target
 
 [Service]
 Type=simple
 User=你的Linux运行账号
-WorkingDirectory=/home/你的账号/apps/chiyo-v0.1
-Environment=HERMES_HOME=/home/你的账号/.chiyo-v1
+WorkingDirectory=/home/你的账号/apps/nyairo-v0.1
+Environment=HERMES_HOME=/home/你的账号/.nyairo
 ExecStart=/home/你的账号/.local/bin/nyairo gateway run
 Restart=on-failure
 RestartSec=5
@@ -980,6 +980,6 @@ World/Body 的同账号 socket、Life Supply 的 operator/service 权限与有�
 
 安装命令里的 `--allow-local-owner` 是你主动允许当前 Linux 账号使用个人模块；不加它，本地入口也不会自动获得权限。Telegram 还需要按教程绑定自己的私聊，不能用平台名称代替授权。
 
-启用记忆时，模型调用的终端、读文件、浏览器、委派等工具默认全部拦截，避免读回已经停止召回的聊天。`/chiyo_*` 命令和普通聊天仍保留。若你明确需要完整 Hermes 工具，可以在自己 `chiyo/config.json` 中设置 `"memory_tool_policy": "unrestricted"` 并重启；这样就不能再承诺工具不会读回原始历史。忘记不是擦除备份，也不是隔离本地管理员。
+启用记忆时，模型调用的终端、读文件、浏览器、委派等工具默认全部拦截，避免读回已经停止召回的聊天。`/nyairo_*` 命令（旧 `/chiyo_*` 别名同理）和普通聊天仍保留。若你明确需要完整 Hermes 工具，可以在自己 `chiyo/config.json` 中设置 `"memory_tool_policy": "unrestricted"` 并重启；这样就不能再承诺工具不会读回原始历史。忘记不是擦除备份，也不是隔离本地管理员。
 
 已有用户先备份自己的数据目录，安装新程序后更新插件与授权设置，不要删除原目录或重建人设。具体步骤、Native HTTP 的访问口令、本次测试与尚存限制见 [隐私修复与升级](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc6/PRIVACY_REVIEW.md)。

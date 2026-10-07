@@ -39,8 +39,9 @@ The rule is now "the same file name, in the first directory that fits": the
 readable directory next to the store while it fits, otherwise a short private
 per-uid directory (see ``socket_path_candidates``). The name never changes, so
 the parent and the worker always agree, and no path is ever truncated. An
-explicit ``CHIYO_M0_WRITER_SOCKET_DIR`` remains the operator's override and is
-the only candidate in that case.
+explicit ``NYAIRO_M0_WRITER_SOCKET_DIR`` remains the operator's override (the
+legacy ``CHIYO_M0_WRITER_SOCKET_DIR`` is still honoured) and is the only
+candidate in that case.
 
 Operations are a closed set - ``ping``, ``append_events``, ``shutdown`` - and the
 event fields are a closed whitelist. There is no arbitrary SQL, no shell, no
@@ -93,6 +94,12 @@ LOGGER = logging.getLogger("chiyo.m0_writer_worker")
 PROTOCOL_VERSION = 1
 MODE_ENV = "CHIYO_M0_WRITER_MODE"
 SOCKET_DIR_ENV = "CHIYO_M0_WRITER_SOCKET_DIR"
+#: Public spelling of the socket-directory override. ``NYAIRO_*`` is the name users
+#: are told to set and wins when both are present; the legacy ``CHIYO_*`` name keeps
+#: working. This module reads the process environment itself (it is also importable
+#: outside ``chiyo_bundle``), so it resolves the pair here instead of relying on a
+#: caller having normalised anything.
+PUBLIC_SOCKET_DIR_ENV = "NYAIRO_M0_WRITER_SOCKET_DIR"
 #: test-only fault injection, default OFF (same pattern as the resolver's FAULT_ENV)
 FAULT_ENV = "CHIYO_M0_WRITER_FAULT"
 
@@ -163,9 +170,23 @@ def _ensure_private_dir(path: Path) -> Path:
     return path
 
 
+def socket_dir_override() -> str | None:
+    """The configured socket directory, public name first, else the legacy one.
+
+    ``NYAIRO_M0_WRITER_SOCKET_DIR`` (the documented spelling) wins when it is set
+    to a non-empty value; ``CHIYO_M0_WRITER_SOCKET_DIR`` still works unchanged.
+    """
+    env = os.environ
+    public = str(env.get(PUBLIC_SOCKET_DIR_ENV) or "").strip()
+    if public:
+        return public
+    legacy = env.get(SOCKET_DIR_ENV)
+    return legacy if legacy else None
+
+
 def _native_socket_dir(m0_db: Path) -> Path:
     """The preferred, readable directory: an explicit override, else the store's own."""
-    override = os.environ.get(SOCKET_DIR_ENV)
+    override = socket_dir_override()
     if override:
         return Path(override)
     return Path(m0_db).resolve().parent / "m0-writer-runtime"
@@ -214,9 +235,9 @@ def socket_path_candidates(m0_db: Path, *, pid: int | None = None) -> list[Path]
     the short private directories follow.
     """
     name = socket_name_for(m0_db, pid=pid)
-    override = os.environ.get(SOCKET_DIR_ENV)
-    directories = [Path(override)] if override else (
-        [_native_socket_dir(Path(m0_db))] + _fallback_socket_dirs())
+    override = socket_dir_override()
+    directories = ([Path(override)] if override
+                   else [_native_socket_dir(Path(m0_db))] + _fallback_socket_dirs())
     return [directory / name for directory in directories]
 
 
@@ -230,11 +251,13 @@ def socket_path_for(m0_db: Path, *, pid: int | None = None) -> Path:
     candidates = socket_path_candidates(m0_db, pid=pid)
     chosen = next((path for path in candidates if _fits_sun_path(path)), None)
     if chosen is None:
+        configured = (PUBLIC_SOCKET_DIR_ENV if str(os.environ.get(PUBLIC_SOCKET_DIR_ENV) or "").strip()
+                      else SOCKET_DIR_ENV if socket_dir_override() else "")
         raise WorkerError(
             "no AF_UNIX socket path fits %d bytes for %s: %s"
             % (SUN_PATH_SAFE_LIMIT, Path(m0_db).resolve(),
                ", ".join(str(path) for path in candidates))
-            + ("; shorten %s" % SOCKET_DIR_ENV if os.environ.get(SOCKET_DIR_ENV) else ""))
+            + ("; shorten %s" % configured if configured else ""))
     _ensure_private_dir(chosen.parent)
     return chosen
 

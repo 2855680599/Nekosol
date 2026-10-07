@@ -13,10 +13,10 @@ def main():
  if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,127}',a.owner):raise ValueError('Owner must be a 1–128 character ASCII identifier, starting with a letter or digit')
  home=Path(a.home).expanduser().resolve()
  if ROOT==home or ROOT in home.parents:raise ValueError('Keep your personal profile outside the release source')
- settings=home/'chiyo'
- if (settings/'config.json').exists():raise ValueError('CHIYO profile already exists; review its config rather than overwrite')
+ settings=home/'chiyo'   # compatibility path: every existing profile keeps its data here
+ if (settings/'config.json').exists():raise ValueError('nyairo profile already exists; review its config rather than overwrite')
  plugins=home/'plugins'
- if (plugins/'chiyo').exists():raise ValueError('A CHIYO plugin already exists; review it before creating a profile')
+ if (plugins/'chiyo').exists():raise ValueError('A nyairo plugin already exists; review it before creating a profile')
  config=home/'config.yaml';value=(yaml.safe_load(config.read_text()) or {}) if config.exists() else {}
  if not isinstance(value,dict):raise ValueError('Hermes config.yaml must contain a mapping')
  for section in ('context','plugins',*(['memory'] if a.memory else [])):

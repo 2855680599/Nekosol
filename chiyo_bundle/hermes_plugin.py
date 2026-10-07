@@ -27,7 +27,7 @@ def services():
     if not cfg.get('memory') and not cfg.get('life') and not cfg.get('world_body_socket'):return None
     with _lock:
         if _instance is not None:
-            if home!=_home:raise RuntimeError('CHIYO v0.1 requires one personal profile per process')
+            if home!=_home:raise RuntimeError('nyairo v0.1 requires one personal profile per process')
             return _instance
         from .instance import Instance
         # Pass a private configuration mapping; never change process environment.
@@ -71,7 +71,7 @@ def memory_tool_gate(tool_name,args,**kwargs):
     except Exception:
         return {'action':'block','message':'Personal memory configuration is unavailable; historical memory tools are blocked.'}
     if cfg.get('memory') and (cfg.get('memory_tool_policy') != 'unrestricted' or tool_name in ('memory','session_search')):
-        return {'action':'block','message':'Personal memory mode blocks model tools that could read forgotten history. Use /chiyo_memory; unrestricted tools require an explicit profile setting and remove this protection.'}
+        return {'action':'block','message':'Personal memory mode blocks model tools that could read forgotten history. Use /nyairo_memory; unrestricted tools require an explicit profile setting and remove this protection.'}
     return None
 
 def memory_command(raw_args,*,source=None):
@@ -87,7 +87,7 @@ def memory_command(raw_args,*,source=None):
             source_context="hermes:"+platform+":"+hashlib.sha256(str(key or "cli").encode()).hexdigest())
         if receipt.get('status') not in ('inserted','duplicate'):return '记忆命令未入库，修改没有执行。'
         try:
-            reply=svc.native.memory_controls.command(text,ref).replace("/memory", "/chiyo_memory")
+            reply=svc.native.memory_controls.command(text,ref).replace("/memory", "/nyairo_memory")
         except Exception as exc:
             LOG.error('chiyo.memory.command.failed error_class=%s',type(exc).__name__)
             return '记忆修改没有执行：目标 ID 或控制记录不可用。请检查 ID；记录损坏时先修复，再重试。'
@@ -141,7 +141,7 @@ def note_command(raw_args='',*,source=None):
             result=_read_supply(svc.native._life_supply_client,svc.supply_subject,'read_artifact',text[5:].strip())
             if result.get('status')!='OK':return '没有找到属于你的资源文档。'
             return str((result.get('artifact') or {}).get('title',''))+'\n'+str(result.get('content') or '')[:8192]
-        if '|' not in text:return '用法：/chiyo_note 标题 | 正文；读取：/chiyo_note read 文档ID；列表：/chiyo_status。'
+        if '|' not in text:return '用法：/nyairo_note 标题 | 正文；读取：/nyairo_note read 文档ID；列表：/nyairo_status。'
         title,content=[part.strip() for part in text.split('|',1)]
         if not title or len(title)>128 or not content or len(content)>8192:return '标题需要 1–128 字，正文需要 1–8192 字。'
         grant=cfg.get('life_supply_artifact_grant')
@@ -159,18 +159,18 @@ def consider_command(raw_args='',*,source=None):
     if not allowed(cfg,platform,key):return '这个入口没有绑定你的个人实例，已拒绝提交。'
     if not cfg.get('cognition_shadow'):return '这个配置没有启用认知 Shadow。'
     text=raw_args.strip()
-    if not text or len(text)>1600:return '用法：/chiyo_consider 你希望该个体考虑的请求（最多 1600 字）。'
+    if not text or len(text)>1600:return '用法：/nyairo_consider 你希望该个体考虑的请求（最多 1600 字）。'
     with _lock:
         svc=services();wrapper=getattr(svc,'life_wrapper',None);adapter=getattr(wrapper,'_adapter',None)
         runtime=getattr(adapter,'_RUNTIME',None);wiring=getattr(adapter,'_COGNITION',None)
-        if runtime is None or wiring is None or wiring.harness is None or wiring.is_off():return '认知观察暂时不可用，请稍后查看 /chiyo_status。'
+        if runtime is None or wiring is None or wiring.harness is None or wiring.is_off():return '认知观察暂时不可用，请稍后查看 /nyairo_status。'
         if not adapter._cognition_effect_permitted():return '生活审计尚未就绪，认知请求没有提交，请稍后重试。'
         from datetime import datetime,timedelta,timezone
         from candidate_sources_ag0 import ObservedUserRequestEvent
         now=datetime.now(timezone.utc);at=now.isoformat();turn=uuid.uuid4().hex
         if svc.memory:
             ref='telegram:'+svc.owner+':'+str(int(turn[:15],16))
-            receipt=svc.native.m37_bridge.write_user_event(conversation_id=svc.binding['conversation_id'],user_text='/chiyo_consider '+text,
+            receipt=svc.native.m37_bridge.write_user_event(conversation_id=svc.binding['conversation_id'],user_text='/nyairo_consider '+text,
                 source_ref=ref,turn_id=turn,occurred_at=at,source_kind='hermes_personal_input',
                 source_context='hermes:'+platform+':'+hashlib.sha256(str(key or 'cli').encode()).hexdigest())
             if receipt.get('status') not in ('inserted','duplicate'):return '请求证据未保存，认知判断没有提交。'
@@ -185,7 +185,7 @@ def consider_command(raw_args='',*,source=None):
         outcome=wiring.on_turn(session_hash=hashlib.sha256(str(key or 'cli').encode()).hexdigest(),turn_hash=turn,platform=platform,observed_at=at)
         write_status_evidence()
         if (outcome.get('cognition') or {}).get('enqueued'):
-            return '已提交认知 Shadow 判断。稍后用 /chiyo_status 查看结果；这次判断不会执行活动或主动联系。'
+            return '已提交认知 Shadow 判断。稍后用 /nyairo_status 查看结果；这次判断不会执行活动或主动联系。'
         return '请求已记录；当前没有启动模型判断：'+str((outcome.get('cognition') or {}).get('reason','UNKNOWN'))
 
 def write_status_evidence():

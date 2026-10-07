@@ -1,10 +1,11 @@
 """An independent personal instance: explicit identity, paths and gates."""
 from __future__ import annotations
-import json,os,sys,uuid,sqlite3,re,threading
+import json,os,sys,uuid,sqlite3,re,threading,logging
 from pathlib import Path
 from types import SimpleNamespace
 ROOT=Path(__file__).resolve().parents[1]
 NATIVE=ROOT/'components/native'
+LOGGER=logging.getLogger('nyairo.instance')
 def install_paths():
     for p in [ROOT/'vendor/hermes',NATIVE,NATIVE/'src',NATIVE/'adapters']:
         sys.path.insert(0,str(p))
@@ -42,7 +43,16 @@ class Instance:
     def __init__(self,state,*,owner='local-owner',memory=False,life=False,tools=False,host_llm=None,cognition_shadow=False,world_socket=None,supply_socket=None,supply_subject=None,environment=None):
         if not isinstance(owner,str) or not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_-]{0,127}',owner):raise ValueError('owner must be a 1–128 character ASCII identifier, starting with a letter or digit')
         if memory and tools:raise ValueError('memory profiles cannot enable arbitrary host tools')
-        self.environment=dict(os.environ if environment is None else environment)
+        # Public NYAIRO_* configuration names are resolved once, here, into the
+        # private mapping this instance passes down; os.environ is never modified.
+        # A public name wins over its legacy CHIYO_* twin (chiyo_bundle.env_alias),
+        # and a conflict between the two is reported by NAME only -- values may be
+        # credentials.
+        from chiyo_bundle.env_alias import apply as apply_env_aliases,conflicts
+        source=os.environ if environment is None else environment
+        for legacy,public in conflicts(source):
+            LOGGER.warning('nyairo.env.alias_conflict legacy=%s public=%s using=%s',legacy,public,public)
+        self.environment=apply_env_aliases(source)
         self.state=Path(state).expanduser().resolve();self.state.mkdir(parents=True,exist_ok=True,mode=0o700)
         os.chmod(self.state,0o700)
         self.owner=owner;self.memory=memory;self.life=life;self.counter=0;self.supply_subject=supply_subject

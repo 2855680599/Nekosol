@@ -341,6 +341,21 @@ class OriginalNativeRuntime:
             return 'failed'
 
 
+def _public_env(name: str) -> str:
+    """Value for a legacy ``CHIYO_*`` name, honouring its public ``NYAIRO_*`` twin first.
+
+    The public spelling wins when set to a non-empty value; the legacy name keeps
+    working unchanged. Used by this module's own entry point, which reads the
+    process environment directly and cannot import ``chiyo_bundle`` (the bundle
+    imports this module).
+    """
+    if name.startswith("CHIYO_"):
+        public = os.environ.get("NYAIRO_" + name[len("CHIYO_"):])
+        if public is not None and public.strip():
+            return public
+    return os.environ.get(name, "")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Chiyo Original Instance Native Telegram Runner")
     parser.add_argument("--data-dir", default="./data/native/data")
@@ -374,20 +389,23 @@ def main() -> None:
         raise SystemExit("TELEGRAM_BOT_TOKEN is required")
     _TOKEN_FOR_LOGGING["value"] = token
 
-    # 2. Read model API key
-    key = os.environ.get("CHIYO_MODEL_API_KEY", "")
+    # 2. Read model API key. The public NYAIRO_* name wins over its legacy
+    #    CHIYO_* twin (see chiyo_bundle/env_alias.py); this module reads the
+    #    process environment itself, so it resolves the pair here.
+    key = _public_env("CHIYO_MODEL_API_KEY")
     if not key:
         alpha_env = Path("./config/native/alpha.env")
         if alpha_env.exists():
             for line in alpha_env.read_text().splitlines():
-                if line.startswith("CHIYO_MODEL_API_KEY="):
+                if line.startswith(("CHIYO_MODEL_API_KEY=", "NYAIRO_MODEL_API_KEY=")):
                     key = line.split("=", 1)[1].strip().strip('"').strip("'")
                     break
     if not key:
-        raise SystemExit("CHIYO_MODEL_API_KEY is required")
+        raise SystemExit("NYAIRO_MODEL_API_KEY (or the legacy CHIYO_MODEL_API_KEY) is required")
 
-    if not os.environ.get("CHIYO_MODEL_ENDPOINT") or not os.environ.get("CHIYO_MODEL"):
-        raise SystemExit("set CHIYO_MODEL and CHIYO_MODEL_ENDPOINT before starting chat")
+    if not _public_env("CHIYO_MODEL_ENDPOINT") or not _public_env("CHIYO_MODEL"):
+        raise SystemExit("set NYAIRO_MODEL and NYAIRO_MODEL_ENDPOINT "
+                         "(or the legacy CHIYO_MODEL / CHIYO_MODEL_ENDPOINT) before starting chat")
     runtime = OriginalNativeRuntime(data_dir, trace_dir, key)
     runtime, native_life = wire_runtime(runtime)
     from native_runtime_identity import write_identity

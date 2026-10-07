@@ -4,7 +4,7 @@
 
 最新 R17（2026-10-04）：3,718 文件，**45,071 通过、0 失败、440 条件跳过**，1414.6 秒，8 并发、900 秒文件上限、关闭自动重试。下列早期过程只保留为历史说明，其中 R16 独立结果不可核验。
 
-R17 同时重新执行双 Python 千代组件与每版 36 项宿主边界，四个命令的真实插件发现与完整网关路径、陌生 DM 拒绝、旧代码负对照、41 文件补丁生命周期、F/E9 静态检查通过。17 段 Bash 示例语法与实际会话 key 示例通过；作者确认自然 Telegram `/chiyo_status` 正常返回全部模块状态。
+R17 同时重新执行双 Python 千代组件与每版 36 项宿主边界，四个命令的真实插件发现与完整网关路径、陌生 DM 拒绝、旧代码负对照、41 文件补丁生命周期、F/E9 静态检查通过。17 段 Bash 示例语法与实际会话 key 示例通过；作者确认自然 Telegram `/nyairo_status` 正常返回全部模块状态。
 
 源 ZIP 无 Git 元数据；两次验收环境准备失败的日志保留。最后完整运行在隔离、真实 Git 元数据的测试目录中完成，不把该元数据打入发行包。
 
@@ -109,5 +109,5 @@ vendor/hermes/.venv/bin/python scripts/test.py
 
 - **M0（`evidence.sqlite`）是权威事实源，永久保留、只追加。** M0 自己用数据库触发器（`evidence_no_update` / `evidence_no_delete`）拒绝 UPDATE 与 DELETE，本项目也**没有**任何定期清空、自动归档或裁剪 M0 的代码。
 - **M1 / M2 / M3 是可重建的派生层**，随时可以从 M0 重新形成（`EpisodeStore.clear_derived()` 连同 formation cursor 一起清空，因此重建会真的重跑，而不是变成空操作）。
-- 观测面：`/chiyo_status` 会显示 `M0 events`、`M0 database size`、`formation cursor`；`Instance.storage_policy()` 以只读方式（`mode=ro`）读取这些数字，观测本身不会修改被观测的数据库。
+- 观测面：`/nyairo_status` 会显示 `M0 events`、`M0 database size`、`formation cursor`；`Instance.storage_policy()` 以只读方式（`mode=ro`）读取这些数字，观测本身不会修改被观测的数据库。
 - 未来若需要归档权威证据，必须先有独立设计与迁移方案；本轮只建立策略说明与观测，**不实现自动归档**。

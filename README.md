@@ -14,7 +14,7 @@ nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态�
 | 认知观察 | 对明确请求给出模型判断与原因，包含预算、超时和故障保护 | 可选开启；Shadow 判断不直接执行动作 |
 | 个人文档与资源 | 在个人工作空间中保存、读取独立文档 | 需要 Life Supply 服务与有限授权；通用装配仍有已知限制 |
 
-`/chiyo_status` 查看模块实际状态，`/chiyo_consider` 提交认知观察请求，`/chiyo_note` 保存或读取文档。命令是否可用取决于相应服务和配置；安装依赖并不自动完成全部模块装配。详见 [功能与来源](FEATURES.md) 和 [第一版功能状态](https://nyairo.com/#status-matrix)。
+`/nyairo_status` 查看模块实际状态，`/nyairo_consider` 提交认知观察请求，`/nyairo_note` 保存或读取文档。命令是否可用取决于相应服务和配置；安装依赖并不自动完成全部模块装配。详见 [功能与来源](FEATURES.md) 和 [第一版功能状态](https://nyairo.com/#status-matrix)。
 
 ## 从哪里开始
 
