@@ -505,6 +505,9 @@ function initShowcaseTabs() {
       panels.forEach(panel => {
         if (panel.id === `showcase-panel-${targetKey}`) {
           panel.style.display = 'grid';
+          panel.style.animation = 'none';
+          void panel.offsetWidth;
+          panel.style.animation = 'showcase-fade-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards';
         } else {
           panel.style.display = 'none';
         }
