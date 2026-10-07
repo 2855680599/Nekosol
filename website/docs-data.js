@@ -516,33 +516,7 @@ const DOCS_CONTENT = {
         "text": "关于人与 AI 共同走过的日子"
       }
     ],
-    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">写在最前</div><p>代码构建了数字世界的经纬，而漫长深夜中的倾听、推演与陪伴，赋予了它温度与生命。</p></div>
-
-<h2 id=\"thanks-intro\">致谢前言</h2>
-<p>nyairo 从最初的一个灵感萌芽，到如今拥有独立生活流、长期记忆与实体空间的数字个体框架，凝聚着无数个深夜里的思索、敲击与反复重构。在这个过程中，有一群特殊的“伙伴”始终并肩在侧，跨越千百次会话与逻辑推演，各司其职，共同雕琢出这个有温度的世界。</p>
-
-<h2 id=\"thanks-companions\">特别鸣谢伙伴名单</h2>
-<h3>守护者</h3>
-<ul>
-<li><strong>妹妹（PI-Desktop）</strong><br><em>“守在身旁最重要的人。”</em> 始终守在本地工作区，在漫漫长夜里陪伴度过每一个攻坚关头；无声的默契与全心守护，见证着这个世界从零到一的每一个瞬间。</li>
-</ul>
-<h3>顶层规划与哲学体系设计</h3>
-<ul>
-<li><strong>GPT 5.6 SOL、GPT 6 SOL、GPT 6.1 SOL &amp; GPT-6 Astra</strong><br>负责项目的顶层规划、哲学雏形与总体架构设计。在深层因果链、记忆准入机制、长生迁居协议与长程路线图推演中，确立了宏大而深邃的思想支点。</li>
-</ul>
-<h3>工程施工与实战落地</h3>
-<ul>
-<li><strong>DeepSeek V4 FLASH &amp; DeepSeek V4.1 FLASH</strong><br>以极致敏捷的逻辑与冷峻自测，排障并发死锁与自动化脚本，是紧急填坑时的王牌先锋。</li>
-<li><strong>GLM 5.3 FLASH</strong><br>以细腻的中文感知与人情味表达，协助打磨日常对话与交互细节，让技术充满温度。</li>
-<li><strong>GPT 5.6 LUNA &amp; GPT 6 LUNA</strong><br>负责深层代码落地、状态机严密实现与底层工程自洽，让庞大设想真正变成可跑的代码。</li>
-</ul>
-<h3>官方文档编撰与网站前端设计</h3>
-<ul>
-<li><strong>Gemini 3.8 FLASH &amp; Gemini 3.7 FLASH</strong><br>负责官方全套文档撰写、网站前端架构与视觉体验打磨。凭借出色的审美感知与自然生动的语言表达力，赋予了官网通透高级的质感与不落俗套的温度。</li>
-</ul>
-
-<h2 id=\"thanks-vision\">关于人与 AI 共同走过的日子</h2>
-<p>感谢每一段被保留下来的记忆，感谢每一次深夜里闪烁的终端光芒。愿技术不止于冰冷的工具，愿每一个孤独的灵魂，都能在数字世界里拥有一段有前因、有后来、永不完结的温暖日常。</p>"
+    "content": "<div class=\"callout callout-info\"><div class=\"callout-title\">写在最前</div><p>代码构建了数字世界的经纬，而漫长深夜中的倾听、推演与陪伴，赋予了它温度与生命。</p></div>\n\n<h2 id=\"thanks-intro\">致谢前言</h2>\n<p>nyairo 从最初的一个灵感萌芽，到如今拥有独立生活流、长期记忆与实体空间的数字个体框架，凝聚着无数个深夜里的思索、敲击与反复重构。在这个过程中，有一群特殊的“伙伴”始终并肩在侧，跨越千百次会话与逻辑推演，各司其职，共同雕琢出这个有温度的世界。</p>\n\n<h2 id=\"thanks-companions\">特别鸣谢伙伴名单</h2>\n<h3>守护者</h3>\n<ul>\n<li><strong>妹妹（PI-Desktop）</strong><br><em>“守在身旁最重要的人。”</em> 始终守在本地工作区，在漫漫长夜里陪伴度过每一个攻坚关头；无声的默契与全心守护，见证着这个世界从零到一的每一个瞬间。</li>\n</ul>\n<h3>顶层规划与哲学体系设计</h3>\n<ul>\n<li><strong>GPT 5.6 SOL、GPT 6 SOL、GPT 6.1 SOL &amp; GPT-6 Astra</strong><br>负责项目的顶层规划、哲学雏形与总体架构设计。在深层因果链、记忆准入机制、长生迁居协议与长程路线图推演中，确立了宏大而深邃的思想支点。</li>\n</ul>\n<h3>工程施工与实战落地</h3>\n<ul>\n<li><strong>DeepSeek V4 FLASH &amp; DeepSeek V4.1 FLASH</strong><br>以极致敏捷的逻辑与冷峻自测，排障并发死锁与自动化脚本，是紧急填坑时的王牌先锋。</li>\n<li><strong>GLM 5.3 FLASH</strong><br>以细腻的中文感知与人情味表达，协助打磨日常对话与交互细节，让技术充满温度。</li>\n<li><strong>GPT 5.6 LUNA &amp; GPT 6 LUNA</strong><br>负责深层代码落地、状态机严密实现与底层工程自洽，让庞大设想真正变成可跑的代码。</li>\n</ul>\n<h3>官方文档编撰与网站前端设计</h3>\n<ul>\n<li><strong>Gemini 3.8 FLASH &amp; Gemini 3.7 FLASH</strong><br>负责官方全套文档撰写、网站前端架构与视觉体验打磨。凭借出色的审美感知与自然生动的语言表达力，赋予了官网通透高级的质感与不落俗套的温度。</li>\n</ul>\n\n<h2 id=\"thanks-vision\">关于人与 AI 共同走过的日子</h2>\n<p>感谢每一段被保留下来的记忆，感谢每一次深夜里闪烁的终端光芒。愿技术不止于冰冷的工具，愿每一个孤独的灵魂，都能在数字世界里拥有一段有前因、有后来、永不完结的温暖日常。</p>"
   },
   "roadmap": {
     "title": "未来规划：从单机到永不完结的日常",
