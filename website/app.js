@@ -550,28 +550,31 @@ async function copyDocumentationText(code, btn) {
    ========================================================================== */
 function initShowcaseTabs() {
   const tabs = [...document.querySelectorAll('.showcase-tab')];
+  const track = document.getElementById('showcase-track');
   if (!tabs.length) return;
 
-  const activate = (targetKey, focus = false) => {
-    tabs.forEach(t => {
-      const isCurrent = t.getAttribute('data-tab') === targetKey;
+  const activate = (targetIndex, focus = false) => {
+    tabs.forEach((t, i) => {
+      const isCurrent = i === targetIndex;
       t.classList.toggle('active', isCurrent);
       t.setAttribute('aria-selected', String(isCurrent));
       t.tabIndex = isCurrent ? 0 : -1;
       const key = t.getAttribute('data-tab');
       const panel = document.getElementById(`showcase-panel-${key}`);
       if (panel) {
-        panel.removeAttribute('hidden');
         panel.classList.toggle('active', isCurrent);
       }
       if (focus && isCurrent) t.focus();
     });
+    if (track) {
+      track.style.transform = `translateX(-${targetIndex * 100}%)`;
+    }
   };
 
   tabs.forEach((tab, index) => {
     tab.addEventListener('click', (e) => {
       e.preventDefault();
-      activate(tab.getAttribute('data-tab'));
+      activate(index);
     });
     tab.addEventListener('keydown', e => {
       let targetIdx;
@@ -581,7 +584,7 @@ function initShowcaseTabs() {
       if (e.key === 'End') targetIdx = tabs.length - 1;
       if (targetIdx === undefined) return;
       e.preventDefault();
-      activate(tabs[targetIdx].getAttribute('data-tab'), true);
+      activate(targetIdx, true);
     });
   });
 }
