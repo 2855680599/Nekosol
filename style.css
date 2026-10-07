@@ -1460,10 +1460,21 @@ a:focus-visible, button:focus-visible {
    双重生命形态展示面板 (Dual-Nature Showcase Panel)
    纯正石墨灰阶 · 极简通透毛玻璃 · 顶光内阴影 · 纯净和谐
    ========================================================================== */
+.showcase-section {
+  width: 100%;
+  margin-bottom: 56px;
+}
+
+.showcase-intro {
+  text-align: center;
+  margin: 0 auto 24px;
+  max-width: 760px;
+}
+
 .daily-showcase {
   max-width: 1040px;
   width: 100%;
-  margin: 40px auto 52px;
+  margin: 0 auto;
   background: var(--c-bg-card);
   border: 1px solid var(--c-border);
   border-radius: 14px;
