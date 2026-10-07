@@ -1748,3 +1748,100 @@ a:focus-visible, button:focus-visible {
   background: rgba(0, 0, 0, 0.04);
   border-color: rgba(0, 0, 0, 0.08);
 }
+
+
+/* ==========================================================================
+   未来演进路线图样式 (Roadmap Grid)
+   ========================================================================== */
+.roadmap-section {
+  margin: 52px auto 0;
+  max-width: 100%;
+}
+
+.roadmap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.roadmap-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 20px;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+}
+
+.roadmap-card:hover {
+  background: var(--c-bg-card-hover);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.5);
+}
+
+.roadmap-phase {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--c-text-3);
+  margin-bottom: 8px;
+}
+
+.roadmap-name {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--c-text-1);
+  margin-bottom: 8px;
+  letter-spacing: -0.01em;
+}
+
+.roadmap-desc {
+  font-size: 0.82rem;
+  color: var(--c-text-2);
+  line-height: 1.55;
+  flex: 1;
+  margin-bottom: 16px;
+}
+
+.roadmap-status-tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  width: fit-content;
+  font-weight: 500;
+}
+
+.roadmap-status-tag.current {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #4ade80;
+}
+
+.roadmap-status-tag.planned {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--c-text-3);
+}
+
+.roadmap-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+@media (max-width: 1024px) {
+  .roadmap-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+  }
+}
