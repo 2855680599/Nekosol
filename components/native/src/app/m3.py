@@ -114,6 +114,45 @@ class SourceReader:
         finally:
             connection.close()
 
+    #: Columns the trigger-discovery path needs. Projected explicitly so the
+    #: steady state never pays for SELECT *; the evaluation context still uses
+    #: events(), which is deliberately left unchanged.
+    DISCOVERY_COLUMNS = (
+        "event_id", "occurred_at", "created_at", "conversation_id", "turn_id",
+        "source_origin", "delivery_status", "content", "source_refs_json",
+    )
+
+    def trigger_candidates_since(self, after_rowid: int, limit: int = 200):
+        """One trigger-discovery batch, in M0 append (rowid) order.
+
+        rowid is the consumption order; occurred_at remains the business time and
+        is still handled by build_trigger() over the full ordered history. Using
+        rowid here means a late-arriving event (larger rowid, earlier occurred_at)
+        is still discovered, where an occurred_at watermark would skip it forever.
+        """
+        columns = ", ".join(self.DISCOVERY_COLUMNS)
+        connection = connect_ro(self.m0_path)
+        try:
+            rows = connection.execute(
+                "SELECT rowid AS m0_rowid, " + columns + " FROM evidence_events "
+                "WHERE rowid > ? ORDER BY rowid ASC LIMIT ?",
+                (int(after_rowid), int(limit)),
+            ).fetchall()
+            return [(int(row["m0_rowid"]), self._row_event(row)) for row in rows]
+        finally:
+            connection.close()
+
+    def m0_rowid_for(self, event_id: str) -> int | None:
+        """rowid of one M0 event, or None. Used to place the initial watermark."""
+        connection = connect_ro(self.m0_path)
+        try:
+            row = connection.execute(
+                "SELECT rowid FROM evidence_events WHERE event_id=?", (event_id,)
+            ).fetchone()
+            return int(row[0]) if row is not None else None
+        finally:
+            connection.close()
+
     def m1_data(self) -> tuple[list[dict[str, Any]], dict[str, list[dict[str, Any]]]]:
         connection = connect_ro(self.m1_path)
         try:
@@ -340,6 +379,11 @@ class M3Store:
                 """
             )
             connection.execute("INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES(1, ?)", (utc_now(),))
+            # v2 records that this runtime supports the consumed-rowid watermark.
+            # No schema change is needed (runtime_meta already exists), so an old
+            # database opens directly: nothing is dropped and no rebuild is asked
+            # of the operator. Idempotent by INSERT OR IGNORE.
+            connection.execute("INSERT OR IGNORE INTO schema_migrations(version, applied_at) VALUES(2, ?)", (utc_now(),))
             connection.commit()
         finally:
             connection.close()
@@ -353,6 +397,47 @@ class M3Store:
                 connection.commit()
             elif str(row[0]) != initial_user_event_id:
                 raise RuntimeError("m3 initial cursor differs from stored cursor")
+        finally:
+            connection.close()
+
+    #: Trigger-discovery consumption watermark. Independent of the immutable
+    #: initial_user_event_id anchor: the anchor is the business start, this is
+    #: only "how far discovery has consumed". None means no watermark yet.
+    WATERMARK_KEY = "m3_consumed_rowid"
+
+    def consumed_rowid(self) -> int | None:
+        connection = self._connect()
+        try:
+            row = connection.execute(
+                "SELECT value FROM runtime_meta WHERE key=?", (self.WATERMARK_KEY,)
+            ).fetchone()
+            if row is None:
+                return None
+            try:
+                return int(row[0])
+            except (TypeError, ValueError):
+                return None
+        finally:
+            connection.close()
+
+    def set_consumed_rowid(self, rowid: int) -> None:
+        connection = self._connect()
+        try:
+            connection.execute(
+                "INSERT OR REPLACE INTO runtime_meta(key,value) VALUES(?,?)",
+                (self.WATERMARK_KEY, str(int(rowid))),
+            )
+            connection.commit()
+        finally:
+            connection.close()
+
+    def reset_consumed_rowid(self) -> None:
+        """Clear the discovery watermark only; the anchor is never touched."""
+        connection = self._connect()
+        try:
+            connection.execute(
+                "DELETE FROM runtime_meta WHERE key=?", (self.WATERMARK_KEY,))
+            connection.commit()
         finally:
             connection.close()
 
@@ -581,27 +666,76 @@ class M3Worker:
         availability = {"outcome": "NO_SURFACE", "selected_refs": [], "reason_code": "FAILED_CLOSED", "surface_payload": {"reply_authority": False}}
         return self.store.record(evaluation, [], [], availability, [], "FAILED_CLOSED")
 
+    #: trigger-discovery batch size
+    DISCOVERY_BATCH = 200
+
     def process_once(self, initial_user_event_id: str) -> dict[str, int]:
+        """Discover new triggers incrementally; evaluate them with full context.
+
+        Only discovery changed. The evaluation context is still the complete
+        history in (occurred_at, created_at, event_id) order, because
+        build_trigger / episode_candidates / _evaluate derive absolute global
+        sequence numbers from it -- narrowing that would change the persisted
+        trigger_sequence / source_max_sequence contract.
+        """
         all_events = self.reader.events()
         ids = [str(item["event_id"]) for item in all_events]
         if initial_user_event_id not in ids:
             raise RuntimeError("m3 initial cursor event not found")
-        cursor = ids.index(initial_user_event_id)
-        counts = {"evaluated": 0, "duplicate": 0, "skipped_non_user": 0, "failed_closed": 0}
-        for event in all_events[cursor + 1 :]:
-            if event.get("source_origin") != USER_ORIGIN or event.get("delivery_status") != "RECEIVED":
-                counts["skipped_non_user"] += 1
-                continue
-            try:
-                trigger = self.reader.build_trigger(event, all_events)
-                result = self._evaluate(trigger, all_events)
-                counts["duplicate" if result == "duplicate" else "evaluated"] += 1
-            except Exception as exc:
-                self.logger.error("m3.evaluation.failed trigger=%s error_class=%s", event.get("event_id"), type(exc).__name__)
+        sequence_by_id = {event_id: index + 1 for index, event_id in enumerate(ids)}
+        anchor_sequence = sequence_by_id[initial_user_event_id]
+
+        counts = {"evaluated": 0, "duplicate": 0, "skipped_non_user": 0,
+                  "failed_closed": 0, "skipped_before_anchor": 0, "skipped_unknown": 0}
+        watermark = self.store.consumed_rowid()
+        if watermark is None:
+            # First run on this database: start at the anchor's own M0 row rather
+            # than assuming MAX(rowid), so history is discovered rather than
+            # skipped. processed_triggers still decides what is already done.
+            anchor_rowid = self.reader.m0_rowid_for(str(initial_user_event_id))
+            watermark = int(anchor_rowid) if anchor_rowid is not None else 0
+
+        while True:
+            batch = self.reader.trigger_candidates_since(watermark, self.DISCOVERY_BATCH)
+            if not batch:
+                return counts
+            safe = watermark
+            for rowid, event in batch:
+                if (event.get("source_origin") != USER_ORIGIN
+                        or event.get("delivery_status") != "RECEIVED"):
+                    counts["skipped_non_user"] += 1
+                    safe = rowid
+                    continue
+                position = sequence_by_id.get(str(event["event_id"]))
+                if position is None:
+                    counts["skipped_unknown"] += 1
+                    safe = rowid
+                    continue
+                if position < anchor_sequence:
+                    # business-anchor guard: an event ordering before the anchor is
+                    # not a normal history trigger. (A late event lands here too;
+                    # its sequence is still computed by build_trigger from the full
+                    # ordering, so the sequence contract is untouched.)
+                    counts["skipped_before_anchor"] += 1
+                    safe = rowid
+                    continue
                 try:
                     trigger = self.reader.build_trigger(event, all_events)
-                    self._record_failed_closed(trigger)
-                except Exception:
-                    pass
-                counts["failed_closed"] += 1
-        return counts
+                    result = self._evaluate(trigger, all_events)
+                    counts["duplicate" if result == "duplicate" else "evaluated"] += 1
+                    safe = rowid
+                except Exception as exc:
+                    self.logger.error("m3.evaluation.failed trigger=%s error_class=%s",
+                                      event.get("event_id"), type(exc).__name__)
+                    try:
+                        trigger = self.reader.build_trigger(event, all_events)
+                        self._record_failed_closed(trigger)
+                    except Exception:
+                        pass
+                    counts["failed_closed"] += 1
+                    # The watermark must never move past a failed row: persist the
+                    # last safely-consumed one and stop this pass.
+                    self.store.set_consumed_rowid(safe)
+                    return counts
+            watermark = safe
+            self.store.set_consumed_rowid(watermark)

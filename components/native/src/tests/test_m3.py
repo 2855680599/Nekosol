@@ -235,3 +235,163 @@ class M3ShadowTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class _BoomWorker(M3Worker):
+    """Raises inside _evaluate for one nominated trigger event."""
+
+    def __init__(self, reader, store, boom_event_id: str):
+        super().__init__(reader, store)
+        self.boom_event_id = boom_event_id
+
+    def _evaluate(self, trigger, all_events):
+        if str(trigger.event.get("event_id")) == self.boom_event_id:
+            raise RuntimeError("simulated evaluation failure")
+        return super()._evaluate(trigger, all_events)
+
+
+class M3WatermarkTests(unittest.TestCase):
+    """Trigger-discovery watermark, independent of the initial anchor."""
+
+    def _tmp(self):
+        return tempfile.TemporaryDirectory()
+
+    @staticmethod
+    def _migrations(store_path: Path) -> list[int]:
+        with closing(sqlite3.connect(store_path)) as connection:
+            return [int(row[0]) for row in connection.execute(
+                "SELECT version FROM schema_migrations ORDER BY version")]
+
+    def test_old_db_without_watermark_opens_normally(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            self.assertIsNone(store.consumed_rowid())
+            self.assertTrue(store.verify()["ok"])
+
+    def test_migration_v2_is_idempotent(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            _fixture(tmp_path)
+            path = tmp_path / "recall.sqlite"
+            M3Store(path)
+            M3Store(path)          # second construction must be safe and idempotent
+            M3Store(path)
+            self.assertEqual(self._migrations(path), [1, 2])
+
+    def test_initial_anchor_is_unchanged_and_independent(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            store.ensure_cursor("e1")          # idempotent
+            with closing(sqlite3.connect(tmp_path / "recall.sqlite")) as connection:
+                anchor = connection.execute(
+                    "SELECT value FROM runtime_meta WHERE key='initial_user_event_id'"
+                ).fetchone()[0]
+            self.assertEqual(anchor, "e1")
+            self.assertIsNone(store.consumed_rowid())
+            store.set_consumed_rowid(7)
+            self.assertEqual(store.consumed_rowid(), 7)
+            # advancing the watermark never rewrites the anchor
+            with closing(sqlite3.connect(tmp_path / "recall.sqlite")) as connection:
+                anchor_after = connection.execute(
+                    "SELECT value FROM runtime_meta WHERE key='initial_user_event_id'"
+                ).fetchone()[0]
+            self.assertEqual(anchor_after, "e1")
+
+    def test_first_process_establishes_watermark(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, _ = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            self.assertIsNone(store.consumed_rowid())
+            counts = M3Worker(reader, store).process_once("e1")
+            self.assertEqual(counts["evaluated"], 1)          # e3 only
+            self.assertGreater(counts["skipped_non_user"], 0)  # e2 is chiyo output
+            watermark = store.consumed_rowid()
+            self.assertIsNotNone(watermark)
+            self.assertEqual(watermark, reader.m0_rowid_for("e3"))
+
+    def test_no_new_events_keeps_watermark(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, _ = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            worker = M3Worker(reader, store)
+            worker.process_once("e1")
+            first = store.consumed_rowid()
+            again = worker.process_once("e1")
+            self.assertEqual(again["evaluated"], 0)
+            self.assertEqual(store.consumed_rowid(), first)
+            # the discovery query must return nothing to do
+            self.assertEqual(reader.trigger_candidates_since(first, 200), [])
+
+    def test_new_event_advances_watermark(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, m0 = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            worker = M3Worker(reader, store)
+            worker.process_once("e1")
+            before = store.consumed_rowid()
+            _add_event(m0, "e4", 4, "USER_VISIBLE_INPUT", "再看看图书馆那件事")
+            counts = worker.process_once("e1")
+            self.assertEqual(counts["evaluated"], 1)
+            after = store.consumed_rowid()
+            self.assertGreater(after, before)
+            self.assertEqual(after, reader.m0_rowid_for("e4"))
+
+    def test_failure_does_not_advance_past_the_failed_row(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, m0 = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            # two fresh triggers; the first of them fails
+            _add_event(m0, "e4", 4, "USER_VISIBLE_INPUT", "第一条新的用户事实")
+            _add_event(m0, "e5", 5, "USER_VISIBLE_INPUT", "第二条新的用户事实")
+            worker = _BoomWorker(reader, store, "e4")
+            counts = worker.process_once("e1")
+            self.assertEqual(counts["failed_closed"], 1)
+            watermark = store.consumed_rowid()
+            self.assertLess(watermark, reader.m0_rowid_for("e4"))
+            self.assertEqual(watermark, reader.m0_rowid_for("e3"))
+            # a retry on a healthy worker resumes from just after the watermark
+            resumed = M3Worker(reader, store).process_once("e1")
+            self.assertEqual(resumed["failed_closed"], 0)
+            self.assertEqual(store.consumed_rowid(), reader.m0_rowid_for("e5"))
+
+    def test_restart_preserves_watermark(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, _ = _fixture(tmp_path)
+            path = tmp_path / "recall.sqlite"
+            first = M3Store(path)
+            first.ensure_cursor("e1")
+            M3Worker(reader, first).process_once("e1")
+            saved = first.consumed_rowid()
+            reopened = M3Store(path)                     # simulates a restart
+            self.assertEqual(reopened.consumed_rowid(), saved)
+
+    def test_reset_watermark_allows_a_fresh_pass(self) -> None:
+        with self._tmp() as directory:
+            tmp_path = Path(directory)
+            reader, _, _ = _fixture(tmp_path)
+            store = M3Store(tmp_path / "recall.sqlite")
+            store.ensure_cursor("e1")
+            worker = M3Worker(reader, store)
+            worker.process_once("e1")
+            self.assertIsNotNone(store.consumed_rowid())
+            store.reset_consumed_rowid()
+            self.assertIsNone(store.consumed_rowid())
+            # processed_triggers is still the second correctness layer: the history
+            # is re-discovered but nothing is evaluated twice
+            again = worker.process_once("e1")
+            self.assertEqual(again["evaluated"], 0)
+            self.assertEqual(again["duplicate"], 1)
