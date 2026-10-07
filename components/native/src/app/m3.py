@@ -694,6 +694,11 @@ class M3Worker:
             # skipped. processed_triggers still decides what is already done.
             anchor_rowid = self.reader.m0_rowid_for(str(initial_user_event_id))
             watermark = int(anchor_rowid) if anchor_rowid is not None else 0
+            # Persist the starting point immediately: a first run that discovers
+            # nothing new must still establish the watermark, otherwise every
+            # later call repeats the anchor lookup and the steady state never
+            # becomes incremental.
+            self.store.set_consumed_rowid(watermark)
 
         while True:
             batch = self.reader.trigger_candidates_since(watermark, self.DISCOVERY_BATCH)
