@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initRouting();
   initSearch();
   initMobileMenu();
+  initShowcaseTabs();
 });
 
 /* ==========================================================================
@@ -483,4 +484,31 @@ async function copyDocumentationText(code, btn) {
   const copied = await copyTextOrSelect(code);
   btn.textContent = copied ? '已复制!' : '已选中，请手动复制';
   setTimeout(() => btn.textContent = origin, 2500);
+}
+
+/* ==========================================================================
+   9. 首页日常场景 Tab 切换器 (Showcase Tabs)
+   ========================================================================== */
+function initShowcaseTabs() {
+  const tabs = document.querySelectorAll('.showcase-tab');
+  if (!tabs.length) return;
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetKey = tab.getAttribute('data-tab');
+      tabs.forEach(t => {
+        const isCurrent = t === tab;
+        t.classList.toggle('active', isCurrent);
+        t.setAttribute('aria-selected', String(isCurrent));
+      });
+      const panels = document.querySelectorAll('.showcase-body');
+      panels.forEach(panel => {
+        if (panel.id === `showcase-panel-${targetKey}`) {
+          panel.style.display = 'grid';
+        } else {
+          panel.style.display = 'none';
+        }
+      });
+    });
+  });
 }
