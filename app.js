@@ -552,12 +552,15 @@ function initShowcaseTabs() {
   const tabs = [...document.querySelectorAll('.showcase-tab')];
   if (!tabs.length) return;
   const activate = (tab, focus = false) => {
+    const targetKey = tab.getAttribute('data-tab');
+    const controlsId = tab.getAttribute('aria-controls');
     tabs.forEach(t => {
       const selected = t === tab;
       t.classList.toggle('active', selected);
       t.setAttribute('aria-selected', String(selected));
       t.tabIndex = selected ? 0 : -1;
-      const panel = document.getElementById(t.getAttribute('aria-controls'));
+      const panel = document.getElementById(`showcase-panel-${t.getAttribute('data-tab')}`) || 
+                    (t.getAttribute('aria-controls') ? document.getElementById(t.getAttribute('aria-controls')) : null);
       if (panel) {
         panel.hidden = !selected;
         panel.classList.toggle('active', selected);
