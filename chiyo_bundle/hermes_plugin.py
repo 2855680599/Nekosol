@@ -98,16 +98,177 @@ def source_scope(source):
     if getattr(source,'chat_type','')!='dm':return platform,None
     return platform,build_session_key(source,profile=getattr(source,'profile',None))
 
+# --------------------------------------------------------------------------- #
+# Model tool authority under personal-memory mode.
+#
+# Hermes invokes ``pre_tool_call`` hooks as
+# ``hook(tool_name, args, task_id=, session_id=, tool_call_id=, turn_id=,
+# api_request_id=, middleware_trace=)``: there is no agent, no platform and no
+# turn-origin field (``hermes_cli/plugins.py::_get_pre_tool_call_directive_details``,
+# ``agent/inline_tool_executors.py::tool_hook_ids``). The hook therefore CANNOT
+# tell a tool call the user asked for apart from one the model invented after
+# reading injected memory background. This module does not pretend otherwise: it
+# authorises by CAPABILITY -- what the tool can actually reach -- denies by
+# default, and refuses outbound arguments that verbatim carry injected memory.
+# --------------------------------------------------------------------------- #
+TOOL_NO_IO='no_io'                    # no local read, no network, no execution
+TOOL_PUBLIC_NETWORK='public_network'  # outbound public fetch/search only
+TOOL_OUTBOUND_TEXT='outbound_text'    # outbound, carries caller text (scanned)
+TOOL_PRIVATE='private'                # may read local/private state, execute or delegate
+
+# Registry-derived ``toolset -> capability``. The toolset comes from the live
+# registry (``tools/registry.py`` ``ToolEntry.toolset`` via
+# ``model_tools.TOOL_TO_TOOLSET_MAP``), not from a hand-kept tool-name list.
+# Anything absent here is PRIVATE: the policy is default-deny, so a tool shipped
+# by a later release stays denied until it is classified on purpose.
+_TOOLSET_CAPABILITY={
+    'todo':TOOL_NO_IO,
+    'clarify':TOOL_NO_IO,
+    'web':TOOL_PUBLIC_NETWORK,
+    'x_search':TOOL_PUBLIC_NETWORK,
+    'image_gen':TOOL_OUTBOUND_TEXT,
+    'video_gen':TOOL_OUTBOUND_TEXT,
+    'tts':TOOL_OUTBOUND_TEXT,
+}
+# Why a denied toolset is denied. The model reads the block message as a tool
+# result and relays it, so this names the real capability instead of letting the
+# model blame the memory system.
+_TOOLSET_REASON={
+    'memory':'直接读取本机长期记忆库',
+    'session_search':'检索原始会话记录',
+    'file':'读写本机文件',
+    'terminal':'执行本机命令',
+    'code_execution':'执行本机代码',
+    'delegation':'委派给另一个 agent',
+    'a2a':'调用其他 agent',
+    'browser':'驱动本机浏览器，可读到已登录的私人会话',
+    'browser-cdp':'驱动本机浏览器',
+    'browser-use':'驱动本机浏览器',
+    'computer_use':'操作本机桌面',
+    'desktop_ui':'读取本机桌面与终端内容',
+    'kanban':'读写本机任务库',
+    'project':'读写本机项目状态',
+    'cronjob':'写入本机定时任务',
+    'skills':'读写本机技能文件',
+    'vision':'分析本机图片',
+    'video':'分析本机视频',
+    'discord':'向外部频道发送消息',
+    'discord_admin':'管理外部频道',
+    'feishu_doc':'读写外部文档',
+    'feishu_drive':'读写外部文档',
+    'hermes-yuanbao':'向外部会话发送消息',
+    'homeassistant':'控制本机家居设备',
+    'spotify':'控制外部账号',
+}
+# These read the personal store or the raw transcript -- exactly the forgetting
+# bypass this gate exists to stop. They stay denied even under ``unrestricted``.
+_ALWAYS_DENIED=('memory','session_search')
+_INJECTED_MIN_CHARS=12
+_INJECTED_MAX_PER_SESSION=200
+_injected_lock=threading.RLock()
+_injected_by_session={}
+
+
+def _remember_injected_fragments(session_id,fragments):
+    """Record the memory text this process injected, per session.
+
+    Session-scoped, bounded and process-local: nothing is persisted and nothing
+    is logged. Only the memory-derived fragments are recorded (recalled objects
+    and corrections), never the surrounding read-only observations.
+    """
+    key=str(session_id or '')
+    clean=[str(value or '').strip() for value in fragments or ()]
+    clean=[value for value in clean if len(value)>=_INJECTED_MIN_CHARS]
+    if not clean:return
+    with _injected_lock:
+        seen=list(_injected_by_session.get(key,()))
+        for value in clean:
+            if value not in seen:seen.append(value)
+        _injected_by_session[key]=seen[-_INJECTED_MAX_PER_SESSION:]
+
+
+def _injected_fragments(session_id):
+    with _injected_lock:
+        return tuple(_injected_by_session.get(str(session_id or ''),()))
+
+
+def _tool_capability(tool_name):
+    """``(capability, toolset)`` for one tool, resolved from the live registry.
+
+    ``(TOOL_PRIVATE, None)`` means the registry cannot vouch for the tool, which
+    is denied: an unknown name must never be able to widen the boundary.
+    """
+    try:
+        import model_tools
+        toolset=model_tools.TOOL_TO_TOOLSET_MAP.get(str(tool_name))
+    except Exception:
+        toolset=None
+    if not toolset:return TOOL_PRIVATE,None
+    return _TOOLSET_CAPABILITY.get(toolset,TOOL_PRIVATE),toolset
+
+
+def _serialized_args(args):
+    try:
+        return json.dumps(args,ensure_ascii=False,sort_keys=True)
+    except Exception:
+        return str(args)
+
+
+def _carried_memory(args,session_id):
+    """The first injected memory fragment carried verbatim in ``args``, else None.
+
+    This detects verbatim carry-over only. A paraphrase cannot be recognised at
+    this layer and this function does not claim to recognise one.
+    """
+    fragments=_injected_fragments(session_id)
+    if not fragments:return None
+    payload=_serialized_args(args)
+    for value in fragments:
+        if value in payload:return value
+    return None
+
+
+def _deny(message):
+    return {'action':'block','message':message}
+
+
 def memory_tool_gate(tool_name,args,**kwargs):
-    # Arbitrary tools can read transcripts or delegate that read to another agent.
-    # Default memory profiles allow only the controlled context and human commands.
+    """Authorise one model tool call while personal memory is enabled.
+
+    Capability-based and default-deny. Every message states what was refused and
+    why, and says plainly that long-term memory is NOT broken, because the model
+    relays this text to the user as if it were its own conclusion.
+    """
     try:
         home,cfg=configuration()
     except Exception:
-        return {'action':'block','message':'Personal memory configuration is unavailable; historical memory tools are blocked.'}
-    if cfg.get('memory') and (cfg.get('memory_tool_policy') != 'unrestricted' or tool_name in ('memory','session_search')):
-        return {'action':'block','message':'Personal memory mode blocks model tools that could read forgotten history. Use /nyairo_memory; unrestricted tools require an explicit profile setting and remove this protection.'}
-    return None
+        return _deny('已拒绝工具「%s」：本机个人记忆配置读不出来，出于安全默认不放行。'
+            '这是配置读取问题，不是长期记忆内容损坏；记忆库没有被改动。'%tool_name)
+    if not cfg.get('memory'):return None
+    name=str(tool_name or '')
+    if name in _ALWAYS_DENIED:
+        return _deny('已拒绝工具「%s」：它能直接读取本机长期记忆库或原始会话记录，'
+            '会绕过用户已经删除或纠正过的记忆。这不是长期记忆故障——记忆本身正常，'
+            '自动召回也照常工作；要查看或管理记忆请用 /nyairo_memory。'%name)
+    if cfg.get('memory_tool_policy')=='unrestricted':return None
+    capability,toolset=_tool_capability(name)
+    if toolset is None:
+        return _deny('已拒绝未知工具「%s」：本机工具清单里没有它，无法确认它会不会读取私人数据，'
+            '所以默认不放行。这不是长期记忆故障。'%name)
+    if capability==TOOL_NO_IO:return None
+    if capability in (TOOL_PUBLIC_NETWORK,TOOL_OUTBOUND_TEXT):
+        carried=_carried_memory(args,kwargs.get('session_id'))
+        if carried is not None:
+            return _deny('已拒绝工具「%s」：它的参数里带有本机长期记忆的内容（以 %r 开头），'
+                '对外请求不得携带私人记忆。这不是记忆故障；请改写请求，只发送要查询的公开信息。'
+                %(name,carried[:_INJECTED_MIN_CHARS]))
+        return None
+    reason=_TOOLSET_REASON.get(toolset,'可能读到本机私人数据')
+    return _deny('已拒绝工具「%s」：它的能力是%s，在个人记忆模式下不放行。'
+        '这不是长期记忆故障——记忆本身正常，自动召回没有关闭；'
+        '只是模型不能借这个工具绕过用户已删除或已纠正的记忆。'
+        '需要联网查询可以直接说明要查什么（搜索类工具是放行的）；'
+        '需要管理记忆请用 /nyairo_memory。'%(name,reason))
 
 def memory_command(raw_args,*,source=None):
     home,cfg=configuration();platform,key=source_scope(source)
@@ -334,6 +495,10 @@ class ChiyoContextEngine(ContextCompressor):
                     if observed:text+='\n【当前身体与环境观察】'+observed
                 if projection.controls or not projection.healthy:messages=safe
                 if text:
+                    # Remember what was actually injected so the tool gate can refuse
+                    # an outbound call that carries it back out verbatim.
+                    _remember_injected_fragments(getattr(self,'_session_id',None),
+                        [obj.text for obj in recalled]+list(corrections))
                     # Keep the stable system/persona prefix; memory remains quoted
                     # background on the current user message, never an instruction.
                     for m in reversed(messages):

@@ -21,8 +21,13 @@ class ContextSafetyTests(unittest.TestCase):
                  patch('model_tools._execute_tool') as execute:
                 for name in ('terminal','read_file','execute_code'):
                     result=model_tools.handle_function_call(name,{},skip_tool_request_middleware=True)
-                    self.assertIn('Personal memory mode blocks',result)
+                    self.assertIn('不是长期记忆故障',result)
                 execute.assert_not_called()
+                # An outbound lookup the user asked for must still reach the tool:
+                # the gate authorises by capability, it does not block everything.
+                model_tools.handle_function_call('web_search',{'query':'nyairo.com'},
+                    skip_tool_request_middleware=True)
+                self.assertTrue(execute.called)
 
     def test_disabled_modules_preserve_ordinary_chat_context(self):
         import os

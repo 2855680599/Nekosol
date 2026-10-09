@@ -9,7 +9,7 @@
     "version": "0.21.0",
     "license": "MIT"
   },
-  "file_count": 12231,
+  "file_count": 12232,
   "files": {
     ".gitattributes": "2abdfc138a38212e3b4ad1be055915b68f9f634842ddfdb78d8927b6f418e238",
     ".gitignore": "c14b0c3ba6a8d9920e24a75e8843245c932e5ef4df36baf2dea749acf6f3e00c",
@@ -35,7 +35,7 @@
     "chiyo_bundle/__init__.py": "af9cbaeb948c2f6b9702b57a7ebc5582f9a30a2e0452d765b94f8c7aaa1d782f",
     "chiyo_bundle/__main__.py": "20843b9c1eafc15561798a475283199acc02d765ea186ce3b1af8cd29d2c889a",
     "chiyo_bundle/env_alias.py": "e449dc4c3f52912c3519d9276e562995255e2bda4af420224fb258527069c32b",
-    "chiyo_bundle/hermes_plugin.py": "c18fc0bd055c0cc09dcc8b617dbc721132afd68c40ea4836179ba772b7f4b3b9",
+    "chiyo_bundle/hermes_plugin.py": "c2398de8ff4db77490ad9fdf4320e09680a78ca67f6b8a6c24fa406deac75677",
     "chiyo_bundle/host.py": "2d89b48d1f09459afee918df6199d8b7dfa4297ff8540ccb8578e44d0e342083",
     "chiyo_bundle/instance.py": "d1d8dea2179499a64a997198649dcc1d9f8e0e890abc10035327c5419ccea96a",
     "chiyo_bundle/presence.py": "5454f9dbd66ce29e3299b0b6af09f28c5ca20ca3e8b8e27b121bcbb21e6525c6",
@@ -376,7 +376,7 @@
     "tests/test_bootstrap_installer.py": "912e25c7a82a323d2572c6a14f517e5fae6954010765efdbb6a32d935781f0d1",
     "tests/test_cli_process_cleanup.py": "d3dad3f08ddbcfffca99fb7132e00730d81f86d02ce41a08a30823aca26719a9",
     "tests/test_cognition_reliability.py": "b83d1226f66fa675c6c803d94fb1ec024ed42ad274fdf334c22eb6ab62884263",
-    "tests/test_context_safety.py": "1c2e9e6287792838ec76a54aee63e7811514d3757ceb2004232ef937ed8ce38b",
+    "tests/test_context_safety.py": "264aa188a4d440e0f5a4972ec3a71686f10c983b039ba2776021e4a53958c973",
     "tests/test_filesystem_security.py": "0d3173737d3fb743d4affa642bc98dc35115944bea5c780037ef1a73070bb2f3",
     "tests/test_idle_writer.py": "45d3ce1094dbcf7ef54f64de29928b6088c400354403c45794acf4c1dffdb18d",
     "tests/test_instance_lifecycle.py": "5506580a44c65a3967594a9dfc49c7ba9905d88fde5e0be48ca57c1f2855ba25",
@@ -393,6 +393,7 @@
     "tests/test_runtime_health.py": "d2c87f80bf4b7f67fe41daf980b6813e491664977f4752301f0de65a2f119c3c",
     "tests/test_sealed_components.py": "ddee1f6673c8880537c04d1c09f7232e6044f201768ddd03d496b13d6bc6400f",
     "tests/test_sqlite_safety.py": "5e3c262005dcc668648a01a6db2e420fdd9e70e58a193fa8bd035e772d7c5b42",
+    "tests/test_tool_authority.py": "07b6a6e672c4cadba4edb8f0b3accffddfc8cc05c423d688a695a81d27335f3a",
     "tests/test_update.py": "29725d3f6ad7692a41b1cbf5426d66c888f2d10528bb077daf4d5dd26aab1e5f",
     "vendor/hermes/.coderabbit.yaml": "7428cb3e558f0530ab616b9ccc6e6966a674327ecadb059d28e81dd8bdadcf09",
     "vendor/hermes/.distribution.json": "4a4d17d545761e6c1078e1da5359d7738d2ec69d6d872daa61b4fe3c8eb4e00b",
@@ -12243,7 +12244,7 @@
     "website/install.sh": "a1d55525694beebc95b7aa91a76f17e24fb62346fa15cd5ac8bf3aa38987bd1c",
     "website/style.css": "73c16b843e0bd97af676940f2518636c5f477c9bca800b14bf9c49b5564221d4"
   },
-  "tree_sha256": "bf51bbf5dcc6086757ec29b78218810a3f82a3d4fef030e4acb75272f37bde5f",
+  "tree_sha256": "c76b388c627383c270ecda7303838bf82740eb38f390481d9bc94cfec20bf8c7",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
   "release_gate": "v0.1.0-rc8 (rc7 plus the R6 CLI worker lifecycle fix and the platform-setup command correction; no new capability, no behaviour change). v0.1.0-rc7 was the first public release candidate (renamed from rc6 because the published v0.1.0-rc6 tag and assets were built from commit c3b2b0568bdb6b3603f1994ee5772f4469389e2c, so reusing that name would give two different byte sets one label); rc6, rc7 and earlier tags and assets keep their original bytes. P0/P1/P2 complete; P3-A/B/C/D complete; real P2-A old-state upgrade PASS (32/32); 10-turn continuation PASS (20/20); restart idempotent PASS; fresh clone PASS with core.autocrlf=false and core.autocrlf=true (manifest valid, sealed 4/4, scripts/test.py pass=9 fail=0); post-test-residue PASS; sealed 4/4; native 156/156; host-boundaries 135/135; scripts/test.py pass=9 fail=0 skip=0; ten consecutive real one-shot CLI runs in an isolated HOME left no worker and no socket from any run; public naming gate UNEXPLAINED_PUBLIC_CHIYO_REFERENCES=0; ResourceWarning 0; LICENSE_CONFIRMED. Still open and NOT_TESTED: a real Telegram inbound with an active gateway writer (no test credentials), and days of natural use. External and still open: publication receipts, signing. The runtime and tests are NOT identical to qualified R17: every candidate since then changed them.",
   "project_name": "nyairo",
