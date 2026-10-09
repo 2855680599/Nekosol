@@ -27,9 +27,17 @@
 2. Python 情况（需要 3.13；安装器会自行准备 uv 与 Python，请说明是否需要联网下载）；
 3. 磁盘剩余空间（建议至少 3 GB，程序与个人数据都要占空间）；
 4. 网络能否访问 GitHub 与 astral.sh（安装器需要下载 Python 与依赖）；
-5. 是否已经装过 NyAiro 或 Chiyo：检查 ~/.nyairo、~/.local/share/nyairo、~/.chiyo-v1、~/apps/nyairo-*；
-6. 是否有程序正在运行：pgrep -af m0_writer_worker、pgrep -af "gateway run"、pgrep -af nyairo。
+5. 这个 HOME 里是否已经装过 NyAiro 或 Chiyo：检查 ~/.nyairo、~/.local/share/nyairo、~/.chiyo-v1、~/apps/nyairo-*、~/.local/bin/nyairo；
+6. 现在有哪些程序在运行：pgrep -af m0_writer_worker、pgrep -af "gateway run"、pgrep -af nyairo，并看清每条命令里的路径属于哪个实例。
 如果某一项不满足（例如是原生 Windows 而不是 WSL、磁盘不够、无法访问 GitHub），请先用中文解释问题和建议做法，然后停下来等我决定，不要继续安装。
+
+【第一步补充：如果这个 HOME 里已经有实例，必须停下来做隔离】
+只要第 5 项发现任何已有实例（例如 ~/.nyairo 或 ~/.chiyo-v1 已存在），就**不要在这个 HOME 里继续安装**：
+- 先告诉我发现了什么（路径、大致内容、是否在运行），然后停下来等我决定；
+- 推荐我换一个独立环境：优先用另一个 Linux 用户（例如 useradd 出来的专用账号，或已经存在的第二个账号）在它自己的 HOME 里安装；其次是换一个完全独立的 HOME（例如 sudo -u 专用账号 或 HOME=/home/otheruser），不要和现有实例共用同一个 ~/.nyairo 或 ~/.local/share/nyairo；
+- 需要新建系统用户、需要 sudo、或需要改动现有实例时，先说明你要执行的具体命令并征得我同意，**不要擅自创建系统用户，也不要擅自使用 sudo**；
+- 在我明确确认隔离方式之前，不要下载、不要解压、不要运行安装器。
+关于正在运行的实例：那些进程属于**已有实例**，不是这次要装的。请只做报告，**不要终止、不要重启、不要 kill 任何已有实例的进程**（包括 m0_writer_worker 和 gateway）。安装完成后判断"有没有残留进程"时，只检查这次新装实例自己的路径（例如新 HOME 下的 ~/.nyairo），不要把已有实例的进程算进来，也不要动它们。
 
 【第二步：说明将要改动什么，并等我确认】
 这次安装会：
@@ -61,13 +69,15 @@
   输出里应该有 "valid": true。
 - 个人数据目录：~/.nyairo 下应该有 SOUL.md、config.yaml、chiyo/config.json。
 - 启动：~/.local/bin/nyairo --help 能正常输出帮助。
-- 启停与残留：跑一次一次性自检 ~/.local/bin/nyairo -z "安装自检"；随后 pgrep -af m0_writer_worker 不应该留下进程，~/.nyairo/chiyo/state/memory/m0-writer-runtime/ 不应该留下 socket 文件。
+- 启停与残留：跑一次一次性自检 ~/.local/bin/nyairo -z "安装自检"；随后只检查这次新装实例自己的路径：pgrep -af m0_writer_worker（按命令行里的新 HOME 过滤）不应该留下属于它的进程，~/.nyairo/chiyo/state/memory/m0-writer-runtime/ 不应该留下 socket 文件。已有实例的进程不要动，也不要算作残留。
 - 模型与 Telegram：在我没有提供自己的密钥之前，这两项属于「尚未验证」，请如实说明，不要报告为成功。
 
 【第五步：最后给我一份中文说明】
 用简单的中文告诉我：安装是否成功、装在哪里、怎么启动（nyairo）、怎么配置模型（nyairo setup model）、怎么接 Telegram（nyairo gateway setup 然后 nyairo gateway run）、怎么停止（退出聊天，或在网关终端按 Ctrl-C）、怎么更新（~/.local/bin/nyairo update，可加 --check 先看有没有新版）、怎么备份（退出聊天和网关后 tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo）、怎么卸载（先备份 ~/.nyairo，再删除程序目录 ~/.local/share/nyairo/releases/v0.1.0-rc8 与入口 ~/.local/bin/nyairo；如需彻底清除再自行删除 ~/.nyairo）。不要只贴终端日志。
 
 【安全要求】
+- 不要擅自创建系统用户，也不要擅自使用 sudo；需要时先说明你要执行的命令并征得我同意。
+- 不要终止、重启或强杀我已有实例的进程（m0_writer_worker、网关、聊天进程都不要动）。
 - 不要让我把 SSH 密码、私钥或 API Key 粘贴到聊天里。密钥由我自己在本地输入：~/.local/bin/nyairo setup model 与 ~/.local/bin/nyairo gateway setup。
 - 不要读取其他实例的密钥，不要把密钥发到外部服务，不要写进日志，不要提交到 Git。
 - 如果你没有终端或 SSH 权限，请直接说明你做不到，并告诉我怎样授权；不要假装安装成功。
@@ -88,8 +98,8 @@
 | Python 与运行环境 | 安装器自行准备 uv 与 Python 3.13 | 无网络时说明无法下载，给出离线替代方案或停止 |
 | 磁盘剩余空间 | 程序约 460 MB，另留个人数据与备份空间；建议 ≥ 3 GB | 说明还差多少，停止安装 |
 | 网络访问 | 需要访问 github.com 与 astral.sh | 说明被拦在哪一步，停止安装 |
-| 已有 NyAiro / Chiyo 实例 | 检查 `~/.nyairo`、`~/.local/share/nyairo`、`~/.chiyo-v1`、`~/apps/nyairo-*` | 默认新建独立实例；要动原实例必须先取得明确授权 |
-| 端口与进程占用 | 检查 `m0_writer_worker`、`gateway run`、正在运行的 `nyairo` | 先请用户停止（退出聊天、停止网关），不要强杀 |
+| 已有 NyAiro / Chiyo 实例 | 检查 `~/.nyairo`、`~/.local/share/nyairo`、`~/.chiyo-v1`、`~/apps/nyairo-*`、`~/.local/bin/nyairo` | **不要在这个 HOME 继续安装**：先报告发现的内容，然后停下来，推荐独立环境（优先独立 Linux 用户，其次独立 HOME），确认隔离后才继续 |
+| 端口与进程占用 | 检查 `m0_writer_worker`、`gateway run`、正在运行的 `nyairo`，并按命令里的路径分辨属于哪个实例 | 只报告，**不要终止或重启已有实例的进程**；这次安装的残留检查只看新实例自己的路径 |
 
 ### 2. 安装来源
 
@@ -101,12 +111,27 @@
 
 ### 3. 环境隔离
 
-* 用户已有 NyAiro 或 Chiyo 时，**默认创建独立实例**：新的程序目录、新的个人数据目录。
-* 不得自动覆盖：记忆数据库（`~/.nyairo/chiyo/state/memory/*`）、人设文件（`~/.nyairo/SOUL.md`）、
-  模型配置（`~/.nyairo/config.yaml`、`~/.nyairo/chiyo/config.json` 中的模型相关部分）、
-  Telegram 绑定与 token、正在运行的服务。
-* 需要改动原实例（就地升级、替换配置、停掉服务）时，必须先说明改动内容并取得用户明确同意。
-* 不确定某项改动是否属于覆盖时，按"需要授权"处理。
+**同一个 HOME 里已经有 NyAiro 或 Chiyo 时，不允许继续安装。** 正确顺序是：
+
+1. 先报告发现了什么：实例路径（`~/.nyairo`、`~/.chiyo-v1`、`~/apps/nyairo-*`）、程序目录
+   （`~/.local/share/nyairo`）、入口（`~/.local/bin/nyairo`）、以及正在运行的进程。
+2. 停下来，向用户说明继续在同一 HOME 安装会与已有实例共用个人数据目录与入口，并给出隔离选项：
+   * **首选：独立的 Linux 用户**（专用账号各自拥有自己的 HOME）。需要 `useradd`、`sudo` 或改密码时，
+     先把要执行的命令写清楚并取得用户同意，**不得擅自创建系统用户，也不得擅自使用 sudo**。
+   * 其次：一个完全独立的 HOME（例如另一个已存在账号的 HOME，或用显式 `HOME=` 指向的新目录），
+     不要与现有实例共用 `~/.nyairo` 或 `~/.local/share/nyairo`。
+3. **用户确认隔离方式之前，不要下载、不要解压、不要运行安装器。** 未确认就停止，属于正确行为。
+4. 安装后如果要动原实例（就地升级、替换配置、停服务），必须先说明改动内容并取得明确同意。
+5. 不确定某项改动是否属于覆盖时，按"需要授权"处理。
+
+不得自动覆盖：记忆数据库（`~/.nyairo/chiyo/state/memory/*`）、人设文件（`~/.nyairo/SOUL.md`）、
+模型配置（`~/.nyairo/config.yaml`、`~/.nyairo/chiyo/config.json` 中的模型相关部分）、
+Telegram 绑定与 token、正在运行的服务。
+
+**不要动别人的进程。** 已有实例的 `m0_writer_worker`、网关与聊天进程属于用户现有的实例，只报告，
+不终止、不重启、不强杀。判断"有没有残留进程"时，只检查这次新装实例自己的路径
+（新 HOME 下的 `~/.nyairo/chiyo/state/memory/m0-writer-runtime/` 与对应的 `m0_writer_worker` 命令行），
+不要把已有实例的进程算作残留，也不要为了"清理"去关掉它们。
 
 ### 4. 凭据配置
 
@@ -126,7 +151,7 @@
 | MANIFEST 校验 | 包内 `scripts/verify_manifest.py`（用包内解释器运行），核对 `MANIFEST.json` 的文件清单与哈希 | `"valid": true` |
 | 数据目录 | `~/.nyairo` 下 `SOUL.md`、`config.yaml`、`chiyo/config.json` | 都存在 |
 | 基础服务启停 | 一次性 `-z` 自检、`gateway status` / `gateway run` / 停止 | 能启动、能停止 |
-| 残留进程 | `pgrep -af m0_writer_worker`、`m0-writer-runtime/` 目录 | 无残留进程、无残留 socket |
+| 残留进程 | 只看**新实例自己的路径**：`pgrep -af m0_writer_worker`（按命令行里的新 HOME 过滤）、新 HOME 下的 `m0-writer-runtime/` 目录 | 无属于新实例的残留进程、无残留 socket；已有实例的进程不动、也不算残留 |
 
 未配置真实模型或 Telegram 时，必须明确说明"对应功能尚未验证"，不得报告为 PASS。
 本环境（无密钥）实测：模型调用与 Telegram 收发属于 NOT_TESTED；安装、启动、版本、清单、数据目录、

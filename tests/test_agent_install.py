@@ -110,6 +110,42 @@ class AgentInstallSpecTest(unittest.TestCase):
         ):
             self.assertNotIn(forbidden, instruction, "instruction must not contain %r" % forbidden)
 
+    def test_instruction_stops_on_an_existing_instance(self):
+        """An existing instance in this HOME must stop the install, not be installed over."""
+        instruction = _instruction()
+        for needle in (
+            "不要在这个 HOME 里继续安装",
+            "停下来等我决定",
+            "另一个 Linux 用户",
+            "独立环境",
+            "不要擅自创建系统用户",
+            "不要擅自使用 sudo",
+            "在我明确确认隔离方式之前，不要下载、不要解压、不要运行安装器",
+        ):
+            self.assertIn(needle, instruction, "instruction is missing %r" % needle)
+
+    def test_instruction_never_touches_another_instance_processes(self):
+        instruction = _instruction()
+        for needle in (
+            "不要终止、不要重启、不要 kill 任何已有实例的进程",
+            "只检查这次新装实例自己的路径",
+            "不要把已有实例的进程算进来",
+            "不要终止、重启或强杀我已有实例的进程",
+        ):
+            self.assertIn(needle, instruction, "instruction is missing %r" % needle)
+
+    def test_spec_documents_the_isolation_gate(self):
+        text = SPEC.read_text(encoding="utf8")
+        for needle in (
+            "同一个 HOME 里已经有 NyAiro 或 Chiyo 时，不允许继续安装",
+            "首选：独立的 Linux 用户",
+            "不得擅自创建系统用户，也不得擅自使用 sudo",
+            "用户确认隔离方式之前，不要下载、不要解压、不要运行安装器",
+            "不要动别人的进程",
+            "按命令里的路径分辨属于哪个实例",
+        ):
+            self.assertIn(needle, text, "spec is missing %r" % needle)
+
     def test_spec_points_at_rc8_and_never_at_the_old_website_entry(self):
         text = SPEC.read_text(encoding="utf8")
         self.assertIn("v0.1.0-rc8", text)

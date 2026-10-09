@@ -196,9 +196,17 @@
 2. Python 情况（需要 3.13；安装器会自行准备 uv 与 Python，请说明是否需要联网下载）；
 3. 磁盘剩余空间（建议至少 3 GB，程序与个人数据都要占空间）；
 4. 网络能否访问 GitHub 与 astral.sh（安装器需要下载 Python 与依赖）；
-5. 是否已经装过 NyAiro 或 Chiyo：检查 ~/.nyairo、~/.local/share/nyairo、~/.chiyo-v1、~/apps/nyairo-*；
-6. 是否有程序正在运行：pgrep -af m0_writer_worker、pgrep -af "gateway run"、pgrep -af nyairo。
+5. 这个 HOME 里是否已经装过 NyAiro 或 Chiyo：检查 ~/.nyairo、~/.local/share/nyairo、~/.chiyo-v1、~/apps/nyairo-*、~/.local/bin/nyairo；
+6. 现在有哪些程序在运行：pgrep -af m0_writer_worker、pgrep -af "gateway run"、pgrep -af nyairo，并看清每条命令里的路径属于哪个实例。
 如果某一项不满足（例如是原生 Windows 而不是 WSL、磁盘不够、无法访问 GitHub），请先用中文解释问题和建议做法，然后停下来等我决定，不要继续安装。
+
+【第一步补充：如果这个 HOME 里已经有实例，必须停下来做隔离】
+只要第 5 项发现任何已有实例（例如 ~/.nyairo 或 ~/.chiyo-v1 已存在），就**不要在这个 HOME 里继续安装**：
+- 先告诉我发现了什么（路径、大致内容、是否在运行），然后停下来等我决定；
+- 推荐我换一个独立环境：优先用另一个 Linux 用户（例如 useradd 出来的专用账号，或已经存在的第二个账号）在它自己的 HOME 里安装；其次是换一个完全独立的 HOME（例如 sudo -u 专用账号 或 HOME=/home/otheruser），不要和现有实例共用同一个 ~/.nyairo 或 ~/.local/share/nyairo；
+- 需要新建系统用户、需要 sudo、或需要改动现有实例时，先说明你要执行的具体命令并征得我同意，**不要擅自创建系统用户，也不要擅自使用 sudo**；
+- 在我明确确认隔离方式之前，不要下载、不要解压、不要运行安装器。
+关于正在运行的实例：那些进程属于**已有实例**，不是这次要装的。请只做报告，**不要终止、不要重启、不要 kill 任何已有实例的进程**（包括 m0_writer_worker 和 gateway）。安装完成后判断"有没有残留进程"时，只检查这次新装实例自己的路径（例如新 HOME 下的 ~/.nyairo），不要把已有实例的进程算进来，也不要动它们。
 
 【第二步：说明将要改动什么，并等我确认】
 这次安装会：
@@ -230,13 +238,15 @@
   输出里应该有 "valid": true。
 - 个人数据目录：~/.nyairo 下应该有 SOUL.md、config.yaml、chiyo/config.json。
 - 启动：~/.local/bin/nyairo --help 能正常输出帮助。
-- 启停与残留：跑一次一次性自检 ~/.local/bin/nyairo -z "安装自检"；随后 pgrep -af m0_writer_worker 不应该留下进程，~/.nyairo/chiyo/state/memory/m0-writer-runtime/ 不应该留下 socket 文件。
+- 启停与残留：跑一次一次性自检 ~/.local/bin/nyairo -z "安装自检"；随后只检查这次新装实例自己的路径：pgrep -af m0_writer_worker（按命令行里的新 HOME 过滤）不应该留下属于它的进程，~/.nyairo/chiyo/state/memory/m0-writer-runtime/ 不应该留下 socket 文件。已有实例的进程不要动，也不要算作残留。
 - 模型与 Telegram：在我没有提供自己的密钥之前，这两项属于「尚未验证」，请如实说明，不要报告为成功。
 
 【第五步：最后给我一份中文说明】
 用简单的中文告诉我：安装是否成功、装在哪里、怎么启动（nyairo）、怎么配置模型（nyairo setup model）、怎么接 Telegram（nyairo gateway setup 然后 nyairo gateway run）、怎么停止（退出聊天，或在网关终端按 Ctrl-C）、怎么更新（~/.local/bin/nyairo update，可加 --check 先看有没有新版）、怎么备份（退出聊天和网关后 tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo）、怎么卸载（先备份 ~/.nyairo，再删除程序目录 ~/.local/share/nyairo/releases/v0.1.0-rc8 与入口 ~/.local/bin/nyairo；如需彻底清除再自行删除 ~/.nyairo）。不要只贴终端日志。
 
 【安全要求】
+- 不要擅自创建系统用户，也不要擅自使用 sudo；需要时先说明你要执行的命令并征得我同意。
+- 不要终止、重启或强杀我已有实例的进程（m0_writer_worker、网关、聊天进程都不要动）。
 - 不要让我把 SSH 密码、私钥或 API Key 粘贴到聊天里。密钥由我自己在本地输入：~/.local/bin/nyairo setup model 与 ~/.local/bin/nyairo gateway setup。
 - 不要读取其他实例的密钥，不要把密钥发到外部服务，不要写进日志，不要提交到 Git。
 - 如果你没有终端或 SSH 权限，请直接说明你做不到，并告诉我怎样授权；不要假装安装成功。</code></pre>
