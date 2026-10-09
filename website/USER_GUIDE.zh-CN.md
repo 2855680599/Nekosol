@@ -454,12 +454,69 @@ export HERMES_HOME="$HOME/.chiyo-v1"
 
 独立体验号由管理员设置。这里讲的是你自己安装的机器人；使用体验号时，以管理员给的入口说明为准。
 
-### QQ、微信和飞书怎么接
+### QQ 机器人怎么接
 
-项目保留了 Hermes 对这些平台的连接代码，但第一版还没有用它们的真实账号完成整套收发和断线重连检查。
+本节的步骤已在 `v0.1.0-rc8` 上用真实 QQ 机器人账号走通：扫码接入、WebSocket 连接、真实收发、断线重连与记忆读写。
 
-个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 nyairo 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收。
+QQ 走的是**腾讯官方 QQ 机器人 API v2**，用的是机器人身份，不是你的个人 QQ 号。先在 <https://q.qq.com> 注册一个机器人应用。
 
+**第一步：接入。** 在 Ubuntu / Linux 终端运行：
+
+```bash
+nyairo gateway setup
+```
+
+在平台清单里用方向键找到 **🐧 QQ Bot**，按**空格**打勾，再把光标移到 **Done** 按回车。向导会问接入方式，推荐第一种：
+
+- **扫码自动接入（推荐）**：终端会打印二维码和一段链接，用手机 QQ 扫码或打开链接授权，程序自动取回 App ID 与密钥，不用手抄。
+- **手动填写**：在 q.qq.com 应用页复制 **App ID** 和 **App Secret**，按提示粘贴。密钥不要写到公开教程或发给别人。
+
+之后问的**私聊授权**推荐选 **Use DM pairing approval**（陌生人的私聊需要你批准；扫码接入时会顺带问要不要把你自己加入白名单，选是），最后是 **home channel**，设成你自己即可。二维码有效期约 10 分钟，过期会自动刷新。凭据写入 `~/.nyairo/.env`，不需要手改 `config.yaml`。
+
+**第二步：绑定你的私聊。这一步最容易漏，漏了所有 nyairo 命令都会被拒绝。**
+
+平台连上之后，从 QQ 私聊发 `/nyairo_status`，你可能会收到：
+
+```
+这个入口没有绑定你的个人实例，已拒绝读取。
+```
+
+这是安全设计，不是故障：没有绑定的私聊读不到你的私人记忆，陌生人给你的机器人发消息也读不到。用随包的官方函数算出你这个私聊的会话 key，把下面整段复制运行：
+
+```bash
+cd "$HOME/.local/share/nyairo/releases/v0.1.0-rc8"
+export HERMES_HOME="$HOME/.nyairo"
+PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python - <<'PY'
+import os, re
+from gateway.config import Platform
+from gateway.session import SessionSource, build_session_key
+vals = dict(re.findall(r'(?m)^\s*([A-Za-z_]\w*)\s*=\s*(.*)$',
+                       open(os.path.expanduser("~/.nyairo/.env")).read()))
+openid = vals.get("QQ_ALLOWED_USERS") or vals.get("QQBOT_HOME_CHANNEL")
+src = SessionSource(platform=Platform.QQBOT, chat_type="dm", chat_id=openid, user_id=openid)
+print(build_session_key(src))
+PY
+```
+
+它会打印出形如 `agent:main:qqbot:dm:你的OpenID` 的一串文字。然后打开 `~/.nyairo/chiyo/config.json`，找到 `gateway_bindings`，只改这一项，其他字段原样保留：
+
+```json
+{
+  "gateway_bindings": {
+    "qqbot": ["agent:main:qqbot:dm:你的OpenID"]
+  }
+}
+```
+
+改完立即生效，不需要重启网关。和 Telegram 的差异是：`Platform.TELEGRAM` 换成 `Platform.QQBOT`，绑定键 `"telegram"` 换成 `"qqbot"`，`chat_id` 与 `user_id` 都填同一个 QQ OpenID。
+
+**第三步：启动并检查。** 先 `export HERMES_HOME="$HOME/.nyairo"`，再运行 `~/.local/bin/nyairo gateway run`，这个窗口保持打开（WSL 里推荐前台运行，不要装成开机自启的系统服务）。日志里应该出现 `Ready, session_id=...` 和 `✓ qqbot connected`。然后依次检查：从 QQ 私聊发一句普通消息确认它会回复；发 `/nyairo_status` 确认返回模块状态而不是那句拒绝文案；发 `/nyairo_memory list` 确认记忆已经绑定；告诉它一个小事实后再 `list` 一次，确认这条已经写进去；重启网关，再检查同一套个人数据和状态是否仍然可用。一个 App ID 同时只能交给一个正在收消息的程序，第二个网关会被拒绝启动。
+
+**排错。** 日志反复出现 `Too many quick disconnects`，说明 App ID / App Secret 不对或开放平台权限没开（到 QQ 开放平台开启 C2C 私聊、群 @、频道消息等 intents）；提示 `QQ startup failed: QQ_APP_ID and QQ_CLIENT_SECRET are required`，说明凭据没有写进 `.env`；配置好了却提示 `No messaging platforms enabled`，检查 `config.yaml` 里是否显式写了 `platforms.qqbot.enabled: false`（显式的 false 会压过 `.env` 里的凭据）。断线重连会自动进行，退避间隔依次为 2 / 5 / 10 / 30 / 60 秒，网络恢复后自动回到 `Ready`，不需要重启网关；即使 QQ 域名被劫持指向内网地址，适配器也会拒绝连接（fail-closed）。
+
+### 微信和飞书怎么接
+
+个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 nyairo 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收；微信、飞书以及 QQ 的群聊 @ 与频道消息，尚未用真实账号完成整套收发与断线重连检查。
 
 ## 07 额外功能怎么设置
 
