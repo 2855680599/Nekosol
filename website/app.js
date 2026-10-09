@@ -6,10 +6,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initCommandCopy();
+  initInstallMethods();
   renderSidebar();
   initRouting();
   initSearch();
   initMobileMenu();
+  initShowcaseTabs();
+  initRoadmapAccordion();
 });
 
 /* ==========================================================================
@@ -19,7 +22,7 @@ function initTheme() {
   const themeBtn = document.getElementById('theme-toggle');
   if (!themeBtn) return;
 
-  let savedTheme = 'dark'; try { savedTheme = localStorage.getItem('chiyo-theme') || 'dark'; } catch {}
+  let savedTheme = 'dark'; try { savedTheme = localStorage.getItem('nyairo-theme') || localStorage.getItem('chiyo-theme') || 'dark'; } catch {}
   document.documentElement.setAttribute('data-theme', savedTheme);
   updateThemeIcon(savedTheme);
 
@@ -27,7 +30,7 @@ function initTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
     const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
     document.documentElement.setAttribute('data-theme', nextTheme);
-    try { localStorage.setItem('chiyo-theme', nextTheme); } catch {}
+    try { localStorage.setItem('nyairo-theme', nextTheme); localStorage.setItem('chiyo-theme', nextTheme); } catch {}
     updateThemeIcon(nextTheme);
   });
 }
@@ -67,20 +70,76 @@ function initCommandCopy() {
 
   const code = cmdPill.querySelector('.cmd-text');
   const btn = document.getElementById('hero-cmd-btn');
-  const feedback = document.getElementById('hero-copy-feedback');
-  if (!code || !btn || !feedback) return;
+  if (!code || !btn) return;
 
   cmdPill.addEventListener('click', async () => {
     const copied = await copyTextOrSelect(code);
-    feedback.textContent = copied ? '已复制安装命令' : '已选中命令，请按 Ctrl+C 或 Command+C 复制';
-    btn.setAttribute('aria-label', copied ? '已复制安装命令' : '已选中安装命令，请手动复制');
+    btn.setAttribute('aria-label', copied ? '已复制安装命令' : '请手动复制安装命令');
     btn.classList.toggle('copied', copied);
+    const feedback = document.getElementById('hero-copy-feedback');
+    if (feedback) feedback.textContent = '';
     setTimeout(() => {
-      feedback.textContent = '';
       btn.setAttribute('aria-label', '复制安装命令');
       btn.classList.remove('copied');
-    }, 2500);
+    }, 2000);
   });
+}
+
+/* ==========================================================================
+   3b. 安装方式切换与 AI Agent 辅助安装交互控制器
+   ========================================================================== */
+function initInstallMethods() {
+  const tabCli = document.getElementById('install-tab-cli');
+  const tabAgent = document.getElementById('install-tab-agent');
+  const panelCli = document.getElementById('install-panel-cli');
+  const panelAgent = document.getElementById('install-panel-agent');
+  if (!tabCli || !tabAgent || !panelCli || !panelAgent) return;
+
+  function select(useAgent) {
+    tabCli.classList.toggle('is-active', !useAgent);
+    tabAgent.classList.toggle('is-active', useAgent);
+    tabCli.setAttribute('aria-selected', String(!useAgent));
+    tabAgent.setAttribute('aria-selected', String(useAgent));
+    panelCli.hidden = useAgent;
+    panelAgent.hidden = !useAgent;
+  }
+
+  tabCli.addEventListener('click', () => select(false));
+  tabAgent.addEventListener('click', () => select(true));
+
+  // 抽屉展开折叠
+  const drawerBtn = document.getElementById('agent-toggle-drawer');
+  const drawer = document.getElementById('agent-code-drawer');
+  const drawerLabel = document.getElementById('drawer-toggle-label');
+  if (drawerBtn && drawer) {
+    drawerBtn.addEventListener('click', () => {
+      const isClosed = drawer.hidden;
+      drawer.hidden = !isClosed;
+      drawerBtn.classList.toggle('open', isClosed);
+      drawerBtn.setAttribute('aria-expanded', String(isClosed));
+      if (drawerLabel) {
+        drawerLabel.textContent = isClosed ? '收起指令明细' : '展开查看指令明细';
+      }
+    });
+  }
+
+  // Agent Prompt 复制
+  const code = document.querySelector('#agent-install-command code');
+  const btn = document.getElementById('agent-cmd-btn');
+  const feedback = document.getElementById('agent-copy-feedback');
+  if (code && btn && feedback) {
+    btn.addEventListener('click', async () => {
+      const copied = await copyTextOrSelect(code);
+      feedback.textContent = copied
+        ? '已复制完整安装 Prompt，粘贴给你的 Agent 即可'
+        : '已选中指令，请按快捷键复制';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        feedback.textContent = '';
+        btn.classList.remove('copied');
+      }, 3000);
+    });
+  }
 }
 
 /* ==========================================================================
@@ -119,6 +178,63 @@ function renderSidebar() {
 /* ==========================================================================
    5. 双视图路由切换 (Home View vs Docs View)
    ========================================================================== */
+let ANCHOR_TO_DOC_MAP = null;
+
+function getAnchorToDocMap() {
+  if (ANCHOR_TO_DOC_MAP) return ANCHOR_TO_DOC_MAP;
+  ANCHOR_TO_DOC_MAP = {};
+  if (typeof DOCS_CONTENT === 'undefined') return ANCHOR_TO_DOC_MAP;
+
+  for (const [docKey, docData] of Object.entries(DOCS_CONTENT)) {
+    ANCHOR_TO_DOC_MAP[docKey] = docKey;
+    if (docData.content) {
+      const regex = /<h[1-6][^>]*\bid=(?:\\*["'])([^"'\\]+)(?:\\*["'])/gi;
+      let match;
+      while ((match = regex.exec(docData.content)) !== null) {
+        ANCHOR_TO_DOC_MAP[match[1]] = docKey;
+      }
+    }
+    if (Array.isArray(docData.toc)) {
+      docData.toc.forEach(item => {
+        if (item.id) ANCHOR_TO_DOC_MAP[item.id] = docKey;
+      });
+    }
+  }
+  return ANCHOR_TO_DOC_MAP;
+}
+
+function resolveDocAndAnchor(hash) {
+  if (!hash) return { docId: 'intro', anchor: null };
+  const map = getAnchorToDocMap();
+  if (map[hash]) {
+    return { docId: map[hash], anchor: hash === map[hash] ? null : hash };
+  }
+
+  // Common prefix heuristics
+  if (hash.startsWith('cli-')) return { docId: 'cli-reference', anchor: hash };
+  if (hash.startsWith('modules-')) return { docId: 'modules', anchor: hash };
+  if (hash.startsWith('tb-')) return { docId: 'troubleshooting', anchor: hash };
+  if (hash.startsWith('rm-')) return { docId: 'roadmap', anchor: hash };
+  if (hash.startsWith('changelog-')) return { docId: 'changelog', anchor: hash };
+  if (hash.startsWith('intro-')) return { docId: 'intro', anchor: hash };
+  if (hash.startsWith('quickstart-')) return { docId: 'quickstart', anchor: hash };
+  if (hash.startsWith('installation-')) return { docId: 'installation', anchor: hash };
+  if (hash.startsWith('windows-')) return { docId: 'windows', anchor: hash };
+  if (hash.startsWith('linux-')) return { docId: 'linux', anchor: hash };
+  if (hash.startsWith('configuration-')) return { docId: 'configuration', anchor: hash };
+  if (hash.startsWith('telegram-')) return { docId: 'telegram', anchor: hash };
+  if (hash.startsWith('update-')) return { docId: 'update', anchor: hash };
+  if (hash.startsWith('data-')) return { docId: 'data', anchor: hash };
+  if (hash.startsWith('testing-')) return { docId: 'testing', anchor: hash };
+  if (hash.startsWith('privacy-')) return { docId: 'privacy', anchor: hash };
+  if (hash.startsWith('release-')) return { docId: 'release', anchor: hash };
+  if (hash.startsWith('contributing-')) return { docId: 'contributing', anchor: hash };
+  if (hash.startsWith('status-matrix-')) return { docId: 'status-matrix', anchor: hash };
+  if (hash.startsWith('thanks-')) return { docId: 'acknowledgments', anchor: hash };
+
+  return { docId: 'intro', anchor: null };
+}
+
 function initRouting() {
   window.addEventListener('hashchange', () => {
     routeHash();
@@ -128,19 +244,22 @@ function initRouting() {
 }
 
 function routeHash() {
+  const urlParams = new URLSearchParams(location.search);
+  const queryDoc = (urlParams.get('doc') || urlParams.get('p') || '').trim();
   const rawHash = location.hash.replace('#', '').trim();
+  const target = rawHash || queryDoc;
+
   const homeView = document.getElementById('view-home');
   const docsView = document.getElementById('view-docs');
   const navHome = document.getElementById('nav-home');
   const navDocs = document.getElementById('nav-docs');
-  const navQuickstart = document.getElementById('nav-quickstart');
-  const navStatus = document.getElementById('nav-status');
+  const navRoadmap = document.getElementById('nav-roadmap');
 
-  [navHome, navDocs, navQuickstart, navStatus].forEach(nav => {
+  [navHome, navDocs, navRoadmap].forEach(nav => {
     if (nav) nav.classList.remove('active');
   });
 
-  if (!rawHash || rawHash === 'home') {
+  if (!target || target === 'home') {
     if (homeView) homeView.style.display = 'flex';
     if (docsView) docsView.style.display = 'none';
     if (navHome) navHome.classList.add('active');
@@ -152,22 +271,18 @@ function routeHash() {
   if (homeView) homeView.style.display = 'none';
   if (docsView) docsView.style.display = 'flex';
 
-  const docId = docAnchorPage(rawHash);
-  if (docId === 'quickstart' && navQuickstart) {
-    navQuickstart.classList.add('active');
-  } else if ((docId === 'status-matrix' || docId === 'current-status') && navStatus) {
-    navStatus.classList.add('active');
+  const { docId, anchor } = resolveDocAndAnchor(target);
+
+  if (docId === 'roadmap' && navRoadmap) {
+    navRoadmap.classList.add('active');
   } else if (navDocs) {
     navDocs.classList.add('active');
   }
 
-  loadDoc(docId);
-  if (rawHash !== docId) {
-    document.getElementById(rawHash)?.scrollIntoView({ block: 'start', behavior: 'instant' });
-  }
+  loadDoc(docId, anchor);
 }
 
-function loadDoc(docId) {
+function loadDoc(docId, anchor = null) {
   const doc = DOCS_CONTENT[docId] || DOCS_CONTENT['intro'];
   const targetId = DOCS_CONTENT[docId] ? docId : 'intro';
 
@@ -225,7 +340,18 @@ function loadDoc(docId) {
   if (sidebarEl) sidebarEl.classList.remove('open');
   setMobileMenuState(false);
 
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (anchor) {
+    requestAnimationFrame(() => {
+      const targetEl = document.getElementById(anchor);
+      if (targetEl) {
+        targetEl.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      }
+    });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
 }
 
 function renderPager(currentId) {
@@ -413,9 +539,14 @@ function initSearch() {
    ========================================================================== */
 function setMobileMenuState(open) {
   const button = document.getElementById('mobile-toggle');
-  if (!button) return;
-  button.setAttribute('aria-expanded', String(open));
-  button.setAttribute('aria-label', open ? '关闭教程目录' : '打开教程目录');
+  if (button) {
+    button.setAttribute('aria-expanded', String(open));
+    button.setAttribute('aria-label', open ? '关闭教程目录' : '打开教程目录');
+  }
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.classList.toggle('show', open);
+  }
 }
 
 function initMobileMenu() {
@@ -436,8 +567,12 @@ function initMobileMenu() {
     setMobileMenuState(open);
   });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sidebarEl.classList.contains('open')) { close(); toggleBtn.focus(); } });
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', close);
+  }
   document.addEventListener('click', (e) => {
-    if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target)) close();
+    if (sidebarEl.classList.contains('open') && !sidebarEl.contains(e.target) && !toggleBtn.contains(e.target) && (!backdrop || !backdrop.contains(e.target))) close();
   });
 }
 
@@ -469,3 +604,154 @@ async function copyDocumentationText(code, btn) {
   btn.textContent = copied ? '已复制!' : '已选中，请手动复制';
   setTimeout(() => btn.textContent = origin, 2500);
 }
+
+/* ==========================================================================
+   9. 首页日常场景 Tab 切换器 (Showcase Tabs)
+   ========================================================================== */
+function initShowcaseTabs() {
+  const tabs = [...document.querySelectorAll('.showcase-tab')];
+  const panels = [...document.querySelectorAll('.showcase-panel')];
+  if (!tabs.length || !panels.length) return;
+
+  const activate = (targetIndex, focus = false) => {
+    tabs.forEach((t, i) => {
+      const isCurrent = i === targetIndex;
+      t.classList.toggle('active', isCurrent);
+      t.setAttribute('aria-selected', String(isCurrent));
+      t.tabIndex = isCurrent ? 0 : -1;
+      if (focus && isCurrent) t.focus();
+    });
+
+    panels.forEach((p, i) => {
+      const isCurrent = i === targetIndex;
+      if (isCurrent) {
+        p.classList.add('active');
+        // 重置气泡错落动效触发
+        const bubbles = p.querySelectorAll('.chat-bubble');
+        bubbles.forEach((b, bIdx) => {
+          b.style.animation = 'none';
+          b.offsetHeight; /* 强制重绘回流 */
+          b.style.animation = `bubble-pop 0.35s cubic-bezier(0.16, 1, 0.3, 1) ${bIdx * 0.045}s both`;
+        });
+      } else {
+        p.classList.remove('active');
+      }
+    });
+
+    // 手机端标签行是单行横向滑动，选中的标签自动滚入视野
+    const tabsEl = tabs[0] && tabs[0].parentElement;
+    if (tabsEl && tabsEl.scrollWidth > tabsEl.clientWidth + 1) {
+      tabs[targetIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  };
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', (e) => {
+      e.preventDefault();
+      activate(index);
+    });
+    tab.addEventListener('keydown', e => {
+      let targetIdx;
+      if (e.key === 'ArrowRight') targetIdx = (index + 1) % tabs.length;
+      if (e.key === 'ArrowLeft') targetIdx = (index - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') targetIdx = 0;
+      if (e.key === 'End') targetIdx = tabs.length - 1;
+      if (targetIdx === undefined) return;
+      e.preventDefault();
+      activate(targetIdx, true);
+    });
+  });
+}
+
+function initRoadmapAccordion() {
+  const list = Array.from(document.querySelectorAll('.rm-details'));
+  if (!list.length || !window.matchMedia) return;
+
+  const mq = window.matchMedia('(max-width: 768px)');
+  let lastMode = null;
+
+  function apply() {
+    const mobile = mq.matches;
+    if (mobile === lastMode) return; // 仅在断点切换时重置，不干扰用户手动展开
+    lastMode = mobile;
+    list.forEach((d, i) => {
+      d.open = mobile ? i === 0 : true;
+    });
+  }
+
+  apply();
+  if (mq.addEventListener) {
+    mq.addEventListener('change', apply);
+  } else if (mq.addListener) {
+    mq.addListener(apply); // 兼容旧版 Safari
+  }
+}
+// 交互式未来规划演进时间轴控制器 (Interactive Animated Roadmap Controller)
+function initInteractiveRoadmap() {
+  const stage = document.getElementById('roadmap-stage');
+  if (!stage) return;
+
+  const buttons = Array.from(stage.querySelectorAll('.stage-step-btn'));
+  const panels = Array.from(stage.querySelectorAll('.phase-panel'));
+  const fill = document.getElementById('stage-progress-fill');
+  if (!buttons.length || !panels.length) return;
+
+  let currentIndex = 0;
+  let timer = null;
+  let isHovered = false;
+
+  function setPhase(index) {
+    currentIndex = index;
+    // 更新步骤按钮状态
+    buttons.forEach((btn, i) => {
+      const active = i === index;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    // 更新展示面板
+    panels.forEach((p, i) => {
+      const active = i === index;
+      p.classList.toggle('active', active);
+    });
+    // 更新顶部时间轴填充条宽度
+    if (fill) {
+      const pct = (index / (buttons.length - 1)) * 100;
+      fill.style.width = `${pct}%`;
+    }
+  }
+
+  // 点击事件
+  buttons.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      setPhase(i);
+      resetAutoTimer();
+    });
+  });
+
+  // 鼠标悬停时暂停自动播放，移开时继续轮播
+  stage.addEventListener('mouseenter', () => { isHovered = true; clearInterval(timer); });
+  stage.addEventListener('mouseleave', () => { isHovered = false; startAutoTimer(); });
+
+  function startAutoTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => {
+      if (!isHovered) {
+        const next = (currentIndex + 1) % buttons.length;
+        setPhase(next);
+      }
+    }, 6000);
+  }
+
+  function resetAutoTimer() {
+    clearInterval(timer);
+    startAutoTimer();
+  }
+
+  // 初始化设置
+  setPhase(0);
+  startAutoTimer();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initInteractiveRoadmap();
+});

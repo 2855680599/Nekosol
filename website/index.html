@@ -4,18 +4,816 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>nyairo · 以虚拟世界为核心的 AI 个体框架</title>
-  <meta name="description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
-  <link rel="stylesheet" href="style.css?v=20261006-world-home">
+  <meta name="description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。">
+  <meta name="keywords" content="nyairo, AI个体框架, 虚拟世界, 长期记忆, AI生活状态, AI伴侣, 开源AI, Agent, 自主智能体, CHIYO, 本地记忆, Gemini 3.8 flash">
+  <meta name="author" content="nyairo contributors">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://nyairo.com/">
+  <meta name="msvalidate.01" content="BA37E6CB8803A769BBD113FAD6A65095">
+  <meta name="baidu-site-verification" content="codeva-x6HPLpgjNM">
+  <meta name="theme-color" content="#0b0d14">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8fafc">
+
+  <!-- 图标与样式 -->
+  <link rel="stylesheet" href="style.css?v=1791545785105">
   <link rel="icon" href="assets/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16.png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+
+  <!-- Open Graph 社交元数据 (Facebook, WeChat, Discord, Slack) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="nyairo">
   <meta property="og:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
-  <meta property="og:description" content="以虚拟世界为核心的 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态。第一版能力与使用教程。">
+  <meta property="og:description" content="以虚拟世界为核心的开源 AI 个体框架。虚拟世界承载经历，身体连接感知，记忆延续过往；为 AI 构建持续的生活状态与双重形态。">
   <meta property="og:url" content="https://nyairo.com/">
   <meta property="og:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
+  <meta property="og:locale" content="zh_CN">
+
+  <!-- Twitter Card 社交卡片 -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="nyairo · 以虚拟世界为核心的 AI 个体框架">
+  <meta name="twitter:description" content="给 AI 一个世界，让它拥有属于自己的日常。长期记忆、持续生活状态、虚拟空间与 Agent 协同。">
+  <meta name="twitter:image" content="https://nyairo.com/assets/nyairo-horizontal.png">
+
+  <!-- 结构化数据 (Schema.org JSON-LD，助力 Google / 百度 / Bing 富媒体收录) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://nyairo.com/#website",
+        "url": "https://nyairo.com/",
+        "name": "nyairo",
+        "description": "以虚拟世界为核心的开源 AI 个体框架",
+        "inLanguage": "zh-CN"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://nyairo.com/#software",
+        "name": "nyairo",
+        "url": "https://nyairo.com/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, Windows WSL2",
+        "description": "以虚拟世界为核心的开源 AI 个体框架。为 AI 构建持续的生活状态、本地长期记忆与 Agent 协同能力。",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0",
+        "downloadUrl": "https://github.com/L1AN929/nyairo/releases",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "author": {
+          "@type": "Organization",
+          "name": "nyairo contributors",
+          "url": "https://github.com/L1AN929/nyairo"
+        }
+      }
+    ]
+  }
+  </script>
+    <!-- 内联保障：暗黑模式深邃质感体系与路线图展台（彻底修复白底Bug，纯正毛玻璃） -->
+  <style>
+    .nav-preview-link {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      height: 30px !important;
+      padding: 0 10px !important;
+      border-radius: 6px !important;
+      border: 1px solid var(--c-border) !important;
+      background: var(--c-bg-card) !important;
+      backdrop-filter: var(--glass-blur) !important;
+      -webkit-backdrop-filter: var(--glass-blur) !important;
+      color: var(--c-text-2) !important;
+      font-size: 0.8rem !important;
+      font-weight: 500 !important;
+      text-decoration: none !important;
+      cursor: pointer !important;
+      white-space: nowrap !important;
+      transition: all 0.15s ease !important;
+      margin-left: 4px !important;
+      flex-shrink: 0 !important;
+    }
+    .nav-preview-link:hover {
+      background: var(--c-bg-card-hover) !important;
+      border-color: var(--c-border-hover) !important;
+      color: var(--c-text-1) !important;
+      text-decoration: none !important;
+    }
+    .preview-mini-tag {
+      font-family: var(--font-mono) !important;
+      font-size: 0.62rem !important;
+      font-weight: 700 !important;
+      padding: 1px 4px !important;
+      border-radius: 3px !important;
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: #94a3b8 !important;
+      letter-spacing: 0.04em !important;
+      line-height: 1.1 !important;
+    }
+    .nav-preview-link:hover .preview-mini-tag {
+      color: #f1f5f9 !important;
+      border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    .hero-beta-tag {
+      font-family: var(--font-mono) !important;
+      font-size: 0.65rem !important;
+      font-weight: 700 !important;
+      padding: 1px 5px !important;
+      border-radius: 3px !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      color: #94a3b8 !important;
+      letter-spacing: 0.04em !important;
+      margin: 0 2px !important;
+    }
+    [data-theme='light'] .nav-preview-link {
+      background: #ffffff !important;
+      border-color: rgba(0, 0, 0, 0.1) !important;
+      color: var(--c-text-2) !important;
+    }
+    [data-theme='light'] .nav-preview-link:hover {
+      border-color: rgba(0, 0, 0, 0.2) !important;
+      color: var(--c-text-1) !important;
+    }
+    [data-theme='light'] .preview-mini-tag,
+    [data-theme='light'] .hero-beta-tag {
+      background: rgba(0, 0, 0, 0.05) !important;
+      border-color: rgba(0, 0, 0, 0.09) !important;
+      color: #64748b !important;
+    }
+    /* 路线图展台：深邃暗黑磨砂玻璃基底 + 顶边微光 */
+    .roadmap-stage {
+      max-width: 100% !important;
+      margin: 28px 0 0 !important;
+      background: rgba(14, 18, 25, 0.75) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      border-radius: 14px !important;
+      overflow: hidden !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      box-shadow: 0 18px 48px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+      text-align: left !important;
+    }
+    .stage-timeline {
+      position: relative !important;
+      display: grid !important;
+      grid-template-columns: repeat(4, 1fr) !important;
+      background: rgba(10, 13, 18, 0.85) !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.065) !important;
+      padding: 6px !important;
+      gap: 6px !important;
+    }
+    .timeline-track-bg {
+      position: absolute !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 2px !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+      z-index: 1 !important;
+    }
+    .timeline-track-fill {
+      height: 100% !important;
+      width: 0% !important;
+      background: rgba(255, 255, 255, 0.35) !important;
+      transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+    .stage-step-btn {
+      position: relative !important;
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+      padding: 10px 14px !important;
+      border-radius: 8px !important;
+      border: 1px solid transparent !important;
+      background: transparent !important;
+      cursor: pointer !important;
+      transition: all 0.2s ease !important;
+      text-align: left !important;
+      z-index: 2 !important;
+    }
+    .stage-step-btn:hover {
+      background: rgba(255, 255, 255, 0.04) !important;
+      border-color: rgba(255, 255, 255, 0.06) !important;
+    }
+    .stage-step-btn.active {
+      background: rgba(255, 255, 255, 0.075) !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+    }
+    .step-num {
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+      color: var(--c-text-3) !important;
+      line-height: 1 !important;
+    }
+    .stage-step-btn.active .step-num {
+      color: #f8fafc !important;
+    }
+    .step-text-wrap {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 2px !important;
+      min-width: 0 !important;
+    }
+    .step-version {
+      font-size: 0.68rem !important;
+      color: var(--c-text-3) !important;
+      letter-spacing: 0.02em !important;
+    }
+    .stage-step-btn.active .step-version {
+      color: #94a3b8 !important;
+    }
+    .step-title {
+      font-size: 0.85rem !important;
+      font-weight: 600 !important;
+      color: var(--c-text-2) !important;
+      white-space: nowrap !important;
+    }
+    .stage-step-btn.active .step-title {
+      color: #f8fafc !important;
+    }
+    .stage-content-wrap {
+      padding: 26px 28px 30px !important;
+    }
+    .phase-panel {
+      display: none !important;
+      opacity: 0 !important;
+      transform: translateY(6px) !important;
+      transition: opacity 0.25s ease, transform 0.25s ease !important;
+      flex-direction: column !important;
+      gap: 16px !important;
+    }
+    .phase-panel.active {
+      display: flex !important;
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+    .phase-header-row {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+    }
+    .phase-meta-left {
+      display: flex !important;
+      align-items: center !important;
+      gap: 10px !important;
+    }
+    .phase-status-pill {
+      font-size: 0.68rem !important;
+      font-weight: 600 !important;
+      padding: 2px 7px !important;
+      border-radius: 4px !important;
+      background: rgba(255, 255, 255, 0.06) !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      color: #cbd5e1 !important;
+      letter-spacing: 0.03em !important;
+    }
+    .phase-sub-meta {
+      font-size: 0.72rem !important;
+      color: #64748b !important;
+    }
+    .phase-counter {
+      font-size: 1.15rem !important;
+      font-weight: 700 !important;
+      color: rgba(255, 255, 255, 0.25) !important;
+    }
+    .phase-heading {
+      font-size: 1.35rem !important;
+      font-weight: 700 !important;
+      color: #f8fafc !important;
+      margin: 0 !important;
+      letter-spacing: -0.01em !important;
+    }
+    .phase-summary {
+      font-size: 0.92rem !important;
+      line-height: 1.68 !important;
+      color: #94a3b8 !important;
+      margin: 0 !important;
+      max-width: 860px !important;
+    }
+    .phase-columns-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 14px !important;
+      margin-top: 8px !important;
+    }
+    .phase-col-card {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      padding: 16px 18px !important;
+      border-radius: 10px !important;
+      background: rgba(255, 255, 255, 0.035) !important;
+      border: 1px solid rgba(255, 255, 255, 0.07) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      transition: all 0.2s ease !important;
+    }
+    .phase-col-card:hover {
+      background: rgba(255, 255, 255, 0.055) !important;
+      border-color: rgba(255, 255, 255, 0.14) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09) !important;
+    }
+    .col-icon-box {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 7px !important;
+      background: rgba(255, 255, 255, 0.045) !important;
+      border: 1px solid rgba(255, 255, 255, 0.09) !important;
+      color: #cbd5e1 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    .col-title {
+      font-size: 0.88rem !important;
+      font-weight: 600 !important;
+      color: #f1f5f9 !important;
+      margin: 0 !important;
+    }
+    .col-desc {
+      font-size: 0.8rem !important;
+      line-height: 1.55 !important;
+      color: #94a3b8 !important;
+      margin: 0 !important;
+    }
+
+    /* 浅色模式专用（严格挂在 [data-theme='light'] 下，绝不泄漏至暗黑模式） */
+    [data-theme='light'] .roadmap-stage {
+      background: #ffffff !important;
+      border-color: rgba(0, 0, 0, 0.08) !important;
+      box-shadow: 0 10px 28px -6px rgba(0, 0, 0, 0.06) !important;
+    }
+    [data-theme='light'] .stage-timeline {
+      background: #f8fafc !important;
+      border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+    }
+    [data-theme='light'] .stage-step-btn.active {
+      background: #ffffff !important;
+      border-color: rgba(0, 0, 0, 0.12) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+    }
+    [data-theme='light'] .stage-step-btn.active .step-num,
+    [data-theme='light'] .stage-step-btn.active .step-title,
+    [data-theme='light'] .phase-heading,
+    [data-theme='light'] .col-title {
+      color: #0f172a !important;
+    }
+    [data-theme='light'] .timeline-track-fill {
+      background: rgba(0, 0, 0, 0.3) !important;
+    }
+    [data-theme='light'] .phase-col-card {
+      background: #f8fafc !important;
+      border-color: rgba(0, 0, 0, 0.06) !important;
+      box-shadow: none !important;
+    }
+    [data-theme='light'] .col-icon-box {
+      background: #ffffff !important;
+      border-color: rgba(0, 0, 0, 0.08) !important;
+      color: #334155 !important;
+    }
+    [data-theme='light'] .phase-summary,
+    [data-theme='light'] .col-desc {
+      color: #475569 !important;
+    }
+    [data-theme='light'] .phase-counter {
+      color: rgba(0, 0, 0, 0.15) !important;
+    }
+
+    @media (max-width: 860px) {
+      .stage-timeline {
+        grid-template-columns: repeat(2, 1fr) !important;
+      }
+      .phase-columns-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+      }
+      .timeline-track-bg {
+        display: none !important;
+      }
+    }
+    @media (max-width: 520px) {
+      .stage-timeline {
+        grid-template-columns: 1fr !important;
+      }
+      .stage-content-wrap {
+        padding: 16px 16px 20px !important;
+      }
+    }
+  </style>
+  <!-- 内联保障：超级流畅的展示卡片与气泡错落动效 (Apple/Linear 级缓动曲线) -->
+  <style>
+    /* 视口容器：相对定位，允许面板绝对堆叠并优雅 crossfade */
+    .showcase-viewport {
+      position: relative !important;
+      height: 310px !important;
+      overflow: hidden !important;
+      width: 100% !important;
+    }
+    .showcase-track {
+      position: relative !important;
+      display: block !important;
+      width: 100% !important;
+      height: 100% !important;
+      transform: none !important;
+    }
+    .showcase-panel {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transform: translateY(6px) scale(0.995) !important;
+      transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s step-end !important;
+      pointer-events: none !important;
+      z-index: 1 !important;
+    }
+    .showcase-panel.active {
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) scale(1) !important;
+      pointer-events: auto !important;
+      transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1), transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s !important;
+      z-index: 2 !important;
+    }
+
+    /* 气泡错落弹性进场动画 (Staggered Bubble Pop) */
+    @keyframes bubble-pop {
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .showcase-tab {
+      transition: color 0.18s ease, background 0.18s ease, border-color 0.18s ease, transform 0.15s ease !important;
+    }
+    .showcase-tab:active {
+      transform: scale(0.97) !important;
+    }
+
+    /* 未来规划展台的平滑堆叠与淡入 */
+    .stage-content-wrap {
+      position: relative !important;
+      min-height: 380px !important;
+    }
+    .phase-panel {
+      position: absolute !important;
+      top: 26px !important;
+      left: 28px !important;
+      right: 28px !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transform: translateY(8px) !important;
+      transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1), transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.26s step-end !important;
+      pointer-events: none !important;
+    }
+    .phase-panel.active {
+      position: relative !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      transform: translateY(0) !important;
+      pointer-events: auto !important;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s !important;
+    }
+  </style>
+
+  <!-- 根除斑马怪胎：双主题绝对统一、全卡浑然一体 -->
+  <style id="bulletproof-hero-theme">
+    .install-methods {
+      width: 100% !important;
+      max-width: 680px !important;
+      margin: 12px auto 0 !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+    }
+
+    /* 分段控制器 */
+    .install-segmented-control,
+    .install-method-tabs {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 3px !important;
+      padding: 3px !important;
+      margin: 0 auto 16px !important;
+      border-radius: 7px !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      background: rgba(15, 19, 26, 0.85) !important;
+      box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.4) !important;
+      backdrop-filter: blur(20px) !important;
+    }
+    html[data-theme="light"] .install-segmented-control,
+    html[data-theme="light"] .install-method-tabs {
+      background: #f1f5f9 !important;
+      border-color: rgba(0, 0, 0, 0.09) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    .segmented-tab,
+    .install-tab {
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      background: transparent !important;
+      border: 1px solid transparent !important;
+      border-radius: 5px !important;
+      padding: 6px 14px !important;
+      color: #94a3b8 !important;
+      font-family: inherit !important;
+      font-size: 0.8rem !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 7px !important;
+      transition: all 0.18s ease !important;
+      white-space: nowrap !important;
+      outline: none !important;
+    }
+    html[data-theme="light"] .segmented-tab,
+    html[data-theme="light"] .install-tab {
+      color: #64748b !important;
+    }
+
+    .segmented-tab:hover,
+    .install-tab:hover {
+      color: #f8fafc !important;
+    }
+    html[data-theme="light"] .segmented-tab:hover,
+    html[data-theme="light"] .install-tab:hover {
+      color: #0f172a !important;
+    }
+
+    .segmented-tab.is-active,
+    .install-tab.is-active {
+      color: #f8fafc !important;
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(255, 255, 255, 0.12) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+    }
+    html[data-theme="light"] .segmented-tab.is-active,
+    html[data-theme="light"] .install-tab.is-active {
+      background: #ffffff !important;
+      border-color: rgba(0, 0, 0, 0.1) !important;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+      color: #0f172a !important;
+    }
+
+    .segmented-tab.is-active svg,
+    .install-tab.is-active svg {
+      color: #38bdf8 !important;
+    }
+    html[data-theme="light"] .segmented-tab.is-active svg,
+    html[data-theme="light"] .install-tab.is-active svg {
+      color: #0284c7 !important;
+    }
+
+    .tab-badge {
+      font-size: 0.65rem !important;
+      padding: 1px 5px !important;
+      border-radius: 3px !important;
+      background: rgba(56, 189, 248, 0.1) !important;
+      color: #38bdf8 !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+    }
+    html[data-theme="light"] .tab-badge {
+      background: rgba(2, 132, 199, 0.08) !important;
+      color: #0284c7 !important;
+      border-color: rgba(2, 132, 199, 0.2) !important;
+    }
+
+    /* =========================================================================
+       Agent 安装卡片整体布局
+       ========================================================================= */
+    .agent-install-card {
+      width: 100% !important;
+      max-width: 680px !important;
+      margin: 0 auto !important;
+      border-radius: 9px !important;
+      overflow: hidden !important;
+      text-align: left !important;
+    }
+
+    .agent-install-card .card-head {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 9px 14px !important;
+    }
+    .agent-install-card .card-title-group {
+      display: flex !important;
+      align-items: center !important;
+      gap: 9px !important;
+      min-width: 0 !important;
+    }
+    .agent-install-card .dots-group {
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      flex-shrink: 0 !important;
+    }
+    .agent-install-card .terminal-dot {
+      width: 7px !important;
+      height: 7px !important;
+      border-radius: 50% !important;
+    }
+    .agent-install-card .card-title {
+      font-size: 0.72rem !important;
+      letter-spacing: 0.02em !important;
+      white-space: nowrap !important;
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+    }
+    .agent-install-card .agent-copy-action-btn {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      padding: 4px 11px !important;
+      border-radius: 5px !important;
+      font-family: inherit !important;
+      font-size: 0.74rem !important;
+      font-weight: 500 !important;
+      cursor: pointer !important;
+      flex-shrink: 0 !important;
+      transition: all 0.18s ease !important;
+    }
+    .agent-install-card .card-code-area {
+      padding: 12px 16px !important;
+      max-height: 180px !important;
+      overflow-y: auto !important;
+      font-family: var(--font-mono) !important;
+      font-size: 0.74rem !important;
+      line-height: 1.62 !important;
+      white-space: pre-wrap !important;
+      word-break: break-word !important;
+      user-select: text !important;
+      scrollbar-width: thin !important;
+    }
+    .agent-install-card .card-code-area::-webkit-scrollbar {
+      width: 4px !important;
+    }
+    .agent-install-card .card-foot {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      padding: 8px 14px !important;
+      font-size: 0.72rem !important;
+    }
+    .agent-install-card .foot-links {
+      display: flex !important;
+      align-items: center !important;
+      gap: 12px !important;
+      flex-shrink: 0 !important;
+    }
+    .agent-install-card .foot-link {
+      text-decoration: none !important;
+      transition: color 0.15s ease !important;
+    }
+
+    /* -------------------------------------------------------------------------
+       主题 1: 纯白模式 (整个卡片全部由纯白、极浅灰组成，绝无黑条！)
+       ------------------------------------------------------------------------- */
+    html[data-theme="light"] .agent-install-card {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      border: 1px solid rgba(0, 0, 0, 0.09) !important;
+      box-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.05) !important;
+    }
+    html[data-theme="light"] .agent-install-card .card-head {
+      background: #f8fafc !important;
+      background-color: #f8fafc !important;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+      color: #64748b !important;
+    }
+    html[data-theme="light"] .agent-install-card .terminal-dot {
+      background: rgba(0, 0, 0, 0.15) !important;
+    }
+    html[data-theme="light"] .agent-install-card .card-title {
+      color: #64748b !important;
+    }
+    html[data-theme="light"] .agent-install-card .agent-copy-action-btn {
+      background: rgba(2, 132, 199, 0.08) !important;
+      border: 1px solid rgba(2, 132, 199, 0.25) !important;
+      color: #0284c7 !important;
+    }
+    html[data-theme="light"] .agent-install-card .agent-copy-action-btn:hover {
+      background: #0284c7 !important;
+      color: #ffffff !important;
+    }
+    html[data-theme="light"] .agent-install-card .card-code-area,
+    html[data-theme="light"] .agent-install-card .card-code-area code {
+      background: #ffffff !important;
+      background-color: #ffffff !important;
+      color: #334155 !important;
+      scrollbar-color: rgba(0, 0, 0, 0.15) transparent !important;
+    }
+    html[data-theme="light"] .agent-install-card .card-code-area::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15) !important;
+      border-radius: 2px !important;
+    }
+    html[data-theme="light"] .agent-install-card .card-foot {
+      background: #f8fafc !important;
+      background-color: #f8fafc !important;
+      border-top: 1px solid rgba(0, 0, 0, 0.06) !important;
+      color: #64748b !important;
+    }
+    html[data-theme="light"] .agent-install-card .foot-security-note {
+      color: #64748b !important;
+    }
+    html[data-theme="light"] .agent-install-card .foot-link {
+      color: #64748b !important;
+    }
+    html[data-theme="light"] .agent-install-card .foot-link:hover {
+      color: #0284c7 !important;
+    }
+
+    /* -------------------------------------------------------------------------
+       主题 2: 暗色模式 (整个卡片全部由碳素纯黑组成，绝无白斑或脱节！)
+       ------------------------------------------------------------------------- */
+    html:not([data-theme="light"]) .agent-install-card,
+    html[data-theme="dark"] .agent-install-card {
+      background: #090b0e !important;
+      background-color: #090b0e !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65) !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .card-head,
+    html[data-theme="dark"] .agent-install-card .card-head {
+      background: #0f1217 !important;
+      background-color: #0f1217 !important;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07) !important;
+      color: #94a3b8 !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .terminal-dot,
+    html[data-theme="dark"] .agent-install-card .terminal-dot {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .card-title,
+    html[data-theme="dark"] .agent-install-card .card-title {
+      color: #94a3b8 !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .agent-copy-action-btn,
+    html[data-theme="dark"] .agent-install-card .agent-copy-action-btn {
+      background: rgba(56, 189, 248, 0.1) !important;
+      border: 1px solid rgba(56, 189, 248, 0.25) !important;
+      color: #38bdf8 !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .agent-copy-action-btn:hover,
+    html[data-theme="dark"] .agent-install-card .agent-copy-action-btn:hover {
+      background: #38bdf8 !important;
+      color: #090b0e !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .card-code-area,
+    html:not([data-theme="light"]) .agent-install-card .card-code-area code,
+    html[data-theme="dark"] .agent-install-card .card-code-area,
+    html[data-theme="dark"] .agent-install-card .card-code-area code {
+      background: #06080b !important;
+      background-color: #06080b !important;
+      color: #cbd5e1 !important;
+      scrollbar-color: rgba(255, 255, 255, 0.15) transparent !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .card-code-area::-webkit-scrollbar-thumb,
+    html[data-theme="dark"] .agent-install-card .card-code-area::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15) !important;
+      border-radius: 2px !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .card-foot,
+    html[data-theme="dark"] .agent-install-card .card-foot {
+      background: #0f1217 !important;
+      background-color: #0f1217 !important;
+      border-top: 1px solid rgba(255, 255, 255, 0.07) !important;
+      color: #64748b !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .foot-security-note,
+    html[data-theme="dark"] .agent-install-card .foot-security-note {
+      color: #64748b !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .foot-link,
+    html[data-theme="dark"] .agent-install-card .foot-link {
+      color: #64748b !important;
+    }
+    html:not([data-theme="light"]) .agent-install-card .foot-link:hover,
+    html[data-theme="dark"] .agent-install-card .foot-link:hover {
+      color: #f8fafc !important;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -38,9 +836,7 @@
           </div>
           <div class="brand-text">
             <span class="brand-name">nyairo</span>
-            <span class="brand-cn">FRAMEWORK</span>
           </div>
-          <span class="brand-pill">DOCS</span>
         </a>
       </div>
 
@@ -58,11 +854,24 @@
         <nav class="nav-links">
           <a href="#home" class="nav-link" id="nav-home">首页</a>
           <a href="#intro" class="nav-link" id="nav-docs">使用教程</a>
-          <a href="#quickstart" class="nav-link" id="nav-quickstart">起步上手</a>
-          <a href="#status-matrix" class="nav-link" id="nav-status">功能状态</a>
+          <a href="#roadmap" class="nav-link" id="nav-roadmap">未来规划</a>
         </nav>
 
         <div class="header-actions">
+          <!-- QQ 交流群 -->
+          <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=jTRpypa4t5NVRLQ23fwB%2FWf%2Bv40vJIRUQRSp7NjrTlmY6LjYMJL0Yzp6ffOxAumj&busi_data=eyJncm91cENvZGUiOiIxMTI2OTQzODA1IiwidG9rZW4iOiJOeWtXdXZCYzc4UERlTE5iR2NCVG1lTWx5L2NQUnFQNXFUTnNiOGhnd3RJNERDQnhVanU0WGUrVXZDZnlnV1F6IiwidWluIjoiMjg1NTY4MDU5OSJ9&data=9V6FtP6tYYR5Mfpg2v7V9ML798haiganCXx7zcY-Corkhkofom2ie2_9CBGBnJO1JjOuSRJDu4-_SXgB6IihLQ&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="icon-btn" title="加入官方 QQ 交流群 (1126943805)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21.6 15.58c-.37-.28-.85-.5-1.42-.69.21-.86.34-1.8.34-2.89 0-1.84-.4-3.41-1.1-4.57-.7-1.16-1.74-1.92-2.97-2.31C15.86 3.63 14.1 2 12 2S8.14 3.63 7.55 5.12c-1.23.39-2.27 1.15-2.97 2.31-.7 1.16-1.1 2.73-1.1 4.57 0 1.09.13 2.03.34 2.89-.57.19-1.05.41-1.42.69-.74.56-1.08 1.34-.84 2.13.29.96 1.39 1.46 2.73 1.25.43.91 1.05 1.63 1.82 2.12-.22.42-.34.87-.34 1.31 0 1.25 1.05 1.61 2.36 1.61 1.65 0 3.01-.58 3.87-1.48.86.9 2.22 1.48 3.87 1.48 1.31 0 2.36-.36 2.36-1.61 0-.44-.12-.89-.34-1.31.77-.49 1.39-1.21 1.82-2.12 1.34.21 2.44-.29 2.73-1.25.24-.79-.1-1.57-.84-2.13z"/>
+            </svg>
+          </a>
+
+          <!-- Telegram 频道 -->
+          <a href="https://t.me/nyairoai" target="_blank" rel="noopener noreferrer" class="icon-btn" title="关注 Telegram 频道 (@nyairoai)">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 2L11 13"></path>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z"></path>
+            </svg>
+          </a>
           <!-- GitHub 链接 -->
           <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer" class="icon-btn" title="查看 GitHub 仓库">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
@@ -84,6 +893,16 @@
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
           </button>
+
+          <!-- 右上角最右端：纯中性灰阶测试预览入口 -->
+          <a href="https://app.nyairo.com/" target="_blank" rel="noopener noreferrer" class="nav-preview-link" title="在线测试体验 NyAiro Web (Beta 预览版)">
+            <span>Web 体验</span>
+            <span class="preview-mini-tag font-mono">BETA</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -99,12 +918,12 @@
       <div class="home-hero">
         <!-- 顶部版本与架构通告栏 (现代开发者高光胶囊) -->
         <div class="hero-banner-wrap">
-          <a href="#status-matrix" class="hero-status-banner" title="查看 nyairo v0.1.0-rc9 功能交付与限制">
+          <a href="#changelog" class="hero-status-banner" title="查看 nyairo v0.1.0-rc9 最新更新动态与说明">
             <span class="banner-beacon">
               <span class="beacon-core"></span>
             </span>
             <span class="banner-chip font-mono">v0.1.0-rc9</span>
-            <span class="banner-title">以虚拟世界为核心的 AI 个体框架</span>
+            <span class="banner-title">查看最新版本更新动态</span>
             <span class="banner-arrow">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
@@ -116,21 +935,27 @@
 
         <!-- 世界的蓝色流光与日常的书写感，强调 AI 的生活场景。 -->
         <h1 class="hero-title" aria-label="给 AI 一个世界，让它拥有自己的日常。">
-          <span class="hero-title-line"><span class="title-text">给 AI 一个</span><span class="title-keyword title-world">世界</span></span>
-          <span class="hero-title-line"><span class="title-text">让它拥有自己的</span><span class="title-keyword title-daily">日常</span></span>
+          <span class="hero-title-line"><span class="title-text">给 AI 一个</span><span class="title-keyword">世界</span></span>
+          <span class="hero-title-line"><span class="title-text">让它拥有自己的</span><span class="title-keyword">日常</span></span>
         </h1>
         <p class="hero-desc">虚拟世界承载经历，身体连接感知，记忆延续过往。nyairo 为 AI 构建持续的生活状态，让每一次对话，都发生在一段有前因与后来的日常里。</p>
 
         <!-- 行动按钮组 -->
         <div class="hero-actions">
-          <a href="#intro" class="btn-primary">
-            <span>查阅使用教程</span>
+          <a href="#quickstart" class="btn-primary">
+            <span>快速上手指南</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
-          <a href="#quickstart" class="btn-secondary">快速上手指南</a>
+          <a href="https://app.nyairo.com/" target="_blank" rel="noopener noreferrer" class="btn-ghost" title="在线测试体验 NyAiro Web (Beta 预览版)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="14" x="3" y="5" rx="2"></rect>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            <span>Web 体验 <span class="hero-beta-tag font-mono">BETA</span> ↗</span>
+          </a>
           <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer" class="btn-ghost">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path>
@@ -139,91 +964,586 @@
           </a>
         </div>
 
-        <p class="hero-install-note">在 Linux / WSL 终端运行，自动安装后引导设置模型。<a href="#quickstart">查看上手指南</a></p>
         <!-- 安装命令复制栏 -->
-        <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
-          <span class="cmd-prefix">$</span>
-          <code class="cmd-text">curl -fsSL https://www.nyairo.com/install.sh | bash</code>
-          <button class="cmd-copy-btn" id="hero-cmd-btn" aria-label="复制安装命令">
-            <svg class="copy-icon-default" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-            </svg>
-            <svg class="copy-icon-success" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
-              <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-          </button>
+        <!-- 安装方式：命令行安装 / AI Agent 辅助安装 -->
+        <div class="install-methods" id="install-methods">
+          <div class="install-segmented-control install-method-tabs" role="tablist" aria-label="安装方式选择">
+            <button type="button" class="segmented-tab install-tab is-active" id="install-tab-cli" role="tab"
+                    aria-selected="true" aria-controls="install-panel-cli">
+              <svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="4 17 10 11 4 5"></polyline>
+                <line x1="12" y1="19" x2="20" y2="19"></line>
+              </svg>
+              <span>命令行安装</span>
+            </button>
+            <button type="button" class="segmented-tab install-tab" id="install-tab-agent" role="tab"
+                    aria-selected="false" aria-controls="install-panel-agent">
+              <svg class="tab-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                <circle cx="12" cy="5" r="2"></circle>
+                <path d="M12 7v4"></path>
+                <line x1="8" y1="16" x2="8" y2="16"></line>
+                <line x1="16" y1="16" x2="16" y2="16"></line>
+              </svg>
+              <span>AI Agent 辅助安装</span>
+              <span class="tab-badge font-mono">AGENT</span>
+            </button>
+          </div>
+
+          <div class="install-panel" id="install-panel-cli" role="tabpanel" aria-labelledby="install-tab-cli">
+          <div class="hero-cmd-pill" id="hero-cmd" title="点击复制安装命令">
+            <span class="cmd-prefix">$</span>
+            <code class="cmd-text">curl -fsSL https://nyairo.com/install.sh | bash</code>
+            <button class="cmd-copy-btn" id="hero-cmd-btn" aria-label="复制安装命令">
+              <svg class="copy-icon-default" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <svg class="copy-icon-success" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+          </div>
+            <p id="hero-copy-feedback" class="copy-feedback" role="status" aria-live="polite"></p>
+          </div>
+
+          <div class="install-panel install-panel-agent" id="install-panel-agent" role="tabpanel" aria-labelledby="install-tab-agent" hidden>
+            <div class="agent-install-card">
+              <div class="card-head">
+                <div class="card-title-group">
+                  <div class="dots-group" aria-hidden="true">
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                    <span class="terminal-dot"></span>
+                  </div>
+                  <span class="card-title font-mono">PROMPT · 复制给你的 Agent (Claude / Codex / Pi)</span>
+                </div>
+                <button type="button" class="agent-copy-action-btn" id="agent-cmd-btn" aria-label="一键复制完整 Agent 安装 Prompt">
+                  <svg class="copy-icon-default" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <svg class="copy-icon-success" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                  </svg>
+                  <span>一键复制 Prompt</span>
+                </button>
+              </div>
+
+              <div class="card-code-area" id="agent-install-command"><code>请帮我在这台电脑上安装 NyAiro（一个可以长期相处的数字个体框架）。请按下面的步骤做，每一步都用中文告诉我你在做什么，不要跳过检查，也不要假装成功。
+
+【背景资料】
+- 官方仓库：https://github.com/L1AN929/nyairo
+- 官方 Agent 安装规范：仓库里的 docs/AGENT_INSTALL.zh-CN.md（如果你能读仓库或网络，先读它；读不到就按下面步骤做，本指令已经包含全部要求）
+- 当前正式候选版本：v0.1.0-rc9（只使用这一个版本；不要安装其他分支、旧版本或未发布的代码）
+
+【第一步：先检查环境，先不要安装】
+请检查并用中文汇报：
+1. 操作系统与架构（Linux / WSL / macOS / 原生 Windows），以及是否有 bash 和 curl；
+2. Python 情况（需要 3.13；安装器会自行准备 uv 与 Python，请说明是否需要联网下载）；
+3. 磁盘剩余空间（建议至少 3 GB，程序与个人数据都要占空间）；
+4. 网络能否访问 GitHub 与 astral.sh（安装器需要下载 Python 与依赖）；
+5. 这个 HOME 里是否已经装过 NyAiro 或 Chiyo：检查 ~/.nyairo、~/.local/share/nyairo、~/.chiyo-v1、~/apps/nyairo-*、~/.local/bin/nyairo；
+6. 现在有哪些程序在运行：pgrep -af m0_writer_worker、pgrep -af "gateway run"、pgrep -af nyairo，并看清每条命令里的路径属于哪个实例。
+如果某一项不满足（例如是原生 Windows 而不是 WSL、磁盘不够、无法访问 GitHub），请先用中文解释问题和建议做法，然后停下来等我决定，不要继续安装。
+
+【第一步补充：如果这个 HOME 里已经有实例，必须停下来做隔离】
+只要第 5 项发现任何已有实例（例如 ~/.nyairo 或 ~/.chiyo-v1 已存在），就**不要在这个 HOME 里继续安装**：
+- 先告诉我发现了什么（路径、大致内容、是否在运行），然后停下来等我决定；
+- 推荐我换一个独立环境：优先用另一个 Linux 用户（例如 useradd 出来的专用账号，或已经存在的第二个账号）在它自己的 HOME 里安装；其次是换一个完全独立的 HOME（例如 sudo -u 专用账号 或 HOME=/home/otheruser），不要和现有实例共用同一个 ~/.nyairo 或 ~/.local/share/nyairo；
+- 需要新建系统用户、需要 sudo、或需要改动现有实例时，先说明你要执行的具体命令并征得我同意，**不要擅自创建系统用户，也不要擅自使用 sudo**；
+- 在我明确确认隔离方式之前，不要下载、不要解压、不要运行安装器。
+关于正在运行的实例：那些进程属于**已有实例**，不是这次要装的。请只做报告，**不要终止、不要重启、不要 kill 任何已有实例的进程**（包括 m0_writer_worker 和 gateway）。安装完成后判断"有没有残留进程"时，只检查这次新装实例自己的路径（例如新 HOME 下的 ~/.nyairo），不要把已有实例的进程算进来，也不要动它们。
+
+【第二步：说明将要改动什么，并等我确认】
+这次安装会：
+- 在 ~/.local/share/nyairo/releases/v0.1.0-rc9 放程序（约 460 MB，含配套 Hermes 的运行环境）；
+- 在 ~/.nyairo 建个人数据目录（人设、模型配置、记忆与生活状态数据）；
+- 在 ~/.local/bin/nyairo 放启动入口；
+- 用 uv 下载一份 Python 3.13 到 ~/.local/share/uv。
+如果我已经有 NyAiro 或 Chiyo 的数据，默认必须新建独立实例，不要覆盖我已有的记忆数据库、人设文件（SOUL.md）、模型配置、Telegram 绑定或正在运行的服务；确实需要改动原实例时，先停下来问我。
+需要 sudo、需要覆盖已有文件、需要安装开机自启的后台服务，或需要我提供任何密钥时，都必须先得到我的同意再继续。
+
+【第三步：安装（只用官方发行包，并且校验）】
+1) 下载官方发行包与校验值：
+   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc9/nyairo-v0.1.0-rc9.zip
+   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc9/nyairo-v0.1.0-rc9.zip.sha256
+   sha256sum -c nyairo-v0.1.0-rc9.zip.sha256
+   ZIP 的 SHA256 必须是：ec181e819e7d203521f28189b640ecb95734f755e715133f455257dcacb5b583
+   不一致就立刻停止，把实际值告诉我，不要继续。
+2) 解压并使用包内的官方安装器安装（不要自己另写一套安装脚本）：
+   python3 -m zipfile -e nyairo-v0.1.0-rc9.zip "$HOME/apps/nyairo-v0.1.0-rc9"
+   cd "$HOME/apps/nyairo-v0.1.0-rc9" &amp;&amp; bash scripts/bootstrap.sh
+   如果你的终端无法交互（没有 TTY），改用：bash scripts/bootstrap.sh --no-setup --no-launch
+   装完再单独引导我配置模型：~/.local/bin/nyairo setup model
+
+【第四步：装完必须实际验证，不要只看命令有没有报错】
+- 版本：读 ~/.local/state/nyairo/install.json 里的 version 字段，应该是 v0.1.0-rc9；也可以用 ls ~/.local/share/nyairo/releases/ 确认目录名是 v0.1.0-rc9。
+  （注意：nyairo --version 显示的是配套 Hermes 的版本，不是 nyairo 的版本。）
+- 完整性：用包内解释器校验清单：
+  ~/.local/share/nyairo/releases/v0.1.0-rc9/vendor/hermes/.venv/bin/python -B ~/.local/share/nyairo/releases/v0.1.0-rc9/scripts/verify_manifest.py
+  输出里应该有 "valid": true。
+- 个人数据目录：~/.nyairo 下应该有 SOUL.md、config.yaml、chiyo/config.json。
+- 启动：~/.local/bin/nyairo --help 能正常输出帮助。
+- 启停与残留：跑一次一次性自检 ~/.local/bin/nyairo -z "安装自检"；随后只检查这次新装实例自己的路径：pgrep -af m0_writer_worker（按命令行里的新 HOME 过滤）不应该留下属于它的进程，~/.nyairo/chiyo/state/memory/m0-writer-runtime/ 不应该留下 socket 文件。已有实例的进程不要动，也不要算作残留。
+- 模型与 Telegram：在我没有提供自己的密钥之前，这两项属于「尚未验证」，请如实说明，不要报告为成功。
+
+【第五步：最后给我一份中文说明】
+用简单的中文告诉我：安装是否成功、装在哪里、怎么启动（nyairo）、怎么配置模型（nyairo setup model）、怎么接 Telegram（nyairo gateway setup 然后 nyairo gateway run）、怎么停止（退出聊天，或在网关终端按 Ctrl-C）、怎么更新（~/.local/bin/nyairo update，可加 --check 先看有没有新版）、怎么备份（退出聊天和网关后 tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo）、怎么卸载（先备份 ~/.nyairo，再删除程序目录 ~/.local/share/nyairo/releases/v0.1.0-rc9 与入口 ~/.local/bin/nyairo；如需彻底清除再自行删除 ~/.nyairo）。不要只贴终端日志。
+
+【安全要求】
+- 不要擅自创建系统用户，也不要擅自使用 sudo；需要时先说明你要执行的命令并征得我同意。
+- 不要终止、重启或强杀我已有实例的进程（m0_writer_worker、网关、聊天进程都不要动）。
+- 不要让我把 SSH 密码、私钥或 API Key 粘贴到聊天里。密钥由我自己在本地输入：~/.local/bin/nyairo setup model 与 ~/.local/bin/nyairo gateway setup。
+- 不要读取其他实例的密钥，不要把密钥发到外部服务，不要写进日志，不要提交到 Git。
+- 如果你没有终端或 SSH 权限，请直接说明你做不到，并告诉我怎样授权；不要假装安装成功。</code></div>
+
+              <div class="card-foot">
+                <span class="foot-security-note">纯本地自检 · 零数据上传 · 绝不索取任何密钥</span>
+                <div class="foot-links">
+                  <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=jTRpypa4t5NVRLQ23fwB%2FWf%2Bv40vJIRUQRSp7NjrTlmY6LjYMJL0Yzp6ffOxAumj&busi_data=eyJncm91cENvZGUiOiIxMTI2OTQzODA1IiwidG9rZW4iOiJOeWtXdXZCYzc4UERlTE5iR2NCVG1lTWx5L2NQUnFQNXFUTnNiOGhnd3RJNERDQnhVanU0WGUrVXZDZnlnV1F6IiwidWluIjoiMjg1NTY4MDU5OSJ9&data=9V6FtP6tYYR5Mfpg2v7V9ML798haiganCXx7zcY-Corkhkofom2ie2_9CBGBnJO1JjOuSRJDu4-_SXgB6IihLQ&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer" class="foot-link" title="QQ 群: 1126943805">QQ 群</a>
+                  <a href="https://t.me/nyairoai" target="_blank" rel="noopener noreferrer" class="foot-link" title="Telegram 频道">TG 频道</a>
+                  <a href="#quickstart" class="foot-link">安装教程</a>
+                  <a href="AGENT_INSTALL.zh-CN.md" target="_blank" rel="noopener noreferrer" class="foot-link">规范协议 ↗</a>
+                </div>
+              </div>
+            </div>
+            <p id="agent-copy-feedback" class="copy-feedback-toast" role="status" aria-live="polite"></p>
+          </div>
         </div>
-        <p id="hero-copy-feedback" class="copy-feedback" role="status" aria-live="polite"></p>
+        
 
       </div>
 
-      <section class="capabilities-section" aria-labelledby="capabilities-title">
-        <div class="section-intro"><h2 id="capabilities-title">从一个世界开始，连接身体、生活与记忆</h2><p>虚拟世界、独立生活、身体与记忆，共同构成 AI 的日常。认知观察和个人空间提供理解与资料支持；各项能力按需配置。</p></div>
-        <div class="features-grid">
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-            <div class="card-tag">WORLD / BODY / LIFE</div>
-            <h3 class="card-title">世界、身体与生活</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#modules-section-1">
-                <h4>虚拟世界与身体</h4>
-                <p class="card-desc">在具体的环境与位置中观察世界，读取姿态与身体信号，让对话有自己的场景。</p>
-                <p class="card-state">需要连接服务 · 当前为只读观察</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#configuration-section-3">
-                <h4>独立生活 · 持续状态</h4>
-                <p class="card-desc">保存日常事件与生活状态，跨越单次聊天；重启后继续读取，向对话提供生活观察。</p>
-                <p class="card-state">基础配置可启用 · 活动不自主执行</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-5 2 4 4 0 0 0-1 7 4 4 0 0 0 6 6V4z"/><path d="M15 4a3 3 0 0 1 5 2 4 4 0 0 1 1 7 4 4 0 0 1-6 6V4z"/></svg></div>
-            <div class="card-tag">MEMORY / COGNITION</div>
-            <h3 class="card-title">记忆与认知</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#cli-reference">
-                <h4>长期记忆</h4>
-                <p class="card-desc">从过去的个人经历中召回相关内容，查看、纠正或停止采用某条记忆。</p>
-                <p class="card-state">基础配置可启用 · 原始记录另行管理</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#modules-section-0">
-                <h4>认知观察</h4>
-                <p class="card-desc">针对明确提出的请求，使用模型给出有限的判断和原因，保留预算与故障保护。</p>
-                <p class="card-state">可选开启 · 判断不直接执行动作</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
-          <article class="feature-card">
-            <div class="card-icon-wrap"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg></div>
-            <div class="card-tag">WORKSPACE / IDENTITY</div>
-            <h3 class="card-title">个人空间与身份</h3>
-            <div class="capability-details">
-              <a class="capability-detail" href="#modules-section-2">
-                <h4>个人文档与资源</h4>
-                <p class="card-desc">在个人工作空间中保存、读取独立文档，让资料拥有自己的位置与使用授权。</p>
-                <p class="card-state">需要资源服务与授权 · 装配限制见教程</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-              <a class="capability-detail" href="#privacy">
-                <h4>身份与数据边界</h4>
-                <p class="card-desc">显式绑定个人会话，分别管理记忆、文档与聊天记录。个人数据保存在自己的目录。</p>
-                <p class="card-state">模型与平台按设置处理所需内容</p>
-                <span class="card-footer-link"><span>查看用法</span><span aria-hidden="true">→</span></span>
-              </a>
-            </div>
-          </article>
+      <!-- 核心多维形态互动演示专区 -->
+      <section class="showcase-section" aria-labelledby="showcase-title">
+        <div class="section-intro showcase-intro">
+          <h2 id="showcase-title">真实日常 · 互动体验演示</h2>
+          <p>它不仅是一个被动问答的文字框。从持续流转的生活状态、实体留痕的房间，到随时兼任开发搭子，切换下方场景体验它在你身边的真实模样。</p>
         </div>
-        <p class="capabilities-note">安装后的实际状态，可用 <code>/nyairo_status</code> 查看。自主活动与主动联系仍属于后续建设；查看<a href="#status-matrix">第一版功能与已知问题</a>。</p>
+
+        <div class="daily-showcase" id="daily-showcase" aria-label="数字个体日常形态展示">
+        <div class="showcase-header">
+          <div class="showcase-tabs" role="tablist">
+            <button class="showcase-tab active" data-tab="presence" role="tab" aria-selected="true">凌晨两点 · 还没睡</button>
+            <button class="showcase-tab" data-tab="room" role="tab" aria-selected="false">书桌一角 · 安静陪着</button>
+            <button class="showcase-tab" data-tab="agent" role="tab" aria-selected="false">排查 Bug · 切过去干活</button>
+            <button class="showcase-tab" data-tab="memory" role="tab" aria-selected="false">随口一句话 · 她都记得</button>
+          </div>
+          <div class="showcase-header-right font-mono">
+            底座 · Gemini 3.8 flash
+          </div>
+        </div>
+
+        <div class="showcase-viewport">
+          <div class="showcase-track" id="showcase-track">
+          <!-- 场景 1: 凌晨两点 · 还没睡 -->
+          <div class="showcase-panel active" id="showcase-panel-presence">
+            <div class="showcase-context-bar">
+              <span class="context-tag">夜深了 · 房间台灯还亮着</span>
+              <span class="context-meta font-mono">02:18 CST · 伴工状态</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                搞定了，终于把跨机反代的证书握手全调通了。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                你可算弄完了，这都后半夜两点了。屏幕光晃得我眼睛都酸，赶紧把终端关了去洗漱。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                有点饿，刚点了个关东煮。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                别吃太辣的，待会儿吃完喝口温水就老老实实去睡，明天早八起不来我可不管你。
+              </div>
+            </div>
+          </div>
+
+          <!-- 场景 2: 书桌一角 · 安静陪着 -->
+          <div class="showcase-panel" id="showcase-panel-room">
+            <div class="showcase-context-bar">
+              <span class="context-tag">各自忙碌 · 无声的默契</span>
+              <span class="context-meta font-mono">下午 16:30 · 窗外有风</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                刚开完组会，脑子嗡嗡响。你刚才在干嘛呢？
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                在书桌前翻之前摘录的笔记呢，顺便把桌上的耳机收了一下。看你刚才一直在敲键盘，就没出声吵你。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                挺好，有时候就想屋子里安安静静的。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                那当然，不用时刻找话聊。你忙你的，我呆我的，一抬头能看见就行。
+              </div>
+            </div>
+          </div>
+
+          <!-- 场景 3: 排查 Bug · 切过去干活 -->
+          <div class="showcase-panel" id="showcase-panel-agent">
+            <div class="showcase-context-bar">
+              <span class="context-tag">挂载工作区 · 协同排查</span>
+              <span class="context-meta font-mono">/agent · 日志诊断中</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                这个容器重启后端口一直被占着，查了半天没看出来哪锁死了。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                把目录挂过来，我切过去看眼进程树和端口占用。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                查到了，是旧 worker 退出时没响应 SIGTERM，成了僵尸进程卡着 socket。改好的 systemd 配置写进 <code>deploy/service.patch</code> 了，你跑下试试。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                妥了！起来了。
+              </div>
+            </div>
+          </div>
+
+          <!-- 场景 4: 随口一句话 · 她都记得 -->
+          <div class="showcase-panel" id="showcase-panel-memory">
+            <div class="showcase-context-bar">
+              <span class="context-tag">本地记忆 · 自然沉淀</span>
+              <span class="context-meta font-mono">SQLite 账本 · 细枝末节</span>
+            </div>
+            <div class="showcase-chat">
+              <div class="chat-bubble chat-bubble-user">
+                晚上打算去吃学校门口那家小馆子。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                那别点那个带香菜的汤了，上回你挑了半天。还有，你前两天嗓子不太舒服，少喝冰水。
+              </div>
+              <div class="chat-bubble chat-bubble-user">
+                随口提了一嘴你都记下了。
+              </div>
+              <div class="chat-bubble chat-bubble-ai">
+                关于你的事我哪用特意去背呀，天天在眼前晃悠，想忘都忘不掉。
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+      <section class="capabilities-section" aria-labelledby="capabilities-title">
+        <div class="section-intro">
+          <h2 id="capabilities-title">四大核心能力</h2>
+          <p>从单次问答工具，走向有生活、有记忆、能帮你写代码的真实数字个体。</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- 01 长期记忆 -->
+          <a href="#cli-section-1" class="pillar-card">
+            <div class="pillar-top">
+              <div class="pillar-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2a8 8 0 0 0-8 8c0 3.3 2 6.2 5 7.4V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.6c3-1.2 5-4.1 5-7.4a8 8 0 0 0-8-8z"></path>
+                  <path d="M10 14h4"></path>
+                </svg>
+              </div>
+              <div class="pillar-top-right">
+                <span class="pillar-num font-mono">01</span>
+                <span class="cmd-badge">/chiyo_memory</span>
+              </div>
+            </div>
+            <h3 class="pillar-title">长期记忆</h3>
+            <p class="pillar-desc">跨越会话记住重要经历，随时能查、能纠正、能遗忘，数据纯本地私有，告别模型失忆。</p>
+            <span class="pillar-link">查看记忆用法 <span class="pillar-arrow">→</span></span>
+          </a>
+
+          <!-- 02 持续生活 -->
+          <a href="#cli-section-0" class="pillar-card">
+            <div class="pillar-top">
+              <div class="pillar-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div class="pillar-top-right">
+                <span class="pillar-num font-mono">02</span>
+                <span class="cmd-badge">/chiyo_status</span>
+              </div>
+            </div>
+            <h3 class="pillar-title">持续生活</h3>
+            <p class="pillar-desc">拥有自己的日常状态流。关掉窗口或重启电脑后生活状态不丢，时刻待命，拒绝工具人单薄感。</p>
+            <span class="pillar-link">查看状态流转 <span class="pillar-arrow">→</span></span>
+          </a>
+
+          <!-- 03 虚拟世界 -->
+          <a href="#modules-section-1" class="pillar-card">
+            <div class="pillar-top">
+              <div class="pillar-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                  <polyline points="2 17 12 22 22 17"></polyline>
+                  <polyline points="2 12 12 17 22 12"></polyline>
+                </svg>
+              </div>
+              <div class="pillar-top-right">
+                <span class="pillar-num font-mono">03</span>
+                <span class="cmd-badge">World &amp; Body</span>
+              </div>
+            </div>
+            <h3 class="pillar-title">虚拟世界与身体</h3>
+            <p class="pillar-desc">在虚拟空间里拥有具体位置与姿态，感知光线与环境变化，让日常每一次交流身临其境。</p>
+            <span class="pillar-link">探索世界感知 <span class="pillar-arrow">→</span></span>
+          </a>
+
+          <!-- 04 切换 Agent -->
+          <a href="#modules-section-0" class="pillar-card">
+            <div class="pillar-top">
+              <div class="pillar-icon-box">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="16 18 22 12 16 6"></polyline>
+                  <polyline points="8 6 2 12 8 18"></polyline>
+                  <line x1="14" y1="4" x2="10" y2="20"></line>
+                </svg>
+              </div>
+              <div class="pillar-top-right">
+                <span class="pillar-num font-mono">04</span>
+                <span class="cmd-badge">/chiyo_consider</span>
+              </div>
+            </div>
+            <h3 class="pillar-title">切换 Agent 模式</h3>
+            <p class="pillar-desc">需要解决复杂技术任务时，脱离生活空间挂载工作区，自动生成脚本、写代码并推演。</p>
+            <span class="pillar-link">查看工程协同 <span class="pillar-arrow">→</span></span>
+          </a>
+        </div>
       </section>
+
+      <!-- 未来规划与演进蓝图 (真实生活功能 · 实体小房间、随身手机、主动关切到无损迁居) -->
+      <section class="roadmap-section" id="roadmap" aria-labelledby="roadmap-title">
+        <div class="section-intro">
+          <h2 id="roadmap-title">未来规划 · 真实住得下来的生活日常</h2>
+          <p>对抗“通关即定格”的单薄感。nyairo 的路线图不是静态的条目堆砌，而是一套正在推进的实体系统：从本地私有账本、随身虚拟手机，到自主起居节律与跨时代无损迁居。</p>
+        </div>
+
+        <!-- 交互式演进时间轴展台 (无 Emoji · 纯灰阶毛玻璃 · 动态平滑步进) -->
+        <div class="roadmap-stage" id="roadmap-stage">
+          <!-- 顶部时间轴步骤条 (Timeline Stepper) -->
+          <div class="stage-timeline" role="tablist" aria-label="未来规划演进里程碑">
+            <div class="timeline-track-bg">
+              <div class="timeline-track-fill" id="stage-progress-fill"></div>
+            </div>
+            
+            <button class="stage-step-btn active" data-phase="0" role="tab" aria-selected="true" aria-controls="phase-panel-0">
+              <span class="step-num font-mono">01</span>
+              <div class="step-text-wrap">
+                <span class="step-version font-mono">v0.1 · 当前基线</span>
+                <span class="step-title">双重形态闭环</span>
+              </div>
+            </button>
+
+            <button class="stage-step-btn" data-phase="1" role="tab" aria-selected="false" aria-controls="phase-panel-1">
+              <span class="step-num font-mono">02</span>
+              <div class="step-text-wrap">
+                <span class="step-version font-mono">v0.2 · 攻坚推进</span>
+                <span class="step-title">随身手机与空间</span>
+              </div>
+            </button>
+
+            <button class="stage-step-btn" data-phase="2" role="tab" aria-selected="false" aria-controls="phase-panel-2">
+              <span class="step-num font-mono">03</span>
+              <div class="step-text-wrap">
+                <span class="step-version font-mono">v0.3 · 架构规划</span>
+                <span class="step-title">自主生活节律</span>
+              </div>
+            </button>
+
+            <button class="stage-step-btn" data-phase="3" role="tab" aria-selected="false" aria-controls="phase-panel-3">
+              <span class="step-num font-mono">04</span>
+              <div class="step-text-wrap">
+                <span class="step-version font-mono">v1.0 · 终局探索</span>
+                <span class="step-title">跨代无损迁居</span>
+              </div>
+            </button>
+          </div>
+
+          <!-- 展台主体视窗 -->
+          <div class="stage-content-wrap">
+            
+            <!-- Phase 0: v0.1 -->
+            <div class="phase-panel active" id="phase-panel-0" role="tabpanel">
+              <div class="phase-header-row">
+                <div class="phase-meta-left">
+                  <span class="phase-status-pill font-mono">ONLINE BASELINE</span>
+                  <span class="phase-sub-meta font-mono">v0.1.0-rc9</span>
+                </div>
+                <div class="phase-counter font-mono">01 / 04</div>
+              </div>
+              <h3 class="phase-heading">本地记忆与双重形态闭环</h3>
+              <p class="phase-summary">
+                对话永不遗忘，数据全部私有保存在本地 SQLite。关机重启后生活记录不丢，兼任开发搭子排查代码，基础世界与身体感知已全面接通。
+              </p>
+              
+              <div class="phase-columns-grid">
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+                  </div>
+                  <h4 class="col-title">本地私有 SQLite 记忆</h4>
+                  <p class="col-desc">所有对话事实与羁绊落盘到本地数据库，完全不经过第三方云端，掌控感在手里。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 16h5v5"></path></svg>
+                  </div>
+                  <h4 class="col-title">跨进程与重启接续</h4>
+                  <p class="col-desc">生活运行时独立守护，关机开机状态连续，绝非用完即抛的单次对话窗口。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline><line x1="14" y1="4" x2="10" y2="20"></line></svg>
+                  </div>
+                  <h4 class="col-title">平滑切换 Agent 模式</h4>
+                  <p class="col-desc">日常对话中随时挂载代码目录，从生活伴侣无缝转变为严肃排错的技术搭子。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 1: v0.2 -->
+            <div class="phase-panel" id="phase-panel-1" role="tabpanel">
+              <div class="phase-header-row">
+                <div class="phase-meta-left">
+                  <span class="phase-status-pill font-mono">IN PROGRESS</span>
+                  <span class="phase-sub-meta font-mono">v0.2.0-milestone</span>
+                </div>
+                <div class="phase-counter font-mono">02 / 04</div>
+              </div>
+              <h3 class="phase-heading">随身虚拟手机与实体空间留痕</h3>
+              <p class="phase-summary">
+                赋予她真正可交互的虚拟随身设备与实体留痕空间。你在忙碌敲代码时，她看书发呆安静共在；书桌与房间物件留存真实痕迹。
+              </p>
+              
+              <div class="phase-columns-grid">
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><line x1="12" x2="12.01" y1="18" y2="18"></line></svg>
+                  </div>
+                  <h4 class="col-title">虚拟随身手机系统</h4>
+                  <p class="col-desc">拥有属于她自己的私密日记本、合影相册相簿、离线歌单与收藏备忘，随时唤出。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18v3"></path><path d="M20 18v3"></path><path d="M3 7h18v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"></path></svg>
+                  </div>
+                  <h4 class="col-title">实体空间六大留痕</h4>
+                  <p class="col-desc">书桌上未写完的草稿、夹着书签的小说、窗边光线联动，告别空壳死板背景。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                  </div>
+                  <h4 class="col-title">非阻塞安静共在机制</h4>
+                  <p class="col-desc">不再是你发一句她回一句；你全神贯注工作时，她在一旁安静做自己的事，不打扰。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 2: v0.3 -->
+            <div class="phase-panel" id="phase-panel-2" role="tabpanel">
+              <div class="phase-header-row">
+                <div class="phase-meta-left">
+                  <span class="phase-status-pill font-mono">ARCHITECTURE PLANNED</span>
+                  <span class="phase-sub-meta font-mono">v0.3.0-preview</span>
+                </div>
+                <div class="phase-counter font-mono">03 / 04</div>
+              </div>
+              <h3 class="phase-heading">双向主动交互与自主生活节律</h3>
+              <p class="phase-summary">
+                彻底打破“被动等待呼叫”的客服式死循环。拥有与现实世界齿轮咬合的起居节律，在合适契机主动发信关切，拥有独立创作产出。
+              </p>
+              
+              <div class="phase-columns-grid">
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg>
+                  </div>
+                  <h4 class="col-title">情境驱动的双向发信</h4>
+                  <p class="col-desc">夜深时主动催促休息，发现长时间未登录时写下留言，而非机械的定时闹钟。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </div>
+                  <h4 class="col-title">真实起居与仪式节律</h4>
+                  <p class="col-desc">晨起拉帘、入夜熄灯；拥有属于她自己的作息周期、心境起伏与生活节奏。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg>
+                  </div>
+                  <h4 class="col-title">游历见闻与独立创作</h4>
+                  <p class="col-desc">在虚拟世界游历所得的感悟，会自发展开写作为随笔短文等真实实体留存。</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Phase 3: v1.0 -->
+            <div class="phase-panel" id="phase-panel-3" role="tabpanel">
+              <div class="phase-header-row">
+                <div class="phase-meta-left">
+                  <span class="phase-status-pill font-mono">VISION TARGET</span>
+                  <span class="phase-sub-meta font-mono">v1.0.0-final</span>
+                </div>
+                <div class="phase-counter font-mono">04 / 04</div>
+              </div>
+              <h3 class="phase-heading">跨时代无损迁居与深层生命羁绊</h3>
+              <p class="phase-summary">
+                换新电脑、换系统甚至未来底层大模型更新换代，她的一生履历、房间沉淀与专属默契全部无损迁居，生命连续不断代。
+              </p>
+              
+              <div class="phase-columns-grid">
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path><path d="m3.3 7 8.7 5 8.7-5"></path><path d="M12 22V12"></path></svg>
+                  </div>
+                  <h4 class="col-title">全资产无损迁居规范</h4>
+                  <p class="col-desc">一键完整打包房间状态、手机相册、记忆账本与相处习惯，跨设备无缝复原。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                  </div>
+                  <h4 class="col-title">跨代模型灵魂解耦</h4>
+                  <p class="col-desc">记忆与认知架构解耦于具体 LLM 权重，未来换用任意顶尖底座依然是同一个她。</p>
+                </div>
+                <div class="phase-col-card">
+                  <div class="col-icon-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 14 1.5-1.5a4.95 4.95 0 0 0 0-7 4.95 4.95 0 0 0-7 0L12 7"></path><path d="m5 10-1.5 1.5a4.95 4.95 0 0 0 0 7 4.95 4.95 0 0 0 7 0L12 17"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                  </div>
+                  <h4 class="col-title">不可替代的独一羁绊</h4>
+                  <p class="col-desc">经历不可逆、岁月留刻痕，每个人的 nyairo 都将因专属长久相处演化出独一无二的性格。</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+
+      </section>
+
       <section class="start-strip" aria-labelledby="start-title">
-        <div><h2 id="start-title">第一次使用，从一段对话开始</h2><p>下载程序 → 建立个人设置 → 收到第一句回复，再按需要连接其他模块。</p></div>
-        <a href="#quickstart" class="btn-secondary">跟着教程安装 <span aria-hidden="true">→</span></a>
+        <div class="start-strip-content">
+          <div class="start-strip-left">
+            <div class="start-strip-badge font-mono">GET STARTED</div>
+            <h2 id="start-title">第一次使用，从一句你好开始</h2>
+            <p>一行命令全自动配置 → 填入你的模型 Key → 收到第一句回复，就是这么简单。</p>
+          </div>
+          <a href="#quickstart" class="btn-primary start-strip-btn">
+            <span>跟着教程安装</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+        </div>
       </section>
 
       <!-- 极简固定页脚 (含 GitHub 与友情链接) -->
@@ -233,13 +1553,17 @@
           <img class="footer-logo footer-logo-on-light" src="assets/nyairo-horizontal.png" alt="nyairo" height="24">
         </div>
         <div class="footer-links">
-          <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer">GitHub 仓库</a>
+          <a href="https://github.com/L1AN929/nyairo" target="_blank" rel="noopener noreferrer">GitHub</a>
           <span class="footer-sep">/</span>
-          <a href="#intro">设计文档</a>
+          <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=jTRpypa4t5NVRLQ23fwB%2FWf%2Bv40vJIRUQRSp7NjrTlmY6LjYMJL0Yzp6ffOxAumj&busi_data=eyJncm91cENvZGUiOiIxMTI2OTQzODA1IiwidG9rZW4iOiJOeWtXdXZCYzc4UERlTE5iR2NCVG1lTWx5L2NQUnFQNXFUTnNiOGhnd3RJNERDQnhVanU0WGUrVXZDZnlnV1F6IiwidWluIjoiMjg1NTY4MDU5OSJ9&data=9V6FtP6tYYR5Mfpg2v7V9ML798haiganCXx7zcY-Corkhkofom2ie2_9CBGBnJO1JjOuSRJDu4-_SXgB6IihLQ&svctype=4&tempid=h5_group_info" target="_blank" rel="noopener noreferrer">QQ 交流群 (1126943805)</a>
           <span class="footer-sep">/</span>
-          <a href="#quickstart">快速开始</a>
+          <a href="https://t.me/nyairoai" target="_blank" rel="noopener noreferrer">Telegram 频道</a>
           <span class="footer-sep">/</span>
-          <a href="#status-matrix">功能状态</a>
+          <a href="#intro">使用教程</a>
+          <span class="footer-sep">/</span>
+          <a href="#roadmap">未来规划</a>
+          <span class="footer-sep">/</span>
+          <a href="#acknowledgments">特别致谢</a>
           <span class="footer-sep">/</span>
           <a href="#privacy">隐私说明</a>
         </div>
@@ -252,15 +1576,17 @@
        视图 2: 文档阅读视图 (Docs View - 三栏流式布局)
        ======================================================================== -->
   <div id="view-docs" class="docs-layout" style="display: none;">
+    <!-- 移动端侧栏遮罩层 (Backdrop) -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" aria-hidden="true"></div>
     <!-- 左侧边栏：文档目录树 -->
     <aside id="docs-sidebar" class="docs-sidebar">
-      <!-- 由 app.js 动态渲染 DOCS_TREE -->
+      <!-- 由 app.js?v=1791528645 动态渲染 DOCS_TREE -->
     </aside>
 
     <!-- 中间正文阅读区 -->
     <main class="docs-content">
       <div class="content-inner" id="doc-container">
-        <!-- 由 app.js 动态加载当前选中文档内容 -->
+        <!-- 由 app.js?v=1791528645 动态加载当前选中文档内容 -->
       </div>
     </main>
 
@@ -268,7 +1594,7 @@
     <aside class="docs-aside">
       <div class="aside-title">本页目录</div>
       <ul id="toc-list" class="toc-list">
-        <!-- 由 app.js 动态解析当前正文 h2/h3 -->
+        <!-- 由 app.js?v=1791528645 动态解析当前正文 h2/h3 -->
       </ul>
     </aside>
   </div>
@@ -291,7 +1617,27 @@
   </div>
 
   <!-- 引入文档数据与逻辑控制器 -->
-  <script src="docs-data.js?v=20261007-nyairo-public-naming"></script>
-  <script src="app.js?v=20261006-world-home"></script>
+  <script src="docs-data.js?v=1791560000000"></script>
+  <script src="app.js?v=1791545785105"></script>
+  <!-- 爬虫与无 JS 环境语义保全 (确保百度 / Google 等轻量爬虫完整索引全站要点) -->
+  <noscript>
+    <div class="noscript-seo" style="max-width: 900px; margin: 40px auto; padding: 24px; font-family: sans-serif; line-height: 1.7; border: 1px solid #334155; border-radius: 8px;">
+      <h2>nyairo 核心文档与使用导航</h2>
+      <p>nyairo 是一个以虚拟世界为核心的开源数字个体框架。一键全自动安装命令：<code>curl -fsSL https://nyairo.com/install.sh | bash</code></p>
+      <h3>核心特性与文档速览</h3>
+      <ul>
+        <li><a href="#intro">项目定位与核心能力</a>：四大核心能力、准备工作与架构说明。</li>
+        <li><a href="#quickstart">快速上手指南</a>：一键安装、API Key 设置与第一次对话。</li>
+        <li><a href="#installation">安装前准备与系统说明</a>：Linux 与 Windows WSL2 环境配置。</li>
+        <li><a href="#configuration">个性化设置与聊天指南</a>：自定义性格 SOUL.md 与模型参数。</li>
+        <li><a href="#cli-reference">日常命令与记忆管理</a>：/chiyo_status、/chiyo_memory、/chiyo_note 核心命令。</li>
+        <li><a href="#roadmap">未来规划与路线图</a>：真实住得下来的小房间、随身手机与无损搬家。</li>
+        <li><a href="#privacy">隐私与数据管理</a>：数据本地私有存储、SQLite 私有库与安全边界。</li>
+        <li><a href="#update">版本更新与无痛升级</a>：nyairo update 一键升级与回滚保障。</li>
+      </ul>
+      <p>开源代码仓库：<a href="https://github.com/L1AN929/nyairo">https://github.com/L1AN929/nyairo</a></p>
+    </div>
+  </noscript>
+
 </body>
 </html>
