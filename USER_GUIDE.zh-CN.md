@@ -375,84 +375,156 @@ nano "$HOME/.chiyo-v1/SOUL.md"
 
 ## 06 接入 Telegram
 
-引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的 `.chiyo-v1` 请换成 `.nyairo`，启动命令可换成 `nyairo`。
+引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`，个人数据目录是 `~/.nyairo`，命令统一是 `/nyairo_*`。
 
-### 第一步：准备自己的机器人
+本节的步骤已在 `v0.1.0-rc8` 上用真实账号走通：托管机器人接入、长轮询连接、与 QQ / 微信三平台并存、私人会话绑定、命令收发、普通对话、记忆写入，以及**跨平台记忆召回**。
 
-先确认电脑里已经能正常聊天，再设置 Telegram。
+### 第一步：准备机器人（推荐托管自动接入）
 
-在 Telegram 的 **BotFather** 创建自己的机器人，保存它给你的 token。token 就是让程序操作这个机器人的凭证；别把它写到公开教程或发给别人。
+Telegram 不需要公网地址、不需要开放端口、也不需要 webhook——它默认用**长轮询**主动去 Telegram 取消息，只要能上网就能接。
 
-在 Ubuntu / Linux 终端里进入程序文件夹，启动连接设置：
+准备机器人有两条路，推荐第一条。
+
+**路径 A：托管机器人自动接入（不用去 BotFather）**
 
 ```bash
-cd "$HOME/apps/chiyo-v0.1"
-export HERMES_HOME="$HOME/.chiyo-v1"
+export HERMES_HOME="$HOME/.nyairo"
 ~/.local/bin/nyairo gateway setup
 ```
 
-选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
+在平台清单里找到 **Telegram** 打勾。向导会问：
 
-如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc8/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+```text
+  Telegram can be configured automatically with a managed bot:
+  [1] Automatic (scan QR → confirm in Telegram → done)
+  [2] Manual BotFather token
+  Choice [1/2]
+```
 
-### 第二步：允许自己的私聊使用记忆
+选 **1**。终端会打印一张二维码和一段 `t.me/NousHostedHermesBot` 链接：
 
-允许账号连接机器人之后，还要告诉 nyairo：**哪一个私聊属于这套个人记忆**。否则它会拒绝读写私人记忆。
+- 用手机或电脑的 Telegram 扫二维码，或者直接打开那段链接；
+- Telegram 里会弹出「**Create Bot**」确认页，**点确认**（想改显示名可以改完再确认）。
 
-下面的命令会询问你的私聊 chat ID 和用户 user ID，然后打印需要保存的一串文字。普通个人私聊的 chat ID 通常与用户 ID 相同，仍要用自己的真实信息核对；不要填群聊号码或昵称。
+确认后程序会自动拿到 token，**并且自动识别你的 Telegram 数字用户 ID**，问你「Allow this Telegram account to use the bot?」，选是即可。这一步不用手抄任何东西。
 
-仍在程序文件夹中复制运行：
+**路径 B：手动 BotFather token（兜底）**
+
+1. 在 Telegram 里找 **@BotFather**，发 `/newbot`；
+2. 起一个显示名，再起一个 username（必须以 `bot` 结尾）；
+3. BotFather 回你一个 token，形如 `123456789:ABCdefGHIjklMNOpqrSTUvwxYZ`；
+4. 把这个 token 填进向导。
+
+token 就是操作这个机器人的凭证，别写进公开教程、别发给别人。万一泄露，去 BotFather 用 `/revoke` 换一个。
+
+**怎么拿到你的数字用户 ID**
+
+访问控制用的是**数字 ID**（形如 `7621700062`），不是 `@用户名`，也不是昵称。
+
+- 推荐：找 **@userinfobot** 或 **@get_id_bot**，它会直接把你的 ID 回给你；
+- 走路径 A 时，托管服务会自动识别并问你；
+- 也可以先给机器人发一句话，再看网关日志里的 `user=` 字段。
+
+最后确认 `~/.nyairo/.env` 里有这三项（个人私聊的 chat ID 和用户 ID 是同一个数）：
 
 ```bash
-PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python -c '
+TELEGRAM_BOT_TOKEN=你的token
+TELEGRAM_ALLOWED_USERS=你的数字用户ID
+TELEGRAM_HOME_CHANNEL=你的数字用户ID
+```
+
+### 第二步：绑定你的私聊
+
+**这一步最容易漏，漏了所有 nyairo 命令都会被拒绝。**和 QQ、微信是同一套机制。
+
+平台连上之后，从 Telegram 私聊发 `/nyairo_status`，你可能会收到：
+
+```text
+这个入口没有绑定你的个人实例，已拒绝读取。
+```
+
+这是**安全设计，不是故障**：没有绑定的私聊读不到你的私人记忆。用随包的官方函数算出你这个私聊的会话 key，把下面整段复制运行：
+
+```bash
+cd "$HOME/.local/share/nyairo/releases/v0.1.0-rc8"
+export HERMES_HOME="$HOME/.nyairo"
+PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python - <<'PY'
+import os, re
 from gateway.config import Platform
 from gateway.session import SessionSource, build_session_key
-chat_id = input("Telegram DM chat ID: ").strip()
-user_id = input("Telegram user ID: ").strip()
-source = SessionSource(platform=Platform.TELEGRAM, chat_type="dm",
-                       chat_id=chat_id, user_id=user_id)
-print(build_session_key(source))
-'
+vals = dict(re.findall(r'(?m)^\s*([A-Za-z_]\w*)\s*=\s*(.*)$',
+                       open(os.path.expanduser("~/.nyairo/.env")).read()))
+uid = vals.get("TELEGRAM_ALLOWED_USERS") or vals.get("TELEGRAM_HOME_CHANNEL")
+src = SessionSource(platform=Platform.TELEGRAM, chat_type="dm", chat_id=uid, user_id=uid)
+print(build_session_key(src))
+PY
 ```
 
-复制最后打印的结果，再打开自己的配置文件：
+它会打印出形如 `agent:main:telegram:dm:你的数字用户ID` 的一串文字。然后打开配置文件：
 
 ```bash
-nano "$HOME/.chiyo-v1/chiyo/config.json"
+nano "$HOME/.nyairo/chiyo/config.json"
 ```
 
-找到 `gateway_bindings`，只修改这一项。下面是**局部示例**，把括号里的提示文字换成刚才打印的真实结果；其他设置都保留：
+找到 `gateway_bindings`，把打印出来的那串填进去。**只改这一项**，其他字段原样保留（`qqbot`、`weixin` 等其他平台的绑定不要动）：
 
 ```json
 {
   "gateway_bindings": {
-    "telegram": ["由实际实例生成的个人DM会话key"]
+    "telegram": ["agent:main:telegram:dm:你的数字用户ID"]
   }
 }
 ```
 
-按 Ctrl+O、回车保存，再按 Ctrl+X 退出。这里的步骤用于本文默认的个人设置；使用 Hermes 其他配置方案或 multiplex 模式时，需要按那套设置生成对应结果，不能直接照搬。
+按 Ctrl+O 回车保存，再按 Ctrl+X 退出。改完**必须重启网关**才生效。
 
-个人编号与配置留在自己的电脑里，不需要上传到 GitHub。群聊或没有绑定的用户不会因此获得你的私人记忆。
+把 `Platform.TELEGRAM` 换成 `Platform.QQBOT` 或 `Platform.WEIXIN`、绑定键换成 `"qqbot"` 或 `"weixin"`，就是另外两个平台的同一套做法。
 
-### 第三步：启动机器人，检查是否能用
-
-运行连接程序：
+### 第三步：启动网关，检查是否能用
 
 ```bash
-export HERMES_HOME="$HOME/.chiyo-v1"
+export HERMES_HOME="$HOME/.nyairo"
 ~/.local/bin/nyairo gateway run
 ```
 
-这个窗口先保持打开。一个 token 同时只交给一个正在收消息的程序；旧 Hermes、nyairo 或独立 Native 同时使用它，可能出现 Telegram 409 冲突。
+这个窗口先保持打开。WSL 里推荐前台运行 `gateway run`，不要装成开机自启的系统服务。
 
-1. 找到自己的机器人，发一句普通消息，确认它会回复。
-2. 发 `/chiyo_status`，确认返回 nyairo 模块状态，而不是 Unknown command。
-3. 发 `/chiyo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
-4. 告诉它一个小事实，换新会话后再问，提问时不要重复答案。
-5. 重启自己的连接程序，再检查同一套个人数据和状态是否仍然可用。
+**一个 token 同时只能交给一个正在收消息的程序。**旧的 Hermes、nyairo 或独立 Native 同时使用它，会出现 Telegram 409 冲突。
 
-独立体验号由管理员设置。这里讲的是你自己安装的机器人；使用体验号时，以管理员给的入口说明为准。
+启动后日志里应该能看到：
+
+```text
+[Telegram] Connected to Telegram (polling mode)
+✓ telegram connected
+```
+
+然后按顺序检查：
+
+1. 找到自己的机器人，发一句普通消息，确认它会回复（这一步走模型，是真实对话）。
+2. 发 `/nyairo_status`，确认返回 nyairo 模块状态，而不是那句拒绝文案。
+3. 发 `/nyairo_memory list`，确认个人记忆已经绑定；没有记忆记录也可能是正常的新安装。
+4. 告诉它一个小事实，再问一句**带「之前 / 上次 / 以前」这类词**的问题，确认它能回忆起来。
+5. 重启网关，再检查同一套个人数据和状态是否仍然可用。
+
+> **为什么第 4 步要那样问**：nyairo 的记忆召回有一道**意图门控**，只有当前这句话里出现特定线索词（`之前`、`以前`、`上次`、`昨天`、`说过`、`记得我`…）时才会去取记忆。像「哈哈哈」这种普通聊天不会触发召回，状态里会显示 `memory_last_resolve: DENIED`——**这是正常的，不是故障**。
+
+### Telegram 常见问题
+
+| 现象 | 原因 | 处理 |
+| --- | --- | --- |
+| 连上了但发命令没反应 | **私人会话未绑定**（最常见） | 按第二步绑定，然后重启网关 |
+| 机器人完全不理我 | 你的**数字用户 ID** 不在 `TELEGRAM_ALLOWED_USERS` 里 | 网关默认拒绝所有用户，把数字 ID 加进白名单 |
+| 填了 `@用户名` 不生效 | 鉴权**只认数字 ID** | 用 @userinfobot 取数字 ID |
+| 群里 @ 它没反应 | 机器人**隐私模式默认开着**，普通群消息收不到 | @BotFather → `/mybots` → Bot Settings → **Group Privacy → Turn off**；改完**必须把机器人移出群再加回来** |
+| 连接慢或连不上 | `api.telegram.org` 直连不稳 | 程序会自动用 DNS-over-HTTPS 找备用 IP；也可以设 `TELEGRAM_PROXY` |
+| `/` 菜单里找不到某个命令 | Telegram 菜单上限 **60 条** | 用 `/commands` 看全量，或在 `config.yaml` 里用 `command_menu.priority` 提优先级 |
+| 提示 `No messaging platforms enabled` | `TELEGRAM_BOT_TOKEN` 没写或写错 | Telegram 只需要这一项凭据；用 Bot API 的 `getMe` 验证 token |
+
+**传输方式**：长轮询（`getUpdates`），不是 QQ 那种 WebSocket，所以不需要公网地址、端口或反向代理。
+
+**群聊**：Telegram 是三条通道里原生支持群聊的（个人微信 iLink 基本不行），但受隐私模式限制，见上表。
+
+**未实测**：群聊、媒体收发、语音转写、webhook 模式、断线重连。
 
 ### QQ 机器人怎么接
 
