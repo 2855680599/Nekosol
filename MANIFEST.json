@@ -1,7 +1,7 @@
 {
   "schema": "chiyo/source-release@1",
   "version": "0.1.0-rc8",
-  "revision": "R28_RC8_RELEASE",
+  "revision": "R29_AGENT_ASSISTED_INSTALL",
   "status": "SOURCE_REVIEWED_TARGETED_TESTS_PASSED",
   "hermes": {
     "repository": "https://github.com/NousResearch/hermes-agent",
@@ -9,7 +9,7 @@
     "version": "0.21.0",
     "license": "MIT"
   },
-  "file_count": 12231,
+  "file_count": 12234,
   "files": {
     ".gitattributes": "2abdfc138a38212e3b4ad1be055915b68f9f634842ddfdb78d8927b6f418e238",
     ".gitignore": "c14b0c3ba6a8d9920e24a75e8843245c932e5ef4df36baf2dea749acf6f3e00c",
@@ -339,6 +339,7 @@
     "components/world/service/world_instance_bootstrap.py": "ce278c109f779717db9a9c187a44a04cc9b82d6d464e907cad8cafdd81d1903d",
     "config/model.env.example": "a498f3f28e6407dc825f7519adfba8f1523c891e9affc0c6a6f92fec869e66dc",
     "config/public-scan-exceptions.json": "6336d3c31f120a3e5050e5c3fedb23ae4d9eed699e2f8c79f88c691fe4e6fc56",
+    "docs/AGENT_INSTALL.zh-CN.md": "f4df9e305a22e7b6fad46358dc32009b81eeca880abdf0ef900beb14872b554f",
     "docs/USER_GUIDE.zh-CN.md": "12f08165ae2132e26dd404635a2bf224f51ad52141feef16f18c513984798467",
     "patches/01-tracked.patch": "e9cb09c8ddf780d65c466d6e39f6f8cad788f4db708823c9c82b2f633e045024",
     "patches/CHANGED_FILES": "da4875830ebe5b4643402023b6ef4ec7015a104699f47e9817ea78ddde86c6aa",
@@ -372,6 +373,7 @@
     "tests/cognition_reliability_suite.py": "eae681e46ef181465a67ddfe2d6de59aa118bca98183d4a8ea9952d4f071f2c0",
     "tests/hermes_live_e2e.py": "2a8007067775c497f334569504851d66e208e12ced98a2999560738055a5e5b2",
     "tests/standard_hermes_live_e2e.py": "e2282a30b1699328f95d3f620f1413ed500c9ed28427bf4c68ed8aee127c1f96",
+    "tests/test_agent_install.py": "dee028c1597e9f4ecca3a64b184be5ee7b0bb26c48dcdac6f46ee33bbdb968ec",
     "tests/test_alpha_identity.py": "32d81d7fc02572907b048b383e81504abe1c59c8860c4af7c3e667cc34fe1ba4",
     "tests/test_bootstrap_installer.py": "912e25c7a82a323d2572c6a14f517e5fae6954010765efdbb6a32d935781f0d1",
     "tests/test_cli_process_cleanup.py": "d3dad3f08ddbcfffca99fb7132e00730d81f86d02ce41a08a30823aca26719a9",
@@ -12226,9 +12228,10 @@
     "vendor/hermes/website/static/oauth/client-metadata.json": "1b037cafa2d19a1c0b3214395d7fab8149ebc06caf4ab103c09fb4a1b0aa63a3",
     "vendor/hermes/website/tsconfig.json": "1bbddecc170d6739308972751b01e2761e1e8d1cf7f6d43bfc4e5589a9b6e059",
     "website/.nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "website/AGENT_INSTALL.zh-CN.md": "f4df9e305a22e7b6fad46358dc32009b81eeca880abdf0ef900beb14872b554f",
     "website/README.md": "fa37a39e92e463017fac4ce76e8119e9a4911b26287672088693035e01d5cef4",
     "website/USER_GUIDE.zh-CN.md": "12f08165ae2132e26dd404635a2bf224f51ad52141feef16f18c513984798467",
-    "website/app.js": "d3939f468c1374323a96bfeeea3f5c50ec2e92efa09e3fd11e211b141d31ac71",
+    "website/app.js": "336f8b30e1c232a498f743a37b33afaa1f0492f95361ee3f0460917971c70e23",
     "website/assets/README.md": "b79d1fe1d860bc630b0ce3064aa6567a80410ddd4d0329549a8f0d070ecf4d06",
     "website/assets/apple-touch-icon.png": "88638a71bce8cd1a3dd31496bdc3790c97f51ee734b7a3b4efe4f9662be30aa9",
     "website/assets/favicon-16.png": "551be5a15879c8a107120e1d1cc13474883105202cfa26fe09170dd28c0a32f8",
@@ -12239,13 +12242,13 @@
     "website/assets/nyairo-icon-light.png": "038b12ff4e10657bbbae352734092f8d1c718b978d65efe407d3443485c6ae43",
     "website/assets/nyairo-icon.png": "d0acb1a43c2447a27259b1d4ff485674cfd97172f35c3b517248ace9be139a54",
     "website/docs-data.js": "a8b605160a82daba613cb1653c57685d350074fe04acd3f34ad265748da1d0a7",
-    "website/index.html": "d5a397893bf163ea3ea7fd9a140d3d7729a81d50ab76dc9c6f5b132667f9536a",
+    "website/index.html": "b348cb898acd3077769ac31d2f6c55e3443bf0fe142a18dc2aac3b9ef1bd878c",
     "website/install.sh": "a1d55525694beebc95b7aa91a76f17e24fb62346fa15cd5ac8bf3aa38987bd1c",
-    "website/style.css": "73c16b843e0bd97af676940f2518636c5f477c9bca800b14bf9c49b5564221d4"
+    "website/style.css": "0c683673d1ede9aaf477651d3c52f40212175eb59b32feea7298cbfc89c0465c"
   },
-  "tree_sha256": "bf51bbf5dcc6086757ec29b78218810a3f82a3d4fef030e4acb75272f37bde5f",
+  "tree_sha256": "b746d4582cf05afa6889977e2768b2eaa81dcc0eae02d0a7e9b679298f387532",
   "tree_recipe": "SHA256(sorted UTF-8 lines: sha256 + two spaces + POSIX relative path + LF); MANIFEST.json excluded",
-  "release_gate": "v0.1.0-rc8 (rc7 plus the R6 CLI worker lifecycle fix and the platform-setup command correction; no new capability, no behaviour change). v0.1.0-rc7 was the first public release candidate (renamed from rc6 because the published v0.1.0-rc6 tag and assets were built from commit c3b2b0568bdb6b3603f1994ee5772f4469389e2c, so reusing that name would give two different byte sets one label); rc6, rc7 and earlier tags and assets keep their original bytes. P0/P1/P2 complete; P3-A/B/C/D complete; real P2-A old-state upgrade PASS (32/32); 10-turn continuation PASS (20/20); restart idempotent PASS; fresh clone PASS with core.autocrlf=false and core.autocrlf=true (manifest valid, sealed 4/4, scripts/test.py pass=9 fail=0); post-test-residue PASS; sealed 4/4; native 156/156; host-boundaries 135/135; scripts/test.py pass=9 fail=0 skip=0; ten consecutive real one-shot CLI runs in an isolated HOME left no worker and no socket from any run; public naming gate UNEXPLAINED_PUBLIC_CHIYO_REFERENCES=0; ResourceWarning 0; LICENSE_CONFIRMED. Still open and NOT_TESTED: a real Telegram inbound with an active gateway writer (no test credentials), and days of natural use. External and still open: publication receipts, signing. The runtime and tests are NOT identical to qualified R17: every candidate since then changed them.",
+  "release_gate": "v0.1.0-rc8 plus the unreleased agent-assisted-install feature: docs/AGENT_INSTALL.zh-CN.md (the install specification every agent follows), the same file served by the website, a '交给 AI 安装' method selector on the install page with a one-click copy of the exact instruction, and tests pinning the page copy to the spec. No runtime code, no installer, no memory/cognition/world/body module and no released behaviour changed; the website is NOT deployed and no tag was created, so the published v0.1.0-rc8 tag and assets remain the published rc8 and the version number for this feature is the operator's decision. v0.1.0-rc8 itself was rc7 plus the R6 CLI worker lifecycle fix (a one-shot CLI now releases its M0 writer worker and socket before exiting, a worker whose owner is killed stops itself, and the documented platform-setup command was corrected); v0.1.0-rc7 was the first public release candidate, renamed from rc6 because the published v0.1.0-rc6 tag and assets were built from commit c3b2b0568bdb6b3603f1994ee5772f4469389e2c. rc6, rc7, rc8 and earlier tags and assets keep their original bytes. P0/P1/P2 complete; P3-A/B/C/D complete; real P2-A old-state upgrade PASS (32/32); 10-turn continuation PASS (20/20); restart idempotent PASS; fresh clone PASS with core.autocrlf=false and core.autocrlf=true; post-test-residue PASS; sealed 4/4; native 156/156; host-boundaries 149/149 (135 plus the 14 agent-install tests); scripts/test.py pass=9 fail=0 skip=0; rc8 cold install and rc7 -> rc8 upgrade both PASS in isolated homes with 0 orphan workers, 0 socket residue and 0 data loss; the documented agent instruction was executed verbatim in two agent styles (one persistent shell, one fresh shell per command) with the same result. Still open and NOT_TESTED: a real model call and real Telegram inbound/delivery (no credentials here), a gateway with an active writer, and pixel-level rendering of the new website block in a real browser (no browser available; structure, responsive rules and DOM behaviour are verified). External and still open: publication receipts, signing. The runtime and tests are NOT identical to qualified R17: every candidate since then changed them.",
   "project_name": "nyairo",
   "previous_project_name": "Nekosol",
   "previous_project_names": [

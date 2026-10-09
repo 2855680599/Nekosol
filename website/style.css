@@ -1318,3 +1318,91 @@ a:focus-visible, button:focus-visible {
   .banner-title { font-size: 0.7rem; }
   .banner-arrow { display: none; }
 }
+
+/* 安装方式切换：命令行安装与 AI Agent 辅助安装共用同一块区域，默认仍是命令行安装。 */
+.install-methods { margin-top: 4px; }
+.install-method-tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 3px;
+  margin-bottom: 14px;
+  background: var(--c-bg-card);
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+}
+.install-tab {
+  appearance: none;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: var(--c-text-3);
+  font-family: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.install-tab:hover { color: var(--c-text-1); }
+.install-tab.is-active { background: var(--c-accent-soft); color: var(--c-text-1); }
+.install-tab:focus-visible { outline: 2px solid #5e9de8; outline-offset: 2px; }
+.install-panel[hidden] { display: none; }
+.agent-install-intro { max-width: 640px; color: var(--c-text-2); font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px; }
+.agent-install-box {
+  max-width: 720px;
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  background: var(--c-bg-code);
+  overflow: hidden;
+}
+.agent-install-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--c-bg-card);
+  border-bottom: 1px solid var(--c-divider);
+}
+.agent-install-label { color: var(--c-text-3); font-size: 0.75rem; letter-spacing: 0.02em; }
+.agent-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  color: var(--c-text-2);
+  font-family: inherit;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.agent-copy-btn:hover { color: var(--c-text-1); border-color: var(--c-border-hover); }
+.agent-copy-btn.copied { color: var(--c-success); border-color: var(--c-success); }
+.agent-copy-btn.copied .copy-icon-default { display: none; }
+.agent-copy-btn.copied .copy-icon-success { display: inline-block !important; }
+.agent-install-code {
+  margin: 0;
+  padding: 14px 16px;
+  max-height: 260px;
+  overflow: auto;
+  color: var(--c-text-2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+}
+.agent-install-links { display: flex; flex-wrap: wrap; gap: 16px; margin: 10px 0 0; font-size: 0.8rem; }
+.agent-install-links a { color: var(--c-text-2); text-decoration: underline; text-underline-offset: 3px; }
+.agent-install-links a:hover { color: var(--c-text-1); }
+.agent-install-security { max-width: 720px; margin: 10px 0 0; color: var(--c-text-3); font-size: 0.75rem; line-height: 1.6; }
+@media (max-width: 768px) {
+  .install-method-tabs { display: flex; width: 100%; justify-content: space-between; }
+  .install-tab { flex: 1 1 0; text-align: center; }
+  .agent-install-box { max-width: 100%; }
+  .agent-install-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .agent-install-code { max-height: 200px; font-size: 0.72rem; }
+}

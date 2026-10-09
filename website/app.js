@@ -6,6 +6,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initCommandCopy();
+  initInstallMethods();
   renderSidebar();
   initRouting();
   initSearch();
@@ -80,6 +81,48 @@ function initCommandCopy() {
       btn.setAttribute('aria-label', '复制安装命令');
       btn.classList.remove('copied');
     }, 2500);
+  });
+}
+
+/* ==========================================================================
+   3b. 安装方式切换与 AI Agent 指令复制 (Install Methods)
+   ========================================================================== */
+function initInstallMethods() {
+  const tabCli = document.getElementById('install-tab-cli');
+  const tabAgent = document.getElementById('install-tab-agent');
+  const panelCli = document.getElementById('install-panel-cli');
+  const panelAgent = document.getElementById('install-panel-agent');
+  if (!tabCli || !tabAgent || !panelCli || !panelAgent) return;
+
+  function select(useAgent) {
+    tabCli.classList.toggle('is-active', !useAgent);
+    tabAgent.classList.toggle('is-active', useAgent);
+    tabCli.setAttribute('aria-selected', String(!useAgent));
+    tabAgent.setAttribute('aria-selected', String(useAgent));
+    panelCli.hidden = useAgent;
+    panelAgent.hidden = !useAgent;
+  }
+
+  tabCli.addEventListener('click', () => select(false));
+  tabAgent.addEventListener('click', () => select(true));
+
+  const code = document.querySelector('#agent-install-command code');
+  const btn = document.getElementById('agent-cmd-btn');
+  const feedback = document.getElementById('agent-copy-feedback');
+  if (!code || !btn || !feedback) return;
+
+  btn.addEventListener('click', async () => {
+    const copied = await copyTextOrSelect(code);
+    feedback.textContent = copied
+      ? '已复制 AI 安装指令，粘贴给你自己的 Agent 即可'
+      : '已选中指令，请按 Ctrl+C 或 Command+C 复制';
+    btn.setAttribute('aria-label', copied ? '已复制 AI 安装指令' : '已选中指令，请手动复制');
+    btn.classList.toggle('copied', copied);
+    setTimeout(() => {
+      feedback.textContent = '';
+      btn.setAttribute('aria-label', '复制 AI 安装指令');
+      btn.classList.remove('copied');
+    }, 3000);
   });
 }
 
