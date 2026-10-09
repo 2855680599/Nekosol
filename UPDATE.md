@@ -32,12 +32,12 @@ rc5 没有这个入口。先退出聊天并停止自己的服务，确认原来�
 
 ```bash
 export HERMES_HOME="$HOME/.chiyo-v1"
-git clone --branch v0.1.0-rc8 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-rc8"
-cd "$HOME/apps/nyairo-rc8"
+git clone --branch v0.1.0-rc9 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-rc9"
+cd "$HOME/apps/nyairo-rc9"
 bash scripts/update.sh --migrate-from "$HOME/apps/chiyo-v0.1"
 ```
 
-新目录必须尚不存在。最后一条命令会检查两份程序、安装新依赖、备份个人目录、更新标准插件副本并切换入口。原来的程序目录保留，可用于回退。ZIP 用户也可以把 **Release 附件中的** `nyairo-v0.1.0-rc8.zip` 校验后解压到新目录，再执行同一条迁移命令。
+新目录必须尚不存在。最后一条命令会检查两份程序、安装新依赖、备份个人目录、更新标准插件副本并切换入口。原来的程序目录保留，可用于回退。ZIP 用户也可以把 **Release 附件中的** `nyairo-v0.1.0-rc9.zip` 校验后解压到新目录，再执行同一条迁移命令。
 
 如果用旧的引导安装器装过 rc5，个人目录改用 `$HOME/.nyairo`，旧程序路径改用 `$HOME/.local/share/nyairo/releases/v0.1.0-rc5`。迁移时明确使用这两个实际路径，别再创建第二份个人设置。
 
@@ -75,7 +75,7 @@ World / Supply 独立服务目录、个人目录里链接到外部的文件，�
 
 这条只恢复中断的插件切换，不下载新版、不恢复旧聊天数据库。
 
-需要指定一个已发布且带有完整附件的版本时，使用 `~/.local/bin/nyairo update --version v0.1.0-rc8`。
+需要指定一个已发布且带有完整附件的版本时，使用 `~/.local/bin/nyairo update --version v0.1.0-rc9`。
 
 ## 已经设置了开机启动
 
@@ -92,11 +92,11 @@ ExecStart=/home/你的账号/.local/bin/nyairo gateway run
 
 ## Hermes 为什么不能另外更新
 
-rc8 的内置 Hermes 仍是 **0.21.0**，固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`，加上 nyairo 的接线与修复。这里修好的是整包更新机制，并没有把新版 Hermes 的兼容性当成已经完成。
+rc9 的内置 Hermes 仍是 **0.21.0**，固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`，加上 nyairo 的接线与修复。这里修好的是整包更新机制，并没有把新版 Hermes 的兼容性当成已经完成。
 
 已检查上游公开标签 `v2026.9.24`（Hermes 0.21.5）的源码差异。旧有补丁中有多处冲突、部分测试文件被移除，因此这个版本尚未进入 nyairo 发行。对它的检查是源码比较，不是运行验收。
 
-直接运行内置 `hermes update` 时，rc8 会提示使用整包更新入口并留下拒绝记录，不再按上游安装方式覆盖宿主。普通的独立 Hermes 安装仍使用上游原有更新方式。
+直接运行内置 `hermes update` 时，rc9 会提示使用整包更新入口并留下拒绝记录，不再按上游安装方式覆盖宿主。普通的独立 Hermes 安装仍使用上游原有更新方式。
 
 今后适配新版 Hermes 时，需要在隔离副本重做补丁、检查真实插件与命令、个人权限、Memory / Life / World / Supply、普通账号安装和升级，再发布新的 nyairo 版本。**你更新 nyairo 时，就会一起收到那一版配套 Hermes，不需要自己替换宿主。**
 
