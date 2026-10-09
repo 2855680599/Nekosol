@@ -45,7 +45,42 @@ def close_services():
     global _instance
     with _lock:
         if _instance is not None:_instance.close();_instance=None
-atexit.register(close_services)
+
+def register_process_cleanup():
+    """Join every exit path Hermes can take, instead of only the atexit chain.
+
+    Registering ``close_services`` with ``atexit`` alone was enough for the
+    interactive CLI and the gateway, but not for a one-shot run: ``nyairo -z``
+    finishes in ``hermes_cli.main._exit_after_oneshot``, which flushes and then
+    calls ``os._exit`` on purpose (#30387, #43055) -- the whole atexit chain is
+    skipped, so the M0 writer worker started by that run was never released and
+    outlived the CLI as an orphan holding its store open.
+
+    Hermes owns exactly one process-global hook for that path: the
+    ``_ONESHOT_CLEANUPS`` table executed by ``_cleanup_oneshot_runtime`` right
+    before the hard exit. This joins that table rather than adding a second
+    lifecycle, so both paths run the same ``close_services`` ->
+    ``Instance.close()`` -> ``ConfiguredBridge.close()`` ->
+    ``m0_writer_worker.close_for()``. ``close_services`` is idempotent, the table
+    is a module-level tuple read at call time, and a Hermes without the table (or
+    without this plugin) is unaffected.
+    """
+    global _cleanup_registered
+    with _lock:
+        if _cleanup_registered:return
+        _cleanup_registered=True
+        atexit.register(close_services)
+    try:
+        from hermes_cli import main as hermes_main
+    except Exception:
+        return
+    table=getattr(hermes_main,'_ONESHOT_CLEANUPS',None)
+    entry=(__name__,'close_services',{},Exception)
+    if not isinstance(table,tuple) or entry in table:return
+    hermes_main._ONESHOT_CLEANUPS=table+(entry,)
+
+_cleanup_registered=False
+register_process_cleanup()
 
 def observe_life_input(svc,platform,session_id,ref):
     if not getattr(svc,'life_wrapper',None):return

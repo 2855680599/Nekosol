@@ -109,6 +109,13 @@ CONNECT_TIMEOUT_S = 5.0
 #: how long a worker gets to exit on its own after the shutdown request, before
 #: it is reaped; a healthy worker returns from serve() in milliseconds.
 SHUTDOWN_GRACE_S = 2.0
+#: How often the worker checks that the process which started it is still there.
+#: A worker belongs to that process (one pool per process, one socket per parent
+#: pid), so it must not outlive it. A clean exit releases it through
+#: ``close_for``; this is the backstop for the exits that never run that code --
+#: a killed or hard-exited parent -- so the worker stops itself instead of
+#: lingering as an orphan holding the store open and leaving a stale socket.
+OWNER_CHECK_INTERVAL_S = 2.0
 MAX_FRAME_BYTES = 1 << 20
 MAX_EVENTS_PER_REQUEST = 64
 
@@ -371,6 +378,22 @@ def _append(store, EvidenceEvent, new_event_id, raw: dict) -> dict:
                 "detail": "append rejected", "ref": raw["source_refs"][0]["id"]}
 
 
+def owner_exited(owner_pid: int) -> bool:
+    """Whether the process that started this worker is gone.
+
+    Reparenting is the signal: a worker whose starter exited is adopted by init
+    (pid 1) or by a subreaper, so ``getppid()`` no longer names the starter. A
+    worker started with no usable parent pid (1 or less) never reports an exit,
+    so an unusual spawn cannot make it stop itself immediately.
+    """
+    if owner_pid <= 1:
+        return False
+    try:
+        return os.getppid() != owner_pid
+    except OSError:
+        return False
+
+
 def serve(m0_db: Path, socket_path: Path, expected_uid: int,
           fault: str = "") -> int:
     """Run the worker loop. Returns a process exit code."""
@@ -393,11 +416,20 @@ def serve(m0_db: Path, socket_path: Path, expected_uid: int,
         # the parent sees a ready worker that dies before it can serve
         return 0
     stopping = False
+    owner_pid = os.getppid()
+    last_owner_check = time.monotonic()
     try:
         while not stopping:
             try:
                 connection, _ = server.accept()
             except socket.timeout:
+                now = time.monotonic()
+                if now - last_owner_check >= OWNER_CHECK_INTERVAL_S:
+                    last_owner_check = now
+                    if owner_exited(owner_pid):
+                        # the starter is gone: stop serving and clean up through
+                        # the normal exit path below (socket closed and unlinked)
+                        break
                 continue
             except OSError as exc:
                 if exc.errno in (errno.EINTR,):

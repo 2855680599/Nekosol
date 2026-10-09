@@ -375,7 +375,7 @@ nano "$HOME/.nyairo/SOUL.md"
 
 ## 06 接入 Telegram
 
-引导安装用户用 `nyairo setup messaging` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的旧目录写法（`~/.chiyo-v1`）与默认的 `~/.nyairo` 是同一套个人数据；启动命令可换成 `nyairo`。
+引导安装用户用 `nyairo gateway setup` 设置平台，`nyairo gateway run` 启动网关；绑定文件在 `~/.nyairo/chiyo/config.json`。下文手动路线的旧目录写法（`~/.chiyo-v1`）与默认的 `~/.nyairo` 是同一套个人数据；启动命令可换成 `nyairo`。
 
 ### 第一步：准备自己的机器人
 

@@ -12,7 +12,7 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 自动准备 uv 和 Python 3.13，下载并校验固定 rc7、安装依赖、创建独立个人配置，再打开 Hermes 模型设置向导并启动聊天。需要自己选择模型、填写密钥或服务地址。Ubuntu / Debian 如果没有 curl，先运行 `sudo apt update && sudo apt install -y curl`。
 
-安装目录：`~/.local/share/nyairo/releases/v0.1.0-rc7`；个人数据：`~/.nyairo`；命令入口：`~/.local/bin/nyairo`。以后打开新终端运行 `nyairo`；模型设置用 `nyairo setup model`，平台设置用 `nyairo setup messaging`，网关用 `nyairo gateway run`。修改人设编辑 `~/.nyairo/SOUL.md`。
+安装目录：`~/.local/share/nyairo/releases/v0.1.0-rc7`；个人数据：`~/.nyairo`；命令入口：`~/.local/bin/nyairo`。以后打开新终端运行 `nyairo`；模型设置用 `nyairo setup model`，平台设置用 `nyairo gateway setup`，网关用 `nyairo gateway run`。修改人设编辑 `~/.nyairo/SOUL.md`。
 
 重复运行会核对程序、保留个人数据并再次打开模型向导，不自动升级到其他发行版本。旧手动安装不会自动搬家；要使用已有个人目录，可明确传入 `--profile`，继续使用前仍按隐私升级说明检查旧授权。
 
