@@ -514,9 +514,55 @@ PY
 
 **排错。** 日志反复出现 `Too many quick disconnects`，说明 App ID / App Secret 不对或开放平台权限没开（到 QQ 开放平台开启 C2C 私聊、群 @、频道消息等 intents）；提示 `QQ startup failed: QQ_APP_ID and QQ_CLIENT_SECRET are required`，说明凭据没有写进 `.env`；配置好了却提示 `No messaging platforms enabled`，检查 `config.yaml` 里是否显式写了 `platforms.qqbot.enabled: false`（显式的 false 会压过 `.env` 里的凭据）。断线重连会自动进行，退避间隔依次为 2 / 5 / 10 / 30 / 60 秒，网络恢复后自动回到 `Ready`，不需要重启网关；即使 QQ 域名被劫持指向内网地址，适配器也会拒绝连接（fail-closed）。
 
-### 微信和飞书怎么接
+### 微信怎么接（iLink）
 
-个人微信与企业微信是不同入口。先按随包的 `vendor/hermes/website/docs/user-guide/messaging/` 说明连接平台，再设置 nyairo 的私人会话绑定。代码里有适配器，并不表示所有平台都已经验收；微信、飞书以及 QQ 的群聊 @ 与频道消息，尚未用真实账号完成整套收发与断线重连检查。
+**先说清楚连上的是什么**：微信走腾讯 **iLink 机器人**接口。扫码之后你得到的是一个 **iLink 机器人身份**（形如 `xxxxxxxxxxxx@im.bot`），**不是你的个人微信号**。后果很实际：**普通微信群基本用不了** —— 这个机器人身份通常不能被拉进普通群，iLink 一般也不投递群消息。实际可用的是**私聊**。这不是程序缺陷，是 iLink 侧的限制。
+
+**第一步：扫码接入。** 在 Ubuntu / Linux 终端运行 `nyairo gateway setup`，在平台清单里找到 **💬 Weixin / WeChat**，空格打勾、移到 Done 回车。向导问是否现在扫码登录就选是，终端会打印二维码和一段 `liteapp.weixin.qq.com` 链接：
+
+- 用**手机微信扫码**，然后在手机上确认；
+- 或者直接打开打印出来的那段 `liteapp` 链接（注意要扫的是链接，不是旁边那串十六进制字符）。
+
+成功后终端显示 `微信连接成功，account_id=...`，程序自动把凭据写进 `~/.nyairo/.env`，并在 `~/.nyairo/weixin/accounts/` 留一份账号文件，不用手抄。接着问私聊授权，推荐选 **Use DM pairing approval**；想只让自己用就选只允许指定用户再填自己的 ID。二维码有效期约 8 分钟，过期会自动刷新（最多 3 次）。
+
+**第二步：绑定你的私聊。这一步最容易漏，漏了所有 nyairo 命令都会被拒绝。** 和 Telegram、QQ 是同一套机制。平台连上后从微信私聊发 `/nyairo_status`，可能收到「这个入口没有绑定你的个人实例，已拒绝读取。」—— 这是安全设计，不是故障。用随包的官方函数算出会话 key：
+
+```bash
+cd "$HOME/.local/share/nyairo/releases/v0.1.0-rc8"
+export HERMES_HOME="$HOME/.nyairo"
+PYTHONPATH="$PWD:$PWD/vendor/hermes" vendor/hermes/.venv/bin/python - <<'PY'
+import os, re
+from gateway.config import Platform
+from gateway.session import SessionSource, build_session_key
+vals = dict(re.findall(r'(?m)^\s*([A-Za-z_]\w*)\s*=\s*(.*)$',
+                       open(os.path.expanduser("~/.nyairo/.env")).read()))
+uid = vals.get("WEIXIN_ALLOWED_USERS") or vals.get("WEIXIN_HOME_CHANNEL")
+src = SessionSource(platform=Platform.WEIXIN, chat_type="dm", chat_id=uid, user_id=uid)
+print(build_session_key(src))
+PY
+```
+
+它会打印形如 `agent:main:weixin:dm:你的用户ID@im.wechat` 的一串文字。打开 `~/.nyairo/chiyo/config.json`，在 `gateway_bindings` 里加一项（**只加这一项，其他平台的绑定不要动**）：
+
+```json
+{
+  "gateway_bindings": {
+    "weixin": ["agent:main:weixin:dm:你的用户ID@im.wechat"]
+  }
+}
+```
+
+改完立即生效，但新平台要重启网关才会加载。
+
+**第三步：启动并检查。** `export HERMES_HOME="$HOME/.nyairo"` 后运行 `~/.local/bin/nyairo gateway run`。日志里应出现 `[Weixin] Connected account=... base=https://ilinkai.weixin.qq.com` 与 `✓ weixin connected`。然后依次检查：私聊发一句普通消息确认会回复（这步走模型，是真实对话）；发 `/nyairo_status` 确认返回模块状态；发 `/nyairo_memory list`；告诉它一个小事实后再 `list` 一次确认写进去了；重启网关再检查数据和状态仍可用。
+
+**排错。** 微信群收不到消息是 iLink 限制（群聊请改用企业微信入口）；@ 你扫码用的那个个人微信号没反应，是因为机器人和它是**两个身份**；扫码后仍提示未绑定，是没做第二步或没重启网关；提示 `No messaging platforms enabled`，检查 `account_id` 与 `token` 是否两项都齐，以及 `config.yaml` 里有没有显式写 `platforms.weixin.enabled: false`（显式 false 会压过 `.env`）。
+
+**传输方式**：微信用的是**长轮询**（不是 QQ 那种 WebSocket），不需要公网地址、端口或 webhook。`WEIXIN_GROUP_POLICY` 默认就是 `disabled`，和个人微信 iLink 身份进不了普通群的现实一致。
+
+### 飞书怎么接
+
+飞书（Feishu / Lark）走独立入口：先按随包的 `vendor/hermes/website/docs/user-guide/messaging/feishu.md` 说明连接平台，再按上面同样的方法设置 nyairo 的私人会话绑定（`Platform.FEISHU`、绑定键 `"feishu"`）。代码里有适配器，并不表示已经用真实账号完成整套收发与断线重连检查。
 
 ## 07 额外功能怎么设置
 
