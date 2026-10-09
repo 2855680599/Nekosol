@@ -20,7 +20,7 @@ nyairo 探索数字个体的连续性：把对话、长期记忆、生活状态�
 
 - [官网与完整教程](https://nyairo.com/)
 - [第一次使用的安装路线](https://nyairo.com/#quickstart)
-- [GitHub Releases：v0.1.0-rc7](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc7)
+- [GitHub Releases：v0.1.0-rc8](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc8)
 - [仓库内的中文使用教程](docs/USER_GUIDE.zh-CN.md)
 
 Windows 用户先打开 WSL / Ubuntu；Linux 用户打开终端。在普通账号下运行这一行：
@@ -29,9 +29,9 @@ Windows 用户先打开 WSL / Ubuntu；Linux 用户打开终端。在普通账�
 curl -fsSL https://www.nyairo.com/install.sh | bash
 ```
 
-安装器自动准备 uv / Python、下载并校验 rc7、安装依赖和创建个人配置，再打开模型设置向导。选择模型并填写自己的连接信息后进入聊天；以后打开新终端运行 `nyairo` 即可。基础配置启用记忆与生活状态，并授权当前本地账号；模型工具默认受限，详见 [隐私修复与升级](PRIVACY_REVIEW.md)。
+安装器自动准备 uv / Python、下载并校验 rc8、安装依赖和创建个人配置，再打开模型设置向导。选择模型并填写自己的连接信息后进入聊天；以后打开新终端运行 `nyairo` 即可。基础配置启用记忆与生活状态，并授权当前本地账号；模型工具默认受限，详见 [隐私修复与升级](PRIVACY_REVIEW.md)。
 
-个人数据在 `~/.nyairo`，程序在 `~/.local/share/nyairo/releases/v0.1.0-rc7`。重复安装保留已有设置和记录，不自动升级发行版本。模型密钥仍需自己提供，其他模块与机器人按教程另外配置。
+个人数据在 `~/.nyairo`，程序在 `~/.local/share/nyairo/releases/v0.1.0-rc8`。重复安装保留已有设置和记录，不自动升级发行版本。模型密钥仍需自己提供，其他模块与机器人按教程另外配置。
 
 手动 Git / ZIP 安装、无人值守参数及平台准备见 [安装说明](INSTALL.md) 和 [中文教程](docs/USER_GUIDE.zh-CN.md)。原来的 `bash scripts/install.sh` 保留为源码目录内的依赖安装命令。
 
@@ -39,7 +39,7 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 ## 第一版的实际范围
 
-第一版公开发行候选是 `v0.1.0-rc7`（标签与 Release 资产由发布者创建后生效）；已发布的 `v0.1.0-rc6` 标签与资产保持原字节。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
+第一版公开发行候选是 `v0.1.0-rc8`（标签与 Release 资产由发布者创建后生效）；已发布的 `v0.1.0-rc7` 与 `v0.1.0-rc6` 标签与资产保持原字节。长期记忆、生活状态与观察能力各有自己的边界；第一版尚未开放自主活动执行、主动联系和网页聊天。网站是教程入口，聊天在程序或消息机器人中进行。
 
 Linux / Windows WSL 的公开标签和 ZIP 有普通账号安装复核记录。Telegram 有已装配实例的收发记录；Hermes 包含其他平台适配器，不代表每个平台都已用真实账号完成同样的验收。原生 Windows、macOS、官方完整容器方案和全模块一键配置没有完成相同范围的交付。
 

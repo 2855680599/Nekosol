@@ -146,7 +146,7 @@ def select_release(version=None, channel='candidate'):
     api = f'https://api.github.com/repos/{REPOSITORY}/releases'
     if version:
         if not TAG.fullmatch(version):
-            raise ValueError('版本名称应类似 v0.1.0-rc7')
+            raise ValueError('版本名称应类似 v0.1.0-rc8')
         return asset_pair(github_json(api + '/tags/' + version))
     releases = github_json(api + '?per_page=100')
     if not isinstance(releases, list) or any(not isinstance(item, dict) for item in releases):

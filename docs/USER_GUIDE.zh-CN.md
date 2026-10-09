@@ -2,7 +2,7 @@
 
 本文帮助你在自己的电脑或服务器上安装 nyairo，开始聊天，再按需要连接机器人和额外功能。网页只放教程，聊天在实际程序里进行。
 
-当前公开体验版本是 v0.1.0-rc7，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
+当前公开体验版本是 v0.1.0-rc8，使用配套的 Hermes 0.21.0。已知问题与实际检查结果在后面的对应章节说明。
 
 ## 00 第一次使用，从这里开始
 
@@ -22,7 +22,7 @@ Windows 用户先按 [Windows 安装](https://nyairo.com/#windows) 打开 WSL / 
 curl -fsSL https://www.nyairo.com/install.sh | bash
 ```
 
-不需要先下载 Git 仓库，也不用自己装 uv 或 Python。安装器会下载固定的 `v0.1.0-rc7`，核对文件，准备运行环境，再创建独立的个人配置，开启记忆与生活状态，并允许当前 Linux 账号通过本地命令行使用。
+不需要先下载 Git 仓库，也不用自己装 uv 或 Python。安装器会下载固定的 `v0.1.0-rc8`，核对文件，准备运行环境，再创建独立的个人配置，开启记忆与生活状态，并允许当前 Linux 账号通过本地命令行使用。
 
 看到 `[5/5] 程序安装完成` 后，会自动进入 Hermes 模型设置。选择自己的服务和模型，填写 API Key；自定义服务还要填写 Base URL。设置结束后进入聊天，先发一句话检查能否收到回复。账号与密钥仍需你自己提供。
 
@@ -30,7 +30,7 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 以后重新打开 Ubuntu / Linux 终端，输入 `nyairo` 就能继续；重新选择模型用 `nyairo setup model`。刚装完若当前窗口找不到命令，打开新终端，或直接运行 `~/.local/bin/nyairo`。
 
-程序保存在 `~/.local/share/nyairo/releases/v0.1.0-rc7`，个人数据保存在 `~/.nyairo`。名字与人格改 `~/.nyairo/SOUL.md`；聊天、记忆和模型配置也在这套个人目录里。重复运行安装命令会核对程序并保留已有个人数据，再打开模型向导；它不会自动升级到别的版本。
+程序保存在 `~/.local/share/nyairo/releases/v0.1.0-rc8`，个人数据保存在 `~/.nyairo`。名字与人格改 `~/.nyairo/SOUL.md`；聊天、记忆和模型配置也在这套个人目录里。重复运行安装命令会核对程序并保留已有个人数据，再打开模型向导；它不会自动升级到别的版本。
 
 这条路线已完成 Linux 和 Windows WSL / Ubuntu 的普通账号首次安装复核。Windows 用户仍需先装好 WSL。Telegram、认知、World/Body 和资源服务仍按对应章节另外配置。
 
@@ -38,7 +38,7 @@ curl -fsSL https://www.nyairo.com/install.sh | bash
 
 后面的 Git / ZIP 手动路线使用 `~/apps/nyairo-v0.1` 和 `~/.nyairo`；一条命令安装使用上述新目录。已经完成引导安装，就跳过手动下载和创建配置，不要再建立第二套个人数据。
 
-阅读后面的模块、更新或备份示例时，把示例里的程序目录换成你自己的程序目录（引导安装默认是 `~/.local/share/nyairo/releases/v0.1.0-rc7`），把示例里的个人数据目录换成你自己的（默认 `~/.nyairo`）。更早的教程写 `~/apps/nyairo-v0.1` 和 `~/.chiyo-v1`，那是同一套数据的旧目录名，仍然可用，不必迁移。`bash scripts/hermes.sh` 可直接换成 `nyairo`；需要在程序目录执行的其他脚本仍先进入实际程序目录。
+阅读后面的模块、更新或备份示例时，把示例里的程序目录换成你自己的程序目录（引导安装默认是 `~/.local/share/nyairo/releases/v0.1.0-rc8`），把示例里的个人数据目录换成你自己的（默认 `~/.nyairo`）。更早的教程写 `~/apps/nyairo-v0.1` 和 `~/.chiyo-v1`，那是同一套数据的旧目录名，仍然可用，不必迁移。`bash scripts/hermes.sh` 可直接换成 `nyairo`；需要在程序目录执行的其他脚本仍先进入实际程序目录。
 
 ### 手动安装的路线（可选）
 
@@ -109,11 +109,11 @@ Native Runtime 也随包提供，用于独立运行及研发验证，但本手�
 
 **Git 下载**：复制教程中的命令，就能拿到指定的体验版本；适合第一次按命令安装，也便于以后查看改动。
 
-**ZIP 下载**：从 [GitHub Releases](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc7) 下载 `v0.1.0-rc7` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
+**ZIP 下载**：从 [GitHub Releases](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc8) 下载 `v0.1.0-rc8` 的源码 ZIP，检查文件后再解压；适合希望先把压缩包保存好的用户。
 
 无论选哪种，都下载 nyairo 整套项目，随后运行 `bash scripts/install.sh`。请按下一章操作，不要只下载其中一个插件文件夹。
 
-程序 ZIP 是 `nyairo-v0.1.0-rc7.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc7。
+程序 ZIP 是 `nyairo-v0.1.0-rc8.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc8。
 
 ### 电脑和网络需要满足什么
 
@@ -224,11 +224,11 @@ export UV_PYTHON=3.13
 
 第一次按命令安装，可以选这条路线。**如果选择了这里，就不用再做 ZIP 下载。**
 
-下面会下载 `v0.1.0-rc7` 体验版本，并把程序放在后续教程使用的同一个文件夹里：
+下面会下载 `v0.1.0-rc8` 体验版本，并把程序放在后续教程使用的同一个文件夹里：
 
 ```bash
 mkdir -p "$HOME/apps"
-git clone --branch v0.1.0-rc7 --depth 1 \
+git clone --branch v0.1.0-rc8 --depth 1 \
   https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-v0.1"
 cd "$HOME/apps/nyairo-v0.1"
 bash scripts/install.sh
@@ -243,7 +243,7 @@ vendor/hermes/.venv/bin/python scripts/verify_manifest.py
 
 ### 方法 B：用 ZIP 下载并安装
 
-如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc7) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
+如果更喜欢先下载压缩包，从 [公开下载页](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc8) 取得这一版的 ZIP 和校验值。下面带中文的 ZIP 文件名，需要换成你实际下载的名字。
 
 先检查 ZIP 文件：
 
@@ -267,7 +267,7 @@ ZIP 在 Windows 下载文件夹时，使用上一章的完整路径来解压；�
 
 文件检查结果中的 `changed_or_missing` 应为 `[]`。如果不是，先重新核对下载来源和文件，不要删掉清单来跳过检查。随后打开 [设置并开始聊天](https://nyairo.com/#configuration)。
 
-程序 ZIP 是 `nyairo-v0.1.0-rc7.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc7。
+程序 ZIP 是 `nyairo-v0.1.0-rc8.zip`，同名 `.sha256` 文件记录校验值；旧 rc4 安装包保持原样，不包含这次隐私修复；首次安装请使用 rc8。
 
 ### 已经装过 Hermes，怎么处理
 
@@ -393,7 +393,7 @@ export HERMES_HOME="$HOME/.nyairo"
 
 选择 Telegram。使用 BotFather 的方式时，按提示选择手动填写 token；允许用户一项只填自己的数字用户 ID。
 
-如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc7/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
+如果向导已经显示 **Detected your Telegram user ID**，核对后记下这个数字。没有识别时，先按 [随包 Hermes 的 Telegram 说明](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc8/vendor/hermes/website/docs/user-guide/messaging/telegram.md) 确认自己的 ID。用户名、昵称和数字 ID 不是同一个东西。
 
 ### 第二步：允许自己的私聊使用记忆
 
@@ -618,12 +618,12 @@ rc5 没有这个入口。先退出聊天并停止自己的服务，确认原来�
 
 ```bash
 export HERMES_HOME="$HOME/.nyairo"
-git clone --branch v0.1.0-rc7 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-rc7"
-cd "$HOME/apps/nyairo-rc7"
+git clone --branch v0.1.0-rc8 --depth 1 https://github.com/L1AN929/nyairo.git "$HOME/apps/nyairo-rc8"
+cd "$HOME/apps/nyairo-rc8"
 bash scripts/update.sh --migrate-from "$HOME/apps/nyairo-v0.1"
 ```
 
-新目录必须尚不存在。最后一条命令会检查两份程序、安装新依赖、备份个人目录、更新标准插件副本并切换入口。原来的程序目录保留，可用于回退。ZIP 用户也可以把 **Release 附件中的** `nyairo-v0.1.0-rc7.zip` 校验后解压到新目录，再执行同一条迁移命令。
+新目录必须尚不存在。最后一条命令会检查两份程序、安装新依赖、备份个人目录、更新标准插件副本并切换入口。原来的程序目录保留，可用于回退。ZIP 用户也可以把 **Release 附件中的** `nyairo-v0.1.0-rc8.zip` 校验后解压到新目录，再执行同一条迁移命令。
 
 如果用旧的引导安装器装过 rc5，个人目录改用 `$HOME/.nyairo`，旧程序路径改用 `$HOME/.local/share/nyairo/releases/v0.1.0-rc5`。迁移时明确使用这两个实际路径，别再创建第二份个人设置。
 
@@ -661,7 +661,7 @@ World / Supply 独立服务目录、个人目录里链接到外部的文件，�
 
 这条只恢复中断的插件切换，不下载新版、不恢复旧聊天数据库。
 
-需要指定一个已发布且带有完整附件的版本时，使用 `~/.local/bin/nyairo update --version v0.1.0-rc7`。
+需要指定一个已发布且带有完整附件的版本时，使用 `~/.local/bin/nyairo update --version v0.1.0-rc8`。
 
 ### 已经设置了开机启动
 
@@ -678,11 +678,11 @@ ExecStart=/home/你的账号/.local/bin/nyairo gateway run
 
 ### Hermes 为什么不能另外更新
 
-rc7 的内置 Hermes 仍是 **0.21.0**，固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`，加上 nyairo 的接线与修复。这里修好的是整包更新机制，并没有把新版 Hermes 的兼容性当成已经完成。
+rc8 的内置 Hermes 仍是 **0.21.0**，固定提交 `67807e64a66044db9e0a641d98c68a35c1760589`，加上 nyairo 的接线与修复。这里修好的是整包更新机制，并没有把新版 Hermes 的兼容性当成已经完成。
 
 已检查上游公开标签 `v2026.9.24`（Hermes 0.21.5）的源码差异。旧有补丁中有多处冲突、部分测试文件被移除，因此这个版本尚未进入 nyairo 发行。对它的检查是源码比较，不是运行验收。
 
-直接运行内置 `hermes update` 时，rc7 会提示使用整包更新入口并留下拒绝记录，不再按上游安装方式覆盖宿主。普通的独立 Hermes 安装仍使用上游原有更新方式。
+直接运行内置 `hermes update` 时，rc8 会提示使用整包更新入口并留下拒绝记录，不再按上游安装方式覆盖宿主。普通的独立 Hermes 安装仍使用上游原有更新方式。
 
 今后适配新版 Hermes 时，需要在隔离副本重做补丁、检查真实插件与命令、个人权限、Memory / Life / World / Supply、普通账号安装和升级，再发布新的 nyairo 版本。**你更新 nyairo 时，就会一起收到那一版配套 Hermes，不需要自己替换宿主。**
 
@@ -834,7 +834,7 @@ R16 的完整运行数字目前无法独立核验：旧证据条目复制了 R17
 
 ### 公开后仍需验证什么
 
-公开仓库为 https://github.com/L1AN929/nyairo ，当前体验候选标签 `v0.1.0-rc7`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
+公开仓库为 https://github.com/L1AN929/nyairo ，当前体验候选标签 `v0.1.0-rc8`；源码与下载以仓库及 Releases 页面为准。作者于 2026-10-04 确认 nyairo 新增代码（包括 Life Supply）使用 Apache-2.0；Hermes 及第三方继续保留原许可证。公开不等于所有平台已验收；另一台电脑的完整安装、长期自然使用及尚未覆盖的平台仍需独立验证。
 
 暂未完成的安装方式、自主活动或自助授权向导，应作为待办写入路线，而不是写成已有功能。本次网站维护同步了本页列出的定向复核结果；没有重新执行运行时全量测试，不把历史验收数字作为本次网站检查结果。
 
@@ -982,4 +982,4 @@ World/Body 的同账号 socket、Life Supply 的 operator/service 权限与有�
 
 启用记忆时，模型调用的终端、读文件、浏览器、委派等工具默认全部拦截，避免读回已经停止召回的聊天。`/nyairo_*` 命令（旧 `/chiyo_*` 别名同理）和普通聊天仍保留。若你明确需要完整 Hermes 工具，可以在自己 `chiyo/config.json` 中设置 `"memory_tool_policy": "unrestricted"` 并重启；这样就不能再承诺工具不会读回原始历史。忘记不是擦除备份，也不是隔离本地管理员。
 
-已有用户先备份自己的数据目录，安装新程序后更新插件与授权设置，不要删除原目录或重建人设。具体步骤、Native HTTP 的访问口令、本次测试与尚存限制见 [隐私修复与升级](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc7/PRIVACY_REVIEW.md)。
+已有用户先备份自己的数据目录，安装新程序后更新插件与授权设置，不要删除原目录或重建人设。具体步骤、Native HTTP 的访问口令、本次测试与尚存限制见 [隐私修复与升级](https://github.com/L1AN929/nyairo/blob/v0.1.0-rc8/PRIVACY_REVIEW.md)。
