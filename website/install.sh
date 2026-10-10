@@ -3,7 +3,7 @@
 set -euo pipefail
 
 main() {
-  local version=v0.1.0-rc8
+  local version=v0.1.0-rc9
   local archive_sha
   local prefix="${HOME:?}/.local/share/nyairo" profile="$HOME/.nyairo" owner=local-owner
   local setup=1 launch=1
@@ -17,7 +17,7 @@ main() {
       --no-launch) launch=0; shift;;
       -h|--help)
         printf '%s\n' 'nyairo 一条命令引导安装（Linux / Windows WSL）' \
-          '默认：下载固定 rc8 → 准备 uv / Python → 安装依赖 → 创建个人配置 → 模型设置 → 聊天。' \
+          '默认：下载固定 rc9 → 准备 uv / Python → 安装依赖 → 创建个人配置 → 模型设置 → 聊天。' \
           '--prefix DIR    程序目录，默认 ~/.local/share/nyairo' \
           '--profile DIR   个人数据目录，默认 ~/.nyairo' \
           '--owner ID      本地身份标识，默认 local-owner' \

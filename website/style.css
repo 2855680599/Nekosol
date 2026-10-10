@@ -5,22 +5,21 @@
    ========================================================================== */
 
 :root {
-  /* 浅澈冷调极简美学：中性深空灰底、纯净文字、冰青色点缀、极细柔和边框，拒绝浓厚大蓝 */
   color-scheme: dark;
-  --c-bg: #111317;
-  --c-bg-subtle: #181b20;
-  --c-bg-card: rgba(26, 30, 38, 0.65);
-  --c-bg-card-hover: rgba(33, 38, 48, 0.82);
-  --c-bg-panel: rgba(17, 19, 23, 0.95);
-  --c-bg-code: #0d0f12;
+  --c-bg: #090b0e;
+  --c-bg-subtle: #0f1217;
+  --c-bg-card: rgba(15, 19, 26, 0.72);
+  --c-bg-card-hover: rgba(22, 28, 38, 0.86);
+  --c-bg-panel: rgba(11, 14, 19, 0.82);
+  --c-bg-code: #06080b;
 
   --c-border: rgba(255, 255, 255, 0.08);
-  --c-border-hover: rgba(255, 255, 255, 0.16);
+  --c-border-hover: rgba(255, 255, 255, 0.18);
   --c-divider: rgba(255, 255, 255, 0.06);
 
-  --c-accent: #7dd3fc;
-  --c-accent-hover: #bae6fd;
-  --c-accent-soft: rgba(125, 211, 252, 0.09);
+  --c-accent: #38bdf8;
+  --c-accent-hover: #7dd3fc;
+  --c-accent-soft: rgba(56, 189, 248, 0.08);
   --c-success: #4ade80;
   --c-warning: #fbbf24;
 
@@ -35,8 +34,8 @@
   --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
   --font-mono: "JetBrains Mono", Consolas, Monaco, monospace;
 
-  --glass-blur: blur(16px);
-  --glass-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --glass-blur: blur(20px);
+  --glass-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 [data-theme="light"] {
@@ -85,8 +84,8 @@ body {
   flex-direction: column;
   position: relative;
   overflow-x: hidden;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cpath d='M32 0H0v32' fill='none' stroke='rgba(255,255,255,0.028)' stroke-width='1'/%3E%3C/svg%3E");
+  background-size: 32px 32px;
 }
 
 [data-theme="light"] body {
@@ -113,7 +112,7 @@ body {
   justify-content: space-between;
   height: 100%;
   padding: 0 24px;
-  max-width: 1240px;
+  max-width: 1160px;
   margin: 0 auto;
 }
 
@@ -618,7 +617,7 @@ body {
 .pillar-card:hover {
   background: var(--c-bg-card-hover);
   border-color: var(--c-border-hover);
-  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="light"] .pillar-card:hover {
@@ -822,6 +821,8 @@ body {
   border-right: 1px solid var(--c-divider);
   padding: 24px 16px;
   height: calc(100vh - var(--header-height));
+  /* 真机地址栏收放时 100vh 大于可视高度，会导致侧栏底部目录项够不到 */
+  height: calc(100dvh - var(--header-height));
   position: sticky;
   top: var(--header-height);
   overflow-y: auto;
@@ -1403,7 +1404,15 @@ body {
 }
 
 @media (max-width: 768px) {
-  .header-container { padding: 0 16px; }
+  .header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+  padding: 0 24px;
+  max-width: 1160px;
+  margin: 0 auto;
+}
   .header-left, .header-right { gap: 8px; }
   .brand-cn, .brand-pill { display: none; }
   .mobile-toggle { display: block; }
@@ -1793,8 +1802,8 @@ a:focus-visible, button:focus-visible {
 }
 
 .roadmap-section {
-  margin: 52px auto 0;
-  max-width: 100%;
+  margin: 52px 0 0;
+  width: 100%;
 }
 
 .roadmap-grid {
@@ -1834,7 +1843,7 @@ a:focus-visible, button:focus-visible {
 .roadmap-card:hover {
   background: var(--c-bg-card-hover);
   border-color: var(--c-border-hover);
-  box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 [data-theme="light"] .roadmap-card:hover {
@@ -1961,5 +1970,746 @@ a:focus-visible, button:focus-visible {
 @media (max-width: 640px) {
   .roadmap-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   移动端适配修正 (Mobile Adaptation Fixes)
+   实测视口：320 / 360 / 390 / 414 px（无头 Chromium 真实布局测量）
+   本节位于文件末尾，用于覆盖上方各响应式块中的既有取值。
+   ========================================================================== */
+
+/* 1. 首页「真实日常」演示被裁切
+      .showcase-viewport 固定 height:330px + overflow:hidden，手机端气泡换行后
+      面板内容高 391–437px，最后一条对话被切掉（320px 实测裁掉 93px）。
+      改为随内容撑开，不再裁切。 */
+@media (max-width: 768px) {
+  .showcase-viewport {
+    height: auto;
+  }
+  .showcase-panel {
+    height: auto;
+  }
+}
+
+/* 2. 安装命令被截断
+      整条命令需 362px，手机端可用宽度仅 203–295px，原先只能横向滚动且无提示。
+      改为按内容自适应宽度并允许换行，完整显示。 */
+@media (max-width: 768px) {
+  .hero-cmd-pill {
+    width: auto;
+    max-width: 100%;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    text-align: left;
+  }
+  .cmd-prefix,
+  .cmd-text {
+    line-height: 1.5;
+  }
+  .cmd-text {
+    white-space: normal;
+    overflow-x: visible;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* 3. 触控热区过小
+      汉堡 26×29、搜索 32×26、复制 17×17，均低于 iOS 44pt / Android 48dp。 */
+@media (max-width: 768px) {
+  .mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    margin-left: -9px;
+    padding: 0;
+  }
+  .header-left {
+    gap: 6px;
+  }
+  .search-trigger {
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+  }
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+  .header-actions {
+    gap: 2px;
+    padding-left: 4px;
+  }
+  .cmd-copy-btn {
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+  .site-brand {
+    min-height: 44px;
+  }
+  .showcase-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+  .footer-links a {
+    padding: 8px 2px;
+  }
+}
+
+/* 4. 移动端字号下限
+      10.9–11.7px 的辅助文字在手机上难以辨认，统一抬到 12px。 */
+@media (max-width: 768px) {
+  .banner-chip,
+  .banner-title,
+  .context-tag,
+  .context-meta,
+  .cmd-badge,
+  .roadmap-status-tag,
+  .rm-tag,
+  .sidebar-badge,
+  .showcase-header-right,
+  .card-state,
+  .start-strip-badge,
+  .pager-dir {
+    font-size: 0.75rem;
+  }
+  .sidebar-title {
+    font-size: 0.78rem;
+  }
+}
+
+/* 5. iOS Safari 聚焦 font-size < 16px 的输入框时会自动放大整页。 */
+@media (max-width: 768px) {
+  .search-modal-input {
+    font-size: 16px;
+  }
+}
+
+/* 6. 刘海屏 / 底部横条安全区（配合已有 viewport-fit=cover）。 */
+.site-header {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+@media (max-width: 768px) {
+  .docs-sidebar {
+    /* 由 top/bottom 决定高度，始终贴合可视区，目录末项可滚动到 */
+    height: auto;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .home-footer {
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+}
+
+/* ==========================================================================
+   手机端专用紧凑版式 (Mobile Compact Layout)
+   --------------------------------------------------------------------------
+   背景：≤768px 时原样式只是把桌面端的多列网格压成单列竖直长条，留白按桌面
+   比例保留，导致首页在手机上被撑成 5 屏多，观感"臃肿"。
+   做法：不改文案、不删内容，只在 ≤768px 重新编排结构 —— 路线图四张卡改为
+   可点开的时间线，四大能力改为图标在左的紧凑条目，演示区压缩气泡留白。
+   约束：>768px 的桌面版式必须与改动前逐像素一致，故本节全部规则都包在
+   max-width:768px 里（下面的 details/summary 复位除外，它是布局中性的）。
+   实测（390×844）：4484px → 约 2400px，与桌面端 2477px 基本持平。
+   ========================================================================== */
+
+/* --- 1. 路线图折叠结构的通用复位 -----------------------------------------
+   四张卡由"直接是 .roadmap-card 的子元素"改为包在 <details class="rm-details">
+   里。为了让 .roadmap-desc{flex:1} 与 .roadmap-tag-list{margin-top:auto} 在
+   桌面端仍然生效，把 details 做成撑满卡片的纵向 flex 容器。 */
+.rm-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.rm-summary {
+  display: block;
+  list-style: none;
+  cursor: default;
+}
+
+.rm-summary::-webkit-details-marker {
+  display: none;
+}
+
+.rm-summary::marker {
+  content: "";
+}
+
+/* --- 2. 手机端紧凑版式 ---------------------------------------------------- */
+@media (max-width: 768px) {
+
+  /* 2.0 页面纵向留白整体收紧 */
+  .home-container {
+    padding: 24px 14px 28px;
+  }
+  .home-hero {
+    margin: 0 auto 30px;
+  }
+  .showcase-section {
+    margin-bottom: 28px;
+  }
+  .section-intro {
+    margin-bottom: 14px;
+  }
+  .section-intro h2 {
+    font-size: 1.24rem;
+  }
+  .section-intro p {
+    font-size: 0.86rem;
+    line-height: 1.62;
+  }
+
+  /* 2.1 路线图：四张卡改为可点开的时间线，默认只展开第一张
+     （open 属性由 app.js 按断点同步；HTML 里默认全部 open，
+      因此 JS 未执行时内容也完整可见，不会丢内容） */
+  .roadmap-section {
+  margin: 52px 0 0;
+  width: 100%;
+}
+  .roadmap-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .roadmap-card {
+    padding: 13px 15px;
+  }
+  .rm-summary {
+    position: relative;
+    padding-right: 24px;
+    min-height: 44px;
+    cursor: pointer;
+    border-radius: 6px;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rm-summary:focus-visible {
+    outline: 2px solid #38bdf8;
+    outline-offset: 3px;
+  }
+  /* 展开指示箭头 */
+  .rm-summary::after {
+    content: "";
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    margin-top: -6px;
+    border-right: 2px solid var(--c-text-3);
+    border-bottom: 2px solid var(--c-text-3);
+    transform: rotate(45deg);
+    transition: transform 0.2s ease, margin-top 0.2s ease;
+  }
+  .rm-details[open] .rm-summary::after {
+    margin-top: -2px;
+    transform: rotate(-135deg);
+  }
+  .roadmap-phase-row {
+    margin-bottom: 5px;
+    gap: 6px;
+  }
+  .roadmap-name {
+    font-size: 0.98rem;
+    margin-bottom: 0;
+  }
+  .roadmap-desc {
+    font-size: 0.81rem;
+    line-height: 1.55;
+    margin: 9px 0 10px;
+  }
+  .roadmap-tag-list {
+    padding-top: 0;
+  }
+  .roadmap-footer {
+    margin-top: 16px;
+  }
+
+  /* 2.2 四大能力：由四张竖排大卡改为紧凑横向条目（图标在左，文字在右） */
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 14px;
+    margin-bottom: 22px;
+  }
+  .pillar-card {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: start;
+    padding: 13px 15px;
+  }
+  /* 让 .pillar-top 的两个孩子直接成为卡片网格的子项 */
+  .pillar-top {
+    display: contents;
+  }
+  .pillar-icon-box {
+    grid-column: 1;
+    grid-row: 1 / span 3;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+  .pillar-top-right {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: start;
+    margin-bottom: 3px;
+  }
+  .pillar-title {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 0.96rem;
+    margin-bottom: 4px;
+  }
+  .pillar-desc {
+    grid-column: 2;
+    grid-row: 3;
+    font-size: 0.79rem;
+    line-height: 1.52;
+    margin-bottom: 7px;
+  }
+  .pillar-link {
+    grid-column: 2;
+    grid-row: 4;
+    font-size: 0.76rem;
+  }
+
+  /* 2.3 演示区：压缩上下文栏与对话气泡的留白、行高 */
+  .daily-showcase {
+    margin: 16px auto 24px;
+  }
+  /* 标签行修正：4 个标签文案很长（"不完结的日常 · 持续流转"），手机端原本
+     每个占一整行，把 .showcase-header 撑到 239px。改为单行横向滑动，
+     全部标签文字保留，头部降到约 100px。 */
+  .showcase-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+  .showcase-tabs {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-snap-type: x proximity;
+  }
+  .showcase-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .showcase-tab {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    min-height: 44px;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .showcase-header-right {
+    white-space: normal;
+  }
+  .showcase-chat {
+    padding: 12px 14px;
+    gap: 8px;
+  }
+  .chat-bubble {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    line-height: 1.52;
+    max-width: 92%;
+  }
+  .showcase-context-bar {
+    padding: 8px 14px;
+  }
+
+  /* 2.5 首屏：收紧各元素之间的纵向间距 */
+  .hero-banner-wrap {
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    margin-bottom: 16px;
+  }
+  .hero-desc {
+    margin-bottom: 22px;
+  }
+  .hero-actions {
+    margin-bottom: 18px;
+  }
+
+  /* 2.4 收尾区与页脚 */
+  .start-strip {
+    margin-top: 28px;
+    margin-bottom: 18px;
+    padding: 18px 16px;
+  }
+  .home-footer {
+    margin-top: 14px;
+    padding: 18px 0 calc(18px + env(safe-area-inset-bottom));
+  }
+}
+
+
+/* 导航栏 Web 体验测试入口（极简工程胶囊，带微光呼吸点） */
+.nav-app-test {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: rgba(56, 189, 248, 0.07);
+  color: #7dd3fc;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.nav-app-test:hover {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #bae6fd;
+}
+
+.nav-app-test .test-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.nav-app-test .test-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
+
+[data-theme='light'] .nav-app-test {
+  border-color: rgba(2, 132, 199, 0.25);
+  background: rgba(2, 132, 199, 0.06);
+  color: #0284c7;
+}
+
+[data-theme='light'] .nav-app-test:hover {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.4);
+}
+
+[data-theme='light'] .nav-app-test .test-dot {
+  background-color: #0284c7;
+  box-shadow: 0 0 5px #0284c7;
+}
+
+[data-theme='light'] .nav-app-test .test-tag {
+  background: rgba(0, 0, 0, 0.06);
+  color: #64748b;
+}
+
+/* ==========================================================================
+   右上角 Web 体验 (Beta) 极简按钮
+   ========================================================================== */
+.nav-preview-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 6px;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  color: var(--c-text-2);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none !important;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.nav-preview-link:hover {
+  background: var(--c-bg-card-hover);
+  border-color: var(--c-border-hover);
+  color: var(--c-text-1);
+  text-decoration: none !important;
+}
+
+.preview-mini-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+}
+
+.nav-preview-link:hover .preview-mini-tag {
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.nav-preview-link svg {
+  color: var(--c-text-3);
+  transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.nav-preview-link:hover svg {
+  color: var(--c-text-1);
+  transform: translate(1px, -1px);
+}
+
+[data-theme='light'] .nav-preview-link {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  color: var(--c-text-2);
+}
+
+[data-theme='light'] .nav-preview-link:hover {
+  border-color: rgba(0, 0, 0, 0.2);
+  color: var(--c-text-1);
+}
+
+[data-theme='light'] .preview-mini-tag {
+  background: rgba(0, 0, 0, 0.05);
+  border-color: rgba(0, 0, 0, 0.09);
+  color: #64748b;
+}
+
+/* 按钮内嵌徽标 */
+.hero-beta-tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+  margin: 0 2px;
+}
+
+
+/* ==========================================================================
+   AI Agent 辅助安装：双主题通透磨砂终端卡片 (严禁死黑突兀，完美融入整站)
+   ========================================================================== */
+.agent-install-card {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  border-radius: 9px;
+  overflow: hidden;
+  text-align: left;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 浅色模式：高级骨白纸感、极细微灰边框、纯正墨水色代码 */
+[data-theme="light"] .agent-install-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.09);
+  box-shadow: 0 10px 28px -6px rgba(15, 23, 42, 0.05);
+}
+[data-theme="light"] .agent-install-card .card-head {
+  background: #f8fafc;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+[data-theme="light"] .agent-install-card .terminal-dot {
+  background: rgba(0, 0, 0, 0.15);
+}
+[data-theme="light"] .agent-install-card .card-title {
+  color: #64748b;
+}
+[data-theme="light"] .agent-install-card .card-code-area {
+  background: #ffffff;
+  color: #334155;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+[data-theme="light"] .agent-install-card .card-foot {
+  background: #f8fafc;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  color: #64748b;
+}
+[data-theme="light"] .agent-install-card .foot-link {
+  color: #64748b;
+}
+[data-theme="light"] .agent-install-card .foot-link:hover {
+  color: var(--c-accent);
+}
+
+/* 暗色模式：深空碳素沉浸、发丝线微透光 */
+.agent-install-card {
+  background: rgba(15, 19, 26, 0.88);
+  border: 1px solid var(--c-border);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65);
+}
+.agent-install-card .card-head {
+  background: rgba(11, 14, 19, 0.9);
+  border-bottom: 1px solid var(--c-divider);
+}
+.agent-install-card .terminal-dot {
+  background: rgba(255, 255, 255, 0.2);
+}
+.agent-install-card .card-title {
+  color: var(--c-text-3);
+}
+.agent-install-card .card-code-area {
+  background: #06080b;
+  color: #94a3b8;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+}
+.agent-install-card .card-foot {
+  background: rgba(11, 14, 19, 0.9);
+  border-top: 1px solid var(--c-divider);
+  color: var(--c-text-3);
+}
+.agent-install-card .foot-link {
+  color: var(--c-text-3);
+}
+.agent-install-card .foot-link:hover {
+  color: var(--c-text-1);
+}
+
+/* 内部结构 */
+.agent-install-card .card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 14px;
+}
+.agent-install-card .card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.agent-install-card .dots-group {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.agent-install-card .terminal-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.agent-install-card .card-title {
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.agent-install-card .agent-copy-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  background: var(--c-accent-soft);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: 5px;
+  color: var(--c-accent);
+  font-family: inherit;
+  font-size: 0.74rem;
+  font-weight: 500;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+[data-theme="light"] .agent-install-card .agent-copy-action-btn {
+  border-color: rgba(2, 132, 199, 0.25);
+}
+.agent-install-card .agent-copy-action-btn:hover {
+  background: var(--c-accent);
+  color: #ffffff;
+}
+.agent-install-card .agent-copy-action-btn.copied {
+  background: rgba(74, 222, 128, 0.12);
+  border-color: var(--c-success);
+  color: var(--c-success);
+}
+.agent-install-card .agent-copy-action-btn.copied .copy-icon-default { display: none; }
+.agent-install-card .agent-copy-action-btn.copied .copy-icon-success { display: inline-block !important; }
+
+/* 代码区与超细微滑动条 */
+.agent-install-card .card-code-area {
+  padding: 12px 16px;
+  max-height: 180px;
+  overflow-y: auto;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  line-height: 1.62;
+  white-space: pre-wrap;
+  word-break: break-word;
+  user-select: text;
+  scrollbar-width: thin;
+}
+.agent-install-card .card-code-area::-webkit-scrollbar {
+  width: 4px;
+}
+.agent-install-card .card-code-area::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 2px;
+}
+
+/* 底栏 */
+.agent-install-card .card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  font-size: 0.72rem;
+}
+.agent-install-card .foot-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.agent-install-card .foot-link {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+@media (max-width: 768px) {
+  .agent-install-card .card-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .agent-install-card .agent-copy-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .agent-install-card .card-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }

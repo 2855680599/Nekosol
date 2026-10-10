@@ -5,7 +5,7 @@
 由 Agent 检查环境、完成安装，并给出中文使用说明。
 
 本规范不依赖任何特定模型或付费服务；所有下载都来自官方 GitHub Release，并且必须校验 SHA256。
-当前正式候选版本：**v0.1.0-rc8**（配套 Hermes 0.21.0）。已发布的 rc7、rc6 及其更早版本保持原字节，
+当前正式候选版本：**v0.1.0-rc9**（配套 Hermes 0.21.0）。已发布的 rc8、rc7、rc6 及其更早版本保持原字节，
 本页不把它们作为安装来源。
 
 ---
@@ -19,7 +19,7 @@
 【背景资料】
 - 官方仓库：https://github.com/L1AN929/nyairo
 - 官方 Agent 安装规范：仓库里的 docs/AGENT_INSTALL.zh-CN.md（如果你能读仓库或网络，先读它；读不到就按下面步骤做，本指令已经包含全部要求）
-- 当前正式候选版本：v0.1.0-rc8（只使用这一个版本；不要安装其他分支、旧版本或未发布的代码）
+- 当前正式候选版本：v0.1.0-rc9（只使用这一个版本；不要安装其他分支、旧版本或未发布的代码）
 
 【第一步：先检查环境，先不要安装】
 请检查并用中文汇报：
@@ -41,7 +41,7 @@
 
 【第二步：说明将要改动什么，并等我确认】
 这次安装会：
-- 在 ~/.local/share/nyairo/releases/v0.1.0-rc8 放程序（约 460 MB，含配套 Hermes 的运行环境）；
+- 在 ~/.local/share/nyairo/releases/v0.1.0-rc9 放程序（约 460 MB，含配套 Hermes 的运行环境）；
 - 在 ~/.nyairo 建个人数据目录（人设、模型配置、记忆与生活状态数据）；
 - 在 ~/.local/bin/nyairo 放启动入口；
 - 用 uv 下载一份 Python 3.13 到 ~/.local/share/uv。
@@ -50,22 +50,22 @@
 
 【第三步：安装（只用官方发行包，并且校验）】
 1) 下载官方发行包与校验值：
-   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc8/nyairo-v0.1.0-rc8.zip
-   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc8/nyairo-v0.1.0-rc8.zip.sha256
-   sha256sum -c nyairo-v0.1.0-rc8.zip.sha256
-   ZIP 的 SHA256 必须是：f4d6fe3a1542a810c5c04f51b8f19646ec14cae4b332e7d0a8c5904ef000a916
+   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc9/nyairo-v0.1.0-rc9.zip
+   curl -fsSL -O https://github.com/L1AN929/nyairo/releases/download/v0.1.0-rc9/nyairo-v0.1.0-rc9.zip.sha256
+   sha256sum -c nyairo-v0.1.0-rc9.zip.sha256
+   ZIP 的 SHA256 必须是：ec181e819e7d203521f28189b640ecb95734f755e715133f455257dcacb5b583
    不一致就立刻停止，把实际值告诉我，不要继续。
 2) 解压并使用包内的官方安装器安装（不要自己另写一套安装脚本）：
-   python3 -m zipfile -e nyairo-v0.1.0-rc8.zip "$HOME/apps/nyairo-v0.1.0-rc8"
-   cd "$HOME/apps/nyairo-v0.1.0-rc8" && bash scripts/bootstrap.sh
+   python3 -m zipfile -e nyairo-v0.1.0-rc9.zip "$HOME/apps/nyairo-v0.1.0-rc9"
+   cd "$HOME/apps/nyairo-v0.1.0-rc9" && bash scripts/bootstrap.sh
    如果你的终端无法交互（没有 TTY），改用：bash scripts/bootstrap.sh --no-setup --no-launch
    装完再单独引导我配置模型：~/.local/bin/nyairo setup model
 
 【第四步：装完必须实际验证，不要只看命令有没有报错】
-- 版本：读 ~/.local/state/nyairo/install.json 里的 version 字段，应该是 v0.1.0-rc8；也可以用 ls ~/.local/share/nyairo/releases/ 确认目录名是 v0.1.0-rc8。
+- 版本：读 ~/.local/state/nyairo/install.json 里的 version 字段，应该是 v0.1.0-rc9；也可以用 ls ~/.local/share/nyairo/releases/ 确认目录名是 v0.1.0-rc9。
   （注意：nyairo --version 显示的是配套 Hermes 的版本，不是 nyairo 的版本。）
 - 完整性：用包内解释器校验清单：
-  ~/.local/share/nyairo/releases/v0.1.0-rc8/vendor/hermes/.venv/bin/python -B ~/.local/share/nyairo/releases/v0.1.0-rc8/scripts/verify_manifest.py
+  ~/.local/share/nyairo/releases/v0.1.0-rc9/vendor/hermes/.venv/bin/python -B ~/.local/share/nyairo/releases/v0.1.0-rc9/scripts/verify_manifest.py
   输出里应该有 "valid": true。
 - 个人数据目录：~/.nyairo 下应该有 SOUL.md、config.yaml、chiyo/config.json。
 - 启动：~/.local/bin/nyairo --help 能正常输出帮助。
@@ -73,7 +73,7 @@
 - 模型与 Telegram：在我没有提供自己的密钥之前，这两项属于「尚未验证」，请如实说明，不要报告为成功。
 
 【第五步：最后给我一份中文说明】
-用简单的中文告诉我：安装是否成功、装在哪里、怎么启动（nyairo）、怎么配置模型（nyairo setup model）、怎么接 Telegram（nyairo gateway setup 然后 nyairo gateway run）、怎么停止（退出聊天，或在网关终端按 Ctrl-C）、怎么更新（~/.local/bin/nyairo update，可加 --check 先看有没有新版）、怎么备份（退出聊天和网关后 tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo）、怎么卸载（先备份 ~/.nyairo，再删除程序目录 ~/.local/share/nyairo/releases/v0.1.0-rc8 与入口 ~/.local/bin/nyairo；如需彻底清除再自行删除 ~/.nyairo）。不要只贴终端日志。
+用简单的中文告诉我：安装是否成功、装在哪里、怎么启动（nyairo）、怎么配置模型（nyairo setup model）、怎么接 Telegram（nyairo gateway setup 然后 nyairo gateway run）、怎么停止（退出聊天，或在网关终端按 Ctrl-C）、怎么更新（~/.local/bin/nyairo update，可加 --check 先看有没有新版）、怎么备份（退出聊天和网关后 tar -czf "$HOME/nyairo-backup-$(date +%Y%m%d-%H%M%S).tar.gz" -C "$HOME" .nyairo）、怎么卸载（先备份 ~/.nyairo，再删除程序目录 ~/.local/share/nyairo/releases/v0.1.0-rc9 与入口 ~/.local/bin/nyairo；如需彻底清除再自行删除 ~/.nyairo）。不要只贴终端日志。
 
 【安全要求】
 - 不要擅自创建系统用户，也不要擅自使用 sudo；需要时先说明你要执行的命令并征得我同意。
@@ -104,7 +104,7 @@
 ### 2. 安装来源
 
 * 只使用官方 GitHub Release：<https://github.com/L1AN929/nyairo/releases>。
-* 当前验证版本 `v0.1.0-rc8`，资产为 `nyairo-v0.1.0-rc8.zip` 与同名 `.sha256`。
+* 当前验证版本 `v0.1.0-rc9`，资产为 `nyairo-v0.1.0-rc9.zip` 与同名 `.sha256`。
 * 下载后必须校验 SHA256，校验值与第一节指令中给出的值一致才继续。
 * 复用项目已有安装器 `scripts/bootstrap.sh`（它与官网 `/install.sh` 内容相同），不实现第二套安装逻辑。
 * 不得把未发布的分支、`main` 上的未发布提交、或旧版本（rc6、rc7）当作安装来源；不得从非官方镜像下载。
@@ -147,7 +147,7 @@ Telegram 绑定与 token、正在运行的服务。
 | 项目 | 检查方式 | 期望 |
 | --- | --- | --- |
 | CLI 可启动 | `~/.local/bin/nyairo --help` | 正常输出帮助 |
-| 版本一致 | `~/.local/state/nyairo/install.json` 的 `version` | `v0.1.0-rc8` |
+| 版本一致 | `~/.local/state/nyairo/install.json` 的 `version` | `v0.1.0-rc9` |
 | MANIFEST 校验 | 包内 `scripts/verify_manifest.py`（用包内解释器运行），核对 `MANIFEST.json` 的文件清单与哈希 | `"valid": true` |
 | 数据目录 | `~/.nyairo` 下 `SOUL.md`、`config.yaml`、`chiyo/config.json` | 都存在 |
 | 基础服务启停 | 一次性 `-z` 自检、`gateway status` / `gateway run` / 停止 | 能启动、能停止 |
@@ -162,7 +162,7 @@ Telegram 绑定与 token、正在运行的服务。
 安装结束后，用中文给用户一份简短说明，至少包含：
 
 * 安装是否成功（以及哪些项目尚未验证）；
-* 安装位置：程序 `~/.local/share/nyairo/releases/v0.1.0-rc8`，个人数据 `~/.nyairo`，入口 `~/.local/bin/nyairo`；
+* 安装位置：程序 `~/.local/share/nyairo/releases/v0.1.0-rc9`，个人数据 `~/.nyairo`，入口 `~/.local/bin/nyairo`；
 * 如何启动：`nyairo`；
 * 如何配置模型：`nyairo setup model`；
 * 如何接入 Telegram：`nyairo gateway setup` 选择 Telegram，然后 `nyairo gateway run` 启动网关，绑定文件在 `~/.nyairo/chiyo/config.json`；
