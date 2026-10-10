@@ -5,10 +5,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc6"><img src="https://img.shields.io/badge/release-v0.1.0--rc6-1f2937.svg" alt="Release" /></a>
-  <a href="https://nyairo.com/"><img src="https://img.shields.io/badge/docs-nyairo.com-1f2937.svg" alt="Docs" /></a>
+  <a href="https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc9"><img src="https://img.shields.io/badge/release-v0.1.0--rc9-1f2937.svg" alt="Release" /></a>
+  <a href="https://nyairo.com/"><img src="https://img.shields.io/badge/website-nyairo.com-0284c7.svg" alt="Website" /></a>
+  <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=jTRpypa4t5NVRLQ23fwB%2FWf%2Bv40vJIRUQRSp7NjrTlmY6LjYMJL0Yzp6ffOxAumj&busi_data=eyJncm91cENvZGUiOiIxMTI2OTQzODA1IiwidG9rZW4iOiJOeWtXdXZCYzc4UERlTE5iR2NCVG1lTWx5L2NQUnFQNXFUTnNiOGhnd3RJNERDQnhVanU0WGUrVXZDZnlnV1F6IiwidWluIjoiMjg1NTY4MDU5OSJ9&data=9V6FtP6tYYR5Mfpg2v7V9ML798haiganCXx7zcY-Corkhkofom2ie2_9CBGBnJO1JjOuSRJDu4-_SXgB6IihLQ&svctype=4&tempid=h5_group_info"><img src="https://img.shields.io/badge/QQ%20Group-1126943805-12b7f5.svg" alt="QQ Group" /></a>
+  <a href="https://t.me/nyairoai"><img src="https://img.shields.io/badge/Telegram-nyairoai-229ed9.svg" alt="Telegram Channel" /></a>
   <img src="https://img.shields.io/badge/python-3.13-1f2937.svg" alt="Python 3.13" />
-  <img src="https://img.shields.io/badge/platform-Linux%20%7C%20Windows%20WSL2-1f2937.svg" alt="Platform" />
   <img src="https://img.shields.io/badge/license-Apache--2.0-1f2937.svg" alt="License" />
 </p>
 
@@ -97,7 +98,7 @@ curl -fsSL https://nyairo.com/install.sh | bash
 
 nyairo 采用严格的“程序运行体与个人数据解耦”架构设计：
 
-- **程序核心**：`~/.local/share/nyairo/releases/v0.1.0-rc6`（只读程序包，更新时整体切换）
+- **程序核心**：`~/.local/share/nyairo/releases/v0.1.0-rc9`（只读程序包，更新时整体切换）
 - **个人数据**：`~/.nyairo`（完全独立的本地目录，包含人设、数据库、记忆、密钥与配置）
 - **命令入口**：`~/.local/bin/nyairo`（系统 PATH 启动项）
 
@@ -105,12 +106,14 @@ nyairo 采用严格的“程序运行体与个人数据解耦”架构设计：
 
 ---
 
-## 官方文档与资源
+## 官方网站与社区交流
 
-- **官方网站与在线文档**：[https://nyairo.com/](https://nyairo.com/)
+- **官方主页与在线体验**：[https://nyairo.com/](https://nyairo.com/)
+- **官方 QQ 交流群**：[1126943805](https://qun.qq.com/universal-share/share?ac=1&authKey=jTRpypa4t5NVRLQ23fwB%2FWf%2Bv40vJIRUQRSp7NjrTlmY6LjYMJL0Yzp6ffOxAumj&busi_data=eyJncm91cENvZGUiOiIxMTI2OTQzODA1IiwidG9rZW4iOiJOeWtXdXZCYzc4UERlTE5iR2NCVG1lTWx5L2NQUnFQNXFUTnNiOGhnd3RJNERDQnhVanU0WGUrVXZDZnlnV1F6IiwidWluIjoiMjg1NTY4MDU5OSJ9&data=9V6FtP6tYYR5Mfpg2v7V9ML798haiganCXx7zcY-Corkhkofom2ie2_9CBGBnJO1JjOuSRJDu4-_SXgB6IihLQ&svctype=4&tempid=h5_group_info) *(点击一键直达加入群聊)*
+- **Telegram 官方频道**：[https://t.me/nyairoai](https://t.me/nyairoai)
 - **快速起步上手指南**：[https://nyairo.com/#quickstart](https://nyairo.com/#quickstart)
 - **版本更新动态与说明**：[https://nyairo.com/#changelog](https://nyairo.com/#changelog)
-- **最新 Release 下载与校验包**：[GitHub Releases v0.1.0-rc6](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc6)
+- **最新 Release 下载与校验包**：[GitHub Releases v0.1.0-rc9](https://github.com/L1AN929/nyairo/releases/tag/v0.1.0-rc9)
 
 ---
 
