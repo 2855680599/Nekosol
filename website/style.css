@@ -1047,6 +1047,23 @@ body {
   color: #1e5eb3;
 }
 
+
+/* 正文链接：默认只靠颜色区分，悬停时才出现细下划线。
+   浏览器默认的链接样式（下划线 + 系统蓝）在深色底上过抢眼，也和站点配色不一致。 */
+.markdown-body a {
+  color: var(--c-accent);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.markdown-body a:hover,
+.markdown-body a:focus-visible {
+  color: var(--c-accent-hover);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 /* 代码块 */
 .code-block {
   background: var(--c-bg-code);
