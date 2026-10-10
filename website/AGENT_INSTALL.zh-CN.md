@@ -18,7 +18,7 @@
 
 【背景资料】
 - 官方仓库：https://github.com/L1AN929/nyairo
-- 官方 Agent 安装规范：仓库里的 docs/AGENT_INSTALL.zh-CN.md（如果你能读仓库或网络，先读它；读不到就按下面步骤做，本指令已经包含全部要求）
+- 官方 Agent 安装规范：https://nyairo.com/AGENT_INSTALL.zh-CN.md（仓库里是 website/AGENT_INSTALL.zh-CN.md；如果你能读网络或仓库，先读它；读不到就按下面步骤做，本指令已经包含全部要求）
 - 当前正式候选版本：v0.1.0-rc9（只使用这一个版本；不要安装其他分支、旧版本或未发布的代码）
 
 【第一步：先检查环境，先不要安装】
